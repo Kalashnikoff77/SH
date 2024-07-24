@@ -1,0 +1,9 @@
+.headerlogo {
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+}
+
+.img-online {
+    border: 3px solid #2bad0a;
+}

@@ -1,4 +1,4 @@
-﻿<img src="@uri" data-avatar="@Account.Id" width="@width" height="@height" title="@Title" class="@Class @online" />
+﻿<img src="@uri" data-avatar="@Account.Id" width="@width" height="@height" title="@Title" class="@Class @online" style="@Style" />
 <div class="w-3.5 h-3.5 hidden absolute bottom-0 right-0 bg-green-500 rounded-full border border-white dark:border-slate-800"></div>
 
 @code {
@@ -6,6 +6,7 @@
     [Parameter, EditorRequired] public AccountsViewDto Account { get; set; } = null!;
     [Parameter] public string? Title { get; set; }
     [Parameter] public string? Class { get; set; }
+    [Parameter] public string? Style { get; set; }
     [Inject] CurrentState CurrentState { get; set; } = null!;
 
     private string uri = null!;

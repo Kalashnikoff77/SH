@@ -16,6 +16,19 @@
                 <RadzenButton ButtonStyle="ButtonStyle.Info" MouseEnter="@(args => ShowTooltip(args, new TooltipOptions(){ Text = "Сообщения", Position = TooltipPosition.Bottom }))">
                     <RadzenIcon Icon="mail" />
                 </RadzenButton>
+
+                <RadzenProfileMenu>
+                    <Template>
+                        <ImageAvatar Account="@CurrentState.Account" Size="@EnumImageSize.s64x64" Class="rounded-full" />
+                    </Template>
+                    <ChildContent>
+                        <RadzenProfileMenuItem Text="Menu" Path="menu" Icon="line_weight"></RadzenProfileMenuItem>
+                        <RadzenProfileMenuItem Text="FileInput" Path="fileinput" Icon="attach_file"></RadzenProfileMenuItem>
+                        <RadzenProfileMenuItem Text="Dialog" Path="dialog" Icon="perm_media"></RadzenProfileMenuItem>
+                        <RadzenProfileMenuItem Text="Notification" Path="notification" Icon="announcement"></RadzenProfileMenuItem>
+                        <RadzenProfileMenuItem Text="Выйти" Icon="logout"></RadzenProfileMenuItem>
+                    </ChildContent>
+                </RadzenProfileMenu>
             }
         </RadzenStack>
     </RadzenStack>

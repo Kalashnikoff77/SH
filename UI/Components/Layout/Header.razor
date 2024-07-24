@@ -1,0 +1,57 @@
+﻿@inject TooltipService tooltipService
+<RadzenComponents @rendermode="InteractiveAuto" />
+
+<RadzenHeader>
+    <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" JustifyContent="JustifyContent.SpaceBetween" Gap="0" class="rz-mr-5">
+        <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center">
+            <RadzenSidebarToggle Click="@(() => sidebarExpanded = !sidebarExpanded)" />
+            <p>Логотип</p>
+        </RadzenStack>
+        <RadzenStack Orientation="Orientation.Horizontal" Gap="10">
+            @if (CurrentState.Account != null)
+            {
+                <RadzenButton ButtonStyle="ButtonStyle.Info" MouseEnter="@(args => ShowTooltip(args, new TooltipOptions(){ Text = "Уведомления", Position = TooltipPosition.Bottom }))">
+                    <RadzenIcon Icon="notifications" />
+                </RadzenButton>
+                <RadzenButton ButtonStyle="ButtonStyle.Info" MouseEnter="@(args => ShowTooltip(args, new TooltipOptions(){ Text = "Сообщения", Position = TooltipPosition.Bottom }))">
+                    <RadzenIcon Icon="mail" />
+                </RadzenButton>
+            }
+        </RadzenStack>
+    </RadzenStack>
+</RadzenHeader>
+
+<RadzenSidebar Responsive="false" Style="width: max-content">
+    <RadzenPanelMenu DisplayStyle="@(sidebarExpanded ? MenuItemDisplayStyle.IconAndText : MenuItemDisplayStyle.Icon)" ShowArrow="false">
+        <RadzenPanelMenuItem Text="Главная" Path="/" Icon="home" />
+        @if (CurrentState.Account != null)
+        {
+            <RadzenPanelMenuItem Text="Сообщения" Path="/messages" Icon="mail" />
+        }
+
+        <RadzenPanelMenuItem Text="Встречи" Path="/events" Icon="group" />
+
+        @if (CurrentState.Account == null)
+        {
+            <RadzenPanelMenuItem Text="Войти" Path="/login" Icon="login" />
+        }
+        else
+        {
+            <RadzenPanelMenuItem Text="Выйти" Icon="logout" Click="async () => { await CurrentState.LogOutAsync(); }" />
+        }
+
+        <RadzenPanelMenuItem Text="Новое" Icon="auto_awesome">
+            <RadzenPanelMenuItem Text="Themes" Icon="color_lens" />
+            <RadzenPanelMenuItem Text="Colors" Icon="invert_colors" />
+        </RadzenPanelMenuItem>
+    </RadzenPanelMenu>
+</RadzenSidebar>
+
+@code {
+    bool sidebarExpanded = true;
+
+    void ShowTooltip(ElementReference elementReference, TooltipOptions? options = null) => 
+        tooltipService.Open(elementReference, options?.Text, options);
+
+    [CascadingParameter] CurrentState CurrentState { get; set; } = null!;
+}

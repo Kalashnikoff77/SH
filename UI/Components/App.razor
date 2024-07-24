@@ -1,0 +1,27 @@
+﻿<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <base href="/" />
+    <HeadOutlet />
+    <RadzenTheme Theme="material" @rendermode="InteractiveServer" />
+
+    <link rel="stylesheet" href="/css/custom.css">
+</head>
+
+<body style="overflow-y: scroll">
+    <Routes @rendermode="RenderMode.InteractiveServer" />
+    <script src="_framework/blazor.web.js"></script>
+
+    <script src="/js/jquery-3.7.1.min.js"></script>
+    <script src="/js/linq.min.js"></script>
+    <script src="/js/enums.js"></script>
+    <script src="/js/local.js"></script>
+    <script src="/js/SignalRMethods.js"></script>
+
+    <script src="_content/Radzen.Blazor/Radzen.Blazor.js?v=@(typeof(Radzen.Colors).Assembly.GetName().Version)"></script>
+</body>
+
+</html>

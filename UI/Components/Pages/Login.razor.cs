@@ -19,6 +19,7 @@ namespace UI.Components.Pages
         [Inject] ProtectedSessionStorage _protectedSessionStore { get; set; } = null!;
         [Inject] IConfiguration _configuration { get; set; } = null!;
         [Inject] IJSProcessor _JSProcessor { get; set; } = null!;
+        [Inject] NavigationManager Navigation { get; set; } = null!;
 
         // TODO REMOVE (OK)
         string userName = "oleg@mail.ru";
@@ -58,6 +59,7 @@ namespace UI.Components.Pages
 
         void OnRegister()
         {
+            Navigation.NavigateTo("/register");
         }
 
         void OnResetPassword(string email)

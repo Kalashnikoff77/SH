@@ -1,9 +1,9 @@
 ﻿@inject TooltipService tooltipService
 <RadzenComponents @rendermode="InteractiveAuto" />
 
-<RadzenHeader>
-    <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" JustifyContent="JustifyContent.SpaceBetween" Gap="0" class="rz-mr-5">
-        <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center">
+<RadzenHeader Style="height: 61px">
+    <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" JustifyContent="JustifyContent.SpaceBetween" class="rz-mr-1">
+        <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" Style="height: 61px">
             <RadzenSidebarToggle Click="@(() => sidebarExpanded = !sidebarExpanded)" />
             <p>Логотип</p>
         </RadzenStack>
@@ -19,7 +19,7 @@
 
                 <RadzenProfileMenu>
                     <Template>
-                        <ImageAvatar Account="@CurrentState.Account" Size="@EnumImageSize.s64x64" Class="headerlogo" />
+                        <ImageAvatar Account="@CurrentState.Account" Size="@EnumImageSize.s64x64" Class="s45" />
                     </Template>
                     <ChildContent>
                         <RadzenProfileMenuItem Text="Menu" Path="menu" Icon="line_weight"></RadzenProfileMenuItem>
@@ -52,11 +52,6 @@
         {
             <RadzenPanelMenuItem Text="Выйти" Icon="logout" Click="async () => { await CurrentState.LogOutAsync(); }" />
         }
-
-        <RadzenPanelMenuItem Text="Новое" Icon="auto_awesome">
-            <RadzenPanelMenuItem Text="Themes" Icon="color_lens" />
-            <RadzenPanelMenuItem Text="Colors" Icon="invert_colors" />
-        </RadzenPanelMenuItem>
     </RadzenPanelMenu>
 </RadzenSidebar>
 

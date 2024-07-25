@@ -7,6 +7,8 @@ using Common.Dto.Responses;
 using Common.Dto.Views;
 using Common.Repository;
 using Microsoft.AspNetCore.Components;
+using System;
+using Microsoft.AspNetCore.SignalR.Protocol;
 
 namespace UI.Components.Pages
 {
@@ -51,6 +53,59 @@ namespace UI.Components.Pages
         private List<Hobby> hobbies = new List<Hobby>() { new("Games"), new("Sport"), new("Movies"), new("Books"), new("Music") };
         private IList<Hobby> selectedHobbies = new List<Hobby>();
         private List<Hobby> savedHobbies = new List<Hobby>();
+
+        string? Process { get; set; }
+
+        async void OnPhotoChange(UploadChangeEventArgs args)
+        {
+            Process = null;
+            int c = 0;
+
+            foreach (var file in args.Files)
+            {
+                if ((file.ContentType == "image/jpeg" || file.ContentType == "image/png" || file.ContentType != "image/jpeg") && (file.Size > 50000 && file.Size < 25000000))
+                {
+                    Process = $"Загружается фото {file.Name} (размер: {file.Size})....";
+                    StateHasChanged();
+
+                    try
+                    {
+                        Thread.Sleep(1500);
+                        using (MemoryStream input = new MemoryStream(3500000))
+                        {
+                            await file.OpenReadStream(25000000).CopyToAsync(input);
+                            input.Position = 0;
+
+                            await File.WriteAllBytesAsync($"c:\\!!!\\!Photos\\test_{c.ToString()}.jpg", input.ToArray());
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                    }
+
+                    c++;
+                }
+            }
+
+            Process = "Фото загружено!";
+            StateHasChanged();
+        }
+
+        async void OnPhotoComplete(UploadCompleteEventArgs args)
+        {
+        }
+
+        void OnProgressPhoto(UploadProgressArgs args)
+        {
+            if (args.Progress == 100)
+            {
+                foreach (var file in args.Files)
+                {
+                }
+            }
+        }
+
+
 
         private void OnChange()
         {

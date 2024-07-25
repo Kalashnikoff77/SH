@@ -9,6 +9,7 @@
 
     <RadzenSteps Change="@OnChange" CanChange="@CanChange" NextText="Далее" NextTitle="К следующему шагу" PreviousText="Назад" PreviousTitle="К предыдущему шагу">
         <Steps>
+            @* Шаг первый *@
             <RadzenStepsItem>
                 <RadzenStack Orientation="Orientation.Vertical" Gap="0">
                     <RadzenText TextStyle="TextStyle.Subtitle2"><b>Имя Вашей учётной записи</b></RadzenText>
@@ -38,24 +39,23 @@
                         <RadzenStack Orientation="Orientation.Horizontal" Gap="0" Style="width: 50%">
                             <RadzenStack Orientation="Orientation.Vertical" Gap="0" Style="width: 100%">
                                 <RadzenText TextStyle="TextStyle.Subtitle2"><b>Страна</b></RadzenText>
-                                <RadzenDropDown @bind-Value=@countryId Data=@countries ValueProperty="@nameof(CountriesViewDto.Id)" TextProperty="@nameof(CountriesViewDto.Name)" Style="width: 99%" Name="DropDownBindValue" />
+                                <RadzenDropDown @bind-Value=@countryId Data=@countries ValueProperty="@nameof(CountriesViewDto.Id)" TextProperty="@nameof(CountriesViewDto.Name)" Style="width: 99%" Name="DropDownCountries" />
                             </RadzenStack>
                         </RadzenStack>
                         <RadzenStack Orientation="Orientation.Horizontal" Gap="0" Style="width: 50%">
                             <RadzenStack Orientation="Orientation.Vertical" Gap="0" Style="width: 100%">
                                 <RadzenText TextStyle="TextStyle.Subtitle2"><b>Город</b></RadzenText>
-                                <RadzenDropDown @bind-Value=@regionId Data=@regions ValueProperty="@nameof(RegionsDto.Id)" TextProperty="@nameof(RegionsDto.Name)" Style="width: 99%" Name="DropDownBindValue" />
+                                <RadzenDropDown @bind-Value=@regionId Data=@regions ValueProperty="@nameof(RegionsDto.Id)" TextProperty="@nameof(RegionsDto.Name)" Style="width: 99%" Name="DropDownRegions" />
                             </RadzenStack>
                         </RadzenStack>
                     </RadzenStack>
                 </RadzenStack>
             </RadzenStepsItem>
 
+            @* Шаг второй *@
             <RadzenStepsItem>
-                <RadzenStack Orientation="Orientation.Vertical" Gap="0">
-                    <RadzenText TextStyle="TextStyle.Subtitle2"><b>Имя Вашей учётной записи</b></RadzenText>
-                    <RadzenTextBox @bind-Value=@RegisterModel.Name MaxLength="40" Style="width: 100%" />
-                </RadzenStack>
+                <RadzenUpload Multiple="false" Progress=@OnProgressPhoto Complete=@OnPhotoComplete Change=@OnPhotoChange Accept=".jpg,.jpeg,.png" Style="width: 100%" ChooseText="Выберите фото для аватара" />
+                <RadzenText Text="@Process" />
             </RadzenStepsItem>
 
 

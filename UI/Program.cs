@@ -10,7 +10,8 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorComponents()
-    .AddInteractiveServerComponents();
+    .AddInteractiveServerComponents()
+    .AddHubOptions(o => { o.MaximumReceiveMessageSize = 25000000; });
 
 builder.Services.AddScoped<ThemeService>();
 builder.Services.AddScoped<TooltipService>();

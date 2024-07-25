@@ -9,6 +9,12 @@ using Common.Repository;
 using Microsoft.AspNetCore.Components;
 using System;
 using Microsoft.AspNetCore.SignalR.Protocol;
+using Common.Enums;
+using Common;
+using PhotoSauce.MagicScaler;
+using static System.Runtime.InteropServices.JavaScript.JSType;
+using System.Text;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace UI.Components.Pages
 {
@@ -54,58 +60,10 @@ namespace UI.Components.Pages
         private IList<Hobby> selectedHobbies = new List<Hobby>();
         private List<Hobby> savedHobbies = new List<Hobby>();
 
-        string? Process { get; set; }
 
-        async void OnPhotoChange(UploadChangeEventArgs args)
-        {
-            Process = null;
-            int c = 0;
-
-            foreach (var file in args.Files)
-            {
-                if ((file.ContentType == "image/jpeg" || file.ContentType == "image/png" || file.ContentType != "image/jpeg") && (file.Size > 50000 && file.Size < 25000000))
-                {
-                    Process = $"Загружается фото {file.Name} (размер: {file.Size})....";
-                    StateHasChanged();
-
-                    try
-                    {
-                        Thread.Sleep(1500);
-                        using (MemoryStream input = new MemoryStream(3500000))
-                        {
-                            await file.OpenReadStream(25000000).CopyToAsync(input);
-                            input.Position = 0;
-
-                            await File.WriteAllBytesAsync($"c:\\!!!\\!Photos\\test_{c.ToString()}.jpg", input.ToArray());
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                    }
-
-                    c++;
-                }
-            }
-
-            Process = "Фото загружено!";
-            StateHasChanged();
-        }
-
-        async void OnPhotoComplete(UploadCompleteEventArgs args)
-        {
-        }
-
-        void OnProgressPhoto(UploadProgressArgs args)
-        {
-            if (args.Progress == 100)
-            {
-                foreach (var file in args.Files)
-                {
-                }
-            }
-        }
-
-
+        string fileName;
+        long? fileSize;
+        string Photo;
 
         private void OnChange()
         {
@@ -113,6 +71,25 @@ namespace UI.Components.Pages
             address = savedAddress;
             aboutMe = savedAboutMe;
             selectedHobbies = savedHobbies;
+        }
+
+        async void OnChange(string value, string name)
+        {
+            fileName = "file";
+
+            using (MemoryStream input = new MemoryStream(3500000))
+            {
+                var test = Convert.FromBase64String(value);
+
+                using (MemoryStream output = new MemoryStream(500000))
+                {
+                    await File.WriteAllBytesAsync($"c:\\testjpg", test);
+                }
+            }
+        }
+
+        void OnError(UploadErrorEventArgs args, string name)
+        {
         }
 
         private async Task CanChange(StepsCanChangeEventArgs args)

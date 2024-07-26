@@ -3,7 +3,7 @@
 @page "/register"
 <PageTitle>Регистрация</PageTitle>
 
-<RadzenCard Variant="Variant.Filled" Class="rz-my-12 rz-mx-auto" Style="max-width: 750px">
+<RadzenCard Variant="Variant.Filled" Class="rz-my-6 rz-mx-auto" Style="max-width: 750px">
 
     <RadzenText TextAlign="TextAlign.Center" TextStyle="TextStyle.H6">Регистрация</RadzenText>
 
@@ -18,37 +18,39 @@
                     <RadzenText TextStyle="TextStyle.Subtitle2"><b>Адрес электронной почты</b></RadzenText>
                     <RadzenTextBox @bind-Value=@RegisterModel.Email MaxLength="75" Style="width: 100%" />
                     <hr />
-                    
-                    <RadzenStack Orientation="Orientation.Horizontal" Gap="0" Wrap="FlexWrap.Wrap" Style="width: 100%">
-                        <RadzenStack Orientation="Orientation.Horizontal" Gap="0" Style="width: 50%">
-                            <RadzenStack Orientation="Orientation.Vertical" Gap="0" Style="width: 100%">
+
+                    <RadzenRow Gap="1rem">
+                        <RadzenColumn Size="12" SizeSM="6">
+                            <RadzenStack Orientation="Orientation.Vertical" Gap="0">
                                 <RadzenText TextStyle="TextStyle.Subtitle2"><b>Пароль</b></RadzenText>
-                                <RadzenPassword @bind-Value=@RegisterModel.Password MaxLength="35" Style="width: 99%" />
+                                <RadzenPassword @bind-Value=@RegisterModel.Password MaxLength="35" />
                             </RadzenStack>
-                        </RadzenStack>
-                        <RadzenStack Orientation="Orientation.Horizontal" Gap="0" Style="width: 50%">
-                            <RadzenStack Orientation="Orientation.Vertical" Gap="0" Style="width: 100%">
+                        </RadzenColumn>
+                        <RadzenColumn Size="12" SizeSM="6">
+                            <RadzenStack Orientation="Orientation.Vertical" Gap="0">
                                 <RadzenText TextStyle="TextStyle.Subtitle2"><b>Повтор пароля</b></RadzenText>
-                                <RadzenPassword @bind-Value=@RegisterModel.Password2 MaxLength="35" Style="width: 99%" />
+                                <RadzenPassword @bind-Value=@RegisterModel.Password2 MaxLength="35" />
                             </RadzenStack>
-                        </RadzenStack>
-                    </RadzenStack>
+                        </RadzenColumn>
+                    </RadzenRow>
+
                     <hr />
 
-                    <RadzenStack Orientation="Orientation.Horizontal" Gap="0" Wrap="FlexWrap.Wrap" Style="width: 100%">
-                        <RadzenStack Orientation="Orientation.Horizontal" Gap="0" Style="width: 50%">
-                            <RadzenStack Orientation="Orientation.Vertical" Gap="0" Style="width: 100%">
+                    <RadzenRow Gap="1rem">
+                        <RadzenColumn Size="12" SizeSM="6">
+                            <RadzenStack Orientation="Orientation.Vertical" Gap="0">
                                 <RadzenText TextStyle="TextStyle.Subtitle2"><b>Страна</b></RadzenText>
-                                <RadzenDropDown @bind-Value=@countryId Data=@countries ValueProperty="@nameof(CountriesViewDto.Id)" TextProperty="@nameof(CountriesViewDto.Name)" Style="width: 99%" Name="DropDownCountries" />
+                                <RadzenDropDown @bind-Value=@countryId Data=@countries ValueProperty="@nameof(CountriesViewDto.Id)" TextProperty="@nameof(CountriesViewDto.Name)" Name="DropDownCountries" />
                             </RadzenStack>
-                        </RadzenStack>
-                        <RadzenStack Orientation="Orientation.Horizontal" Gap="0" Style="width: 50%">
-                            <RadzenStack Orientation="Orientation.Vertical" Gap="0" Style="width: 100%">
+                        </RadzenColumn>
+                        <RadzenColumn Size="12" SizeSM="6">
+                            <RadzenStack Orientation="Orientation.Vertical" Gap="0">
                                 <RadzenText TextStyle="TextStyle.Subtitle2"><b>Город</b></RadzenText>
-                                <RadzenDropDown @bind-Value=@regionId Data=@regions ValueProperty="@nameof(RegionsDto.Id)" TextProperty="@nameof(RegionsDto.Name)" Style="width: 99%" Name="DropDownRegions" />
+                                <RadzenDropDown @bind-Value=@regionId Data=@regions ValueProperty="@nameof(RegionsDto.Id)" TextProperty="@nameof(RegionsDto.Name)" Name="DropDownRegions" />
                             </RadzenStack>
-                        </RadzenStack>
-                    </RadzenStack>
+                        </RadzenColumn>
+                    </RadzenRow>
+
                 </RadzenStack>
             </RadzenStepsItem>
 

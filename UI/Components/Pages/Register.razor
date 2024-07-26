@@ -3,14 +3,14 @@
 @page "/register"
 <PageTitle>Регистрация</PageTitle>
 
-<RadzenCard Variant="Variant.Filled" Class="rz-my-12 rz-mx-auto" Style="max-width: 500px">
+<RadzenCard Variant="Variant.Filled" Class="rz-my-12 rz-mx-auto" Style="max-width: 750px">
 
     <RadzenText TextAlign="TextAlign.Center" TextStyle="TextStyle.H6">Регистрация</RadzenText>
 
-    <RadzenSteps Change="@OnChange" CanChange="@CanChange" NextText="Далее" NextTitle="К следующему шагу" PreviousText="Назад" PreviousTitle="К предыдущему шагу">
+    <RadzenSteps NextText="Далее" NextTitle="К следующему шагу" PreviousText="Назад" PreviousTitle="К предыдущему шагу">
         <Steps>
             @* Шаг первый - общее *@
-            <RadzenStepsItem>
+            <RadzenStepsItem Text="Общее">
                 <RadzenStack Orientation="Orientation.Vertical" Gap="0">
                     <RadzenText TextStyle="TextStyle.Subtitle2"><b>Имя Вашей учётной записи</b></RadzenText>
                     <RadzenTextBox @bind-Value=@RegisterModel.Name MaxLength="40" Style="width: 100%" />
@@ -53,7 +53,7 @@
             </RadzenStepsItem>
 
             @* Шаг второй - аватар *@
-            <RadzenStepsItem>
+            <RadzenStepsItem Text="Аватар">
                 <RadzenStack AlignItems="AlignItems.Center">
                     <RadzenCard Style="width: 100%; max-width: 600px;">
                         <RadzenText TextStyle="TextStyle.H6" TextAlign="TextAlign.Center"><strong>@RegisterModel.Name</strong></RadzenText>
@@ -69,36 +69,177 @@
                 </RadzenStack>
             </RadzenStepsItem>
 
-
             @* Шаг третий - партнёры *@
-            <RadzenStepsItem>
-                <RadzenStack Orientation="Orientation.Vertical" Gap="0">
+            <RadzenStepsItem Text="Партнёры">
+                <RadzenDataGrid @ref="usersGrid" AllowAlternatingRows="false" AllowFiltering="false" AllowPaging="false" AllowSorting="false" EditMode="DataGridEditMode.Single"
+                                Data="@RegisterModel.Users" TItem="UsersDto" EmptyText="Добавьте от 1 до 4 партнёров..."
+                                RowUpdate="@OnUpdateRow" RowCreate="@OnCreateRow" ColumnWidth="100px">
+                    <HeaderTemplate>
+                        <RadzenButton ButtonStyle="ButtonStyle.Success" Icon="add_circle" Text="Добавить" Click="@InsertRow" Disabled="@(usersToInsert.Count() > 0)" />
+                    </HeaderTemplate>
+                    <Columns>
+                        <RadzenDataGridColumn Property="@nameof(UsersDto.Name)" Title="Имя">
+                            <EditTemplate Context="user">
+                                <RadzenTextBox @bind-Value="user.Name" Style="display:block; width:100%" Name="Name" aria-label="Введите имя" />
+                                <RadzenRequiredValidator Text="Введите имя" Component="Name" Popup="true" />
+                            </EditTemplate>
+                        </RadzenDataGridColumn>
 
-                    @foreach(var user in RegisterModel.Users)
-                    {
-                        <RadzenStack Orientation="Orientation.Horizontal" Gap="0">
-                            <RadzenStack Orientation="Orientation.Vertical" Style="width: 99%" Gap="0">
-                                <RadzenText TextStyle="TextStyle.Subtitle2"><b>Имя партнёра</b></RadzenText>
-                                <RadzenTextBox @bind-Value=user.Name MaxLength="35" />
-                            </RadzenStack>
-                            <RadzenStack Orientation="Orientation.Vertical" JustifyContent="JustifyContent.Center" class="rz-ml-2" Gap="0">
-                                <RadzenButton Text="-" ButtonStyle="ButtonStyle.Danger" Click="() => DeleteUser(user)" />
-                            </RadzenStack>
-                        </RadzenStack>
-                        <hr />
-                    }
-                    <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.SpaceAround" Gap="0">
-                        <RadzenButton Text="+" Style="width: 20%" ButtonStyle="ButtonStyle.Success" Click="AddUser" />
-                    </RadzenStack>
-                </RadzenStack>
+                        <RadzenDataGridColumn Property="@nameof(UsersDto.BirthDate)" Title="Дата рождения">
+                            <Template Context="user">
+                                @String.Format("{0:d}", user.BirthDate)
+                            </Template>
+                            <EditTemplate Context="user">
+                                <RadzenDatePicker InitialViewDate="DateTime.Now.AddYears(-20)" Min="DateTime.Now.AddYears(-65)" Max="DateTime.Now.AddYears(-20)" @bind-Value="user.BirthDate" Style="display:block; width:100%" Name="BirthDate" aria-label="Укажите дату рождения" />
+                                <RadzenRequiredValidator Text="Укажите дату рождения" Component="BirthDate" Popup="true" />
+                            </EditTemplate>
+                        </RadzenDataGridColumn>
 
+                        <RadzenDataGridColumn Property="@nameof(UsersDto.Height)" Title="Рост" Width="40px">
+                            <EditTemplate Context="user">
+                                <RadzenNumeric @bind-Value="user.Height" Style="display:block; width:100%" Name="Height" aria-label="Укажите рост" />
+                                <RadzenRequiredValidator Text="Рост" Component="Height" Popup="true" />
+                            </EditTemplate>
+                        </RadzenDataGridColumn>
+
+                        <RadzenDataGridColumn Property="@nameof(UsersDto.Weight)" Title="Вес" Width="40px">
+                            <EditTemplate Context="user">
+                                <RadzenNumeric @bind-Value="user.Weight" Style="display:block; width:100%" Name="Weight" aria-label="Укажите вес" />
+                                <RadzenRequiredValidator Text="Вес" Component="Weight" Popup="true" />
+                            </EditTemplate>
+                        </RadzenDataGridColumn>
+
+                        <RadzenDataGridColumn Context="order" Width="70px" Filterable="false" Sortable="false" TextAlign="TextAlign.Right" Frozen="true" FrozenPosition="FrozenColumnPosition.Right">
+                            <Template Context="order">
+                                <RadzenButton Icon="edit" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@(args => EditRow(order))" @onclick:stopPropagation="true" />
+                                <RadzenButton ButtonStyle="ButtonStyle.Danger" Icon="delete" Variant="Variant.Flat" Shade="Shade.Lighter" Size="ButtonSize.Medium" class="rz-my-1 rz-ms-1" Click="@(args => DeleteRow(order))" @onclick:stopPropagation="true" />
+                            </Template>
+                            <EditTemplate Context="order">
+                                <RadzenButton Icon="check" ButtonStyle="ButtonStyle.Success" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@((args) => SaveRow(order))" aria-label="Save" />
+                                @* <RadzenButton Icon="close" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium" class="rz-my-1 rz-ms-1" Click="@((args) => CancelEdit(order))" aria-label="Cancel" /> *@
+                                <RadzenButton ButtonStyle="ButtonStyle.Danger" Icon="delete" Variant="Variant.Flat" Shade="Shade.Lighter" Size="ButtonSize.Medium" class="rz-my-1 rz-ms-1" Click="@(args => DeleteRow(order))" aria-label="Delete" />
+                            </EditTemplate>
+                        </RadzenDataGridColumn>
+                    </Columns>
+                </RadzenDataGrid>
+            </RadzenStepsItem>
+
+            @* Шаг четвёртый - Финиш *@
+            <RadzenStepsItem Text="Финиш">
                 <hr />
                 <RadzenStack Orientation="Orientation.Vertical" Gap="0">
                     <RadzenButton Text="Зарегистрироваться" />
                 </RadzenStack>
             </RadzenStepsItem>
 
+
         </Steps>
     </RadzenSteps>
 
 </RadzenCard>
+
+@code {
+    // ШАГ 1
+    int countryId
+    {
+        get { return RegisterModel.Country.Id; }
+        set
+        {
+            RegisterModel.Country.Id = value;
+            regions = countries?
+                .Where(x => x.Id == countryId).FirstOrDefault()?
+                .Regions?.Select(s => s).ToList();
+        }
+    }
+
+    int regionId
+    {
+        get { return RegisterModel.Country.Region.Id; }
+        set { RegisterModel.Country.Region.Id = value; }
+    }
+
+
+    // ШАГ 2
+    string? fileName;
+    long? fileSize;
+    string? photo;
+
+    void OnChange(string value, string name)
+    {
+        fileName = "Ваш аватар";
+        fileSize = null;
+
+        //value = Regex.Replace(value, @"^data:image\/[a-zA-Z]+;base64,", string.Empty);
+        //var base64 = Convert.FromBase64String(value);
+        //using (MemoryStream output = new MemoryStream(500000))
+        //    await File.WriteAllBytesAsync($"c:\\test.jpg", base64);
+    }
+
+    void OnError(UploadErrorEventArgs args, string name) { }
+
+
+    // ШАГ 3
+    RadzenDataGrid<UsersDto> usersGrid = null!;
+
+    List<UsersDto> usersToInsert = new List<UsersDto>();
+    List<UsersDto> usersToUpdate = new List<UsersDto>();
+
+    void Reset()
+    {
+        usersToInsert.Clear();
+        usersToUpdate.Clear();
+    }
+
+    void Reset(UsersDto user)
+    {
+        usersToInsert.Remove(user);
+        usersToUpdate.Remove(user);
+    }
+
+    async Task EditRow(UsersDto user)
+    {
+        Reset();
+        usersToUpdate.Add(user);
+        await usersGrid.EditRow(user);
+    }
+
+    void OnUpdateRow(UsersDto user) => Reset(user);
+
+    async Task SaveRow(UsersDto user) => await usersGrid.UpdateRow(user);
+
+    void CancelEdit(UsersDto user)
+    {
+        Reset(user);
+        usersGrid.CancelEditRow(user);
+    }
+
+    async Task DeleteRow(UsersDto user)
+    {
+        Reset(user);
+
+        if (RegisterModel.Users.Contains(user))
+        {
+            RegisterModel.Users.Remove(user);
+            await usersGrid.Reload();
+        }
+        else
+        {
+            usersGrid.CancelEditRow(user);
+            await usersGrid.Reload();
+        }
+    }
+
+    async Task InsertRow()
+    {
+        Reset();
+        var user = new UsersDto();
+        usersToInsert.Add(user);
+        await usersGrid.InsertRow(user);
+    }
+
+    void OnCreateRow(UsersDto user)
+    {
+        RegisterModel.Users.Add(user);
+        usersToInsert.Remove(user);
+    }
+}

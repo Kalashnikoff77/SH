@@ -9,7 +9,7 @@
 
     <RadzenSteps Change="@OnChange" CanChange="@CanChange" NextText="Далее" NextTitle="К следующему шагу" PreviousText="Назад" PreviousTitle="К предыдущему шагу">
         <Steps>
-            @* Шаг первый *@
+            @* Шаг первый - общее *@
             <RadzenStepsItem>
                 <RadzenStack Orientation="Orientation.Vertical" Gap="0">
                     <RadzenText TextStyle="TextStyle.Subtitle2"><b>Имя Вашей учётной записи</b></RadzenText>
@@ -52,44 +52,52 @@
                 </RadzenStack>
             </RadzenStepsItem>
 
-            @* Шаг второй *@
+            @* Шаг второй - аватар *@
             <RadzenStepsItem>
-
                 <RadzenStack AlignItems="AlignItems.Center">
-                    <RadzenCard Class="rz-m-0 rz-m-md-12" Style="width: 100%; max-width: 600px;">
-                        <RadzenText TextStyle="TextStyle.H4">Employee: <strong>Участник</strong></RadzenText>
+                    <RadzenCard Style="width: 100%; max-width: 600px;">
+                        <RadzenText TextStyle="TextStyle.H6" TextAlign="TextAlign.Center"><strong>@RegisterModel.Name</strong></RadzenText>
                         <RadzenFileInput
-                            @bind-Value=@Photo
+                            @bind-Value=@RegisterModel.Photo
                             @bind-FileName=@fileName 
                             @bind-FileSize=@fileSize
-                            TValue="string" Style="width: 100%"
+                            TValue="string"
+                            Style="width: 100%; text-align: center"
+                            ChooseText="Выберите фото для аватара"
                             Change=@(args => OnChange(args, "FileInput")) Error=@(args => OnError(args, "FileInput")) InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "select file" }})" />
                     </RadzenCard>
                 </RadzenStack>
-
             </RadzenStepsItem>
 
 
+            @* Шаг третий - партнёры *@
             <RadzenStepsItem>
-                <RadzenRow>
-                    <RadzenText Text="Add your hobbies" />
-                </RadzenRow>
-                <RadzenDataGrid TItem="Hobby"
-                                Data="@hobbies"
-                                @bind-Value="@selectedHobbies"
-                                SelectionMode="DataGridSelectionMode.Multiple"
-                                AllowRowSelectOnRowClick="true">
-                    <Columns>
-                        <RadzenDataGridColumn Context="hobby">
-                            <Template>
-                                <RadzenCheckBox Value="selectedHobbies.Contains(hobby)" TValue="bool" />
-                            </Template>
-                        </RadzenDataGridColumn>
-                        <RadzenDataGridColumn Title="Hobby" Property="@nameof(Hobby.HobbyName)" />
-                    </Columns>
-                </RadzenDataGrid>
-                <RadzenButton Text="Save" Click="@SaveHobbies" />
+                <RadzenStack Orientation="Orientation.Vertical" Gap="0">
+
+                    @foreach(var user in RegisterModel.Users)
+                    {
+                        <RadzenStack Orientation="Orientation.Horizontal" Gap="0">
+                            <RadzenStack Orientation="Orientation.Vertical" Style="width: 99%" Gap="0">
+                                <RadzenText TextStyle="TextStyle.Subtitle2"><b>Имя партнёра</b></RadzenText>
+                                <RadzenTextBox @bind-Value=user.Name MaxLength="35" />
+                            </RadzenStack>
+                            <RadzenStack Orientation="Orientation.Vertical" JustifyContent="JustifyContent.Center" class="rz-ml-2" Gap="0">
+                                <RadzenButton Text="-" ButtonStyle="ButtonStyle.Danger" Click="() => DeleteUser(user)" />
+                            </RadzenStack>
+                        </RadzenStack>
+                        <hr />
+                    }
+                    <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.SpaceAround" Gap="0">
+                        <RadzenButton Text="+" Style="width: 20%" ButtonStyle="ButtonStyle.Success" Click="AddUser" />
+                    </RadzenStack>
+                </RadzenStack>
+
+                <hr />
+                <RadzenStack Orientation="Orientation.Vertical" Gap="0">
+                    <RadzenButton Text="Зарегистрироваться" />
+                </RadzenStack>
             </RadzenStepsItem>
+
         </Steps>
     </RadzenSteps>
 

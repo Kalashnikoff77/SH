@@ -1,20 +1,12 @@
-﻿using Radzen.Blazor;
-using Radzen;
-using Common.Models;
-using Common.Dto;
+﻿using Common.Dto;
 using Common.Dto.Requests;
 using Common.Dto.Responses;
 using Common.Dto.Views;
+using Common.Models;
 using Common.Repository;
 using Microsoft.AspNetCore.Components;
-using System;
-using Microsoft.AspNetCore.SignalR.Protocol;
-using Common.Enums;
-using Common;
-using PhotoSauce.MagicScaler;
-using static System.Runtime.InteropServices.JavaScript.JSType;
-using System.Text;
-using static System.Net.Mime.MediaTypeNames;
+using Radzen;
+using Radzen.Blazor;
 
 namespace UI.Components.Pages
 {
@@ -30,6 +22,15 @@ namespace UI.Components.Pages
         {
             var apiResponse = await _repoGet.HttpPostAsync(new GetCountriesModel());
             countries.AddRange(apiResponse.Response.Countries);
+
+            RegisterModel.Users.Add(new UsersDto()
+            {
+                Name = "Имя партнёра",
+                BirthDate = DateTime.Parse("01.01.1979"),
+                Gender = 0,
+                Weight = 90,
+                Height = 185
+            });
         }
 
         int countryId {
@@ -56,36 +57,47 @@ namespace UI.Components.Pages
         private string aboutMe;
         private string savedAboutMe;
 
-        private List<Hobby> hobbies = new List<Hobby>() { new("Games"), new("Sport"), new("Movies"), new("Books"), new("Music") };
-        private IList<Hobby> selectedHobbies = new List<Hobby>();
-        private List<Hobby> savedHobbies = new List<Hobby>();
 
-
-        string fileName;
+        string? fileName;
         long? fileSize;
-        string Photo;
+        string? photo;
+
+        void AddUser()
+        {
+            if (RegisterModel.Users.Count < 4)
+                RegisterModel.Users.Add(new UsersDto()
+                {
+                    Name = "Новый партнёр",
+                    BirthDate = DateTime.Parse("01.01.1979"),
+                    Gender = 0,
+                    Weight = 90,
+                    Height = 185
+                });
+        }
+
+        void DeleteUser(UsersDto user)
+        {
+            RegisterModel.Users.Remove(user);
+        }
+
+
 
         private void OnChange()
         {
             name = savedName;
             address = savedAddress;
             aboutMe = savedAboutMe;
-            selectedHobbies = savedHobbies;
         }
 
         async void OnChange(string value, string name)
         {
-            fileName = "file";
+            fileName = "Ваш аватар";
+            fileSize = null;
 
-            using (MemoryStream input = new MemoryStream(3500000))
-            {
-                var test = Convert.FromBase64String(value);
-
-                using (MemoryStream output = new MemoryStream(500000))
-                {
-                    await File.WriteAllBytesAsync($"c:\\testjpg", test);
-                }
-            }
+            //value = Regex.Replace(value, @"^data:image\/[a-zA-Z]+;base64,", string.Empty);
+            //var base64 = Convert.FromBase64String(value);
+            //using (MemoryStream output = new MemoryStream(500000))
+            //    await File.WriteAllBytesAsync($"c:\\test.jpg", base64);
         }
 
         void OnError(UploadErrorEventArgs args, string name)
@@ -100,11 +112,6 @@ namespace UI.Components.Pages
             }
 
             if (args.SelectedIndex == 1 && savedAboutMe == aboutMe)
-            {
-                return;
-            }
-
-            if (args.SelectedIndex == 2 && savedHobbies.SequenceEqual(selectedHobbies))
             {
                 return;
             }
@@ -126,42 +133,5 @@ namespace UI.Components.Pages
                 args.PreventDefault();
             }
         }
-
-        private void SaveNameAndAdress()
-        {
-            savedName = name;
-            savedAddress = address;
-        }
-
-        private void SaveAboutMe()
-        {
-            savedAboutMe = aboutMe;
-        }
-
-        private void SaveHobbies()
-        {
-            savedHobbies = selectedHobbies.ToList();
-        }
-
-        private class Hobby
-        {
-            public Hobby(string hobbyName)
-            {
-                HobbyName = hobbyName;
-            }
-
-            public string HobbyName { get; set; }
-
-            public override bool Equals(object obj)
-            {
-                return obj is Hobby hobby && hobby.HobbyName == HobbyName;
-            }
-
-            public override int GetHashCode()
-            {
-                return HobbyName.GetHashCode();
-            }
-        }
-
     }
 }

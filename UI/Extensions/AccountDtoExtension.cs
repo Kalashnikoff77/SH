@@ -1,4 +1,5 @@
 ﻿using Common;
+using Common.Dto;
 using Common.Dto.Views;
 using Common.Enums;
 using System.Text;
@@ -12,7 +13,7 @@ namespace UI.Extensions
         /// </summary>
         /// <param name="finish">HTML, добавляемый в конец строки</param>
         /// <returns>"М45 Ж46"</returns>
-        public static string ToGendersString(this AccountsViewDto account, string? finish = null)
+        public static string ToGendersAgesString(this AccountsViewDto account, string? finish = null)
         {
             StringBuilder? genders = new StringBuilder(20);
 
@@ -20,17 +21,31 @@ namespace UI.Extensions
             {
                 genders.Append(account.Users
                     .OrderBy(o => o.Gender)
-                    .Select(s =>
-                    {
-                        var age = DateTime.Today.Year - s.BirthDate.Year;
-                        if (s.BirthDate.Date > DateTime.Today.AddYears(-age)) age--;
-                        return $"{StaticData.Genders[s.Gender].ShortName}{age}";
-                    })
+                    .Select(s => s.ToGenderAgeString())
                     .Aggregate((a, b) => a + " " + b));
                 genders.Append(finish);
             }
 
             return genders.ToString();
+        }
+
+        /// <summary>
+        /// Вывод одного пользователя: пол + возраст (М45)
+        /// </summary>
+        /// <param name="finish">HTML, добавляемый в конец строки</param>
+        /// <returns>"М45"</returns>
+        public static string? ToGenderAgeString(this UsersDto user, string? finish = null)
+        {
+            if (user != null)
+            {
+                    var age = DateTime.Today.Year - user.BirthDate.Year;
+                    if (user.BirthDate.Date > DateTime.Today.AddYears(-age)) age--;
+                    return $"{StaticData.Genders[user.Gender].ShortName}{age}";
+            }
+            else
+            {
+                return null;
+            }
         }
 
 

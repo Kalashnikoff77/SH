@@ -7,6 +7,7 @@ using Common.Repository;
 using Microsoft.AspNetCore.Components;
 using Radzen;
 using Radzen.Blazor;
+using UI.Components.Shared;
 
 namespace UI.Components.Pages
 {
@@ -26,18 +27,14 @@ namespace UI.Components.Pages
 
 
         // ШАГ 2
-        async Task OpenUserForm(int? userId)
+        async Task OpenEditUserForm(int? userId)
         {
-            var newUser = await DialogService.OpenAsync<UserForm>($"Новый партнёр для {RegisterModel.Name}",
+            var newUser = await DialogService.OpenAsync<EditUserForm>($"Новый партнёр для {RegisterModel.Name}",
                   new Dictionary<string, object?>() { { "User", null } },
                   new DialogOptions() { Width = "500px", Height = "450px" });
+
             RegisterModel.Users.Add(newUser);
-        }
-
-
-        void OnUserAdded(UsersDto user)
-        {
-            RegisterModel.Users.Add(user);
+            await usersGrid.InsertRow(newUser);
         }
 
 

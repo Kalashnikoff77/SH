@@ -1,6 +1,5 @@
-﻿@page "/userform"
+﻿@page "/edituserform"
 
-@using System.Text.Json
 @inject Radzen.DialogService dialogService
 
 <RadzenStack Gap="1rem" Orientation="Orientation.Vertical" JustifyContent="JustifyContent.SpaceBetween" Style="height: 100%;">
@@ -9,18 +8,3 @@
 
     <RadzenButton ButtonStyle="ButtonStyle.Success" Icon="add_circle" Text="Добавить" Click=@(() => ApplyUser()) />
 </RadzenStack>
-
-
-@code {
-    [Parameter] public UsersDto User { get; set; } = new UsersDto();
-
-    void ApplyUser()
-    {
-        var user = new UsersDto
-        {
-            Id = 111333,
-            Name = "Test111333"
-        };
-        dialogService.Close(user);
-    }
-}

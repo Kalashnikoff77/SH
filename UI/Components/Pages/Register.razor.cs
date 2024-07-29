@@ -25,6 +25,22 @@ namespace UI.Components.Pages
         }
 
 
+        // ШАГ 2
+        async Task OpenUserForm(int? userId)
+        {
+            var newUser = await DialogService.OpenAsync<UserForm>($"Новый партнёр для {RegisterModel.Name}",
+                  new Dictionary<string, object?>() { { "User", null } },
+                  new DialogOptions() { Width = "500px", Height = "450px" });
+            RegisterModel.Users.Add(newUser);
+        }
+
+
+        void OnUserAdded(UsersDto user)
+        {
+            RegisterModel.Users.Add(user);
+        }
+
+
         private void OnChange()
         {
         }

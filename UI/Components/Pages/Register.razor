@@ -77,7 +77,9 @@
                                 Data="@RegisterModel.Users" TItem="UsersDto" EmptyText="Добавьте от 1 до 4 партнёров..."
                                 RowUpdate="@OnUpdateRow" RowCreate="@OnCreateRow" ColumnWidth="100px">
                     <HeaderTemplate>
-                        <RadzenButton ButtonStyle="ButtonStyle.Success" Icon="add_circle" Text="Добавить" Click="@InsertRow" Disabled="@(usersToInsert.Count() > 0)" />
+                        <RadzenStack Style="width:100%" JustifyContent="JustifyContent.Right">
+                            <RadzenButton ButtonStyle="ButtonStyle.Success" Icon="add_circle" Click=@(() => OpenUserForm(null)) />
+                        </RadzenStack>
                     </HeaderTemplate>
                     <Columns>
                         <RadzenDataGridColumn Property="@nameof(UsersDto.Name)" Title="Имя">
@@ -133,7 +135,6 @@
                     <RadzenButton Text="Зарегистрироваться" />
                 </RadzenStack>
             </RadzenStepsItem>
-
 
         </Steps>
     </RadzenSteps>

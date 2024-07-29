@@ -13,7 +13,7 @@ namespace UI.Components.Shared
                 User = new UsersDto();
         }
 
-        void ApplyUser() =>
+        void OnSubmit(UsersDto User) =>
             dialogService.Close(User);
     }
 }

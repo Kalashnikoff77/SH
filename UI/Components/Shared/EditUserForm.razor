@@ -1,10 +1,53 @@
-﻿@page "/edituserform"
+﻿@inject Radzen.DialogService dialogService
 
-@inject Radzen.DialogService dialogService
+<RadzenTemplateForm TItem="UsersDto" Data=@User Submit=@OnSubmit>
 
-<RadzenStack Gap="1rem" Orientation="Orientation.Vertical" JustifyContent="JustifyContent.SpaceBetween" Style="height: 100%;">
-    <RadzenText TextStyle="TextStyle.Subtitle2"><b>Имя партнёра</b></RadzenText>
-    <RadzenTextBox @bind-Value=@User.Name MaxLength="35" Style="width: 100%" />
+    <RadzenStack Gap="1rem" Orientation="Orientation.Vertical">
+        <RadzenStack Gap="0" Orientation="Orientation.Vertical">
+            <RadzenText TextStyle="TextStyle.Subtitle2"><b>Имя партнёра</b></RadzenText>
+            <RadzenTextBox Name="Name" @bind-Value=@User.Name MaxLength="35" Style="width: 100%" />
+            <RadzenRequiredValidator Component="Name" Text="Укажите имя партнёра" Popup=false />
+        </RadzenStack>
 
-    <RadzenButton ButtonStyle="ButtonStyle.Success" Icon="add_circle" Text="Добавить" Click=@(() => ApplyUser()) />
-</RadzenStack>
+        <RadzenRow Gap="1rem">
+            <RadzenColumn Size="12" SizeSM="6">
+                <RadzenStack Orientation="Orientation.Vertical" Gap="0">
+                    <RadzenText TextStyle="TextStyle.Subtitle2"><b>Пол</b></RadzenText>
+                    <RadzenRadioButtonList @bind-Value=@User.Gender TValue="int">
+                        <Items>
+                            <RadzenRadioButtonListItem Text="Муж." Value="0" />
+                            <RadzenRadioButtonListItem Text="Жен." Value="1" />
+                        </Items>
+                    </RadzenRadioButtonList>
+                </RadzenStack>
+            </RadzenColumn>
+            <RadzenColumn Size="12" SizeSM="6">
+                <RadzenStack Orientation="Orientation.Vertical" Gap="0">
+                    <RadzenText TextStyle="TextStyle.Subtitle2"><b>Дата рождения</b></RadzenText>
+                    <RadzenDatePicker InitialViewDate="DateTime.Now.AddYears(-20)" Min="DateTime.Now.AddYears(-65)" Max="DateTime.Now.AddYears(-20)" @bind-Value="User.BirthDate" Style="display:block; width:100%" Name="BirthDate" DateFormat="dd.MM.yyyy" />
+                    <RadzenRequiredValidator Component="BirthDate" Text="Укажите дату рождения" Popup=false />
+                </RadzenStack>
+            </RadzenColumn>
+        </RadzenRow>
+
+        <RadzenRow Gap="1rem">
+            <RadzenColumn Size="12" SizeSM="6">
+                <RadzenStack Orientation="Orientation.Vertical" Gap="0">
+                    <RadzenText TextStyle="TextStyle.Subtitle2"><b>Рост</b></RadzenText>
+                    <RadzenNumeric Name="Height" @bind-Value=@User.Height />
+                    <RadzenNumericRangeValidator Component="Height" Min="100" Max="220" Text="Укажите рост от 100 до 220 см." Popup=false />
+                </RadzenStack>
+            </RadzenColumn>
+            <RadzenColumn Size="12" SizeSM="6">
+                <RadzenStack Orientation="Orientation.Vertical" Gap="0">
+                    <RadzenText TextStyle="TextStyle.Subtitle2"><b>Вес</b></RadzenText>
+                    <RadzenNumeric Name="Weight" @bind-Value=@User.Weight />
+                    <RadzenNumericRangeValidator Component="Weight" Min="40" Max="200" Text="Укажите вес от 40 до 200 кг." Popup=false />
+                </RadzenStack>
+            </RadzenColumn>
+        </RadzenRow>
+
+        <RadzenButton ButtonType="ButtonType.Submit" ButtonStyle="ButtonStyle.Success" Icon="add_circle" Text="Добавить" />
+    </RadzenStack>
+
+</RadzenTemplateForm>

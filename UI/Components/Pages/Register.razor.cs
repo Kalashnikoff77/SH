@@ -33,8 +33,11 @@ namespace UI.Components.Pages
                   new Dictionary<string, object?>() { { "User", null } },
                   new DialogOptions() { Width = "500px", Height = "450px" });
 
-            RegisterModel.Users.Add(newUser);
-            await usersGrid.InsertRow(newUser);
+            if (newUser != null)
+            {
+                RegisterModel.Users.Add(newUser);
+                await usersGrid.InsertRow(newUser);
+            }
         }
 
 

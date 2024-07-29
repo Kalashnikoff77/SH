@@ -45,7 +45,7 @@ namespace Common
             public string Name { get; set; } = null!;
         }
 
-        public static Dictionary<short, Gender> Genders = new ()
+        public static Dictionary<int, Gender> Genders = new ()
         {
             { 0, new Gender { ShortName = "М", Name = "Муж" } },
             { 1, new Gender { ShortName = "Ж", Name = "Жен" } }

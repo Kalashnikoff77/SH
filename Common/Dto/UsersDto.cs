@@ -10,7 +10,8 @@
 
         public short Weight { get; set; }
 
-        public short Gender { get; set; }
+        // RadzenRadioButtonList работает только с int!
+        public int Gender { get; set; }
 
         public string? About { get; set; }
 

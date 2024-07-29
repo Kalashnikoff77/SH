@@ -5,9 +5,14 @@
 
 <RadzenCard Variant="Variant.Filled" Class="rz-my-6 rz-mx-auto" Style="max-width: 750px">
 
+    @if (!string.IsNullOrWhiteSpace(RegisterModel.Name))
+    {
+        <RadzenText TextAlign="TextAlign.Center" TextStyle="TextStyle.H5">@RegisterModel.Name</RadzenText>
+    }
+
     <RadzenText TextAlign="TextAlign.Center" TextStyle="TextStyle.H6">Регистрация</RadzenText>
 
-    <RadzenSteps NextText="Далее" NextTitle="К следующему шагу" PreviousText="Назад" PreviousTitle="К предыдущему шагу">
+    <RadzenSteps CanChange="CanChange" NextText="Далее" NextTitle="К следующему шагу" PreviousText="Назад" PreviousTitle="К предыдущему шагу">
         <Steps>
             @* Шаг первый - общее *@
             <RadzenStepsItem Text="Общее">
@@ -65,8 +70,8 @@
                             @bind-FileSize=@fileSize
                             TValue="string"
                             Style="width: 100%; text-align: center"
-                            ChooseText="Выберите фото для аватара"
-                            Change=@(args => OnChange(args, "FileInput")) Error=@(args => OnError(args, "FileInput")) InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "select file" }})" />
+                            ChooseText="Выберите фото для аватара (до 5 Мб)"
+                            Change=@(args => OnAvatarChange(args, "FileInput")) Error=@(args => OnError(args, "FileInput")) InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "select file" }})" />
                     </RadzenCard>
                 </RadzenStack>
             </RadzenStepsItem>
@@ -89,23 +94,19 @@
                         <RadzenDataGridColumn Context="user" Width="40px" Filterable="false" Sortable="false" TextAlign="TextAlign.Center" Frozen="true" FrozenPosition="FrozenColumnPosition.Right">
                             <Template Context="user">
                                 <RadzenButton Icon="edit" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium" @onclick:stopPropagation="true" />
-                                <RadzenButton ButtonStyle="ButtonStyle.Danger" Icon="delete" Variant="Variant.Flat" Shade="Shade.Lighter" Size="ButtonSize.Medium" class="rz-my-1 rz-ms-1" @onclick:stopPropagation="true" />
+                                <RadzenButton Click="@(args => DeleteRow(user))" ButtonStyle="ButtonStyle.Danger" Icon="delete" Variant="Variant.Flat" Shade="Shade.Lighter" Size="ButtonSize.Medium" class="rz-my-1 rz-ms-1" @onclick:stopPropagation="true" />
                             </Template>
                         </RadzenDataGridColumn>
                     </Columns>
                 </RadzenDataGrid>
 
                 <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.Right" class="rz-mt-3">
-                    <RadzenButton ButtonStyle="ButtonStyle.Success" Icon="add_circle" Text="Добавить" Click=@(() => OpenEditUserForm(null)) />
+                    <RadzenButton ButtonStyle="ButtonStyle.Secondary" Disabled="IsNewUserButtonDisabled" Size="ButtonSize.Small" Icon="add_circle" Text="Добавить" Click=@(() => OpenEditUserForm(null)) />
                 </RadzenStack>
-            </RadzenStepsItem>
 
-
-            @* Шаг четвёртый - Финиш *@
-            <RadzenStepsItem Text="Финиш">
                 <hr />
                 <RadzenStack Orientation="Orientation.Vertical" Gap="0">
-                    <RadzenButton Text="Зарегистрироваться" />
+                    <RadzenButton ButtonStyle="ButtonStyle.Success" Disabled="@IsRegisterButtonDisabled" Size="ButtonSize.Large" Text="Зарегистрироваться" />
                 </RadzenStack>
             </RadzenStepsItem>
 
@@ -113,61 +114,3 @@
     </RadzenSteps>
 
 </RadzenCard>
-
-@code {
-    // ШАГ 1
-    int countryId
-    {
-        get { return RegisterModel.Country.Id; }
-        set
-        {
-            RegisterModel.Country.Id = value;
-            regions = countries?
-                .Where(x => x.Id == countryId).FirstOrDefault()?
-                .Regions?.Select(s => s).ToList();
-        }
-    }
-
-    int regionId
-    {
-        get { return RegisterModel.Country.Region.Id; }
-        set { RegisterModel.Country.Region.Id = value; }
-    }
-
-
-    // ШАГ 2
-    string? fileName;
-    long? fileSize;
-    string? photo;
-
-    void OnChange(string value, string name)
-    {
-        fileName = "Ваш аватар";
-        fileSize = null;
-
-        //value = Regex.Replace(value, @"^data:image\/[a-zA-Z]+;base64,", string.Empty);
-        //var base64 = Convert.FromBase64String(value);
-        //using (MemoryStream output = new MemoryStream(500000))
-        //    await File.WriteAllBytesAsync($"c:\\test.jpg", base64);
-    }
-
-    void OnError(UploadErrorEventArgs args, string name) { }
-
-
-    // ШАГ 3
-    RadzenDataGrid<UsersDto> usersGrid = null!;
-
-    async Task DeleteRow(UsersDto user)
-    {
-        if (RegisterModel.Users.Contains(user))
-        {
-            RegisterModel.Users.Remove(user);
-            await usersGrid.Reload();
-        }
-        else
-        {
-            usersGrid.CancelEditRow(user);
-            await usersGrid.Reload();
-        }
-    }
-}

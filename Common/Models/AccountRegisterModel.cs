@@ -11,6 +11,13 @@ namespace Common.Models
             Email = "oleg_reg@mail.ru";
             Password = "pass2";
             Password2 = "pass2";
+            Country = new CountriesDto
+            {
+                Region = new RegionsDto
+                {
+                    Id = 1
+                }
+            };
         }
 
         public Guid Guid { get; set; }

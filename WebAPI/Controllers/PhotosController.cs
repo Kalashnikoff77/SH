@@ -97,6 +97,30 @@ namespace WebAPI.Controllers
             }
         }
 
+        [Route("UploadFile"), HttpPost]
+        public async Task<ResponseDtoBase> UploadFileAsync([FromForm(Name = "file")] IFormFile file)
+        {
+            var response = new ResponseDtoBase();
+
+            if (file == null)
+            {
+                return response;
+            }
+
+            //create unique name for file
+            var fileName = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
+
+            //set file url
+            var savePath = Path.Combine(Directory.GetCurrentDirectory(), "../UI/wwwroot/images/AccountsPhotos/temp", fileName);
+
+            using (var stream = new FileStream(savePath, FileMode.Create))
+            {
+                file.CopyTo(stream);
+            }
+
+            return response;
+        }
+
         private async Task ProcessPhotoFile(string photo, int accountId, Guid guid)
         {
             if (!string.IsNullOrWhiteSpace(photo))

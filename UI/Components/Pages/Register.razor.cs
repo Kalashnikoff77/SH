@@ -7,6 +7,7 @@ using Common.Repository;
 using Microsoft.AspNetCore.Components;
 using Radzen;
 using Radzen.Blazor;
+using System;
 using UI.Components.Shared;
 
 namespace UI.Components.Pages
@@ -28,6 +29,25 @@ namespace UI.Components.Pages
             var apiResponse = await _repoGetCountries.HttpPostAsync(new GetCountriesModel());
             countries.AddRange(apiResponse.Response.Countries);
         }
+
+        bool showProgress;
+        bool showComplete;
+        int progress;
+        bool cancelUpload;
+
+        void TrackProgress(UploadProgressArgs args)
+        {
+            showProgress = true;
+            showComplete = false;
+            progress = args.Progress;
+
+            // cancel upload
+            args.Cancel = cancelUpload;
+
+            // reset cancel flag
+            cancelUpload = false;
+        }
+
 
 
         // ШАГ 1: ОБЩЕЕ
@@ -114,7 +134,7 @@ namespace UI.Components.Pages
                 }
             }
 
-            if (args.SelectedIndex == 1)
+            if (args.SelectedIndex == 1 && args.NewIndex == 2)
             {
                 if (string.IsNullOrWhiteSpace(RegisterModel.Photo))
                 {

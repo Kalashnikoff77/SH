@@ -1,5 +1,7 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Server.Kestrel.Core;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using System.Text.Json.Serialization;
@@ -46,6 +48,21 @@ builder.Services.AddMvc(options =>
     options.Filters.Add<CustomExceptionFilter>();
 });
 
+// Максимальный размер загружаемых файлов = 35 Мб.
+builder.Services.Configure<KestrelServerOptions>(options =>
+{
+    options.Limits.MaxRequestBodySize = 35 * 1024 * 1024;
+});
+
+builder.Services.AddCors(o => o.AddPolicy("CorsPolicy", builder =>
+{
+    builder.AllowAnyOrigin()
+           .AllowAnyMethod()
+           .AllowAnyHeader()
+           .AllowCredentials()
+           .WithOrigins("https://localhost:7000");
+}));
+
 //builder.Services.AddDbContext<SwContext>(options =>
 //{
 //    options.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
@@ -57,6 +74,9 @@ app.UseHttpsRedirection();
 
 app.UseAuthentication();
 app.UseAuthorization();
+
+app.UseCors("CorsPolicy");
+
 
 app.MapControllers();
 

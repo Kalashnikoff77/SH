@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Components;
 using Radzen;
 using Radzen.Blazor;
 using System;
+using System.Text.Json;
 using UI.Components.Shared;
 
 namespace UI.Components.Pages
@@ -34,6 +35,7 @@ namespace UI.Components.Pages
         bool showComplete;
         int progress;
         bool cancelUpload;
+        string previewFileName = null!;
 
         void TrackProgress(UploadProgressArgs args)
         {
@@ -48,6 +50,12 @@ namespace UI.Components.Pages
             cancelUpload = false;
         }
 
+        void OnComplete(UploadCompleteEventArgs args)
+        {
+            var response = JsonSerializer.Deserialize<UploadTempFileResponseDto>(args.RawResponse);
+            if (response != null)
+                previewFileName = response.previewFileName;
+        }
 
 
         // ШАГ 1: ОБЩЕЕ

@@ -65,21 +65,19 @@
                     <RadzenCard Style="width: 100%; max-width: 600px;">
                         <RadzenText TextStyle="TextStyle.H6" TextAlign="TextAlign.Center"><strong>@RegisterModel.Name</strong></RadzenText>
 
-                        <RadzenUpload Url="https://localhost:7010/api/Photos/UploadFile" 
-                            Progress=@TrackProgress 
+                        @if (previewFileName != null)
+                        {
+                            <img src="/images/AccountsPhotos/temp/@(previewFileName)" width="150px" height="150px" />
+                        }
+
+                        <RadzenUpload Url="https://localhost:7010/api/Photos/UploadTempFile" 
+                            Progress=@TrackProgress
+                            Complete=@OnComplete
+                            ChooseText="Выберите фото для аватара"
                             Style="width: 100%" InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "select file" }})" />
                         
-                        <RadzenProgressBar 
-                            Value=@progress class="rz-mt-6" Visible=@showProgress />
+                        <RadzenProgressBar Value=@progress class="rz-mt-6" Visible=@showProgress />
                         
-                        <RadzenFileInput
-                            @bind-Value=@RegisterModel.Photo
-                            @bind-FileName=@fileName 
-                            @bind-FileSize=@fileSize
-                            TValue="string"
-                            Style="width: 100%; text-align: center"
-                            ChooseText="Выберите фото для аватара (до 5 Мб)"
-                            Change=@(args => OnAvatarChange(args, "FileInput")) Error=@(args => OnError(args, "FileInput")) InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "select file" }})" />
                     </RadzenCard>
                 </RadzenStack>
             </RadzenStepsItem>

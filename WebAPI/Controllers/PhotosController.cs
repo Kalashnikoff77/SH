@@ -3,6 +3,7 @@ using Common;
 using Common.Dto.Requests;
 using Common.Dto.Responses;
 using Common.Dto.Views;
+using Common.Enums;
 using Dapper;
 using DataContext.Entities;
 using DataContext.Entities.Views;
@@ -97,27 +98,27 @@ namespace WebAPI.Controllers
             }
         }
 
-        [Route("UploadFile"), HttpPost]
-        public async Task<ResponseDtoBase> UploadFileAsync([FromForm(Name = "file")] IFormFile file)
+        [Route("UploadTempFile"), HttpPost]
+        public async Task<UploadTempFileResponseDto> UploadTempFileAsync([FromForm(Name = "file")] IFormFile file)
         {
-            var response = new ResponseDtoBase();
+            var response = new UploadTempFileResponseDto();
 
             if (file == null)
-            {
-                return response;
-            }
+                throw new BadRequestException("Размер файла превышает допустимый размер в 35 Мб.");
 
-            //create unique name for file
-            var fileName = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
+            var dir = "../UI/wwwroot/images/AccountsPhotos/temp/";
+            var baseFileName = DateTime.Now.ToString("yyyyMMdd") + "_" + Guid.NewGuid().ToString();
+            response.originalFileName = baseFileName + Path.GetExtension(file.FileName);
+            response.previewFileName = baseFileName + "_" + EnumImageSize.s150x150 + ".jpg";
 
-            //set file url
-            var savePath = Path.Combine(Directory.GetCurrentDirectory(), "../UI/wwwroot/images/AccountsPhotos/temp", fileName);
-
-            using (var stream = new FileStream(savePath, FileMode.Create))
-            {
+            using (var stream = new FileStream(dir + response.originalFileName, FileMode.Create))
                 file.CopyTo(stream);
-            }
 
+            using (MemoryStream output = new MemoryStream(500000))
+            {
+                MagicImageProcessor.ProcessImage(dir + response.originalFileName, output, StaticData.Images[EnumImageSize.s150x150]);
+                await System.IO.File.WriteAllBytesAsync(dir + response.previewFileName, output.ToArray());
+            }
             return response;
         }
 

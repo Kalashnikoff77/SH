@@ -7,7 +7,6 @@ using Common.Repository;
 using Microsoft.AspNetCore.Components;
 using Radzen;
 using Radzen.Blazor;
-using System;
 using System.Text.Json;
 using UI.Components.Shared;
 
@@ -22,41 +21,11 @@ namespace UI.Components.Pages
         List<CountriesViewDto> countries { get; set; } = new List<CountriesViewDto>();
         List<RegionsDto>? regions { get; set; } = new List<RegionsDto>();
 
-        bool IsRegisterButtonDisabled = true;
-        bool IsNewUserButtonDisabled = false;
-
         protected override async Task OnInitializedAsync()
         {
             var apiResponse = await _repoGetCountries.HttpPostAsync(new GetCountriesModel());
             countries.AddRange(apiResponse.Response.Countries);
         }
-
-        bool showProgress;
-        bool showComplete;
-        int progress;
-        bool cancelUpload;
-        string previewFileName = null!;
-
-        void TrackProgress(UploadProgressArgs args)
-        {
-            showProgress = true;
-            showComplete = false;
-            progress = args.Progress;
-
-            // cancel upload
-            args.Cancel = cancelUpload;
-
-            // reset cancel flag
-            cancelUpload = false;
-        }
-
-        void OnComplete(UploadCompleteEventArgs args)
-        {
-            var response = JsonSerializer.Deserialize<UploadTempFileResponseDto>(args.RawResponse);
-            if (response != null)
-                previewFileName = response.previewFileName;
-        }
-
 
         // ШАГ 1: ОБЩЕЕ
         int countryId
@@ -79,24 +48,31 @@ namespace UI.Components.Pages
 
 
         // ШАГ 2: АВАТАР
-        string? fileName;
-        long? fileSize;
-        string? photo;
+        int progressUpload;
+        bool cancelUpload;
 
-        void OnAvatarChange(string value, string name)
+        void TrackProgress(UploadProgressArgs args)
         {
-            fileName = "Ваш аватар";
-            fileSize = null;
-
-            //value = Regex.Replace(value, @"^data:image\/[a-zA-Z]+;base64,", string.Empty);
-            //var base64 = Convert.FromBase64String(value);
-            //using (MemoryStream output = new MemoryStream(500000))
-            //    await File.WriteAllBytesAsync($"c:\\test.jpg", base64);
+            progressUpload = args.Progress;
+            args.Cancel = cancelUpload;
         }
 
-        void OnError(UploadErrorEventArgs args, string name) { }
+        void OnComplete(UploadCompleteEventArgs args)
+        {
+            var response = JsonSerializer.Deserialize<UploadTempFileResponseDto>(args.RawResponse);
+            if (response != null)
+            {
+                RegisterModel.OriginalPhoto = response.originalFileName;
+                RegisterModel.PreviewPhoto = response.previewFileName;
+            }
+            progressUpload = 0;
+        }
+
 
         // ШАГ 3: ПАРТНЁРЫ
+        bool IsRegisterButtonDisabled = true;
+        bool IsNewUserButtonDisabled = false;
+
         async Task OpenEditUserForm(int? userId)
         {
             var newUser = await DialogService.OpenAsync<EditUserForm>($"Новый партнёр для {RegisterModel.Name}",
@@ -144,7 +120,7 @@ namespace UI.Components.Pages
 
             if (args.SelectedIndex == 1 && args.NewIndex == 2)
             {
-                if (string.IsNullOrWhiteSpace(RegisterModel.Photo))
+                if (string.IsNullOrWhiteSpace(RegisterModel.PreviewPhoto))
                 {
                     args.PreventDefault();
                     return;

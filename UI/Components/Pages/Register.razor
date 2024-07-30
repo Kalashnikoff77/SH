@@ -62,21 +62,20 @@
             @* Шаг второй - аватар *@
             <RadzenStepsItem Text="Аватар">
                 <RadzenStack AlignItems="AlignItems.Center">
-                    <RadzenCard Style="width: 100%; max-width: 600px;">
-                        <RadzenText TextStyle="TextStyle.H6" TextAlign="TextAlign.Center"><strong>@RegisterModel.Name</strong></RadzenText>
+                    <RadzenCard Style="width: 100%; max-width: 600px; text-align: center">
 
-                        @if (previewFileName != null)
+                        @if (RegisterModel.PreviewPhoto != null)
                         {
-                            <img src="/images/AccountsPhotos/temp/@(previewFileName)" width="150px" height="150px" />
+                            <img src="/images/AccountsPhotos/temp/@(RegisterModel.PreviewPhoto)" style="width: 150px; height: 150px" />
                         }
 
                         <RadzenUpload Url="https://localhost:7010/api/Photos/UploadTempFile" 
                             Progress=@TrackProgress
                             Complete=@OnComplete
                             ChooseText="Выберите фото для аватара"
-                            Style="width: 100%" InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "select file" }})" />
+                            Style="width: 100%; text-align: center" InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "select file" }})" />
                         
-                        <RadzenProgressBar Value=@progress class="rz-mt-6" Visible=@showProgress />
+                        <RadzenProgressBar Value=@progressUpload class="rz-mt-6" Visible=true />
                         
                     </RadzenCard>
                 </RadzenStack>

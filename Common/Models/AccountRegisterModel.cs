@@ -29,7 +29,8 @@ namespace Common.Models
         public string Password { get; set; } = null!;
         public string Password2 { get; set; } = null!;
 
-        public string? Photo { get; set; }
+        public string? PreviewPhoto { get; set; }
+        public string? OriginalPhoto { get; set; }
 
         public bool IsConfirmed { get; set; }
 

@@ -1,6 +1,4 @@
-﻿using Common.Dto;
-
-namespace Common.JSProcessor
+﻿namespace Common.JSProcessor
 {
     public interface IJSProcessor
     {

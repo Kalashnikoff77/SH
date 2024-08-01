@@ -47,7 +47,14 @@
             </RadzenColumn>
         </RadzenRow>
 
-        <RadzenButton ButtonType="ButtonType.Submit" ButtonStyle="ButtonStyle.Secondary" Icon="add_circle" Text="Добавить" />
+        @if (User.Id == -1)
+        {
+            <RadzenButton ButtonType="ButtonType.Submit" ButtonStyle="ButtonStyle.Secondary" Icon="add_circle" Text="Добавить" />
+        }
+        else
+        {
+            <RadzenButton ButtonType="ButtonType.Submit" ButtonStyle="ButtonStyle.Secondary" Icon="edit" Text="Изменить" />
+        }
     </RadzenStack>
 
 </RadzenTemplateForm>

@@ -2,11 +2,15 @@
 using Common.Dto.Requests;
 using Common.Dto.Responses;
 using Common.Dto.Views;
+using Common.JSProcessor;
 using Common.Models;
+using Common.Models.States;
 using Common.Repository;
 using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
 using Radzen;
 using Radzen.Blazor;
+using System.Net;
 using System.Text.Json;
 using UI.Components.Shared;
 
@@ -14,8 +18,13 @@ namespace UI.Components.Pages
 {
     public partial class Register
     {
+        [CascadingParameter] CurrentState CurrentState { get; set; } = null!;
         [Inject] IRepository<GetCountriesModel, GetCountriesRequestDto, GetCountriesResponseDto> _repoGetCountries { get; set; } = null!;
         [Inject] IRepository<AccountRegisterModel, AccountRegisterRequestDto, ResponseDtoBase> _repoRegister { get; set; } = null!;
+        [Inject] IRepository<LoginModel, LoginRequestDto, LoginResponseDto> _repoLogin { get; set; } = null!;
+        [Inject] ProtectedLocalStorage _protectedLocalStore { get; set; } = null!;
+        [Inject] ProtectedSessionStorage _protectedSessionStore { get; set; } = null!;
+        [Inject] IJSProcessor _JSProcessor { get; set; } = null!;
 
         RadzenDataGrid<UsersDto> usersGrid = null!;
         AccountRegisterModel RegisterModel = new AccountRegisterModel();
@@ -86,16 +95,22 @@ namespace UI.Components.Pages
         bool IsRegisterButtonDisabled = true;
         bool IsNewUserButtonDisabled = false;
 
-        async Task OpenEditUserForm(int? userId)
+        async Task OpenEditUserForm(UsersDto? user)
         {
             var newUser = await DialogService.OpenAsync<EditUserForm>($"Новый партнёр для {RegisterModel.Name}",
-                  new Dictionary<string, object?>() { { "User", null } },
+                  new Dictionary<string, object?>() { { "User", user } },
                   new DialogOptions() { Width = "500px", Height = "450px" });
 
             if (newUser != null)
             {
+                // Если редактируем пользователя, то удалим старого и добавим как нового
+                if (user != null && RegisterModel.Users.Contains(user))
+                    RegisterModel.Users.Remove(user);
+
+                newUser.Id = 0;
                 RegisterModel.Users.Add(newUser);
                 await usersGrid.InsertRow(newUser);
+                await usersGrid.Reload();
                 IsRegisterButtonDisabled = false;
                 IsNewUserButtonDisabled = RegisterModel.Users.Count >= 4 ? true : false;
             }
@@ -104,14 +119,9 @@ namespace UI.Components.Pages
         async Task DeleteRow(UsersDto user)
         {
             if (RegisterModel.Users.Contains(user))
-            {
                 RegisterModel.Users.Remove(user);
-                await usersGrid.Reload();
-            }
-            else
-            {
-                await usersGrid.Reload();
-            }
+            await usersGrid.Reload();
+
             IsRegisterButtonDisabled = RegisterModel.Users.Count > 0 ? false : true;
             IsNewUserButtonDisabled = RegisterModel.Users.Count >= 4 ? true : false;
         }
@@ -148,10 +158,39 @@ namespace UI.Components.Pages
 
             var response = await _repoRegister.HttpPostAsync(RegisterModel);
 
-            if (response.StatusCode != System.Net.HttpStatusCode.OK)
+            if (response.StatusCode != HttpStatusCode.OK)
             {
                 RegisterModel.ErrorRegisterMessage = response.Response.ErrorMessage;
                 StateHasChanged();
+            } 
+            else
+            {
+                LoginModel loginModel = new LoginModel
+                {
+                    Email = RegisterModel.Email,
+                    Password = RegisterModel.Password,
+                    Remember = RegisterModel.RememberMe
+                };
+
+                var apiResponse = await _repoLogin.HttpPostAsync(loginModel);
+
+                if (apiResponse.StatusCode == HttpStatusCode.OK)
+                {
+                    apiResponse.Response.Account!.Token = Common.StaticData.GenerateToken(apiResponse.Response.Account.Id, apiResponse.Response.Account.Guid, _config);
+                    CurrentState.SetAccount(apiResponse.Response.Account);
+
+                    if (loginModel.Remember)
+                        await _protectedLocalStore.SetAsync(nameof(LoginModel), loginModel);
+                    else
+                        await _protectedSessionStore.SetAsync(nameof(LoginModel), loginModel);
+
+                    await _JSProcessor.Redirect("/");
+                }
+                else
+                {
+                    RegisterModel.ErrorRegisterMessage = apiResponse.Response.ErrorMessage;
+                    StateHasChanged();
+                }
             }
         }
     }

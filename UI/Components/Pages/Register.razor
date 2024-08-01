@@ -15,7 +15,8 @@
 
     <RadzenSteps CanChange="CanChange" NextText="Далее" NextTitle="К следующему шагу" PreviousText="Назад" PreviousTitle="К предыдущему шагу">
         <Steps>
-            @* Шаг первый - общее *@
+            
+            @* ШАГ 1 - ОБЩЕЕ *@
             <RadzenStepsItem Text="Общее">
                 <RadzenStack Orientation="Orientation.Vertical" Gap="0">
                     <RadzenText TextStyle="TextStyle.Subtitle2"><b>Имя Вашей учётной записи</b></RadzenText>
@@ -60,7 +61,7 @@
                 </RadzenStack>
             </RadzenStepsItem>
 
-            @* Шаг второй - аватар *@
+            @* ШАГ 2 - АВАТАР *@
             <RadzenStepsItem Text="Аватар">
                 <RadzenStack AlignItems="AlignItems.Center">
                     <RadzenCard Style="width: 100%; max-width: 600px; text-align: center">
@@ -89,7 +90,7 @@
                 </RadzenStack>
             </RadzenStepsItem>
 
-            @* Шаг третий - партнёры *@
+            @* ШАГ 3 - ПАРТНЁРЫ *@
             <RadzenStepsItem Text="Партнёры">
 
                 <RadzenDataGrid @ref="usersGrid" AllowAlternatingRows="false" AllowFiltering="false" AllowPaging="false" AllowSorting="false" EditMode="DataGridEditMode.Single"
@@ -104,9 +105,9 @@
                             </Template>
                         </RadzenDataGridColumn>
 
-                        <RadzenDataGridColumn Context="user" Width="40px" Filterable="false" Sortable="false" TextAlign="TextAlign.Center" Frozen="true" FrozenPosition="FrozenColumnPosition.Right">
+                        <RadzenDataGridColumn Context="user" Width="37px" Filterable="false" Sortable="false" TextAlign="TextAlign.Center" Frozen="true" FrozenPosition="FrozenColumnPosition.Right">
                             <Template Context="user">
-                                <RadzenButton Icon="edit" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium" @onclick:stopPropagation="true" />
+                                <RadzenButton Click=@(() => OpenEditUserForm(user)) Icon="edit" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium" @onclick:stopPropagation="true" />
                                 <RadzenButton Click="@(args => DeleteRow(user))" ButtonStyle="ButtonStyle.Danger" Icon="delete" Variant="Variant.Flat" Shade="Shade.Lighter" Size="ButtonSize.Medium" class="rz-my-1 rz-ms-1" @onclick:stopPropagation="true" />
                             </Template>
                         </RadzenDataGridColumn>
@@ -121,8 +122,12 @@
                 <RadzenStack Orientation="Orientation.Vertical" AlignItems="AlignItems.Center" Gap="0">
                     @if (!string.IsNullOrEmpty(RegisterModel.ErrorRegisterMessage))
                     {
-                        <RadzenText class="rz-color-danger rz-mb-2">@RegisterModel.ErrorRegisterMessage</RadzenText>
+                        <RadzenText TextAlign="TextAlign.Center" class="rz-color-danger rz-mb-2">@RegisterModel.ErrorRegisterMessage</RadzenText>
                     }
+                    <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" Gap="10" class="rz-my-4">
+                        <RadzenCheckBox @bind-Value="RegisterModel.RememberMe" />
+                        <RadzenLabel Text="Запомнить меня" />
+                    </RadzenStack>
                     <RadzenButton Click="RegistrationAsync" ButtonStyle="ButtonStyle.Success" Disabled="@IsRegisterButtonDisabled" Size="ButtonSize.Large" Text="Зарегистрироваться" />
                 </RadzenStack>
             </RadzenStepsItem>

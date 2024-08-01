@@ -120,7 +120,7 @@ namespace WebAPI.Extensions
             var sql = "SELECT TOP 1 Id FROM Accounts WHERE Email = @Email";
             var result = await conn.QueryFirstOrDefaultAsync<int?>(sql, new { request.Email });
             if (result != null)
-                throw new BadRequestException($"Аккаунт с email {request.Email} уже зарегистрирован!");
+                throw new BadRequestException($"Аккаунт с email {request.Email} уже зарегистрирован! Укажите другой адрес или запросите пароль на email.");
 
             sql = "SELECT TOP 1 Id FROM Accounts WHERE Name = @Name";
             result = await conn.QueryFirstOrDefaultAsync<int?>(sql, new { request.Name });

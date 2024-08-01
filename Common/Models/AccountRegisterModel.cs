@@ -37,7 +37,7 @@ namespace Common.Models
 
         public bool IsConfirmed { get; set; }
 
-        public bool Remember { get; set; }
+        public bool RememberMe { get; set; } = true;
 
 
         public List<UsersDto> Users { get; set; } = new List<UsersDto>();

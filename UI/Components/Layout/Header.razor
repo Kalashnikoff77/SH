@@ -17,16 +17,16 @@
                     <RadzenIcon Icon="mail" />
                 </RadzenButton>
 
-                <RadzenProfileMenu>
+                <RadzenProfileMenu Click="MenuClick">
                     <Template>
                         <ImageAvatar Account="@CurrentState.Account" Size="@EnumImageSize.s64x64" Class="s45" />
                     </Template>
                     <ChildContent>
-                        <RadzenProfileMenuItem Text="Menu" Path="menu" Icon="line_weight"></RadzenProfileMenuItem>
-                        <RadzenProfileMenuItem Text="FileInput" Path="fileinput" Icon="attach_file"></RadzenProfileMenuItem>
-                        <RadzenProfileMenuItem Text="Dialog" Path="dialog" Icon="perm_media"></RadzenProfileMenuItem>
-                        <RadzenProfileMenuItem Text="Notification" Path="notification" Icon="announcement"></RadzenProfileMenuItem>
-                        <RadzenProfileMenuItem Text="Выйти" Icon="logout"></RadzenProfileMenuItem>
+                        <RadzenProfileMenuItem Text="Menu" Path="menu" Icon="line_weight" />
+                        <RadzenProfileMenuItem Text="FileInput" Path="fileinput" Icon="attach_file" />
+                        <RadzenProfileMenuItem Text="Dialog" Path="dialog" Icon="perm_media" />
+                        <RadzenProfileMenuItem Text="Notification" Path="notification" Icon="announcement" />
+                        <RadzenProfileMenuItem Text="Выйти" Icon="logout" />
                     </ChildContent>
                 </RadzenProfileMenu>
             }
@@ -42,7 +42,7 @@
             <RadzenPanelMenuItem Text="Сообщения" Path="/messages" Icon="mail" />
         }
 
-        <RadzenPanelMenuItem Text="Встречи" Path="/events" Icon="group" />
+        <RadzenPanelMenuItem Text="Мероприятия" Path="/events" Icon="group" />
 
         @if (CurrentState.Account == null)
         {
@@ -62,4 +62,10 @@
         tooltipService.Open(elementReference, options?.Text, options);
 
     [CascadingParameter] CurrentState CurrentState { get; set; } = null!;
+
+    async void MenuClick(RadzenProfileMenuItem item) 
+    {
+        if (item.Icon == "logout")
+            await CurrentState.LogOutAsync();
+    }
 }

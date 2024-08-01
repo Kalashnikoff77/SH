@@ -110,7 +110,7 @@ namespace WebAPI.Extensions
                 if (user.Weight < 40 || user.Weight > 200)
                     throw new BadRequestException($"Вес у {user.Name} должен быть от 40 до 200 кг!");
 
-                if (user.Gender < 0 || user.Gender > 2)
+                if (user.Gender < 0 || user.Gender > 1)
                     throw new BadRequestException($"Укажите пол у {user.Name}!");
 
                 if (user.BirthDate.Date < DateTime.Now.AddYears(-75).Date || user.BirthDate.Date > DateTime.Now.AddYears(-20).Date)

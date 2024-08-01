@@ -55,12 +55,24 @@ namespace Common
         /// <summary>
         /// Кол-во сообщений в обсуждениях мероприятий в блоке
         /// </summary>
-        public const int EVENT_DISCUSSIONS_PER_BLOCK = 5;
+        public const short EVENT_DISCUSSIONS_PER_BLOCK = 5;
 
         /// <summary>
         /// Кол-во сообщений в чате
         /// </summary>
-        public const int MESSAGES_PER_BLOCK = 5;
+        public const short MESSAGES_PER_BLOCK = 5;
+
+
+        // Константы полей БД
+        public const short DB_ACCOUNTS_EMAIL_MIN = 5;
+        public const short DB_ACCOUNTS_EMAIL_MAX = 75;
+        public const short DB_ACCOUNTS_PASSWORD_MIN = 4;
+        public const short DB_ACCOUNTS_PASSWORD_MAX = 35;
+        public const short DB_ACCOUNTS_NAME_MIN = 3;
+        public const short DB_ACCOUNTS_NAME_MAX = 40;
+        public const short DB_USERS_NAME_MIN = 3;
+        public const short DB_USERS_NAME_MAX = 40;
+        public const short DB_USERS_ABOUT_MAX = 255;
 
 
         /// <summary>

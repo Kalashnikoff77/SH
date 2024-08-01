@@ -1,4 +1,5 @@
-﻿using Common.Dto.Requests;
+﻿using Common;
+using Common.Dto.Requests;
 using Dapper;
 using Microsoft.Data.SqlClient;
 using WebAPI.Exceptions;
@@ -69,14 +70,14 @@ namespace WebAPI.Extensions
             if (string.IsNullOrWhiteSpace(request.Email))
                 throw new BadRequestException("Укажите Ваш email!");
 
-            if (request.Email.Length < 5 || request.Email.Length > 75)
-                throw new BadRequestException("Длина email должна быть от 5 до 75 символов!");
+            if (request.Email.Length < StaticData.DB_ACCOUNTS_EMAIL_MIN || request.Email.Length > StaticData.DB_ACCOUNTS_EMAIL_MAX)
+                throw new BadRequestException($"Длина email должна быть от {StaticData.DB_ACCOUNTS_EMAIL_MIN} до {StaticData.DB_ACCOUNTS_EMAIL_MAX} символов!");
 
             if (string.IsNullOrWhiteSpace(request.Name))
                 throw new BadRequestException("Заполните имя учётной записи!");
 
-            if (request.Name.Length < 5 || request.Name.Length > 40)
-                throw new BadRequestException("Длина имени должна быть от 5 до 40 символов!");
+            if (request.Name.Length < StaticData.DB_ACCOUNTS_NAME_MIN || request.Name.Length > StaticData.DB_ACCOUNTS_NAME_MAX)
+                throw new BadRequestException($"Длина имени должна быть от {StaticData.DB_ACCOUNTS_NAME_MIN} до {StaticData.DB_ACCOUNTS_NAME_MAX} символов!");
 
             if (string.IsNullOrWhiteSpace(request.Password))
                 throw new BadRequestException("Заполните поле с паролем!");
@@ -84,8 +85,8 @@ namespace WebAPI.Extensions
             if (string.IsNullOrWhiteSpace(request.Password2))
                 throw new BadRequestException("Заполните поле с дубликатом пароля!");
 
-            if (request.Password.Length < 5 || request.Password.Length > 35)
-                throw new BadRequestException("Длина пароля должна быть от 5 до 35 символов!");
+            if (request.Password.Length < StaticData.DB_ACCOUNTS_PASSWORD_MIN || request.Password.Length > StaticData.DB_ACCOUNTS_PASSWORD_MAX)
+                throw new BadRequestException($"Длина пароля должна быть от {StaticData.DB_ACCOUNTS_PASSWORD_MIN} до {StaticData.DB_ACCOUNTS_PASSWORD_MAX} символов!");
 
             if (request.Password != request.Password2)
                 throw new BadRequestException("Пароли не совпадают!");
@@ -101,8 +102,8 @@ namespace WebAPI.Extensions
                 if (string.IsNullOrWhiteSpace(user.Name))
                     throw new BadRequestException("Не указано имя у одного из партнёров!");
 
-                if (user.Name.Length < 3 || user.Name.Length > 40)
-                    throw new BadRequestException($"Длина имени у {user.Name} должна быть от 3 до 40 символов!");
+                if (user.Name.Length < StaticData.DB_USERS_NAME_MIN || user.Name.Length > StaticData.DB_USERS_NAME_MAX)
+                    throw new BadRequestException($"Длина имени у {user.Name} должна быть от {StaticData.DB_USERS_NAME_MIN} до {StaticData.DB_USERS_NAME_MAX} символов!");
 
                 if (user.Height < 100 || user.Height > 230)
                     throw new BadRequestException($"Рост у {user.Name} должна быть от 100 до 230 см!");

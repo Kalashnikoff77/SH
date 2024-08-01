@@ -20,23 +20,23 @@
             <RadzenStepsItem Text="Общее">
                 <RadzenStack Orientation="Orientation.Vertical" Gap="0">
                     <RadzenText TextStyle="TextStyle.Subtitle2"><b>Имя Вашей учётной записи</b></RadzenText>
-                    <RadzenTextBox @bind-Value=@RegisterModel.Name MaxLength="40" Style="width: 100%" />
+                    <RadzenTextBox @bind-Value=@RegisterModel.Name MaxLength="StaticData.DB_ACCOUNTS_NAME_MAX" Style="width: 100%" />
                     <hr />
                     <RadzenText TextStyle="TextStyle.Subtitle2"><b>Адрес электронной почты</b></RadzenText>
-                    <RadzenTextBox @bind-Value=@RegisterModel.Email MaxLength="75" Style="width: 100%" />
+                    <RadzenTextBox @bind-Value=@RegisterModel.Email MaxLength="StaticData.DB_ACCOUNTS_EMAIL_MAX" Style="width: 100%" />
                     <hr />
 
                     <RadzenRow Gap="1rem">
                         <RadzenColumn Size="12" SizeSM="6">
                             <RadzenStack Orientation="Orientation.Vertical" Gap="0">
                                 <RadzenText TextStyle="TextStyle.Subtitle2"><b>Пароль</b></RadzenText>
-                                <RadzenPassword @bind-Value=@RegisterModel.Password MaxLength="35" />
+                                <RadzenPassword @bind-Value=@RegisterModel.Password MaxLength="@StaticData.DB_ACCOUNTS_PASSWORD_MAX" />
                             </RadzenStack>
                         </RadzenColumn>
                         <RadzenColumn Size="12" SizeSM="6">
                             <RadzenStack Orientation="Orientation.Vertical" Gap="0">
                                 <RadzenText TextStyle="TextStyle.Subtitle2"><b>Повтор пароля</b></RadzenText>
-                                <RadzenPassword @bind-Value=@RegisterModel.Password2 MaxLength="35" />
+                                <RadzenPassword @bind-Value=@RegisterModel.Password2 MaxLength="@StaticData.DB_ACCOUNTS_PASSWORD_MAX" />
                             </RadzenStack>
                         </RadzenColumn>
                     </RadzenRow>
@@ -68,7 +68,7 @@
 
                         @if (RegisterModel.PreviewPhoto != null)
                         {
-                            <img src="/images/AccountsPhotos/temp/@(RegisterModel.PreviewPhoto)" style="width: 150px; height: 150px" />
+                            <img src="/images/AccountsPhotos/temp/@(RegisterModel.PreviewPhoto)" style="width: 150px; height: 150px; border-radius: 5%" />
                         }
 
                         <RadzenUpload Url=@(_config.GetRequiredSection("WebAPI:Host").Value + "/Photos/UploadTemp")
@@ -76,15 +76,12 @@
                             Complete=@OnComplete
                             Error=@OnError
                             Accept=".jpg;.jpeg;.png"
-                            ChooseText="Выберите фото для аватара"
-                            Style="width: 100%; text-align: center" InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "select file" }})" />
+                            ChooseText="Выберите фото для аватара (jpg, png)"
+                            Style="width: 100%; text-align: center" class="rz-mt-2" InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "select file" }})" />
                         
-                        @if (!string.IsNullOrEmpty(RegisterModel.ErrorUploadMessage))
-                        {
-                            <RadzenText class="rz-color-danger">@RegisterModel.ErrorUploadMessage</RadzenText>
-                        }
+                        <RadzenText class="rz-color-danger" Visible="!string.IsNullOrEmpty(RegisterModel.ErrorUploadMessage)">@RegisterModel.ErrorUploadMessage</RadzenText>
 
-                        <RadzenProgressBar Value=@progressUpload class="rz-mt-6" Visible=true />
+                        <RadzenProgressBar Value=@progressUpload class="rz-mt-6" />
                         
                     </RadzenCard>
                 </RadzenStack>
@@ -115,20 +112,17 @@
                 </RadzenDataGrid>
 
                 <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.Right" class="rz-mt-3">
-                    <RadzenButton ButtonStyle="ButtonStyle.Secondary" Disabled="IsNewUserButtonDisabled" Size="ButtonSize.Small" Icon="add_circle" Text="Добавить" Click=@(() => OpenEditUserForm(null)) />
+                    <RadzenButton ButtonStyle="ButtonStyle.Secondary" Disabled="RegisterModel.Users.Count > 3" Size="ButtonSize.Small" Icon="add_circle" Text="Добавить" Click=@(() => OpenEditUserForm(null)) />
                 </RadzenStack>
 
                 <hr />
                 <RadzenStack Orientation="Orientation.Vertical" AlignItems="AlignItems.Center" Gap="0">
-                    @if (!string.IsNullOrEmpty(RegisterModel.ErrorRegisterMessage))
-                    {
-                        <RadzenText TextAlign="TextAlign.Center" class="rz-color-danger rz-mb-2">@RegisterModel.ErrorRegisterMessage</RadzenText>
-                    }
+                     <RadzenText TextAlign="TextAlign.Center" Visible="!string.IsNullOrEmpty(RegisterModel.ErrorRegisterMessage)" class="rz-color-danger rz-mb-2">@RegisterModel.ErrorRegisterMessage</RadzenText>
                     <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" Gap="10" class="rz-my-4">
                         <RadzenCheckBox @bind-Value="RegisterModel.RememberMe" />
                         <RadzenLabel Text="Запомнить меня" />
                     </RadzenStack>
-                    <RadzenButton Click="RegistrationAsync" ButtonStyle="ButtonStyle.Success" Disabled="@IsRegisterButtonDisabled" Size="ButtonSize.Large" Text="Зарегистрироваться" />
+                    <RadzenButton Click="RegistrationAsync" ButtonStyle="ButtonStyle.Success" Disabled="RegisterModel.Users.Count <= 0" Size="ButtonSize.Large" Text="Зарегистрироваться" />
                 </RadzenStack>
             </RadzenStepsItem>
 

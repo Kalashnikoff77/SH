@@ -91,9 +91,6 @@ namespace UI.Components.Pages
 
 
         #region /// ШАГ 3: ПАРТНЁРЫ ///
-        bool IsRegisterButtonDisabled = true;
-        bool IsNewUserButtonDisabled = false;
-
         async Task OpenEditUserForm(UsersDto? user)
         {
             var newUser = await DialogService.OpenAsync<EditUserForm>($"Новый партнёр для {RegisterModel.Name}",
@@ -110,8 +107,6 @@ namespace UI.Components.Pages
                 RegisterModel.Users.Add(newUser);
                 await usersGrid.InsertRow(newUser);
                 await usersGrid.Reload();
-                IsRegisterButtonDisabled = false;
-                IsNewUserButtonDisabled = RegisterModel.Users.Count >= 4 ? true : false;
             }
         }
 
@@ -120,9 +115,6 @@ namespace UI.Components.Pages
             if (RegisterModel.Users.Contains(user))
                 RegisterModel.Users.Remove(user);
             await usersGrid.Reload();
-
-            IsRegisterButtonDisabled = RegisterModel.Users.Count > 0 ? false : true;
-            IsNewUserButtonDisabled = RegisterModel.Users.Count >= 4 ? true : false;
         }
         #endregion
 

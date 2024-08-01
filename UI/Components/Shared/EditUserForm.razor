@@ -5,8 +5,8 @@
     <RadzenStack Gap="1rem" Orientation="Orientation.Vertical">
         <RadzenStack Gap="0" Orientation="Orientation.Vertical">
             <RadzenText TextStyle="TextStyle.Subtitle2"><b>Имя партнёра</b></RadzenText>
-            <RadzenTextBox Name="Name" @bind-Value=@User.Name MaxLength="40" Style="width: 100%" />
-            <RadzenLengthValidator Component="Name" Min="3" Max="40" Text="Введите от 3 до 40 символов" Popup=false />
+            <RadzenTextBox Name="Name" @bind-Value=@User.Name MaxLength="StaticData.DB_USERS_NAME_MAX" Style="width: 100%" />
+            <RadzenLengthValidator Component="Name" Min="StaticData.DB_USERS_NAME_MIN" Max="StaticData.DB_USERS_NAME_MAX" Text="Введите от 3 до 40 символов" Popup=false />
         </RadzenStack>
 
         <RadzenRow Gap="1rem">

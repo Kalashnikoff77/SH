@@ -31,6 +31,9 @@ namespace Common.Models
 
         public string PreviewPhoto { get; set; } = null!;
         public string OriginalPhoto { get; set; } = null!;
+        public string? ErrorUploadMessage { get; set; }
+
+        public string? ErrorRegisterMessage { get; set; }
 
         public bool IsConfirmed { get; set; }
 
@@ -44,10 +47,6 @@ namespace Common.Models
         public AccountsPhotosDto? Avatar { get; set; }
 
         public List<AccountsHobbiesDto>? Hobbies { get; set; }
-
-
-        public string? Error { get; set; } = null;
-        public string? ErrorPhoto { get; set; } = null;
 
         public bool AcceptTerms { get; set; } = true;
     }

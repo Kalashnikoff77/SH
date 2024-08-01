@@ -1,4 +1,5 @@
 ﻿@inject DialogService DialogService
+@inject IConfiguration _config
 
 @page "/register"
 <PageTitle>Регистрация</PageTitle>
@@ -69,12 +70,19 @@
                             <img src="/images/AccountsPhotos/temp/@(RegisterModel.PreviewPhoto)" style="width: 150px; height: 150px" />
                         }
 
-                        <RadzenUpload Url="https://localhost:7010/api/Photos/UploadTempFile" 
-                            Progress=@TrackProgress
+                        <RadzenUpload Url=@(_config.GetRequiredSection("WebAPI:Host").Value + "/Photos/UploadTemp")
+                            Progress=@OnProgress
                             Complete=@OnComplete
+                            Error=@OnError
+                            Accept=".jpg;.jpeg;.png"
                             ChooseText="Выберите фото для аватара"
                             Style="width: 100%; text-align: center" InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "select file" }})" />
                         
+                        @if (!string.IsNullOrEmpty(RegisterModel.ErrorUploadMessage))
+                        {
+                            <RadzenText class="rz-color-danger">@RegisterModel.ErrorUploadMessage</RadzenText>
+                        }
+
                         <RadzenProgressBar Value=@progressUpload class="rz-mt-6" Visible=true />
                         
                     </RadzenCard>
@@ -110,7 +118,11 @@
                 </RadzenStack>
 
                 <hr />
-                <RadzenStack Orientation="Orientation.Vertical" Gap="0">
+                <RadzenStack Orientation="Orientation.Vertical" AlignItems="AlignItems.Center" Gap="0">
+                    @if (!string.IsNullOrEmpty(RegisterModel.ErrorRegisterMessage))
+                    {
+                        <RadzenText class="rz-color-danger rz-mb-2">@RegisterModel.ErrorRegisterMessage</RadzenText>
+                    }
                     <RadzenButton Click="RegistrationAsync" ButtonStyle="ButtonStyle.Success" Disabled="@IsRegisterButtonDisabled" Size="ButtonSize.Large" Text="Зарегистрироваться" />
                 </RadzenStack>
             </RadzenStepsItem>

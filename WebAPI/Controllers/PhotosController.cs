@@ -98,13 +98,13 @@ namespace WebAPI.Controllers
             }
         }
 
-        [Route("UploadTempFile"), HttpPost]
-        public async Task<UploadTempFileResponseDto> UploadTempFileAsync([FromForm(Name = "file")] IFormFile file)
+        [Route("UploadTemp"), HttpPost]
+        public async Task<UploadTempFileResponseDto> UploadTempAsync([FromForm(Name = "file")] IFormFile file)
         {
             var response = new UploadTempFileResponseDto();
 
             if (file == null)
-                throw new BadRequestException("Размер файла превышает допустимый размер в 35 Мб.");
+                throw new BadRequestException("Размер файла не более 35 Мб.");
 
             var dir = "../UI/wwwroot/images/AccountsPhotos/temp/";
             var baseFileName = DateTime.Now.ToString("yyyyMMdd") + "_" + Guid.NewGuid().ToString();

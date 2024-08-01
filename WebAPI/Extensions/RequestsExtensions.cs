@@ -107,7 +107,7 @@ namespace WebAPI.Extensions
                 if (user.Height < 100 || user.Height > 230)
                     throw new BadRequestException($"Рост у {user.Name} должна быть от 100 до 230 см!");
 
-                if (user.Weight < 40 || user.Height > 200)
+                if (user.Weight < 40 || user.Weight > 200)
                     throw new BadRequestException($"Вес у {user.Name} должен быть от 40 до 200 кг!");
 
                 if (user.Gender < 0 || user.Gender > 2)

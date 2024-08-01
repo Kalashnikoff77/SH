@@ -22,8 +22,6 @@
 
         public bool IsConfirmed { get; set; } = false;
 
-        public string? Photo { get; set; } = null;
-
         public bool AcceptTerms { get; set; } = true;
     }
 }

@@ -28,7 +28,7 @@ namespace UI.Components.Pages
             countries.AddRange(apiResponse.Response.Countries);
         }
 
-        // ШАГ 1: ОБЩЕЕ
+        #region /// ШАГ 1: ОБЩЕЕ ///
         int countryId
         {
             get { return RegisterModel.Country.Id; }
@@ -46,14 +46,18 @@ namespace UI.Components.Pages
             get { return RegisterModel.Country.Region.Id; }
             set { RegisterModel.Country.Region.Id = value; }
         }
+        #endregion
 
 
-        // ШАГ 2: АВАТАР
+        #region /// ШАГ 2: АВАТАР ///
         int progressUpload;
         bool cancelUpload;
+        UploadErrorEventArgs errorUploadText = new UploadErrorEventArgs();
+        class ErrorUpload { public string ErrorMessage { get; set; } = null!; }
 
-        void TrackProgress(UploadProgressArgs args)
+        void OnProgress(UploadProgressArgs args)
         {
+            RegisterModel.ErrorUploadMessage = null;
             progressUpload = args.Progress;
             args.Cancel = cancelUpload;
         }
@@ -69,8 +73,16 @@ namespace UI.Components.Pages
             progressUpload = 0;
         }
 
+        void OnError(UploadErrorEventArgs args)
+        {
+            var response = JsonSerializer.Deserialize<ErrorUpload>(args.Message);
+            if (response != null)
+                RegisterModel.ErrorUploadMessage = response.ErrorMessage;
+        }
+        #endregion
 
-        // ШАГ 3: ПАРТНЁРЫ
+
+        #region /// ШАГ 3: ПАРТНЁРЫ ///
         bool IsRegisterButtonDisabled = true;
         bool IsNewUserButtonDisabled = false;
 
@@ -103,6 +115,7 @@ namespace UI.Components.Pages
             IsRegisterButtonDisabled = RegisterModel.Users.Count > 0 ? false : true;
             IsNewUserButtonDisabled = RegisterModel.Users.Count >= 4 ? true : false;
         }
+        #endregion
 
         private void CanChange(StepsCanChangeEventArgs args)
         {
@@ -131,7 +144,15 @@ namespace UI.Components.Pages
 
         private async void RegistrationAsync()
         {
-            var result = await _repoRegister.HttpPostAsync(RegisterModel);
+            RegisterModel.ErrorRegisterMessage = null;
+
+            var response = await _repoRegister.HttpPostAsync(RegisterModel);
+
+            if (response.StatusCode != System.Net.HttpStatusCode.OK)
+            {
+                RegisterModel.ErrorRegisterMessage = response.Response.ErrorMessage;
+                StateHasChanged();
+            }
         }
     }
 }

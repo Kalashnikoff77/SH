@@ -1,4 +1,5 @@
 ﻿using Common;
+using Common.Dto.Requests;
 using Dapper;
 using DataContext.Entities;
 using Microsoft.Data.SqlClient;
@@ -13,9 +14,9 @@ namespace WebAPI.Extensions
         /// </summary>
         /// <param name="accountsEntity"></param>
         /// <param name="photo"></param>
-        public static async Task ProcessPhotoAfterRegistration(this AccountsEntity accountsEntity, SqlConnection conn, string? photo)
+        public static async Task ProcessPhotoAfterRegistration(this AccountsEntity accountsEntity, SqlConnection conn, AccountRegisterRequestDto request)
         {
-            if (!string.IsNullOrWhiteSpace(photo))
+            if (!string.IsNullOrWhiteSpace(request.OriginalPhoto))
             {
                 var dir = "../UI/wwwroot/images/AccountsPhotos";
                 var guid = Guid.NewGuid();
@@ -27,7 +28,7 @@ namespace WebAPI.Extensions
 
                     using (MemoryStream output = new MemoryStream(500000))
                     {
-                        MagicImageProcessor.ProcessImage($"{dir}/temp/{photo}", output, image.Value);
+                        MagicImageProcessor.ProcessImage($"{dir}/temp/{request.OriginalPhoto}", output, image.Value);
                         await File.WriteAllBytesAsync(fileName, output.ToArray());
                     }
                 }
@@ -38,7 +39,8 @@ namespace WebAPI.Extensions
                     $"(@{nameof(AccountsPhotosEntity.Comment)}, @{nameof(AccountsPhotosEntity.Guid)}, @{nameof(AccountsPhotosEntity.IsAvatar)}, @{nameof(AccountsPhotosEntity.AccountId)})";
                 await conn.ExecuteAsync(sql, new { Comment = accountsEntity.Name, Guid = guid, IsAvatar = true, AccountId = accountsEntity.Id});
 
-                File.Delete($"{dir}/temp/{photo}");
+                File.Delete($"{dir}/temp/{request.PreviewPhoto}");
+                File.Delete($"{dir}/temp/{request.OriginalPhoto}");
             }
         }
 

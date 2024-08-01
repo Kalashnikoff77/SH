@@ -176,8 +176,7 @@ namespace WebAPI.Controllers
 
                 transaction.Commit();
 
-                // TODO ОСТАНОВИЛСЯ НА ЭТОМ: Проверить обработку фотографий при регистрации
-                await accountsEntity.ProcessPhotoAfterRegistration(conn, request.Photo);
+                await accountsEntity.ProcessPhotoAfterRegistration(conn, request);
             }
 
             return response;

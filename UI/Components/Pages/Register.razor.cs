@@ -79,7 +79,6 @@ namespace UI.Components.Pages
                 RegisterModel.OriginalPhoto = response.originalFileName;
                 RegisterModel.PreviewPhoto = response.previewFileName;
             }
-            progressUpload = 0;
         }
 
         void OnError(UploadErrorEventArgs args)

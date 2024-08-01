@@ -1,48 +1,53 @@
 ﻿@page "/events"
 <PageTitle>Мероприятия</PageTitle>
 
-<RadzenText TextStyle="TextStyle.H4" TextAlign="TextAlign.Center"><b>Мероприятия</b></RadzenText>
+<RadzenText TextStyle="TextStyle.H4" TextAlign="TextAlign.Center">Мероприятия</RadzenText>
 
 @if (EventsList != null)
 {
     foreach (var Evt in EventsList)
     {
-        <RadzenCard Variant="Variant.Filled" class="rz-my-12 rz-mx-auto" Style="max-width: 800px">
-            <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.Start" Gap="1rem" class="rz-p-4">
-                <ImageEvent Event="@Evt" Size="@EnumImageSize.s150x150" Title="@Evt.Description" />
-                <RadzenStack Gap="0">
-                    <RadzenText TextStyle="TextStyle.H5"><b>@Evt.Name</b></RadzenText>
+        <RadzenCard Variant="Variant.Filled" class="rz-my-6 rz-mx-auto" Style="max-width: 750px">
+            <RadzenRow Gap="1rem">
 
-                    <RadzenStack Gap="5" AlignItems="AlignItems.Center" Orientation="Orientation.Horizontal">
-                        <RadzenIcon Icon="radar" />
-                        <RadzenText TextStyle="TextStyle.Body2">
-                            @Evt.ToRegionString()
-                        </RadzenText>
+                <RadzenColumn SizeXS="3" Size="12" Style="min-width: 150px; text-align: center">
+                    <ImageEvent Event="@Evt" Size="@EnumImageSize.s150x150" Title="@Evt.Description" />
+                </RadzenColumn>
+
+                <RadzenColumn>
+                    <RadzenStack Gap="0">
+                        <RadzenText TextStyle="TextStyle.H5"><b>@Evt.Name</b></RadzenText>
+
+                        <RadzenStack Gap="5" AlignItems="AlignItems.Center" Orientation="Orientation.Horizontal">
+                            <RadzenIcon Icon="radar" />
+                            <RadzenText TextStyle="TextStyle.Body2">@Evt.ToRegionString()</RadzenText>
+                        </RadzenStack>
+
+                        <RadzenStack Gap="5" AlignItems="AlignItems.Center" Orientation="Orientation.Horizontal">
+                            <RadzenIcon Icon="calendar_month" />
+                            <RadzenText TextStyle="TextStyle.Body2" class="@Evt.ToDateClass()">
+                                <b>@Evt.StartDate.ToMyString() - @Evt.EndDate.ToMyString()</b>
+                            </RadzenText>
+                        </RadzenStack>
+
+                        <RadzenStack Gap="5" title="Организатор" AlignItems="AlignItems.Center" Orientation="Orientation.Horizontal">
+                            <RadzenIcon Icon="group" />
+                            <RadzenText TextStyle="TextStyle.Body2"><b>@Evt.Admin?.Name</b></RadzenText>
+                        </RadzenStack>
+
+                        <RadzenStack Gap="5" AlignItems="AlignItems.Center" Orientation="Orientation.Horizontal">
+                            <RadzenIcon Icon="how_to_reg" />
+                            <RadzenText TextStyle="TextStyle.Body2">
+                                Зарегистрированы: <span class="sw-event-registered-@Evt.Id">@Evt.NumOfRegisters</span>
+                            </RadzenText>
+                        </RadzenStack>
+
+                        <RadzenText TextStyle="TextStyle.Body2"><i>@Evt.ToShortDescription()</i></RadzenText>
+
                     </RadzenStack>
 
-                    <RadzenStack Gap="5" AlignItems="AlignItems.Center" Orientation="Orientation.Horizontal">
-                        <RadzenIcon Icon="calendar_month" />
-                        <RadzenText TextStyle="TextStyle.Body2" class="@Evt.ToDateClass()">
-                            <b>@Evt.StartDate.ToMyString() - @Evt.EndDate.ToMyString()</b>
-                        </RadzenText>
-                    </RadzenStack>
-
-                    <RadzenStack Gap="5" AlignItems="AlignItems.Center" Orientation="Orientation.Horizontal">
-                        <RadzenIcon Icon="group" />
-                        <RadzenText TextStyle="TextStyle.Body2">Организатор: <b>@Evt.Admin?.Name</b></RadzenText>
-                    </RadzenStack>
-
-                    <RadzenStack Gap="5" AlignItems="AlignItems.Center" Orientation="Orientation.Horizontal">
-                        <RadzenIcon Icon="how_to_reg" />
-                        <RadzenText TextStyle="TextStyle.Body2">
-                            Зарегистрированы: <span class="sw-event-registered-@Evt.Id">@Evt.NumOfRegisters</span>
-                        </RadzenText>
-                    </RadzenStack>
-
-                    <RadzenText TextStyle="TextStyle.Body2"><i>@Evt.ToShortDescription()</i></RadzenText>
-
-                </RadzenStack>
-            </RadzenStack>
+                </RadzenColumn>
+            </RadzenRow>
         </RadzenCard>
     }
 }

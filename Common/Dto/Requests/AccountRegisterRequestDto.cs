@@ -8,15 +8,17 @@
 
         public string Name { get; set; } = null!;
 
-        public string? Password { get; set; }
-
+        public string Password { get; set; } = null!;
         public string Password2 { get; set; } = null!;
+
+        public string PreviewPhoto { get; set; } = null!;
+        public string OriginalPhoto { get; set; } = null!;
 
         public Informing Informing { get; set; } = new Informing();
 
         public CountriesDto Country { get; set; } = null!;
 
-        public List<UsersDto>? Users { get; set; }
+        public List<UsersDto> Users { get; set; } = null!;
 
         public bool IsConfirmed { get; set; } = false;
 

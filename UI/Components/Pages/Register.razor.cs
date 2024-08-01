@@ -15,6 +15,7 @@ namespace UI.Components.Pages
     public partial class Register
     {
         [Inject] IRepository<GetCountriesModel, GetCountriesRequestDto, GetCountriesResponseDto> _repoGetCountries { get; set; } = null!;
+        [Inject] IRepository<AccountRegisterModel, AccountRegisterRequestDto, ResponseDtoBase> _repoRegister { get; set; } = null!;
 
         RadzenDataGrid<UsersDto> usersGrid = null!;
         AccountRegisterModel RegisterModel = new AccountRegisterModel();
@@ -126,6 +127,11 @@ namespace UI.Components.Pages
                     return;
                 }
             }
+        }
+
+        private async void RegistrationAsync()
+        {
+            var result = await _repoRegister.HttpPostAsync(RegisterModel);
         }
     }
 }

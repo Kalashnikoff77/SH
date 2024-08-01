@@ -75,8 +75,8 @@ namespace WebAPI.Extensions
             if (string.IsNullOrWhiteSpace(request.Name))
                 throw new BadRequestException("Заполните имя учётной записи!");
 
-            if (request.Name.Length < 5 || request.Name.Length > 30)
-                throw new BadRequestException("Длина имени должна быть от 5 до 30 символов!");
+            if (request.Name.Length < 5 || request.Name.Length > 40)
+                throw new BadRequestException("Длина имени должна быть от 5 до 40 символов!");
 
             if (string.IsNullOrWhiteSpace(request.Password))
                 throw new BadRequestException("Заполните поле с паролем!");
@@ -101,8 +101,8 @@ namespace WebAPI.Extensions
                 if (string.IsNullOrWhiteSpace(user.Name))
                     throw new BadRequestException("Не указано имя у одного из партнёров!");
 
-                if (user.Name.Length < 3 || user.Name.Length > 25)
-                    throw new BadRequestException($"Длина имени у {user.Name} должна быть от 3 до 25 символов!");
+                if (user.Name.Length < 3 || user.Name.Length > 40)
+                    throw new BadRequestException($"Длина имени у {user.Name} должна быть от 3 до 40 символов!");
 
                 if (user.Height < 100 || user.Height > 230)
                     throw new BadRequestException($"Рост у {user.Name} должна быть от 100 до 230 см!");

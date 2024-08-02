@@ -1,4 +1,6 @@
-﻿<PageTitle>Настройки учётной записи</PageTitle>
+﻿@inject DialogService DialogService
+
+<PageTitle>Настройки учётной записи</PageTitle>
 
 @page "/accountsettings"
 
@@ -8,6 +10,8 @@
 {
     <RadzenTabs @bind-SelectedIndex=@selectedIndex>
         <Tabs>
+
+            @* ОБЩЕЕ *@
             <RadzenTabsItem Text="Общее">
                 <RadzenCard Variant="Variant.Filled" class="rz-my-6" Style="max-width: 750px">
                     <RadzenStack Orientation="Orientation.Vertical" Gap="0">
@@ -37,8 +41,36 @@
                 </RadzenCard>
             </RadzenTabsItem>
 
+            @* ПАРТНЁРЫ *@
             <RadzenTabsItem Text="Партнёры">
-                Партнёры
+                <RadzenCard Variant="Variant.Filled" class="rz-my-6" Style="max-width: 750px">
+
+                    <RadzenDataGrid @ref="usersGrid" AllowAlternatingRows="false" AllowFiltering="false" AllowPaging="false" AllowSorting="false" EditMode="DataGridEditMode.Single"
+                                    Data="@UpdatingModel.Users" TItem="UsersDto" EmptyText="Добавьте от 1 до 4 партнёров...">
+                        <Columns>
+                            <RadzenDataGridColumn Property="GenderAge" Title="Партнёр">
+                                <Template Context="user">
+                                    <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" Gap="6">
+                                        <RadzenIcon Visible="user.Gender == 1" IconStyle="IconStyle.Secondary" Style="font-size: 35px" Icon="Woman" />
+                                        <RadzenIcon Visible="user.Gender == 0" IconStyle="IconStyle.Info" Style="font-size: 35px" Icon="Man" />
+                                        <RadzenText><b>@user.Name</b><br />@user.ToGenderAgeString() @user.Height/@user.Weight</RadzenText>
+                                    </RadzenStack>
+                                </Template>
+                            </RadzenDataGridColumn>
+
+                            <RadzenDataGridColumn Context="user" Width="110px" MinWidth="110px" Filterable="false" Sortable="false" TextAlign="TextAlign.Center" Frozen="true" FrozenPosition="FrozenColumnPosition.Right">
+                                <Template Context="user">
+                                    <RadzenButton Click=@(() => OpenEditUserForm(user)) Icon="edit" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium" @onclick:stopPropagation="true" />
+                                    <RadzenButton Click="@(args => DeleteRow(user))" ButtonStyle="ButtonStyle.Danger" Icon="delete" Variant="Variant.Flat" Shade="Shade.Lighter" Size="ButtonSize.Medium" class="rz-my-1 rz-ms-1" @onclick:stopPropagation="true" />
+                                </Template>
+                            </RadzenDataGridColumn>
+                        </Columns>
+                    </RadzenDataGrid>
+
+                    <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.Right" class="rz-mt-3">
+                        <RadzenButton ButtonStyle="ButtonStyle.Secondary" Disabled="UpdatingModel.Users.Count > 3" Size="ButtonSize.Small" Icon="add_circle" Text="Добавить" Click=@(() => OpenEditUserForm(null)) />
+                    </RadzenStack>
+                </RadzenCard>
             </RadzenTabsItem>
 
             <RadzenTabsItem Text="Фото">
@@ -47,10 +79,6 @@
 
             <RadzenTabsItem Text="Уведомления">
                 Уведомления
-            </RadzenTabsItem>
-
-            <RadzenTabsItem Text="Пароль">
-                Пароль
             </RadzenTabsItem>
         </Tabs>
     </RadzenTabs>

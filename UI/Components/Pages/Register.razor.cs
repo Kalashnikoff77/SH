@@ -26,7 +26,6 @@ namespace UI.Components.Pages
         [Inject] ProtectedSessionStorage _protectedSessionStore { get; set; } = null!;
         [Inject] IJSProcessor _JSProcessor { get; set; } = null!;
 
-        RadzenDataGrid<UsersDto> usersGrid = null!;
         AccountRegisterModel RegisterModel = new AccountRegisterModel();
         List<CountriesViewDto> countries { get; set; } = new List<CountriesViewDto>();
         List<RegionsDto>? regions { get; set; } = new List<RegionsDto>();
@@ -93,6 +92,8 @@ namespace UI.Components.Pages
 
 
         #region /// ШАГ 3: ПАРТНЁРЫ ///
+        RadzenDataGrid<UsersDto> usersGrid = null!;
+
         async Task OpenEditUserForm(UsersDto? user)
         {
             var newUser = await DialogService.OpenAsync<EditUserForm>($"Новый партнёр для {RegisterModel.Name}",

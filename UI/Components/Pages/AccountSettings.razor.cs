@@ -8,7 +8,10 @@ using Common.Models.States;
 using Common.Repository;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
+using Radzen;
+using Radzen.Blazor;
 using System.Text.Json;
+using UI.Components.Shared;
 
 namespace UI.Components.Pages
 {
@@ -68,6 +71,37 @@ namespace UI.Components.Pages
             get { return UpdatingModel.Country.Region.Id; }
             set { UpdatingModel.Country.Region.Id = value; }
         }
+        #endregion
+
+        #region /// ШАГ 2: ПАРТНЁРЫ ///
+        RadzenDataGrid<UsersDto> usersGrid = null!;
+
+        async Task OpenEditUserForm(UsersDto? user)
+        {
+            var newUser = await DialogService.OpenAsync<EditUserForm>($"Новый партнёр для {UpdatingModel.Name}",
+                  new Dictionary<string, object?>() { { "User", user } },
+                  new DialogOptions() { Width = "500px", Height = "450px" });
+
+            if (newUser != null)
+            {
+                // Если редактируем пользователя, то удалим старого и добавим как нового
+                if (user != null && UpdatingModel.Users.Contains(user))
+                    UpdatingModel.Users.Remove(user);
+
+                newUser.Id = 0;
+                UpdatingModel.Users.Add(newUser);
+                await usersGrid.InsertRow(newUser);
+                await usersGrid.Reload();
+            }
+        }
+
+        async Task DeleteRow(UsersDto user)
+        {
+            if (UpdatingModel.Users.Contains(user))
+                UpdatingModel.Users.Remove(user);
+            await usersGrid.Reload();
+        }
+
         #endregion
     }
 }

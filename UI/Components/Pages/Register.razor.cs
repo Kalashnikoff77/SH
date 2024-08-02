@@ -46,7 +46,7 @@ namespace UI.Components.Pages
             set
             {
                 RegisterModel.Country.Id = value;
-                regions = countries?
+                regions = countries
                     .Where(x => x.Id == countryId).FirstOrDefault()?
                     .Regions?.Select(s => s).ToList();
             }

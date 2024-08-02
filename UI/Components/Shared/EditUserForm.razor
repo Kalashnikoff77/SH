@@ -35,26 +35,20 @@
                 <RadzenStack Orientation="Orientation.Vertical" Gap="0">
                     <RadzenText TextStyle="TextStyle.Subtitle2"><b>Рост</b></RadzenText>
                     <RadzenNumeric Name="Height" @bind-Value=@User.Height />
-                    <RadzenNumericRangeValidator Component="Height" Min="100" Max="230" Text="Укажите рост от 100 до 230 см." Popup=false />
+                    <RadzenNumericRangeValidator Component="Height" Min="StaticData.DB_USERS_HEIGHT_MIN" Max="StaticData.DB_USERS_HEIGHT_MAX" Text="Укажите рост от 100 до 230 см." Popup=false />
                 </RadzenStack>
             </RadzenColumn>
             <RadzenColumn Size="12" SizeSM="6">
                 <RadzenStack Orientation="Orientation.Vertical" Gap="0">
                     <RadzenText TextStyle="TextStyle.Subtitle2"><b>Вес</b></RadzenText>
                     <RadzenNumeric Name="Weight" @bind-Value=@User.Weight />
-                    <RadzenNumericRangeValidator Component="Weight" Min="40" Max="200" Text="Укажите вес от 40 до 200 кг." Popup=false />
+                    <RadzenNumericRangeValidator Component="Weight" Min="StaticData.DB_USERS_WEIGHT_MIN" Max="StaticData.DB_USERS_WEIGHT_MAX" Text="Укажите вес от 40 до 200 кг." Popup=false />
                 </RadzenStack>
             </RadzenColumn>
         </RadzenRow>
 
-        @if (User.Id == -1)
-        {
-            <RadzenButton ButtonType="ButtonType.Submit" ButtonStyle="ButtonStyle.Secondary" Icon="add_circle" Text="Добавить" />
-        }
-        else
-        {
-            <RadzenButton ButtonType="ButtonType.Submit" ButtonStyle="ButtonStyle.Secondary" Icon="edit" Text="Изменить" />
-        }
+        <RadzenButton Visible="User.Id == -1" ButtonType="ButtonType.Submit" ButtonStyle="ButtonStyle.Secondary" Icon="add_circle" Text="Добавить" />
+        <RadzenButton Visible="User.Id != -1" ButtonType="ButtonType.Submit" ButtonStyle="ButtonStyle.Secondary" Icon="edit" Text="Изменить" />
     </RadzenStack>
 
 </RadzenTemplateForm>

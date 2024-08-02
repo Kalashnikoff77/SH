@@ -105,11 +105,11 @@ namespace WebAPI.Extensions
                 if (user.Name.Length < StaticData.DB_USERS_NAME_MIN || user.Name.Length > StaticData.DB_USERS_NAME_MAX)
                     throw new BadRequestException($"Длина имени у {user.Name} должна быть от {StaticData.DB_USERS_NAME_MIN} до {StaticData.DB_USERS_NAME_MAX} символов!");
 
-                if (user.Height < 100 || user.Height > 230)
-                    throw new BadRequestException($"Рост у {user.Name} должна быть от 100 до 230 см!");
+                if (user.Height < StaticData.DB_USERS_HEIGHT_MIN || user.Height > StaticData.DB_USERS_HEIGHT_MAX)
+                    throw new BadRequestException($"Рост у {user.Name} должна быть от {StaticData.DB_USERS_HEIGHT_MIN} до {StaticData.DB_USERS_HEIGHT_MAX} см!");
 
-                if (user.Weight < 40 || user.Weight > 200)
-                    throw new BadRequestException($"Вес у {user.Name} должен быть от 40 до 200 кг!");
+                if (user.Weight < StaticData.DB_USERS_WEIGHT_MIN || user.Weight > StaticData.DB_USERS_WEIGHT_MAX)
+                    throw new BadRequestException($"Вес у {user.Name} должен быть от {StaticData.DB_USERS_WEIGHT_MIN} до {StaticData.DB_USERS_WEIGHT_MAX} кг!");
 
                 if (user.Gender < 0 || user.Gender > 1)
                     throw new BadRequestException($"Укажите пол у {user.Name}!");

@@ -91,18 +91,19 @@
             <RadzenStepsItem Text="Партнёры">
 
                 <RadzenDataGrid @ref="usersGrid" AllowAlternatingRows="false" AllowFiltering="false" AllowPaging="false" AllowSorting="false" EditMode="DataGridEditMode.Single"
-                                Data="@RegisterModel.Users" TItem="UsersDto" EmptyText="Добавьте от 1 до 4 партнёров..."
-                                ColumnWidth="100px">
+                                Data="@RegisterModel.Users" TItem="UsersDto" EmptyText="Добавьте от 1 до 4 партнёров...">
                     <Columns>
-                        <RadzenDataGridColumn Property="@nameof(UsersDto.Name)" Title="Имя" />
-
-                        <RadzenDataGridColumn Property="GenderAge" Title="Возраст">
+                        <RadzenDataGridColumn Property="GenderAge" Title="Партнёр">
                             <Template Context="user">
-                                <RadzenText>@user.ToGenderAgeString()</RadzenText>
+                                <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" Gap="6">
+                                    <RadzenIcon Visible="user.Gender == 1" IconStyle="IconStyle.Secondary" Style="font-size: 35px" Icon="Woman" />
+                                    <RadzenIcon Visible="user.Gender == 0" IconStyle="IconStyle.Info" Style="font-size: 35px" Icon="Man" />
+                                    <RadzenText><b>@user.Name</b><br />@user.ToGenderAgeString() @user.Height/@user.Weight</RadzenText>
+                                </RadzenStack>
                             </Template>
                         </RadzenDataGridColumn>
 
-                        <RadzenDataGridColumn Context="user" Width="37px" Filterable="false" Sortable="false" TextAlign="TextAlign.Center" Frozen="true" FrozenPosition="FrozenColumnPosition.Right">
+                        <RadzenDataGridColumn Context="user" Width="110px" MinWidth="110px" Filterable="false" Sortable="false" TextAlign="TextAlign.Center" Frozen="true" FrozenPosition="FrozenColumnPosition.Right">
                             <Template Context="user">
                                 <RadzenButton Click=@(() => OpenEditUserForm(user)) Icon="edit" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium" @onclick:stopPropagation="true" />
                                 <RadzenButton Click="@(args => DeleteRow(user))" ButtonStyle="ButtonStyle.Danger" Icon="delete" Variant="Variant.Flat" Shade="Shade.Lighter" Size="ButtonSize.Medium" class="rz-my-1 rz-ms-1" @onclick:stopPropagation="true" />
@@ -122,7 +123,7 @@
                         <RadzenCheckBox @bind-Value="RegisterModel.RememberMe" />
                         <RadzenLabel Text="Запомнить меня" />
                     </RadzenStack>
-                    <RadzenButton Click="RegistrationAsync" ButtonStyle="ButtonStyle.Success" Disabled="RegisterModel.Users.Count <= 0" Size="ButtonSize.Large" Text="Зарегистрироваться" />
+                    <RadzenButton Click="RegistrationAsync" Icon="check" IsBusy="@RegButtonIsBusy" BusyText="Регистрируем..." ButtonStyle="ButtonStyle.Success" Disabled="RegisterModel.Users.Count <= 0" Size="ButtonSize.Large" Text="Зарегистрироваться" />
                 </RadzenStack>
             </RadzenStepsItem>
 

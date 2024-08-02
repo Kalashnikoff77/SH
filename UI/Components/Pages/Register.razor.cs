@@ -31,6 +31,8 @@ namespace UI.Components.Pages
         List<CountriesViewDto> countries { get; set; } = new List<CountriesViewDto>();
         List<RegionsDto>? regions { get; set; } = new List<RegionsDto>();
 
+        bool RegButtonIsBusy = false;
+
         protected override async Task OnInitializedAsync()
         {
             var apiResponse = await _repoGetCountries.HttpPostAsync(new GetCountriesModel());
@@ -145,6 +147,7 @@ namespace UI.Components.Pages
 
         private async void RegistrationAsync()
         {
+            RegButtonIsBusy = true;
             RegisterModel.ErrorRegisterMessage = null;
 
             var response = await _repoRegister.HttpPostAsync(RegisterModel);
@@ -152,6 +155,7 @@ namespace UI.Components.Pages
             if (response.StatusCode != HttpStatusCode.OK)
             {
                 RegisterModel.ErrorRegisterMessage = response.Response.ErrorMessage;
+                RegButtonIsBusy = false;
                 StateHasChanged();
             } 
             else
@@ -180,6 +184,7 @@ namespace UI.Components.Pages
                 else
                 {
                     RegisterModel.ErrorRegisterMessage = apiResponse.Response.ErrorMessage;
+                    RegButtonIsBusy = false;
                     StateHasChanged();
                 }
             }

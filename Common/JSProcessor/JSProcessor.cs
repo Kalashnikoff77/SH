@@ -11,8 +11,8 @@ namespace Common.JSProcessor
         public async Task ChangeNumberFadeInOut(string tagClass, int? number, bool isShowZero = false) => 
             await RunJSAsync(nameof(ChangeNumberFadeInOut), tagClass, number, isShowZero);
 
-        public async Task ChangeNumberAndColorFadeInOut(string tagClass, int? number) =>
-            await RunJSAsync(nameof(ChangeNumberAndColorFadeInOut), tagClass, number);
+        public async Task ChangeNumberInButtonsFadeInOut(string tagClass, int? number) =>
+            await RunJSAsync(nameof(ChangeNumberInButtonsFadeInOut), tagClass, number);
 
         public async Task Redirect(string url) =>
             await RunJSAsync(nameof(Redirect), url);

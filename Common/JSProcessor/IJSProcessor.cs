@@ -16,7 +16,7 @@
         /// <param name="tagClass">Класс тега</param>
         /// <param name="number">Выводимое число</param>
         /// <param name="isShowZero">Показывать ли ноль</param>
-        Task ChangeNumberAndColorFadeInOut(string tagClass, int? number);
+        Task ChangeNumberInButtonsFadeInOut(string tagClass, int? number);
 
         Task Redirect(string url);
 

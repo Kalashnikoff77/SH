@@ -4,11 +4,11 @@
 
 @page "/accountsettings"
 
-<RadzenText TextStyle="TextStyle.H5" TextAlign="TextAlign.Left">Учётная запись</RadzenText>
+<RadzenText TextStyle="TextStyle.H5" TextAlign="TextAlign.Left" class="rz-mb-6">Учётная запись</RadzenText>
 
 @if (UpdatingModel != null)
 {
-    <RadzenTabs @bind-SelectedIndex=@selectedIndex>
+    <RadzenTabs @bind-SelectedIndex=@selectedIndex Style="max-width: 700px">
         <Tabs>
 
             @* ОБЩЕЕ *@
@@ -51,8 +51,8 @@
                             <RadzenDataGridColumn Property="GenderAge" Title="Партнёр">
                                 <Template Context="user">
                                     <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" Gap="6">
-                                        <RadzenIcon Visible="user.Gender == 1" IconStyle="IconStyle.Secondary" Style="font-size: 35px" Icon="Woman" />
-                                        <RadzenIcon Visible="user.Gender == 0" IconStyle="IconStyle.Info" Style="font-size: 35px" Icon="Man" />
+                                        <RadzenIcon Visible="user.Gender == 1" IconStyle="IconStyle.Primary" Style="font-size: 35px" Icon="Woman" />
+                                        <RadzenIcon Visible="user.Gender == 0" IconStyle="IconStyle.Secondary" Style="font-size: 35px" Icon="Man" />
                                         <RadzenText><b>@user.Name</b><br />@user.ToGenderAgeString() @user.Height/@user.Weight</RadzenText>
                                     </RadzenStack>
                                 </Template>
@@ -60,7 +60,7 @@
 
                             <RadzenDataGridColumn Context="user" Width="110px" MinWidth="110px" Filterable="false" Sortable="false" TextAlign="TextAlign.Center" Frozen="true" FrozenPosition="FrozenColumnPosition.Right">
                                 <Template Context="user">
-                                    <RadzenButton Click=@(() => OpenEditUserForm(user)) Icon="edit" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium" @onclick:stopPropagation="true" />
+                                    <RadzenButton Click=@(() => OpenEditUserForm(user)) Icon="edit" ButtonStyle="ButtonStyle.Base" Variant="Variant.Flat" Size="ButtonSize.Medium" @onclick:stopPropagation="true" />
                                     <RadzenButton Click="@(args => DeleteRow(user))" ButtonStyle="ButtonStyle.Danger" Icon="delete" Variant="Variant.Flat" Shade="Shade.Lighter" Size="ButtonSize.Medium" class="rz-my-1 rz-ms-1" @onclick:stopPropagation="true" />
                                 </Template>
                             </RadzenDataGridColumn>

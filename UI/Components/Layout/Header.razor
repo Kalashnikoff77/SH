@@ -10,16 +10,18 @@
         <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" Gap="10">
             @if (CurrentState.Account != null)
             {
-                <RadzenButton ButtonStyle="ButtonStyle.Info" MouseEnter="@(args => ShowTooltip(args, new TooltipOptions(){ Text = "Уведомления", Position = TooltipPosition.Bottom }))">
+                <RadzenButton ButtonStyle="ButtonStyle.Secondary" class="rz-p-2" Style="border-radius: 15%" MouseEnter="@(args => ShowTooltip(args, new TooltipOptions(){ Text = "Уведомления", Delay=500 }))">
                     <RadzenIcon Icon="notifications" />
+                    <span class="sw-header-UnreadNotificationsNumber IsHidden" />
                 </RadzenButton>
-                <RadzenButton ButtonStyle="ButtonStyle.Info" MouseEnter="@(args => ShowTooltip(args, new TooltipOptions(){ Text = "Сообщения", Position = TooltipPosition.Bottom }))">
+                <RadzenButton ButtonStyle="ButtonStyle.Secondary" class="rz-p-2" Style="border-radius: 15%" MouseEnter="@(args => ShowTooltip(args, new TooltipOptions(){ Text = "Сообщения", Delay=500 }))">
                     <RadzenIcon Icon="mail" />
+                    <span class="sw-header-UnreadMessagesNumber IsHidden" />
                 </RadzenButton>
 
-                <RadzenProfileMenu Click="MenuClick">
+                <RadzenProfileMenu Click="MenuClickAsync">
                     <Template>
-                        <ImageAvatar Account="@CurrentState.Account" Size="@EnumImageSize.s64x64" Class="s45" />
+                        <ImageAvatar Account="@CurrentState.Account" Size="@EnumImageSize.s64x64" Class="s35" />
                     </Template>
                     <ChildContent>
                         <RadzenProfileMenuItem Text="Настройки" Path="accountsettings" Icon="settings" />
@@ -31,8 +33,8 @@
     </RadzenStack>
 </RadzenHeader>
 
-<RadzenSidebar Responsive="false" Style="width: max-content">
-    <RadzenPanelMenu DisplayStyle="@(sidebarExpanded ? MenuItemDisplayStyle.IconAndText : MenuItemDisplayStyle.Icon)" ShowArrow="false">
+<RadzenSidebar Responsive="true" Style="width: max-content">
+    <RadzenPanelMenu DisplayStyle="@(sidebarExpanded ? MenuItemDisplayStyle.IconAndText : MenuItemDisplayStyle.Icon)" ShowArrow="true">
         <RadzenPanelMenuItem Text="Главная" Path="/" Icon="home" />
         <RadzenPanelMenuItem Text="Сообщения" Path="/messages" Icon="mail" Visible="CurrentState.Account != null" />
         <RadzenPanelMenuItem Text="Мероприятия" Path="/events" Icon="group" />
@@ -41,17 +43,3 @@
     </RadzenPanelMenu>
 </RadzenSidebar>
 
-@code {
-    bool sidebarExpanded = true;
-
-    void ShowTooltip(ElementReference elementReference, TooltipOptions? options = null) => 
-        tooltipService.Open(elementReference, options?.Text, options);
-
-    [CascadingParameter] CurrentState CurrentState { get; set; } = null!;
-
-    async void MenuClick(RadzenProfileMenuItem item) 
-    {
-        if (item.Icon == "logout")
-            await CurrentState.LogOutAsync();
-    }
-}

@@ -4,18 +4,21 @@
 
 <RadzenCard class="rz-my-12 rz-mx-auto rz-p-4 rz-p-md-12" style="max-width: 600px;">
     <RadzenTemplateForm Data=@("LoginWithDefaultValues")>
-        <RadzenLogin AllowRegister="true" AllowResetPassword="true" Username=@userName Password=@password
-                    AllowRememberMe="true" RememberMe="@rememberMe"
-                    LoginText="Войти" UserText="Email" PasswordText="Пароль"
-                    UserRequired="Укажите email!"
-                    PasswordRequired="Укажите пароль!"
-                    RegisterText="Регистрация"
-                    RegisterMessageText="Ещё не зарегистрированы?"
-                    ResetPasswordText="Забыли пароль?"
-                    RememberMeText="Запомнить меня"
-                    Login=@(args => OnLogin(args))
-                    ResetPassword=@(args => OnResetPassword(args))
-                    Register=@(args => OnRegister()) />
+
+        <RadzenLogin AllowRegister="true" AllowResetPassword="true" 
+            Username=@userName Password=@password
+            AllowRememberMe="true" RememberMe="@rememberMe"
+            LoginText="Войти на сайт" UserText="Email" PasswordText="Пароль"
+            UserRequired="Укажите email!"
+            PasswordRequired="Укажите пароль!"
+            RegisterText="Регистрация"
+            RegisterMessageText="Ещё не зарегистрированы?"
+            ResetPasswordText="Забыли пароль?"
+            RememberMeText="Запомнить меня"
+            Login=@(args => OnLogin(args))
+            ResetPassword=@(args => OnResetPassword(args))
+            Register=@(args => OnRegister()) />
+
         <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" JustifyContent="JustifyContent.Center" class="rz-color-danger">@errorLogin</RadzenStack>
     </RadzenTemplateForm>
 </RadzenCard>

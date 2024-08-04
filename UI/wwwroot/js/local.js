@@ -12,6 +12,29 @@ function ChangeNumberFadeInOut(tagClass, number, isShowZero) {
     }
 }
 
+function ChangeNumberAndColorFadeInOut(tagClass, number) {
+    var tag = $('.' + tagClass);
+    if (tag.text() != number) {
+        tag.fadeOut(200, function () {
+            tag.text('');
+            if (number) {
+                tag.closest('button')
+                    .removeClass('rz-secondary').addClass('rz-danger');
+                tag.removeClass('IsHidden');
+                tag.text(number);
+                tag.fadeIn(200);
+            }
+            else
+            {
+                tag.addClass('IsHidden');
+                tag.closest('button')
+                    .removeClass('rz-danger').addClass('rz-secondary');
+            }
+        })
+    }
+}
+
+
 // Увеличить число в теге
 function IncreaseNumberFadeInOut(tagClass) {
     $('.' + tagClass)

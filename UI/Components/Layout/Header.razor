@@ -11,7 +11,7 @@
         <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" Gap="10">
             @if (CurrentState.Account != null)
             {
-                <RadzenButton Click=@(() => OpenEditUserForm(null)) ButtonStyle="ButtonStyle.Secondary" class="rz-p-2" Style="border-radius: 15%" MouseEnter="@(args => ShowTooltip(args, new TooltipOptions(){ Text = "Уведомления", Delay=500 }))">
+                <RadzenButton Click=OpenNotificationsWindow ButtonStyle="ButtonStyle.Secondary" class="rz-p-2" Style="border-radius: 15%" MouseEnter="@(args => ShowTooltip(args, new TooltipOptions(){ Text = "Уведомления", Delay=500 }))">
                     <RadzenIcon Icon="notifications" />
                     <span class="sw-header-UnreadNotificationsNumber IsHidden" />
                 </RadzenButton>

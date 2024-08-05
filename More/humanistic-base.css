@@ -9836,19 +9836,20 @@ i.rzi {
   outline-offset: var(--rz-input-focus-outline-offset);
 }
 
-div:not(.rz-form-field-content) > .rz-colorpicker.rz-state-disabled, div:not(.rz-form-field-content) > .rz-numeric.rz-state-disabled, div:not(.rz-form-field-content) > .rz-listbox.rz-state-disabled, div:not(.rz-form-field-content) > .rz-autocomplete-input:disabled, div:not(.rz-form-field-content) > .rz-state-disabled.rz-autocomplete, div:not(.rz-form-field-content) > .rz-state-disabled.rz-multiselect, div:not(.rz-form-field-content) > .rz-state-disabled.rz-dropdown, div:not(.rz-form-field-content) > .rz-colorpicker:disabled, .rz-lookup-search div:not(.rz-form-field-content) > input:disabled, div:not(.rz-form-field-content) > .rz-numeric:disabled, div.rz-datepicker:not(.rz-form-field-content) > .rz-inputtext:disabled, div:not(.rz-form-field-content) > .rz-multiselect:disabled, div:not(.rz-form-field-content) > .rz-dropdown:disabled, div:not(.rz-form-field-content) > .mask:disabled, div:not(.rz-form-field-content) > .rz-textarea:disabled, div:not(.rz-form-field-content) > .rz-textbox:disabled {
+:not(.rz-form-field-content) > .rz-colorpicker.rz-state-disabled, :not(.rz-form-field-content) > .rz-numeric.rz-state-disabled, :not(.rz-form-field-content) > .rz-listbox.rz-state-disabled, :not(.rz-form-field-content) > .rz-autocomplete-input:disabled, :not(.rz-form-field-content) > .rz-state-disabled.rz-autocomplete, :not(.rz-form-field-content) > .rz-state-disabled.rz-multiselect, :not(.rz-form-field-content) > .rz-state-disabled.rz-dropdown, :not(.rz-form-field-content) > .rz-colorpicker:disabled, .rz-lookup-search :not(.rz-form-field-content) > input:disabled, :not(.rz-form-field-content) > .rz-numeric:disabled, .rz-datepicker:not(.rz-form-field-content) > .rz-inputtext:disabled, :not(.rz-form-field-content) > .rz-multiselect:disabled, :not(.rz-form-field-content) > .rz-dropdown:disabled, :not(.rz-form-field-content) > .mask:disabled, :not(.rz-form-field-content) > .rz-textarea:disabled, :not(.rz-form-field-content) > .rz-textbox:disabled {
   color: var(--rz-input-disabled-color);
   box-shadow: var(--rz-input-disabled-shadow);
   background-color: var(--rz-input-disabled-background-color);
   border: var(--rz-input-disabled-border);
   opacity: var(--rz-input-disabled-opacity);
 }
-div:not(.rz-form-field-content) > .rz-colorpicker.rz-state-disabled::placeholder, div:not(.rz-form-field-content) > .rz-numeric.rz-state-disabled::placeholder, div:not(.rz-form-field-content) > .rz-listbox.rz-state-disabled::placeholder, div:not(.rz-form-field-content) > .rz-autocomplete-input:disabled::placeholder, div:not(.rz-form-field-content) > .rz-state-disabled.rz-autocomplete::placeholder, div:not(.rz-form-field-content) > .rz-state-disabled.rz-multiselect::placeholder, div:not(.rz-form-field-content) > .rz-state-disabled.rz-dropdown::placeholder, div:not(.rz-form-field-content) > .rz-colorpicker:disabled::placeholder, .rz-lookup-search div:not(.rz-form-field-content) > input:disabled::placeholder, div:not(.rz-form-field-content) > .rz-numeric:disabled::placeholder, div.rz-datepicker:not(.rz-form-field-content) > .rz-inputtext:disabled::placeholder, div:not(.rz-form-field-content) > .rz-multiselect:disabled::placeholder, div:not(.rz-form-field-content) > .rz-dropdown:disabled::placeholder, div:not(.rz-form-field-content) > .mask:disabled::placeholder, div:not(.rz-form-field-content) > .rz-textarea:disabled::placeholder, div:not(.rz-form-field-content) > .rz-textbox:disabled::placeholder {
+:not(.rz-form-field-content) > .rz-colorpicker.rz-state-disabled::placeholder, :not(.rz-form-field-content) > .rz-numeric.rz-state-disabled::placeholder, :not(.rz-form-field-content) > .rz-listbox.rz-state-disabled::placeholder, :not(.rz-form-field-content) > .rz-autocomplete-input:disabled::placeholder, :not(.rz-form-field-content) > .rz-state-disabled.rz-autocomplete::placeholder, :not(.rz-form-field-content) > .rz-state-disabled.rz-multiselect::placeholder, :not(.rz-form-field-content) > .rz-state-disabled.rz-dropdown::placeholder, :not(.rz-form-field-content) > .rz-colorpicker:disabled::placeholder, .rz-lookup-search :not(.rz-form-field-content) > input:disabled::placeholder, :not(.rz-form-field-content) > .rz-numeric:disabled::placeholder, .rz-datepicker:not(.rz-form-field-content) > .rz-inputtext:disabled::placeholder, :not(.rz-form-field-content) > .rz-multiselect:disabled::placeholder, :not(.rz-form-field-content) > .rz-dropdown:disabled::placeholder, :not(.rz-form-field-content) > .mask:disabled::placeholder, :not(.rz-form-field-content) > .rz-textarea:disabled::placeholder, :not(.rz-form-field-content) > .rz-textbox:disabled::placeholder {
   color: var(--rz-input-disabled-placeholder-color);
 }
-div:not(.rz-form-field-content) > .rz-colorpicker.rz-state-disabled .rz-inputtext, div:not(.rz-form-field-content) > .rz-numeric.rz-state-disabled .rz-inputtext, div:not(.rz-form-field-content) > .rz-listbox.rz-state-disabled .rz-inputtext, div:not(.rz-form-field-content) > .rz-autocomplete-input:disabled .rz-inputtext, div:not(.rz-form-field-content) > .rz-state-disabled.rz-autocomplete .rz-inputtext, div:not(.rz-form-field-content) > .rz-state-disabled.rz-multiselect .rz-inputtext, div:not(.rz-form-field-content) > .rz-state-disabled.rz-dropdown .rz-inputtext, div:not(.rz-form-field-content) > .rz-colorpicker:disabled .rz-inputtext, .rz-lookup-search div:not(.rz-form-field-content) > input:disabled .rz-inputtext, div:not(.rz-form-field-content) > .rz-numeric:disabled .rz-inputtext, div.rz-datepicker:not(.rz-form-field-content) > .rz-inputtext:disabled .rz-inputtext, div:not(.rz-form-field-content) > .rz-multiselect:disabled .rz-inputtext, div:not(.rz-form-field-content) > .rz-dropdown:disabled .rz-inputtext, div:not(.rz-form-field-content) > .mask:disabled .rz-inputtext, div:not(.rz-form-field-content) > .rz-textarea:disabled .rz-inputtext, div:not(.rz-form-field-content) > .rz-textbox:disabled .rz-inputtext {
+:not(.rz-form-field-content) > .rz-colorpicker.rz-state-disabled .rz-inputtext, :not(.rz-form-field-content) > .rz-numeric.rz-state-disabled .rz-inputtext, :not(.rz-form-field-content) > .rz-listbox.rz-state-disabled .rz-inputtext, :not(.rz-form-field-content) > .rz-autocomplete-input:disabled .rz-inputtext, :not(.rz-form-field-content) > .rz-state-disabled.rz-autocomplete .rz-inputtext, :not(.rz-form-field-content) > .rz-state-disabled.rz-multiselect .rz-inputtext, :not(.rz-form-field-content) > .rz-state-disabled.rz-dropdown .rz-inputtext, :not(.rz-form-field-content) > .rz-colorpicker:disabled .rz-inputtext, .rz-lookup-search :not(.rz-form-field-content) > input:disabled .rz-inputtext, :not(.rz-form-field-content) > .rz-numeric:disabled .rz-inputtext, .rz-datepicker:not(.rz-form-field-content) > .rz-inputtext:disabled .rz-inputtext, :not(.rz-form-field-content) > .rz-multiselect:disabled .rz-inputtext, :not(.rz-form-field-content) > .rz-dropdown:disabled .rz-inputtext, :not(.rz-form-field-content) > .mask:disabled .rz-inputtext, :not(.rz-form-field-content) > .rz-textarea:disabled .rz-inputtext, :not(.rz-form-field-content) > .rz-textbox:disabled .rz-inputtext {
   background-color: var(--rz-input-disabled-background-color);
   color: var(--rz-input-disabled-color);
+  border: none;
 }
 
 input {
@@ -9881,7 +9882,7 @@ input::placeholder {
   transition: var(--rz-input-transition);
   outline: none;
 }
-.rz-form-field-content > *, .rz-form-field-content > .rz-autocomplete, .rz-form-field-content input, .rz-form-field-content .rz-inputtext, .rz-form-field-content .rz-datepicker.rz-state-disabled > .rz-inputtext {
+.rz-form-field-content > *, .rz-form-field-content > .rz-autocomplete, .rz-form-field-content > .rz-autocomplete.rz-state-disabled > .rz-inputtext, .rz-form-field-content input, .rz-form-field-content .rz-inputtext, .rz-form-field-content .rz-inputtext.rz-state-disabled, .rz-form-field-content .rz-datepicker.rz-state-disabled > .rz-inputtext {
   box-shadow: none;
   background-color: transparent;
   outline: none;
@@ -12766,10 +12767,6 @@ a:focus-visible .rz-fieldset-toggler {
   .rz-cell-filter-content .rz-filter-button .rzi {
     display: none;
   }
-  .rz-cell-filter-content .rz-cell-filter-label {
-    position: relative;
-    min-width: 4.5rem;
-  }
   .rz-cell-filter-content .rz-filter-button {
     position: absolute;
     z-index: 1;
@@ -12783,8 +12780,12 @@ a:focus-visible .rz-fieldset-toggler {
     border-end-start-radius: calc(var(--rz-input-border-radius) - var(--rz-border-width));
     border-end-end-radius: 0;
   }
-  .rz-cell-filter-content .rz-textbox,
-  .rz-cell-filter-content .rz-inputtext {
+  .rz-cell-filter-content:has(.rz-filter-button) .rz-cell-filter-label {
+    position: relative;
+    min-width: 4.5rem;
+  }
+  .rz-cell-filter-content:has(.rz-filter-button) .rz-textbox,
+  .rz-cell-filter-content:has(.rz-filter-button) .rz-inputtext {
     text-indent: 2.25rem;
   }
 }
@@ -18858,7 +18859,7 @@ button.rz-colorpicker-trigger .rzi:before {
   box-shadow: var(--rz-form-field-shadow);
   transition: var(--rz-input-transition);
 }
-.rz-form-field-content > *, .rz-form-field-content > .rz-autocomplete, .rz-form-field-content input, .rz-form-field-content .rz-inputtext, .rz-form-field-content .rz-datepicker.rz-state-disabled > .rz-inputtext {
+.rz-form-field-content > *, .rz-form-field-content > .rz-autocomplete, .rz-form-field-content > .rz-autocomplete.rz-state-disabled > .rz-inputtext, .rz-form-field-content input, .rz-form-field-content .rz-inputtext, .rz-form-field-content .rz-inputtext.rz-state-disabled, .rz-form-field-content .rz-datepicker.rz-state-disabled > .rz-inputtext {
   flex: 1;
 }
 .rz-form-field-content .rz-form-field-start,

@@ -17,23 +17,23 @@
                 <RadzenTabsItem Text="Общее">
                     <RadzenCard Variant="Variant.Filled" class="rz-my-6" Style="max-width: 750px">
                         <RadzenStack Orientation="Orientation.Vertical" Gap="0">
-                            <RadzenText TextStyle="TextStyle.Subtitle2"><b>Имя учётной записи:</b></RadzenText>
+                            <RadzenText TextStyle="TextStyle.Subtitle2"><b>Имя учётной записи</b></RadzenText>
                             <RadzenTextBox @bind-Value=@UpdatingModel.Name MaxLength="StaticData.DB_ACCOUNTS_NAME_MAX" Style="width: 100%" />
                             <hr />
-                            <RadzenText TextStyle="TextStyle.Subtitle2"><b>Адрес электронной почты:</b></RadzenText>
+                            <RadzenText TextStyle="TextStyle.Subtitle2"><b>Адрес электронной почты</b></RadzenText>
                             <RadzenTextBox @bind-Value=@UpdatingModel.Email MaxLength="StaticData.DB_ACCOUNTS_EMAIL_MAX" Style="width: 100%" />
                             <hr />
 
                             <RadzenRow Gap="1rem">
                                 <RadzenColumn Size="12" SizeSM="6">
                                     <RadzenStack Orientation="Orientation.Vertical" Gap="0">
-                                        <RadzenText TextStyle="TextStyle.Subtitle2"><b>Новый пароль:</b></RadzenText>
+                                        <RadzenText TextStyle="TextStyle.Subtitle2"><b>Новый пароль</b></RadzenText>
                                         <RadzenTextBox @bind-Value=@UpdatingModel.NewPassword1 MaxLength="StaticData.DB_ACCOUNTS_PASSWORD_MAX" Style="width: 100%" />
                                     </RadzenStack>
                                 </RadzenColumn>
                                 <RadzenColumn Size="12" SizeSM="6">
                                     <RadzenStack Orientation="Orientation.Vertical" Gap="0">
-                                        <RadzenText TextStyle="TextStyle.Subtitle2"><b>Повтор пароля:</b></RadzenText>
+                                        <RadzenText TextStyle="TextStyle.Subtitle2"><b>Повтор пароля</b></RadzenText>
                                         <RadzenTextBox @bind-Value=@UpdatingModel.NewPassword2 MaxLength="StaticData.DB_ACCOUNTS_PASSWORD_MAX" Style="width: 100%" />
                                     </RadzenStack>
                                 </RadzenColumn>
@@ -43,13 +43,13 @@
                             <RadzenRow Gap="1rem">
                                 <RadzenColumn Size="12" SizeSM="6">
                                     <RadzenStack Orientation="Orientation.Vertical" Gap="0">
-                                        <RadzenText TextStyle="TextStyle.Subtitle2"><b>Страна:</b></RadzenText>
+                                        <RadzenText TextStyle="TextStyle.Subtitle2"><b>Страна</b></RadzenText>
                                         <RadzenDropDown @bind-Value=@countryId Data=@countries ValueProperty="@nameof(CountriesViewDto.Id)" TextProperty="@nameof(CountriesViewDto.Name)" Name="DropDownCountries" />
                                     </RadzenStack>
                                 </RadzenColumn>
                                 <RadzenColumn Size="12" SizeSM="6">
                                     <RadzenStack Orientation="Orientation.Vertical" Gap="0">
-                                        <RadzenText TextStyle="TextStyle.Subtitle2"><b>Город:</b></RadzenText>
+                                        <RadzenText TextStyle="TextStyle.Subtitle2"><b>Город</b></RadzenText>
                                         <RadzenDropDown @bind-Value=@regionId Data=@regions ValueProperty="@nameof(RegionsDto.Id)" TextProperty="@nameof(RegionsDto.Name)" Name="DropDownRegions" />
                                     </RadzenStack>
                                 </RadzenColumn>

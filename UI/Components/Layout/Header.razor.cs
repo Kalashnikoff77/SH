@@ -29,10 +29,10 @@ namespace UI.Components.Layout
         IDisposable? updateMessagesCountTriggerHandler;
         bool sidebarExpanded = true;
 
-        async Task OpenEditUserForm(UsersDto? user)
+        async Task OpenNotificationsWindow()
         {
-            var newUser = await DialogService.OpenAsync<EditUserForm>($"Новый партнёр",
-                  new Dictionary<string, object?>() { { "User", user } },
+            var newUser = await DialogService.OpenAsync<NotificationsWindow>($"Уведомления",
+                  new Dictionary<string, object?>() { { "User", null } },
                   new DialogOptions() { Width = "500px", Height = "450px" });
         }
 

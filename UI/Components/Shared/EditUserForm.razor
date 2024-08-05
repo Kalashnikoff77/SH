@@ -46,9 +46,12 @@
                 </RadzenStack>
             </RadzenColumn>
         </RadzenRow>
+        <hr />
 
-        <RadzenButton Visible="User.Id == 0" ButtonType="ButtonType.Submit" ButtonStyle="ButtonStyle.Secondary" Icon="add_circle" Text="Добавить" />
-        <RadzenButton Visible="User.Id > 0" ButtonType="ButtonType.Submit" ButtonStyle="ButtonStyle.Secondary" Icon="edit" Text="Изменить" />
+        <RadzenRow JustifyContent="JustifyContent.End">
+            <RadzenButton Visible="User.Id == 0" ButtonType="ButtonType.Submit" ButtonStyle="ButtonStyle.Secondary" Icon="add_circle" Text="Добавить" />
+            <RadzenButton Visible="User.Id > 0" ButtonType="ButtonType.Submit" ButtonStyle="ButtonStyle.Secondary" Icon="edit" Text="Изменить" />
+        </RadzenRow>
     </RadzenStack>
 
 </RadzenTemplateForm>

@@ -17,7 +17,6 @@ namespace Common.Models
 
         public bool IsConfirmed { get; set; }
 
-
         public List<UsersDto> Users { get; set; } = null!;
 
         public CountriesDto Country { get; set; } = null!;
@@ -26,7 +25,7 @@ namespace Common.Models
 
         public List<AccountsHobbiesDto>? Hobbies { get; set; }
 
-
         public string? Error { get; set; } = null;
+        public string? ErrorUploadMessage { get; set; }
     }
 }

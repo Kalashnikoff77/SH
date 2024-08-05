@@ -1,4 +1,5 @@
 ﻿@inject DialogService DialogService
+@inject IConfiguration _config
 
 <PageTitle>Настройки учётной записи</PageTitle>
 
@@ -95,6 +96,23 @@
                             }
                         }
                     </RadzenStack>
+
+                    <RadzenStack Orientation="Orientation.Vertical" AlignItems="AlignItems.Center">
+                        <RadzenUpload Url=@(_config.GetRequiredSection("WebAPI:Host").Value + "/Photos/UploadAccount")
+                                Progress=OnProgress
+                                Complete=OnCompleteAsync
+                                Error=OnError
+                                Accept=".jpg,.jpeg,.png"
+                                ChooseText="Добавьте фото (jpg, png)"
+                                Style="width: 100%; text-align: center" class="rz-mt-2">
+                            <RadzenUploadHeader Name="Authorization" Value="@Bearer" />
+                        </RadzenUpload>
+
+                        <RadzenText class="rz-color-danger" Visible="!string.IsNullOrEmpty(UpdatingModel.ErrorUploadMessage)">@UpdatingModel.ErrorUploadMessage</RadzenText>
+
+                        <RadzenProgressBar Value=@progressUpload ProgressBarStyle="ProgressBarStyle.Secondary" Style="width: 100%" class="rz-mt-2" />
+                    </RadzenStack>
+
                 </RadzenCard>
             </RadzenTabsItem>
 

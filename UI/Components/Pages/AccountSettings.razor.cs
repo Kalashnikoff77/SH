@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using Common;
 using Common.Dto;
 using Common.Dto.Requests;
 using Common.Dto.Responses;
@@ -10,9 +9,7 @@ using Common.Models.SignalR;
 using Common.Models.States;
 using Common.Repository;
 using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
-using PhotoSauce.MagicScaler;
 using Radzen;
 using Radzen.Blazor;
 using System.Text.Json;
@@ -25,7 +22,6 @@ namespace UI.Components.Pages
         [Inject] IRepository<AccountUpdateModel, AccountUpdateRequestDto, AccountUpdateResponseDto> _repoAccountUpdate { get; set; } = null!;
         [Inject] IRepository<GetCountriesModel, GetCountriesRequestDto, GetCountriesResponseDto> _repoGetCountries { get; set; } = null!;
         [Inject] IRepository<UpdatePhotoModel, UpdatePhotoRequestDto, ResponseDtoBase> _repoPhotoUpdate { get; set; } = null!;
-        [Inject] IRepository<UploadPhotoModel, UploadPhotoRequestDto, ResponseDtoBase> _repoPhotoUpload { get; set; } = null!;
         [Inject] IMapper _mapper { get; set; } = null!;
         [Inject] ProtectedLocalStorage _protectedLocalStore { get; set; } = null!;
         [Inject] ProtectedSessionStorage _protectedSessionStore { get; set; } = null!;
@@ -38,7 +34,6 @@ namespace UI.Components.Pages
         AccountUpdateModel UpdatingModel { get; set; } = null!;
 
         int selectedIndex = 0;
-        bool shouldRender = true;
 
         protected override async Task OnInitializedAsync()
         {
@@ -58,6 +53,9 @@ namespace UI.Components.Pages
                 regions = countries
                     .Where(x => x.Id == UpdatingModel.Country.Id).FirstOrDefault()?
                     .Regions?.Select(s => s).ToList();
+
+                // Строка с токеном для загрузки фото
+                Bearer = $"Bearer {CurrentState.Account.Token}";
             }
         }
 
@@ -80,6 +78,7 @@ namespace UI.Components.Pages
             set { UpdatingModel.Country.Region.Id = value; }
         }
         #endregion
+
 
         #region /// ШАГ 2: ПАРТНЁРЫ ///
         RadzenDataGrid<UsersDto> usersGrid = null!;
@@ -109,14 +108,16 @@ namespace UI.Components.Pages
                 UpdatingModel.Users.Remove(user);
             await usersGrid.Reload();
         }
-
         #endregion
 
+
         #region /// ШАГ 3: ФОТО ///
+        int progressUpload;
+        class ErrorUpload { public string ErrorMessage { get; set; } = null!; }
+        string Bearer = null!;
+
         async Task AvatarChangedAsync(bool isChecked, AccountsPhotosDto photo)
         {
-            shouldRender = false;
-
             // Снимем галку у прежнего аватара
             var oldAvatar = CurrentState.Account?.Photos?.FirstOrDefault(x => x.IsAvatar == true);
 
@@ -154,14 +155,10 @@ namespace UI.Components.Pages
                 Comment = photo.Comment
             };
             await CurrentState.SignalRServerAsync(EnumSignalRHandlers.AvatarChangedServer, avatarChangedTriggerModel);
-
-            shouldRender = true;
         }
 
         async Task CommentChangedAsync(string NewComment, AccountsPhotosDto photo)
         {
-            shouldRender = false;
-
             var model = new UpdatePhotoModel
             {
                 Token = CurrentState.Account!.Token,
@@ -173,48 +170,31 @@ namespace UI.Components.Pages
             await _repoPhotoUpdate.HttpPostAsync(model);
 
             await CurrentState.ReloadAccountAsync();
-
-            shouldRender = true;
         }
 
-        //async void UploadPhotosAsync(InputFileChangeEventArgs e)
-        //{
-        //    var selectedFiles = e.GetMultipleFiles();
+        void OnProgress(UploadProgressArgs args)
+        {
+            UpdatingModel.ErrorUploadMessage = null;
+            progressUpload = args.Progress;
+        }
 
-        //    var model = new UploadPhotoModel { Token = CurrentState.Account!.Token };
+        async void OnCompleteAsync(UploadCompleteEventArgs args)
+        {
+            await CurrentState.ReloadAccountAsync();
+            progressUpload = 0;
+            StateHasChanged(); // Рендеринг нужно вызвать вручную
+        }
 
-        //    foreach (var file in selectedFiles)
-        //    {
-        //        var extension = new FileInfo(file.Name).Extension;
-
-        //        using (MemoryStream input = new MemoryStream(3500000))
-        //        {
-        //            await file.OpenReadStream(25000000).CopyToAsync(input);
-        //            input.Position = 0;
-
-        //            var photoName = $"{Guid.NewGuid()}{extension}";
-
-        //            using (MemoryStream output = new MemoryStream(500000))
-        //            {
-        //                MagicImageProcessor.ProcessImage(input, output, StaticData.Images[EnumImageSize.s768x1024]);
-        //                await File.WriteAllBytesAsync($"wwwroot/images/AccountsPhotos/temp/{photoName}", output.ToArray());
-        //            }
-
-        //            model.PhotoNames.Add(photoName);
-        //        }
-        //    }
-
-        //    await _repoPhotoUpload.HttpPostAsync(model);
-
-        //    await CurrentState.ReloadAccountAsync();
-
-        //    StateHasChanged(); // Рендеринг нужно вызвать вручную
-        //}
+        void OnError(UploadErrorEventArgs args)
+        {
+            var response = JsonSerializer.Deserialize<ErrorUpload>(args.Message);
+            if (response != null)
+                UpdatingModel.ErrorUploadMessage = response.ErrorMessage;
+            progressUpload = 0;
+        }
 
         async Task DeletePhotoAsync(AccountsPhotosDto photo)
         {
-            shouldRender = false;
-
             var model = new UpdatePhotoModel
             {
                 Token = CurrentState.Account!.Token,
@@ -228,7 +208,7 @@ namespace UI.Components.Pages
             await CurrentState.ReloadAccountAsync();
 
             // Если удалили аватар, то изменим аватары у всех залогиненных пользователей
-            if (photo.IsAvatar) 
+            if (photo.IsAvatar)
             {
                 var avatarChangedTriggerModel = new AvatarChangedModel
                 {
@@ -239,10 +219,7 @@ namespace UI.Components.Pages
                 };
                 await CurrentState.SignalRServerAsync(EnumSignalRHandlers.AvatarChangedServer, avatarChangedTriggerModel);
             }
-
-            shouldRender = true;
         }
         #endregion
-
     }
 }

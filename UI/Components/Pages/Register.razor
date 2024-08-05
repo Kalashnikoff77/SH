@@ -72,16 +72,16 @@
                         }
 
                         <RadzenUpload Url=@(_config.GetRequiredSection("WebAPI:Host").Value + "/Photos/UploadTemp")
-                            Progress=@OnProgress
-                            Complete=@OnComplete
-                            Error=@OnError
-                            Accept=".jpg;.jpeg;.png"
+                            Progress=OnProgress
+                            Complete=OnComplete
+                            Error=OnError
+                            Accept=".jpg,.jpeg,.png"
                             ChooseText="Выберите фото для аватара (jpg, png)"
                             Style="width: 100%; text-align: center" class="rz-mt-2" InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "select file" }})" />
                         
                         <RadzenText class="rz-color-danger" Visible="!string.IsNullOrEmpty(RegisterModel.ErrorUploadMessage)">@RegisterModel.ErrorUploadMessage</RadzenText>
 
-                        <RadzenProgressBar Value=@progressUpload class="rz-mt-6" />
+                        <RadzenProgressBar Value=@progressUpload ProgressBarStyle="ProgressBarStyle.Secondary" class="rz-mt-6" />
                         
                     </RadzenCard>
                 </RadzenStack>

@@ -73,8 +73,8 @@ namespace WebAPI.Controllers
         }
 
 
-        [Route("Upload"), HttpPost, Authorize]
-        public async Task<ResponseDtoBase> UploadAsync(UploadPhotoRequestDto request)
+        [Route("UploadAccount"), HttpPost, Authorize]
+        public async Task<ResponseDtoBase> UploadAccountAsync([FromForm(Name = "file")] IFormFile file)
         {
             AuthenticateUser();
 
@@ -82,17 +82,14 @@ namespace WebAPI.Controllers
 
             using (var conn = new SqlConnection(connectionString))
             {
-                foreach (var photoName in request.PhotoNames)
-                {
-                    var guid = Guid.NewGuid();
+                var guid = Guid.NewGuid();
 
-                    await ProcessPhotoFile(photoName, _accountId, guid);
+                await ProcessPhotoFile(file, _accountId, guid);
 
-                    var sql = "INSERT INTO AccountsPhotos " +
-                        $"({nameof(AccountsPhotosEntity.Guid)}, {nameof(AccountsPhotosEntity.AccountId)}) " +
-                        $"VALUES (@guid, @_accountId)";
-                    await conn.ExecuteAsync(sql, new { guid, _accountId });
-                }
+                var sql = "INSERT INTO AccountsPhotos " +
+                    $"({nameof(AccountsPhotosEntity.Guid)}, {nameof(AccountsPhotosEntity.AccountId)}) " +
+                    $"VALUES (@guid, @_accountId)";
+                await conn.ExecuteAsync(sql, new { guid, _accountId });
 
                 return response;
             }
@@ -122,9 +119,10 @@ namespace WebAPI.Controllers
             return response;
         }
 
-        private async Task ProcessPhotoFile(string photo, int accountId, Guid guid)
+
+        private async Task ProcessPhotoFile(IFormFile file, int accountId, Guid guid)
         {
-            if (!string.IsNullOrWhiteSpace(photo))
+            if (!string.IsNullOrWhiteSpace(file.FileName))
             {
                 var dir = "../UI/wwwroot/images/AccountsPhotos";
 
@@ -133,18 +131,21 @@ namespace WebAPI.Controllers
                 
                 Directory.CreateDirectory($"{dir}/{accountId}/{guid}");
 
+                using (var stream = new FileStream($"{dir}/temp/" + file.FileName, FileMode.Create))
+                    file.CopyTo(stream);
+
                 foreach (var image in StaticData.Images)
                 {
                     var fileName = $"{dir}/{accountId}/{guid}/{image.Key}.jpg";
 
                     using (MemoryStream output = new MemoryStream(500000))
                     {
-                        MagicImageProcessor.ProcessImage($"{dir}/temp/{photo}", output, image.Value);
+                        MagicImageProcessor.ProcessImage($"{dir}/temp/{file.FileName}", output, image.Value);
                         await System.IO.File.WriteAllBytesAsync(fileName, output.ToArray());
                     }
                 }
 
-                System.IO.File.Delete($"{dir}/temp/{photo}");
+                System.IO.File.Delete($"{dir}/temp/{file.FileName}");
             }
         }
     }

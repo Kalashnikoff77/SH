@@ -1,0 +1,30 @@
+﻿<img src="/images/AccountsPhotos/@AccountId/@Guid/@(Size).jpg" width="@width" height="@height" title="@Title" class="@Class" style="@Style" />
+
+@code {
+    [Parameter, EditorRequired]
+    public int AccountId { get; set; }
+
+    [Parameter, EditorRequired]
+    public Guid Guid { get; set; }
+
+    [Parameter, EditorRequired]
+    public EnumImageSize Size { get; set; }
+    
+    [Parameter]
+    public string? Title { get; set; }
+
+    [Parameter]
+    public string? Class { get; set; }
+
+    [Parameter]
+    public string? Style { get; set; }
+
+    private int width;
+    private int height;
+
+    protected override void OnParametersSet()
+    {
+        width = StaticData.Images[Size].Width;
+        height = StaticData.Images[Size].Height;
+    }
+}

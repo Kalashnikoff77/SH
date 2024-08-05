@@ -73,8 +73,29 @@
                 </RadzenCard>
             </RadzenTabsItem>
 
+            @* ФОТО *@
             <RadzenTabsItem Text="Фото">
-                Фото
+                <RadzenCard Variant="Variant.Filled" class="rz-my-6" Style="max-width: 750px">
+                    <RadzenStack Orientation="Orientation.Horizontal" Wrap="FlexWrap.Wrap" AlignItems="AlignItems.Center" JustifyContent="JustifyContent.Center">
+                        @if (CurrentState.Account?.Photos != null)
+                        {
+                            @foreach (var photo in CurrentState.Account.Photos)
+                            {
+                                <RadzenStack Orientation="Orientation.Vertical" AlignItems="AlignItems.Center" class="rz-mb-6">
+                                    <Photo Size="EnumImageSize.s150x150" AccountId="CurrentState.Account.Id" Guid="photo.Guid" Class="photoInAccountSettings" />
+                                    <RadzenTextBox Change=@(newComment => CommentChangedAsync(newComment, photo)) Style="width: 150px" Value="@photo.Comment" />
+                                    <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" JustifyContent="JustifyContent.SpaceAround" Gap="0" Style="width: 100%">
+                                        <RadzenRow>
+                                            <RadzenCheckBox TValue="bool" Value=@photo.IsAvatar Change=@(isChecked => AvatarChangedAsync(isChecked, photo)) Name="@photo.Id.ToString()" />
+                                            <RadzenLabel Text="Аватар" Component="@photo.Id.ToString()" class="rz-ms-2" />
+                                        </RadzenRow>
+                                        <RadzenButton Click="@(() => DeletePhotoAsync(photo))" ButtonStyle="ButtonStyle.Danger" Size="ButtonSize.Small" Icon="delete" Variant="Variant.Text" title="Удалить фото" Shade="Shade.Lighter" class="rz-my-1 rz-ms-1" />
+                                    </RadzenStack>
+                                </RadzenStack>
+                            }
+                        }
+                    </RadzenStack>
+                </RadzenCard>
             </RadzenTabsItem>
 
             <RadzenTabsItem Text="Уведомления">

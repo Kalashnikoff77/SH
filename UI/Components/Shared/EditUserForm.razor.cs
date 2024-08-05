@@ -10,7 +10,7 @@ namespace UI.Components.Shared
         protected override void OnParametersSet()
         {
             if (User == null)
-                User = new UsersDto() { Id = -1 }; // Метка, что пользователя добавляем, а не редактируем
+                User = new UsersDto();
         }
 
         void OnSubmit(UsersDto User) =>

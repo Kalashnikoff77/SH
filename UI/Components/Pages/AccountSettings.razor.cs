@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
 using Radzen;
 using Radzen.Blazor;
+using System.Net;
 using System.Text.Json;
 using UI.Components.Shared;
 
@@ -59,6 +60,7 @@ namespace UI.Components.Pages
             }
         }
 
+
         #region /// ШАГ 1: ОБЩЕЕ ///
         int countryId
         {
@@ -83,30 +85,31 @@ namespace UI.Components.Pages
         #region /// ШАГ 2: ПАРТНЁРЫ ///
         RadzenDataGrid<UsersDto> usersGrid = null!;
 
+        List<UsersDto>? Users => UpdatingModel.Users.Where(x => x.IsDeleted == false).ToList();
+
         async Task OpenEditUserForm(UsersDto? user)
         {
             var newUser = await DialogService.OpenAsync<EditUserForm>($"Новый партнёр для {UpdatingModel.Name}",
                   new Dictionary<string, object?>() { { "User", user } },
                   new DialogOptions() { Width = "500px", Height = "450px" });
 
-            if (newUser != null)
-            {
-                // Если редактируем пользователя, то удалим старого и добавим как нового
-                if (user != null && UpdatingModel.Users.Contains(user))
-                    UpdatingModel.Users.Remove(user);
+            // Если пользователь закрыл окно, нажав на крестик, то просто выйдем
+            if (newUser == null)
+                return;
 
-                newUser.Id = 0;
+            // Если user == null, то происходит добавление нового пользователя. Иначе было редактирование.
+            if (user == null)
                 UpdatingModel.Users.Add(newUser);
-                await usersGrid.InsertRow(newUser);
-                await usersGrid.Reload();
-            }
         }
 
-        async Task DeleteRow(UsersDto user)
+        void DeleteRow(UsersDto user)
         {
-            if (UpdatingModel.Users.Contains(user))
+            // Помечаем пользователя как удалённого
+            user.IsDeleted = true;
+            
+            // Если user.Id == 0, то полностью удаляем из массива нового пользователя, которого ещё не занесли в БД.
+            if (user.Id == 0)
                 UpdatingModel.Users.Remove(user);
-            await usersGrid.Reload();
         }
         #endregion
 
@@ -221,5 +224,62 @@ namespace UI.Components.Pages
             }
         }
         #endregion
+
+
+        #region /// ШАГ 4: УВЕДОМЛЕНИЯ ///
+        async Task InformingChanged(bool value)
+        {
+            //var updateResponse = await _repoAccountUpdate.HttpPostAsync(UpdatingModel);
+            //await CurrentState.ReloadAccountAsync();
+        }
+        #endregion
+
+
+        async Task SubmitAsync()
+        {
+            UpdatingModel.ErrorWhileUpdating = null;
+
+            var updateResponse = await _repoAccountUpdate.HttpPostAsync(UpdatingModel);
+
+            if (updateResponse.StatusCode != HttpStatusCode.OK)
+            {
+                UpdatingModel.ErrorWhileUpdating = updateResponse.Response.ErrorMessage;
+                return;
+            }
+
+            var storage = await _protectedLocalStore.GetAsync<LoginModel>(nameof(LoginModel));
+            if (!storage.Success)
+                storage = await _protectedSessionStore.GetAsync<LoginModel>(nameof(LoginModel));
+
+            if (storage.Success && storage.Value != null)
+            {
+                // Если меняется email или пароль, то обновим данные для логина в хранилище браузера
+                var loginModel = new LoginModel
+                {
+                    Email = storage.Value.Email,
+                    Password = storage.Value.Password
+                };
+
+                if (storage.Value.Email != UpdatingModel.Email)
+                    loginModel.Email = UpdatingModel.Email;
+
+                if (!string.IsNullOrWhiteSpace(UpdatingModel.NewPassword1))
+                    loginModel.Password = UpdatingModel.NewPassword1;
+
+                storage = await _protectedLocalStore.GetAsync<LoginModel>(nameof(LoginModel));
+                if (storage.Success)
+                    await _protectedLocalStore.SetAsync(nameof(LoginModel), loginModel);
+
+                storage = await _protectedSessionStore.GetAsync<LoginModel>(nameof(LoginModel));
+                if (storage.Success)
+                    await _protectedSessionStore.SetAsync(nameof(LoginModel), loginModel);
+
+                await CurrentState.ReloadAccountAsync();
+
+                UpdatingModel = _mapper.Map<AccountUpdateModel>(CurrentState.Account);
+                var json = JsonSerializer.Serialize(UpdatingModel);
+                UpdatingModel = JsonSerializer.Deserialize<AccountUpdateModel>(json)!;
+            }
+        }
     }
 }

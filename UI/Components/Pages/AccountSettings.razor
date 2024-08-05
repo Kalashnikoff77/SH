@@ -9,116 +9,159 @@
 
 @if (UpdatingModel != null)
 {
-    <RadzenTabs @bind-SelectedIndex=@selectedIndex Style="max-width: 700px">
-        <Tabs>
+    <RadzenStack Orientation="Orientation.Vertical" Style="max-width: 700px">
+        <RadzenTabs @bind-SelectedIndex=@selectedIndex Style="max-width: 700px">
+            <Tabs>
 
-            @* ОБЩЕЕ *@
-            <RadzenTabsItem Text="Общее">
-                <RadzenCard Variant="Variant.Filled" class="rz-my-6" Style="max-width: 750px">
-                    <RadzenStack Orientation="Orientation.Vertical" Gap="0">
-                        <RadzenText TextStyle="TextStyle.Subtitle2"><b>Имя учётной записи</b></RadzenText>
-                        <RadzenTextBox @bind-Value=@UpdatingModel.Name MaxLength="StaticData.DB_ACCOUNTS_NAME_MAX" Style="width: 100%" />
-                        <hr />
-                        <RadzenText TextStyle="TextStyle.Subtitle2"><b>Адрес электронной почты</b></RadzenText>
-                        <RadzenTextBox @bind-Value=@UpdatingModel.Email MaxLength="StaticData.DB_ACCOUNTS_EMAIL_MAX" Style="width: 100%" />
-                        <hr />
+                @* ОБЩЕЕ *@
+                <RadzenTabsItem Text="Общее">
+                    <RadzenCard Variant="Variant.Filled" class="rz-my-6" Style="max-width: 750px">
+                        <RadzenStack Orientation="Orientation.Vertical" Gap="0">
+                            <RadzenText TextStyle="TextStyle.Subtitle2"><b>Имя учётной записи:</b></RadzenText>
+                            <RadzenTextBox @bind-Value=@UpdatingModel.Name MaxLength="StaticData.DB_ACCOUNTS_NAME_MAX" Style="width: 100%" />
+                            <hr />
+                            <RadzenText TextStyle="TextStyle.Subtitle2"><b>Адрес электронной почты:</b></RadzenText>
+                            <RadzenTextBox @bind-Value=@UpdatingModel.Email MaxLength="StaticData.DB_ACCOUNTS_EMAIL_MAX" Style="width: 100%" />
+                            <hr />
 
-                        <RadzenRow Gap="1rem">
-                            <RadzenColumn Size="12" SizeSM="6">
-                                <RadzenStack Orientation="Orientation.Vertical" Gap="0">
-                                    <RadzenText TextStyle="TextStyle.Subtitle2"><b>Страна</b></RadzenText>
-                                    <RadzenDropDown @bind-Value=@countryId Data=@countries ValueProperty="@nameof(CountriesViewDto.Id)" TextProperty="@nameof(CountriesViewDto.Name)" Name="DropDownCountries" />
-                                </RadzenStack>
+                            <RadzenRow Gap="1rem">
+                                <RadzenColumn Size="12" SizeSM="6">
+                                    <RadzenStack Orientation="Orientation.Vertical" Gap="0">
+                                        <RadzenText TextStyle="TextStyle.Subtitle2"><b>Новый пароль:</b></RadzenText>
+                                        <RadzenTextBox @bind-Value=@UpdatingModel.NewPassword1 MaxLength="StaticData.DB_ACCOUNTS_PASSWORD_MAX" Style="width: 100%" />
+                                    </RadzenStack>
+                                </RadzenColumn>
+                                <RadzenColumn Size="12" SizeSM="6">
+                                    <RadzenStack Orientation="Orientation.Vertical" Gap="0">
+                                        <RadzenText TextStyle="TextStyle.Subtitle2"><b>Повтор пароля:</b></RadzenText>
+                                        <RadzenTextBox @bind-Value=@UpdatingModel.NewPassword2 MaxLength="StaticData.DB_ACCOUNTS_PASSWORD_MAX" Style="width: 100%" />
+                                    </RadzenStack>
+                                </RadzenColumn>
+                            </RadzenRow>
+                            <hr />
+
+                            <RadzenRow Gap="1rem">
+                                <RadzenColumn Size="12" SizeSM="6">
+                                    <RadzenStack Orientation="Orientation.Vertical" Gap="0">
+                                        <RadzenText TextStyle="TextStyle.Subtitle2"><b>Страна:</b></RadzenText>
+                                        <RadzenDropDown @bind-Value=@countryId Data=@countries ValueProperty="@nameof(CountriesViewDto.Id)" TextProperty="@nameof(CountriesViewDto.Name)" Name="DropDownCountries" />
+                                    </RadzenStack>
+                                </RadzenColumn>
+                                <RadzenColumn Size="12" SizeSM="6">
+                                    <RadzenStack Orientation="Orientation.Vertical" Gap="0">
+                                        <RadzenText TextStyle="TextStyle.Subtitle2"><b>Город:</b></RadzenText>
+                                        <RadzenDropDown @bind-Value=@regionId Data=@regions ValueProperty="@nameof(RegionsDto.Id)" TextProperty="@nameof(RegionsDto.Name)" Name="DropDownRegions" />
+                                    </RadzenStack>
+                                </RadzenColumn>
+                            </RadzenRow>
+
+                        </RadzenStack>
+                    </RadzenCard>
+                </RadzenTabsItem>
+
+                @* ПАРТНЁРЫ *@
+                <RadzenTabsItem Text="Партнёры">
+                    <RadzenCard Variant="Variant.Filled" class="rz-my-6" Style="max-width: 750px">
+
+                        <RadzenDataGrid @ref="usersGrid" AllowAlternatingRows="false" AllowFiltering="false" AllowPaging="false" AllowSorting="false" EditMode="DataGridEditMode.Single"
+                                        Data="@Users" TItem="UsersDto" EmptyText="Добавьте от 1 до 4 партнёров...">
+                            <Columns>
+                                <RadzenDataGridColumn Property="GenderAge" Title="Партнёр">
+                                    <Template Context="user">
+                                        <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" Gap="6">
+                                            <RadzenIcon Visible="user.Gender == 1" IconStyle="IconStyle.Primary" Style="font-size: 35px" Icon="Woman" />
+                                            <RadzenIcon Visible="user.Gender == 0" IconStyle="IconStyle.Secondary" Style="font-size: 35px" Icon="Man" />
+                                            <RadzenText><b>@user.Name</b><br />@user.ToGenderAgeString() @user.Height/@user.Weight</RadzenText>
+                                        </RadzenStack>
+                                    </Template>
+                                </RadzenDataGridColumn>
+
+                                <RadzenDataGridColumn Context="user" Width="105px" MinWidth="105px" Filterable="false" Sortable="false" TextAlign="TextAlign.Center" Frozen="true" FrozenPosition="FrozenColumnPosition.Right">
+                                    <Template Context="user">
+                                        <RadzenButton Click=@(() => OpenEditUserForm(user)) Icon="edit" ButtonStyle="ButtonStyle.Base" Variant="Variant.Flat" Size="ButtonSize.Medium" @onclick:stopPropagation="true" />
+                                        <RadzenButton Click="@(args => DeleteRow(user))" ButtonStyle="ButtonStyle.Danger" Icon="delete" Variant="Variant.Flat" Shade="Shade.Lighter" Size="ButtonSize.Medium" class="rz-my-1 rz-ms-1" @onclick:stopPropagation="true" />
+                                    </Template>
+                                </RadzenDataGridColumn>
+                            </Columns>
+                        </RadzenDataGrid>
+
+                        <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.Right" class="rz-mt-3">
+                            <RadzenButton ButtonStyle="ButtonStyle.Secondary" Disabled="Users.Count > 3" Size="ButtonSize.Small" Icon="add_circle" Text="Добавить" Click=@(() => OpenEditUserForm(null)) />
+                        </RadzenStack>
+                    </RadzenCard>
+                </RadzenTabsItem>
+
+                @* ФОТО *@
+                <RadzenTabsItem Text="Фото">
+                    <RadzenCard Variant="Variant.Filled" class="rz-my-6" Style="max-width: 750px">
+                        <RadzenStack Orientation="Orientation.Horizontal" Wrap="FlexWrap.Wrap" AlignItems="AlignItems.Center" JustifyContent="JustifyContent.Center">
+                            @if (CurrentState.Account?.Photos != null)
+                            {
+                                @foreach (var photo in CurrentState.Account.Photos)
+                                {
+                                    <RadzenStack Orientation="Orientation.Vertical" AlignItems="AlignItems.Center" class="rz-mb-6">
+                                        <Photo Size="EnumImageSize.s150x150" AccountId="CurrentState.Account.Id" Guid="photo.Guid" Class="photoInAccountSettings" />
+                                        <RadzenTextBox Change=@(newComment => CommentChangedAsync(newComment, photo)) Style="width: 150px" Value="@photo.Comment" />
+                                        <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" JustifyContent="JustifyContent.SpaceAround" Gap="0" Style="width: 100%">
+                                            <RadzenRow>
+                                                <RadzenCheckBox TValue="bool" Value=@photo.IsAvatar Change=@(isChecked => AvatarChangedAsync(isChecked, photo)) Name="@photo.Id.ToString()" />
+                                                <RadzenLabel Text="Аватар" Component="@photo.Id.ToString()" class="rz-ms-2" />
+                                            </RadzenRow>
+                                            <RadzenButton Click="@(() => DeletePhotoAsync(photo))" ButtonStyle="ButtonStyle.Danger" Size="ButtonSize.Small" Icon="delete" Variant="Variant.Text" title="Удалить фото" Shade="Shade.Lighter" class="rz-my-1 rz-ms-1" />
+                                        </RadzenStack>
+                                    </RadzenStack>
+                                }
+                            }
+                        </RadzenStack>
+                        <RadzenStack Orientation="Orientation.Vertical" AlignItems="AlignItems.Center">
+                            <RadzenUpload Url=@(_config.GetRequiredSection("WebAPI:Host").Value + "/Photos/UploadAccount")
+                                    Progress=OnProgress
+                                    Complete=OnCompleteAsync
+                                    Error=OnError
+                                    Accept=".jpg,.jpeg,.png"
+                                    ChooseText="Добавьте фото (jpg, png)"
+                                    Style="width: 100%; text-align: center" class="rz-mt-2">
+                                <RadzenUploadHeader Name="Authorization" Value="@Bearer" />
+                            </RadzenUpload>
+
+                            <RadzenText class="rz-color-danger" Visible="!string.IsNullOrEmpty(UpdatingModel.ErrorUploadMessage)">@UpdatingModel.ErrorUploadMessage</RadzenText>
+
+                            <RadzenProgressBar Value=@progressUpload ProgressBarStyle="ProgressBarStyle.Secondary" Style="width: 100%" class="rz-mt-2" />
+                        </RadzenStack>
+                    </RadzenCard>
+                </RadzenTabsItem>
+
+                @* УВЕДОМЛЕНИЯ *@
+                <RadzenTabsItem Text="Уведомления">
+                    <RadzenCard Variant="Variant.Filled" class="rz-my-6" Style="max-width: 750px">
+                        <RadzenText TextStyle="TextStyle.H6">Информировать меня, когда:</RadzenText>
+                        <RadzenRow class="rz-mt-6 rz-p-3">
+                            <RadzenColumn>
+                                <RadzenText TextStyle="TextStyle.Body1">Получено новое уведомление</RadzenText>
                             </RadzenColumn>
-                            <RadzenColumn Size="12" SizeSM="6">
-                                <RadzenStack Orientation="Orientation.Vertical" Gap="0">
-                                    <RadzenText TextStyle="TextStyle.Subtitle2"><b>Город</b></RadzenText>
-                                    <RadzenDropDown @bind-Value=@regionId Data=@regions ValueProperty="@nameof(RegionsDto.Id)" TextProperty="@nameof(RegionsDto.Name)" Name="DropDownRegions" />
-                                </RadzenStack>
+                            <RadzenColumn>
+                                <RadzenCheckBox TValue="bool" @bind-Value=@UpdatingModel.Informing.IsNotification Name="NewNotification" />
                             </RadzenColumn>
                         </RadzenRow>
+                        <RadzenRow class="rz-p-3">
+                            <RadzenColumn>
+                                <RadzenText TextStyle="TextStyle.Body1">Получено новое сообщение</RadzenText>
+                            </RadzenColumn>
+                            <RadzenColumn>
+                                <RadzenCheckBox TValue="bool" @bind-Value=@UpdatingModel.Informing.IsMessage Name="NewMessage" />
+                            </RadzenColumn>
+                        </RadzenRow>
+                    </RadzenCard>
+                </RadzenTabsItem>
 
-                    </RadzenStack>
-                </RadzenCard>
-            </RadzenTabsItem>
+            </Tabs>
+        </RadzenTabs>
 
-            @* ПАРТНЁРЫ *@
-            <RadzenTabsItem Text="Партнёры">
-                <RadzenCard Variant="Variant.Filled" class="rz-my-6" Style="max-width: 750px">
-
-                    <RadzenDataGrid @ref="usersGrid" AllowAlternatingRows="false" AllowFiltering="false" AllowPaging="false" AllowSorting="false" EditMode="DataGridEditMode.Single"
-                                    Data="@UpdatingModel.Users" TItem="UsersDto" EmptyText="Добавьте от 1 до 4 партнёров...">
-                        <Columns>
-                            <RadzenDataGridColumn Property="GenderAge" Title="Партнёр">
-                                <Template Context="user">
-                                    <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" Gap="6">
-                                        <RadzenIcon Visible="user.Gender == 1" IconStyle="IconStyle.Primary" Style="font-size: 35px" Icon="Woman" />
-                                        <RadzenIcon Visible="user.Gender == 0" IconStyle="IconStyle.Secondary" Style="font-size: 35px" Icon="Man" />
-                                        <RadzenText><b>@user.Name</b><br />@user.ToGenderAgeString() @user.Height/@user.Weight</RadzenText>
-                                    </RadzenStack>
-                                </Template>
-                            </RadzenDataGridColumn>
-
-                            <RadzenDataGridColumn Context="user" Width="110px" MinWidth="110px" Filterable="false" Sortable="false" TextAlign="TextAlign.Center" Frozen="true" FrozenPosition="FrozenColumnPosition.Right">
-                                <Template Context="user">
-                                    <RadzenButton Click=@(() => OpenEditUserForm(user)) Icon="edit" ButtonStyle="ButtonStyle.Base" Variant="Variant.Flat" Size="ButtonSize.Medium" @onclick:stopPropagation="true" />
-                                    <RadzenButton Click="@(args => DeleteRow(user))" ButtonStyle="ButtonStyle.Danger" Icon="delete" Variant="Variant.Flat" Shade="Shade.Lighter" Size="ButtonSize.Medium" class="rz-my-1 rz-ms-1" @onclick:stopPropagation="true" />
-                                </Template>
-                            </RadzenDataGridColumn>
-                        </Columns>
-                    </RadzenDataGrid>
-
-                    <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.Right" class="rz-mt-3">
-                        <RadzenButton ButtonStyle="ButtonStyle.Secondary" Disabled="UpdatingModel.Users.Count > 3" Size="ButtonSize.Small" Icon="add_circle" Text="Добавить" Click=@(() => OpenEditUserForm(null)) />
-                    </RadzenStack>
-                </RadzenCard>
-            </RadzenTabsItem>
-
-            @* ФОТО *@
-            <RadzenTabsItem Text="Фото">
-                <RadzenCard Variant="Variant.Filled" class="rz-my-6" Style="max-width: 750px">
-                    <RadzenStack Orientation="Orientation.Horizontal" Wrap="FlexWrap.Wrap" AlignItems="AlignItems.Center" JustifyContent="JustifyContent.Center">
-                        @if (CurrentState.Account?.Photos != null)
-                        {
-                            @foreach (var photo in CurrentState.Account.Photos)
-                            {
-                                <RadzenStack Orientation="Orientation.Vertical" AlignItems="AlignItems.Center" class="rz-mb-6">
-                                    <Photo Size="EnumImageSize.s150x150" AccountId="CurrentState.Account.Id" Guid="photo.Guid" Class="photoInAccountSettings" />
-                                    <RadzenTextBox Change=@(newComment => CommentChangedAsync(newComment, photo)) Style="width: 150px" Value="@photo.Comment" />
-                                    <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" JustifyContent="JustifyContent.SpaceAround" Gap="0" Style="width: 100%">
-                                        <RadzenRow>
-                                            <RadzenCheckBox TValue="bool" Value=@photo.IsAvatar Change=@(isChecked => AvatarChangedAsync(isChecked, photo)) Name="@photo.Id.ToString()" />
-                                            <RadzenLabel Text="Аватар" Component="@photo.Id.ToString()" class="rz-ms-2" />
-                                        </RadzenRow>
-                                        <RadzenButton Click="@(() => DeletePhotoAsync(photo))" ButtonStyle="ButtonStyle.Danger" Size="ButtonSize.Small" Icon="delete" Variant="Variant.Text" title="Удалить фото" Shade="Shade.Lighter" class="rz-my-1 rz-ms-1" />
-                                    </RadzenStack>
-                                </RadzenStack>
-                            }
-                        }
-                    </RadzenStack>
-
-                    <RadzenStack Orientation="Orientation.Vertical" AlignItems="AlignItems.Center">
-                        <RadzenUpload Url=@(_config.GetRequiredSection("WebAPI:Host").Value + "/Photos/UploadAccount")
-                                Progress=OnProgress
-                                Complete=OnCompleteAsync
-                                Error=OnError
-                                Accept=".jpg,.jpeg,.png"
-                                ChooseText="Добавьте фото (jpg, png)"
-                                Style="width: 100%; text-align: center" class="rz-mt-2">
-                            <RadzenUploadHeader Name="Authorization" Value="@Bearer" />
-                        </RadzenUpload>
-
-                        <RadzenText class="rz-color-danger" Visible="!string.IsNullOrEmpty(UpdatingModel.ErrorUploadMessage)">@UpdatingModel.ErrorUploadMessage</RadzenText>
-
-                        <RadzenProgressBar Value=@progressUpload ProgressBarStyle="ProgressBarStyle.Secondary" Style="width: 100%" class="rz-mt-2" />
-                    </RadzenStack>
-
-                </RadzenCard>
-            </RadzenTabsItem>
-
-            <RadzenTabsItem Text="Уведомления">
-                Уведомления
-            </RadzenTabsItem>
-        </Tabs>
-    </RadzenTabs>
+        <RadzenStack Orientation="Orientation.Vertical" AlignItems="AlignItems.Center">
+            <RadzenText TextStyle="TextStyle.Body1" class="rz-color-danger" Visible="!string.IsNullOrWhiteSpace(UpdatingModel.ErrorWhileUpdating)">
+                @UpdatingModel.ErrorWhileUpdating
+            </RadzenText>
+            <RadzenButton Click="SubmitAsync" ButtonStyle="ButtonStyle.Success" Text="Сохранить изменения" Icon="check_circle" />
+        </RadzenStack>
+    </RadzenStack>
 }

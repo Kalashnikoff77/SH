@@ -100,17 +100,19 @@ namespace UI.Components.Pages
                   new Dictionary<string, object?>() { { "User", user } },
                   new DialogOptions() { Width = "500px", Height = "450px" });
 
-            if (newUser != null)
-            {
-                // Если редактируем пользователя, то удалим старого и добавим как нового
-                if (user != null && RegisterModel.Users.Contains(user))
-                    RegisterModel.Users.Remove(user);
+            // Если пользователь закрыл окно, нажав на крестик, то просто выйдем
+            if (newUser == null)
+                return;
 
-                newUser.Id = 0;
+            // Если добавляем пользователя
+            if (user == null)
+            {
                 RegisterModel.Users.Add(newUser);
                 await usersGrid.InsertRow(newUser);
-                await usersGrid.Reload();
             }
+
+            // Обновим грид
+            await usersGrid.Reload();
         }
 
         async Task DeleteRow(UsersDto user)

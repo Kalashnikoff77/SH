@@ -28,7 +28,7 @@ namespace WebAPI.Extensions
             if (!string.IsNullOrWhiteSpace(request.NewPassword1))
             {
                 if (request.NewPassword1 != request.NewPassword2)
-                    throw new BadRequestException("Пароль и повтор пароля не совпадают! Проверьте в закладке \"Пароль\".");
+                    throw new BadRequestException("Пароль и повтор пароля не совпадают!");
             }
 
             foreach (var user in request.Users.Where(u => u.IsDeleted == false))

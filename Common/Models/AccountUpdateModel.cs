@@ -25,7 +25,7 @@ namespace Common.Models
 
         public List<AccountsHobbiesDto>? Hobbies { get; set; }
 
-        public string? Error { get; set; } = null;
+        public string? ErrorWhileUpdating { get; set; } = null;
         public string? ErrorUploadMessage { get; set; }
     }
 }

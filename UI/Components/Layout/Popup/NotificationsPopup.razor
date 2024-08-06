@@ -1,0 +1,22 @@
+﻿@if (Notifications != null)
+{
+    <RadzenDataGrid @ref=notificationsGrid Data="@Notifications" LoadData="@LoadData" Count="@TotalCount" IsLoading=@IsLoading PageSize="6"
+        ColumnWidth="555px" AllowFiltering="true" AllowColumnResize="true" FilterMode="FilterMode.Simple" AllowPaging="true" AllowSorting="true"
+        FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" LogicalFilterOperator="LogicalFilterOperator.Or"
+        EmptyText="Ничего не найдено...">
+        <Columns>
+
+            <RadzenDataGridColumn Property="@nameof(NotificationsViewDto.Sender)" Filterable="false" Sortable="false" Title="Автор" Frozen="true" Width="67px" TextAlign="TextAlign.Center">
+                <Template>
+                    <RadzenStack Orientation="Orientation.Vertical" AlignItems="AlignItems.Center" Gap="2">
+                        <ImageAvatar Account="context.Sender" Size="EnumImageSize.s64x64" Title="@context.Sender!.Name" Class="avatar s45" />
+                        <span title="@context.CreateDate.ToMyString()" style="font-size: 12px; rz-mb-0; cursor: default">@context.CreateDate.ToMyPastShortString()</span>
+                    </RadzenStack>
+                </Template>
+            </RadzenDataGridColumn>
+
+            <RadzenDataGridColumn Property="@nameof(NotificationsViewDto.Text)" Filterable="true" Sortable="false" Title="Текст" Frozen="false" TextAlign="TextAlign.Left" />
+
+        </Columns>
+    </RadzenDataGrid>
+}

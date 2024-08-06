@@ -4,8 +4,8 @@ namespace Common.Dto.Responses
 {
     public class GetNotificationsResponseDto : ResponseDtoBase
     {
-        public AccountsViewDto Sender { get; set; } = null!;
-
         public List<NotificationsViewDto>? Notifications { get; set; }
+
+        public int Count { get; set; }
     }
 }

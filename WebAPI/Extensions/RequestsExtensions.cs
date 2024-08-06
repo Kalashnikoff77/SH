@@ -1,5 +1,6 @@
 ﻿using Common;
 using Common.Dto.Requests;
+using Common.Dto.Views;
 using Dapper;
 using Microsoft.Data.SqlClient;
 using WebAPI.Exceptions;
@@ -130,6 +131,26 @@ namespace WebAPI.Extensions
 
             if (!request.AcceptTerms)
                 throw new BadRequestException("Вы не приняли условия пользования сайтом!");
+        }
+
+
+        public static string? Filters(this GetNotificationsRequestDto request)
+        {
+            string? filter = null;
+            if (request.FilterProperty != null && request.FilterValue != null)
+            {
+                switch(request.FilterProperty)
+                {
+                    case nameof(NotificationsViewDto.Text):
+                        var text = request.FilterValue.ToString()?.Substring(0, request.FilterValue.ToString()!.Length);
+                        if (string.IsNullOrWhiteSpace(text))
+                            return null;
+                        filter = $"AND {request.FilterProperty} LIKE '%{text}%'";
+                        break;
+                }
+            }
+
+            return " " + filter + " ";
         }
     }
 }

@@ -11,18 +11,18 @@
         <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" Gap="10">
             @if (CurrentState.Account != null)
             {
-                <RadzenButton Click=OpenNotificationsWindow ButtonStyle="ButtonStyle.Secondary" class="rz-p-2" Style="border-radius: 15%" MouseEnter="@(args => ShowTooltip(args, new TooltipOptions(){ Text = "Уведомления", Delay=500 }))">
+                <RadzenButton Click=OpenNotificationsPopup ButtonStyle="ButtonStyle.Secondary" class="rz-p-2" Style="border-radius: 15%" MouseEnter="@(args => ShowTooltip(args, new TooltipOptions(){ Text = "Уведомления", Delay=500 }))">
                     <RadzenIcon Icon="notifications" />
                     <span class="sw-header-UnreadNotificationsNumber IsHidden" />
                 </RadzenButton>
-                <RadzenButton ButtonStyle="ButtonStyle.Secondary" class="rz-p-2" Style="border-radius: 15%" MouseEnter="@(args => ShowTooltip(args, new TooltipOptions(){ Text = "Сообщения", Delay=500 }))">
+                <RadzenButton Click=OpenMessagesPopup ButtonStyle ="ButtonStyle.Secondary" class="rz-p-2" Style="border-radius: 15%" MouseEnter="@(args => ShowTooltip(args, new TooltipOptions(){ Text = "Сообщения", Delay=500 }))">
                     <RadzenIcon Icon="mail" />
                     <span class="sw-header-UnreadMessagesNumber IsHidden" />
                 </RadzenButton>
 
                 <RadzenProfileMenu Click="MenuClickAsync">
                     <Template>
-                        <ImageAvatar Account="@CurrentState.Account" Size="@EnumImageSize.s64x64" Class="s35" />
+                        <ImageAvatar Account="@CurrentState.Account" Size="@EnumImageSize.s64x64" Class="avatar s35" />
                     </Template>
                     <ChildContent>
                         <RadzenProfileMenuItem Text="Настройки" Path="accountsettings" Icon="settings" />

@@ -1,5 +1,4 @@
-﻿using Common.Dto;
-using Common.Dto.Requests;
+﻿using Common.Dto.Requests;
 using Common.Dto.Responses;
 using Common.Enums;
 using Common.JSProcessor;
@@ -8,17 +7,15 @@ using Common.Models.SignalR;
 using Common.Models.States;
 using Common.Repository;
 using Microsoft.AspNetCore.Components;
-using Microsoft.JSInterop;
 using Radzen;
 using Radzen.Blazor;
-using UI.Components.Shared;
+using UI.Components.Layout.Popup;
 
 namespace UI.Components.Layout
 {
     public partial class Header
     {
         [Inject] IRepository<GetNotificationsCountModel, GetNotificationsCountRequestDto, GetNotificationsCountResponseDto> _repoNotifCount { get; set; } = null!;
-        [Inject] IRepository<GetNotificationsModel, GetNotificationsRequestDto, GetNotificationsResponseDto> _repoNotifications { get; set; } = null!;
         [Inject] IRepository<GetMessagesCountModel, GetMessagesCountRequestDto, GetMessagesCountResponseDto> _repoCount { get; set; } = null!;
         [Inject] IRepository<GetLastMessagesListModel, GetLastMessagesListRequestDto, GetLastMessagesListResponseDto> _repoMessages { get; set; } = null!;
         [Inject] IJSProcessor _JSProcessor { get; set; } = null!;
@@ -29,12 +26,11 @@ namespace UI.Components.Layout
         IDisposable? updateMessagesCountTriggerHandler;
         bool sidebarExpanded = true;
 
-        async Task OpenNotificationsWindow()
-        {
-            var newUser = await DialogService.OpenAsync<NotificationsWindow>($"Уведомления",
-                  new Dictionary<string, object?>() { { "User", null } },
-                  new DialogOptions() { Width = "500px", Height = "450px" });
-        }
+        async Task OpenNotificationsPopup() =>
+            await DialogService.OpenAsync<NotificationsPopup>($"Уведомления", null, new DialogOptions() { Width = "750px", Height = "450px" });
+
+        async Task OpenMessagesPopup() =>
+            await DialogService.OpenAsync<MessagesPopup>($"Сообщения", null, new DialogOptions() { Width = "750px", Height = "450px" });
 
         protected override async Task OnAfterRenderAsync(bool firstRender)
         {

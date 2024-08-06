@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using WebAPI.Exceptions;
+using WebAPI.Extensions;
 
 namespace WebAPI.Controllers
 {
@@ -47,15 +48,23 @@ namespace WebAPI.Controllers
 
             using (var conn = new SqlConnection(connectionString))
             {
-                // Получим все уведомления
-                var sql = "SELECT TOP (@Take) * FROM NotificationsView " +
-                    $"WHERE {nameof(NotificationsViewEntity.RecipientId)} = @_accountId " +
-                    $"ORDER BY {nameof(NotificationsViewEntity.CreateDate)} ASC";
-                var notifications = await conn.QueryAsync<NotificationsViewEntity>(sql, new { _accountId, request.Take });
+                string? filter = request.Filters();
+
+                // Получим все уведомления (с фильтром)
+                var sql = "SELECT * FROM NotificationsView " +
+                    $"WHERE {nameof(NotificationsViewEntity.RecipientId)} = @_accountId" + request.Filters() +
+                    $"ORDER BY {nameof(NotificationsViewEntity.CreateDate)} DESC " +
+                    $"OFFSET @Skip ROWS FETCH NEXT @Top ROWS ONLY";
+                var notifications = await conn.QueryAsync<NotificationsViewEntity>(sql, new { _accountId, request.Top, request.Skip });
                 response.Notifications = _mapper.Map<List<NotificationsViewDto>>(notifications);
 
+                // Подсчитаем кол-во уведомлений (с фильтром)
+                sql = "SELECT COUNT(*) FROM NotificationsView " +
+                    $"WHERE {nameof(NotificationsViewEntity.RecipientId)} = @_accountId" + request.Filters();
+                response.Count = await conn.QuerySingleAsync<int>(sql, new { _accountId });
+
                 // Будем отмечать уведомления, как прочитанные?
-                if (request.MarkAsRead)
+                if (request.MarkAsRead && response.Notifications.Any(x => x.ReadDate == null))
                 {
                     var ids = response.Notifications
                         .Where(w => w.ReadDate == null)

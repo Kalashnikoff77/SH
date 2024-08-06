@@ -58,7 +58,7 @@ namespace WebAPI.Controllers
                 var sql = $"SELECT COUNT(*) FROM Messages " +
                     $"WHERE ({nameof(MessagesEntity.SenderId)} = @_accountId AND {nameof(MessagesEntity.RecipientId)} = @RecipientId) " +
                     $"OR ({nameof(MessagesEntity.SenderId)} = @RecipientId AND {nameof(MessagesEntity.RecipientId)} = @_accountId)";
-                response.NumOfMessages = await conn.QueryFirstAsync<int>(sql, new { _accountId, request.RecipientId });
+                response.Count = await conn.QueryFirstAsync<int>(sql, new { _accountId, request.RecipientId });
 
                 // Запрос на получение предыдущих сообщений
                 if (request.GetPreviousFromId.HasValue)
@@ -85,7 +85,7 @@ namespace WebAPI.Controllers
                 // Запрос на получение последних сообщений (по умолчанию)
                 else
                 {
-                    int offset = response.NumOfMessages > StaticData.MESSAGES_PER_BLOCK ? response.NumOfMessages- StaticData.MESSAGES_PER_BLOCK : 0;
+                    int offset = response.Count > StaticData.MESSAGES_PER_BLOCK ? response.Count- StaticData.MESSAGES_PER_BLOCK : 0;
                     sql = $"SELECT * FROM Messages " +
                         $"WHERE ({nameof(MessagesEntity.SenderId)} = @_accountId AND {nameof(MessagesEntity.RecipientId)} = @RecipientId) " +
                         $"OR ({nameof(MessagesEntity.SenderId)} = @RecipientId AND {nameof(MessagesEntity.RecipientId)} = @_accountId) " +

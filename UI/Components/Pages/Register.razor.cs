@@ -96,7 +96,7 @@ namespace UI.Components.Pages
 
         async Task OpenEditUserForm(UsersDto? user)
         {
-            var newUser = await DialogService.OpenAsync<EditUserForm>($"Новый партнёр для {RegisterModel.Name}",
+            var newUser = await DialogService.OpenAsync<EditUserForm>($"Партнёр {RegisterModel.Name}",
                   new Dictionary<string, object?>() { { "User", user } },
                   new DialogOptions() { Width = "500px", Height = "450px" });
 

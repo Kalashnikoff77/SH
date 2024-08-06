@@ -85,11 +85,11 @@ namespace UI.Components.Pages
         #region /// ШАГ 2: ПАРТНЁРЫ ///
         RadzenDataGrid<UsersDto> usersGrid = null!;
 
-        List<UsersDto>? Users => UpdatingModel.Users.Where(x => x.IsDeleted == false).ToList();
+        List<UsersDto> Users => UpdatingModel.Users.Where(x => x.IsDeleted == false).ToList();
 
         async Task OpenEditUserForm(UsersDto? user)
         {
-            var newUser = await DialogService.OpenAsync<EditUserForm>($"Новый партнёр для {UpdatingModel.Name}",
+            var newUser = await DialogService.OpenAsync<EditUserForm>($"Партнёр {UpdatingModel.Name}",
                   new Dictionary<string, object?>() { { "User", user } },
                   new DialogOptions() { Width = "500px", Height = "450px" });
 
@@ -102,14 +102,20 @@ namespace UI.Components.Pages
                 UpdatingModel.Users.Add(newUser);
         }
 
-        void DeleteRow(UsersDto user)
+        async void DeleteRow(UsersDto user)
         {
-            // Помечаем пользователя как удалённого
-            user.IsDeleted = true;
-            
-            // Если user.Id == 0, то полностью удаляем из массива нового пользователя, которого ещё не занесли в БД.
-            if (user.Id == 0)
-                UpdatingModel.Users.Remove(user);
+            var result = await DialogService.Confirm($"Удалить партнёра {user.Name}?", $"{user.Name} - удаление", new ConfirmOptions() { OkButtonText = "Да", CancelButtonText = "Нет" });
+            if (result == true)
+            {
+                // Помечаем пользователя как удалённого
+                user.IsDeleted = true;
+
+                // Если user.Id == 0, то полностью удаляем из массива нового пользователя, которого ещё не занесли в БД.
+                if (user.Id == 0)
+                    UpdatingModel.Users.Remove(user);
+
+                StateHasChanged();
+            }
         }
         #endregion
 
@@ -198,29 +204,33 @@ namespace UI.Components.Pages
 
         async Task DeletePhotoAsync(AccountsPhotosDto photo)
         {
-            var model = new UpdatePhotoModel
+            var result = await DialogService.Confirm($"Удалить фото?", $"Удаление фото", new ConfirmOptions() { OkButtonText = "Да", CancelButtonText = "Нет" });
+            if (result == true)
             {
-                Token = CurrentState.Account!.Token,
-                Guid = photo.Guid,
-                IsAvatar = photo.IsAvatar,
-                Comment = photo.Comment,
-                IsDeleted = true
-            };
-            await _repoPhotoUpdate.HttpPostAsync(model);
-
-            await CurrentState.ReloadAccountAsync();
-
-            // Если удалили аватар, то изменим аватары у всех залогиненных пользователей
-            if (photo.IsAvatar)
-            {
-                var avatarChangedTriggerModel = new AvatarChangedModel
+                var model = new UpdatePhotoModel
                 {
-                    AccountId = CurrentState.Account.Id,
-                    IsAvatar = false,
+                    Token = CurrentState.Account!.Token,
                     Guid = photo.Guid,
-                    Comment = photo.Comment
+                    IsAvatar = photo.IsAvatar,
+                    Comment = photo.Comment,
+                    IsDeleted = true
                 };
-                await CurrentState.SignalRServerAsync(EnumSignalRHandlers.AvatarChangedServer, avatarChangedTriggerModel);
+                await _repoPhotoUpdate.HttpPostAsync(model);
+
+                await CurrentState.ReloadAccountAsync();
+
+                // Если удалили аватар, то изменим аватары у всех залогиненных пользователей
+                if (photo.IsAvatar)
+                {
+                    var avatarChangedTriggerModel = new AvatarChangedModel
+                    {
+                        AccountId = CurrentState.Account.Id,
+                        IsAvatar = false,
+                        Guid = photo.Guid,
+                        Comment = photo.Comment
+                    };
+                    await CurrentState.SignalRServerAsync(EnumSignalRHandlers.AvatarChangedServer, avatarChangedTriggerModel);
+                }
             }
         }
         #endregion

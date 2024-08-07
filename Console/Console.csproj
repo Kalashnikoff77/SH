@@ -9,7 +9,7 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.Data.SqlClient" Version="5.1.4" />
-    <PackageReference Include="PhotoSauce.MagicScaler" Version="0.14.0" />
+    <PackageReference Include="PhotoSauce.MagicScaler" Version="0.14.2" />
   </ItemGroup>
 
   <ItemGroup>

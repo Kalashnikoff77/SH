@@ -7,6 +7,7 @@ using Common.Repository;
 using Microsoft.AspNetCore.Components;
 using Radzen.Blazor;
 using Radzen;
+using System.Drawing;
 
 namespace UI.Components.Pages
 {
@@ -28,6 +29,11 @@ namespace UI.Components.Pages
                 LastMessagesList = apiResponse.Response.LastMessagesList;
                 TotalCount = apiResponse.Response.Count;
             }
+        }
+
+        void DataGridRowRender(RowRenderEventArgs<LastMessagesListViewDto> args)
+        {
+            args.Attributes.Add("style", "cursor:default");
         }
 
         async void LoadData(LoadDataArgs args)

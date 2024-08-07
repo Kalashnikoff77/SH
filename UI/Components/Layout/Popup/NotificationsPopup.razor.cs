@@ -30,6 +30,11 @@ namespace UI.Components.Layout.Popup
             }
         }
 
+        void DataGridRowRender(RowRenderEventArgs<NotificationsViewDto> args)
+        {
+            args.Attributes.Add("style", "cursor:default");
+        }
+
         async void LoadData(LoadDataArgs args)
         {
             IsLoading = true;

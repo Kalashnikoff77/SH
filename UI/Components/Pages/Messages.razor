@@ -5,8 +5,8 @@
 
 @if (LastMessagesList != null)
 {
-    <RadzenDataGrid @ref=messagesGrid Data="@LastMessagesList" LoadData="@LoadData" Count="@TotalCount" IsLoading=@IsLoading PageSize="6"
-                    AllowColumnResize="true" AllowPaging="true">
+    <RadzenDataGrid @ref=messagesGrid Data=LastMessagesList LoadData=LoadData Count=TotalCount IsLoading=IsLoading PageSize=6
+                    AllowColumnResize=true AllowPaging=true RowRender=DataGridRowRender>
         <Columns>
 
             <RadzenDataGridColumn Property="@nameof(LastMessagesListViewDto.Sender)" Title="Автор" Frozen="true" Width="170px" TextAlign="TextAlign.Center">
@@ -16,8 +16,8 @@
                         <ImageAvatar Account="msgData.Account" Size="EnumImageSize.s64x64" Title="@msgData.Account.Name" Class="avatar s50" />
                         <RadzenStack Orientation="Orientation.Vertical" AlignItems="AlignItems.Start" Gap="2">
                             <span><b>@msgData.Account.Name</b></span>
-                            <RadzenIcon Icon="@msgData.Icon" IconStyle="@msgData.IconStyle" title="@msgData.IcontTitle" Style="cursor:default"></RadzenIcon>
-                            <span title="@context.CreateDate.ToMyString()" style="font-size:12px; cursor:default">@context.CreateDate.ToMyPastShortString()</span>
+                            <RadzenIcon Icon="@msgData.Icon" IconStyle="@msgData.IconStyle" title="@msgData.IcontTitle"></RadzenIcon>
+                            <span title="@context.CreateDate.ToMyString()" style="font-size:12px">@context.CreateDate.ToMyPastShortString()</span>
                         </RadzenStack>
                     </RadzenStack>
                 </Template>

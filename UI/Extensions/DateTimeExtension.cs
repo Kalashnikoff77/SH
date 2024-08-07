@@ -64,7 +64,7 @@
                     return "вчера";
             }
 
-            for (var c = 3; c <= 30; c++)
+            for (var c = 2; c <= 30; c++)
             {
                 if (dateTime > now.AddDays(-c))
                     return $"{c} дн";

@@ -3,7 +3,7 @@
     public class LastMessagesListViewDto : DtoBase
     {
         public DateTime CreateDate { get; set; }
-        public DateTime ReadDate { get; set; }
+        public DateTime? ReadDate { get; set; }
 
         public string? Text { get; set; }
 

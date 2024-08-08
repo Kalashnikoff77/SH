@@ -1,0 +1,25 @@
+﻿<img src="@uri" data-event="@Event.Id" width="@width" height="@height" title="@Title" style="@Style" />
+
+@code {
+    [Parameter, EditorRequired] public EnumImageSize Size { get; set; }
+    [Parameter, EditorRequired] public EventsViewDto Event { get; set; } = null!;
+    [Parameter] public string? Title { get; set; }
+    [Parameter] public string? Style { get; set; }
+
+    private string uri = null!;
+    private int width;
+    private int height;
+
+    protected override void OnParametersSet()
+    {
+        var photo = Event.Photos!.FirstOrDefault(x => x.IsAvatar == true);
+
+        width = StaticData.Images[Size].Width;
+        height = StaticData.Images[Size].Height;
+
+        if (photo != null)
+            uri = $"/images/EventsPhotos/{Event.Id}/{photo.Guid}/{Size}.jpg";
+        else
+            uri = $"/images/EventsPhotos/no-avatar/{Size}.jpg";
+    }
+}

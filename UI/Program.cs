@@ -1,3 +1,8 @@
+using Common;
+using Common.JSProcessor;
+using Common.Mapping;
+using Common.Models.States;
+using Common.Repository;
 using MudBlazor.Services;
 using UI.Components;
 
@@ -8,7 +13,16 @@ builder.Services.AddMudServices();
 
 // Add services to the container.
 builder.Services.AddRazorComponents()
-    .AddInteractiveServerComponents();
+    .AddInteractiveServerComponents()
+    .AddHubOptions(o => { o.MaximumReceiveMessageSize = 25000000; });
+
+builder.Services.AddHttpClient();
+builder.Services.AddJwtToken(builder);
+builder.Services.AddAutoMapper(typeof(Mapping));
+
+builder.Services.AddScoped<CurrentState>();
+builder.Services.AddScoped(typeof(IRepository<,,>), typeof(Repository<,,>));
+builder.Services.AddScoped<IJSProcessor, JSProcessor>();
 
 var app = builder.Build();
 

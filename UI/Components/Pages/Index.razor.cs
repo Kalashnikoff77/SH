@@ -2,7 +2,7 @@
 
 namespace UI.Components.Pages
 {
-    public partial class Home
+    public partial class Index
     {
         MudDataGrid<Item> dataGrid;
         string searchString = null!;

@@ -20,14 +20,16 @@ namespace UI.Components.Pages
         [Inject] IJSProcessor _JSProcessor { get; set; } = null!;
         [Inject] NavigationManager Navigation { get; set; } = null!;
 
-        // TODO REMOVE (OK)
-        string userName = "oleg@mail.ru";
-        string password = "pass2";
-        bool rememberMe = true;
+        // TODO Убрать начальные значения (OK)
+        LoginModel loginModel = new LoginModel
+        {
+            Email = "oleg@mail.ru",
+            Password = "pass2"
+        };
 
         string? errorLogin { get; set; } = null;
 
-        async void OnLogin(LoginModel loginModel)
+        async void OnLoginAsync()
         {
             var apiResponse = await _repoLogin.HttpPostAsync(loginModel);
             if (apiResponse.StatusCode == HttpStatusCode.OK)

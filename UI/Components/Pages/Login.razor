@@ -2,4 +2,31 @@
 
 <PageTitle>Вход</PageTitle>
 
-<h3>Login</h3>
+<MudPaper Class="pa-5 mt-4" Style="min-width:300px; max-width:500px; margin:auto" Elevation="3" Outlined="true">
+
+    <MudStack Spacing="0">
+        <MudStack Row="true">
+            <MudTextField @bind-Value="loginModel.Email" HelperText="Укажите Ваш email" HelperTextOnFocus="true" Label="Email" Typo="Typo.body1" Margin="Margin.Normal" Variant="Variant.Text"></MudTextField>
+        </MudStack>
+
+        <MudStack Row="true">
+            <MudTextField @bind-Value="loginModel.Password" HelperText="Введите пароль" HelperTextOnFocus="true" Label="Пароль" Typo="Typo.body1" Margin="Margin.Normal" Variant="Variant.Text"></MudTextField>
+        </MudStack>
+
+        <MudStack Row="true" Justify="Justify.Center">
+            <MudButton ButtonType="ButtonType.Submit" Color="Color.Info" Variant="Variant.Filled" OnClick="OnLoginAsync" Style="width:180px">Войти</MudButton>
+        </MudStack>
+
+        <MudDivider Class="mt-8" />
+
+        <MudStack Row="true" Justify="Justify.SpaceBetween" Class="mt-2">
+            <MudButton ButtonType="ButtonType.Submit" Color="Color.Info" Size="Size.Small" Variant="Variant.Text" OnClick="OnLoginAsync">
+                <MudText Typo="Typo.body2">Регистрация</MudText>
+            </MudButton>
+            <MudButton ButtonType="ButtonType.Submit" Color="Color.Secondary" Size="Size.Small" Variant="Variant.Text" OnClick="OnLoginAsync">
+                <MudText Typo="Typo.body2">Забыли пароль?</MudText>
+            </MudButton>
+        </MudStack>
+    </MudStack>
+
+</MudPaper>

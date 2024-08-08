@@ -24,7 +24,8 @@ namespace UI.Components.Pages
         LoginModel loginModel = new LoginModel
         {
             Email = "oleg@mail.ru",
-            Password = "pass2"
+            Password = "pass2",
+            Remember = true
         };
 
         string? errorLogin { get; set; } = null;
@@ -49,11 +50,6 @@ namespace UI.Components.Pages
                 errorLogin = apiResponse.Response.ErrorMessage;
                 StateHasChanged();
             }
-        }
-
-        void OnRegister()
-        {
-            Navigation.NavigateTo("/register");
         }
 
         void OnResetPassword(string email)

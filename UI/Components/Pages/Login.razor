@@ -2,31 +2,27 @@
 
 <PageTitle>Вход</PageTitle>
 
-<MudPaper Class="pa-5 mt-4" Style="min-width:300px; max-width:500px; margin:auto" Elevation="3" Outlined="true">
+<MudPaper Class="pa-5 mt-10" Style="min-width:300px; max-width:500px; margin:auto" Elevation="3">
+    <MudText Align="Align.Center" Typo="Typo.h6" Class="mb-3">Вход на сайт</MudText>
 
     <MudStack Spacing="0">
-        <MudStack Row="true">
-            <MudTextField @bind-Value="loginModel.Email" HelperText="Укажите Ваш email" HelperTextOnFocus="true" Label="Email" Typo="Typo.body1" Margin="Margin.Normal" Variant="Variant.Text"></MudTextField>
-        </MudStack>
-
-        <MudStack Row="true">
-            <MudTextField @bind-Value="loginModel.Password" HelperText="Введите пароль" HelperTextOnFocus="true" Label="Пароль" Typo="Typo.body1" Margin="Margin.Normal" Variant="Variant.Text"></MudTextField>
-        </MudStack>
-
-        <MudStack Row="true" Justify="Justify.Center">
+        <MudTextField @bind-Value="loginModel.Email" Label="Email" Typo="Typo.body1" Margin="Margin.Normal" Variant="Variant.Text" />
+        <MudTextField @bind-Value="loginModel.Password" Label="Пароль" Typo="Typo.body1" Margin="Margin.Normal" Variant="Variant.Text" />
+        <MudStack Spacing="0" Justify="Justify.Center" AlignItems="AlignItems.Center">
+            <MudCheckBox @bind-Value="loginModel.Remember" Label="Запомнить меня" Color="Color.Info" Class="mr-4" />
             <MudButton ButtonType="ButtonType.Submit" Color="Color.Info" Variant="Variant.Filled" OnClick="OnLoginAsync" Style="width:180px">Войти</MudButton>
         </MudStack>
+    </MudStack>
 
-        <MudDivider Class="mt-8" />
+    <MudDivider Class="mt-8" />
 
-        <MudStack Row="true" Justify="Justify.SpaceBetween" Class="mt-2">
-            <MudButton ButtonType="ButtonType.Submit" Color="Color.Info" Size="Size.Small" Variant="Variant.Text" OnClick="OnLoginAsync">
-                <MudText Typo="Typo.body2">Регистрация</MudText>
-            </MudButton>
-            <MudButton ButtonType="ButtonType.Submit" Color="Color.Secondary" Size="Size.Small" Variant="Variant.Text" OnClick="OnLoginAsync">
-                <MudText Typo="Typo.body2">Забыли пароль?</MudText>
-            </MudButton>
-        </MudStack>
+    <MudStack Row="true" Justify="Justify.SpaceBetween" Class="mt-2">
+        <MudButton OnClick="@(() => Navigation.NavigateTo("/register"))" ButtonType="ButtonType.Button" Color="Color.Info" Size="Size.Small" Variant="Variant.Text">
+            <MudText Typo="Typo.body2">Регистрация</MudText>
+        </MudButton>
+        <MudButton ButtonType="ButtonType.Button" Color="Color.Secondary" Size="Size.Small" Variant="Variant.Text">
+            <MudText Typo="Typo.body2">Забыли пароль?</MudText>
+        </MudButton>
     </MudStack>
 
 </MudPaper>

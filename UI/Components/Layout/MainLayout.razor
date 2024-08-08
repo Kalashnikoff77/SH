@@ -20,17 +20,16 @@
     </MudMainContent>
 </MudLayout>
 
-
 <div id="blazor-error-ui">
-    An unhandled error has occurred.
-    <a href="" class="reload">Reload</a>
+    Возникла ошибка.
+    <a href="" class="reload">Перезагрузить</a>
     <a class="dismiss">🗙</a>
 </div>
 
 @code {
-    private bool _drawerOpen = true;
-    private bool _isDarkMode = false;
-    private MudTheme? _theme = null;
+    bool _drawerOpen = true;
+    bool _isDarkMode = false;
+    MudTheme? _theme = null;
 
     protected override void OnInitialized()
     {
@@ -44,18 +43,10 @@
         };
     }
 
+    void DrawerToggle() => _drawerOpen = !_drawerOpen;
+    void DarkModeToggle() => _isDarkMode = !_isDarkMode;
 
-    private void DrawerToggle()
-    {
-        _drawerOpen = !_drawerOpen;
-    }
-
-    private void DarkModeToggle()
-    {
-        _isDarkMode = !_isDarkMode;
-    }
-
-    private readonly PaletteLight _lightPalette = new()
+    readonly PaletteLight _lightPalette = new()
     {
         Black = "#110e2d",
         AppbarText = "#424242",
@@ -65,7 +56,7 @@
         GrayLighter = "#f9f9f9",
     };
 
-    private readonly PaletteDark _darkPalette = new()
+    readonly PaletteDark _darkPalette = new()
     {
         Primary = "#7e6fff",
         Surface = "#1e1e2d",

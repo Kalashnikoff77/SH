@@ -2,62 +2,65 @@
 
 <PageTitle>Регистрация</PageTitle>
 
-<MudText Align="Align.Left" Typo="Typo.h6" Class="mb-3">Регистрация</MudText>
+<MudText Align="Align.Left" Typo="Typo.h6" Class="mb-1 mb-md-3">Регистрация</MudText>
 
-<MudDivider DividerType="DividerType.FullWidth" Light="false" Class="mb-8" />
+<MudDivider DividerType="DividerType.FullWidth" Light="false" Class="mb-5 mb-md-8" />
 
-<MudExpansionPanels MultiExpansion="true">
-    <MudExpansionPanel Expanded="true">
-        <TitleContent>
-            <div class="d-flex">
-                <MudIcon Icon="@Icons.Material.Filled.Settings" class="mr-3" />
-                <MudText><b>1. Общие данные</b></MudText>
-            </div>
-        </TitleContent>
-        <ChildContent>
-            <MudStack Row="true" Wrap="Wrap.Wrap" Class="mb-6">
-                <MudTextField @bind-Value="registerModel.Name" HelperText="Пример: Андрей и Наталья Мск" Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Outlined.Person" Label="Имя учётной записи" Typo="Typo.body1" Margin="Margin.Normal" Variant="Variant.Text" />
-                <MudTextField @bind-Value="registerModel.Email" HelperText="Пример: andnat@mail.ru" Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Outlined.Email" Label="Email" Typo="Typo.body1" Margin="Margin.Normal" Variant="Variant.Text" />
-            </MudStack>
-            <MudStack Row="true" Wrap="Wrap.Wrap" Class="mb-6">
-                <MudTextField @bind-Value="registerModel.Password" HelperText="От 4 до 15 символов" Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Outlined.Lock" Label="Пароль" Typo="Typo.body1" Margin="Margin.Normal" Variant="Variant.Text" />
-                <MudTextField @bind-Value="registerModel.Password2" HelperText="Повторите тот же пароль" Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Outlined.Lock" Label="Повтор пароля" Typo="Typo.body1" Margin="Margin.Normal" Variant="Variant.Text" />
-            </MudStack>
+<MudStack Style="min-width:300px; max-width:750px" Class="ml-md-5">
+    <MudExpansionPanels MultiExpansion="true" Elevation="3">
+        <MudExpansionPanel Expanded="true">
+            <TitleContent>
+                <div class="d-flex">
+                    <MudIcon Icon="@Icons.Material.Filled.Settings" class="mr-3" />
+                    <MudText><b>1. Общие данные</b></MudText>
+                </div>
+            </TitleContent>
+            <ChildContent>
+                <MudStack Row="true" Wrap="Wrap.Wrap" Class="mb-6">
+                    <MudTextField @bind-Value="registerModel.Name" HelperText="Пример: Андрей и Наталья Мск" Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Outlined.Person" Label="Имя учётной записи" Typo="Typo.body1" Margin="Margin.Normal" Variant="Variant.Text" />
+                    <MudTextField @bind-Value="registerModel.Email" HelperText="Пример: andnat@mail.ru" Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Outlined.Email" Label="Email" Typo="Typo.body1" Margin="Margin.Normal" Variant="Variant.Text" />
+                </MudStack>
+                <MudStack Row="true" Wrap="Wrap.Wrap" Class="mb-6">
+                    <MudTextField @bind-Value="registerModel.Password" HelperText="От 4 до 15 символов" Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Outlined.Lock" Label="Пароль" Typo="Typo.body1" Margin="Margin.Normal" Variant="Variant.Text" />
+                    <MudTextField @bind-Value="registerModel.Password2" HelperText="Повторите тот же пароль" Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Outlined.Lock" Label="Повтор пароля" Typo="Typo.body1" Margin="Margin.Normal" Variant="Variant.Text" />
+                </MudStack>
 
-            <MudStack Row="true" Wrap="Wrap.Wrap" Class="mx-2">
-                <MudAutocomplete T="string" Label="Страна" @bind-Value="countryText" SearchFunc="@SearchCountry"
-                    ResetValueOnEmptyText="true" CoerceText="true" CoerceValue="false"
-                    AdornmentIcon="@Icons.Material.Filled.Search" AdornmentColor="Color.Default" />
-            </MudStack>
+                <MudStack Row="true" Wrap="Wrap.Wrap" Class="mx-2">
+                    <MudAutocomplete T="string" Label="Страна" @bind-Value="countryText" SearchFunc="@SearchCountry"
+                        ResetValueOnEmptyText="true" CoerceText="true" CoerceValue="false" />
+                    <MudAutocomplete T="string" Label="Регион" @bind-Value="regionText" SearchFunc="@SearchRegion"
+                        ResetValueOnEmptyText="true" CoerceText="true" CoerceValue="false" Disabled="countryText == null ? true : false" />
+                </MudStack>
 
-        </ChildContent>
-    </MudExpansionPanel>
+            </ChildContent>
+        </MudExpansionPanel>
 
-    <MudExpansionPanel Disabled="true">
-        <TitleContent>
-            <div class="d-flex">
-                <MudIcon Icon="@Icons.Material.Filled.Image" class="mr-3" />
-                <MudText><b>2. Аватар</b></MudText>
-            </div>
-        </TitleContent>
-        <ChildContent>
-            Panel Content
-        </ChildContent>
-    </MudExpansionPanel>
+        <MudExpansionPanel Disabled="true">
+            <TitleContent>
+                <div class="d-flex">
+                    <MudIcon Icon="@Icons.Material.Filled.Image" class="mr-3" />
+                    <MudText><b>2. Аватар</b></MudText>
+                </div>
+            </TitleContent>
+            <ChildContent>
+                Panel Content
+            </ChildContent>
+        </MudExpansionPanel>
 
-    <MudExpansionPanel Disabled="true">
-        <TitleContent>
-            <div class="d-flex">
-                <MudIcon Icon="@Icons.Material.Filled.Group" class="mr-3" />
-                <MudText><b>3. Партнёры</b></MudText>
-            </div>
-        </TitleContent>
-        <ChildContent>
-            Panel Content
-        </ChildContent>
-    </MudExpansionPanel>
-</MudExpansionPanels>
+        <MudExpansionPanel Disabled="true">
+            <TitleContent>
+                <div class="d-flex">
+                    <MudIcon Icon="@Icons.Material.Filled.Group" class="mr-3" />
+                    <MudText><b>3. Партнёры</b></MudText>
+                </div>
+            </TitleContent>
+            <ChildContent>
+                Panel Content
+            </ChildContent>
+        </MudExpansionPanel>
+    </MudExpansionPanels>
 
-<MudStack AlignItems="AlignItems.Center" Class="mt-10">
-    <MudButton StartIcon="@Icons.Material.Outlined.Check" Disabled="true" Variant="Variant.Filled" Size="Size.Large" Color="Color.Info" Style="margin:auto">Зарегистрироваться</MudButton>
+    <MudStack AlignItems="AlignItems.Center" Class="mt-5">
+        <MudButton StartIcon="@Icons.Material.Outlined.Check" Disabled="true" Variant="Variant.Filled" Size="Size.Large" Color="Color.Info" Style="margin:auto">Зарегистрироваться</MudButton>
+    </MudStack>
 </MudStack>

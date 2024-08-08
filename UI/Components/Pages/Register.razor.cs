@@ -31,34 +31,59 @@ namespace UI.Components.Pages
         }
 
         #region /// ШАГ 1: ОБЩЕЕ ///
-        string countryText = null!;
-
-        async Task<IEnumerable<string>> SearchCountry(string value, CancellationToken token)
-        {
-            if (string.IsNullOrWhiteSpace(value))
-                return Array.Empty<string>();
-
-            return countries.Select(s => s.Name)
-                .Where(x => x.Contains(value, StringComparison.InvariantCultureIgnoreCase));
-        }
-
-
-        int countryId
-        {
-            get { return registerModel.Country.Id; }
+        string? _countryText;
+        string? countryText { 
+            get => _countryText;
             set
             {
-                registerModel.Country.Id = value;
-                regions = countries
-                    .Where(x => x.Id == countryId).FirstOrDefault()?
-                    .Regions?.Select(s => s).ToList();
+                if (value != null)
+                {
+                    var country = countries.Where(c => c.Name == value)?.First();
+                    if (country != null)
+                    {
+                        registerModel.Country.Id = country.Id;
+                        regions = countries
+                            .Where(x => x.Id == country.Id).FirstOrDefault()?
+                            .Regions?.Select(s => s).ToList();
+                    }
+                }
+                _countryText = value;
+                _regionText = null;
             }
         }
 
-        int regionId
+        string? _regionText;
+        string? regionText
         {
-            get { return registerModel.Country.Region.Id; }
-            set { registerModel.Country.Region.Id = value; }
+            get => _regionText;
+            set
+            {
+                if (value != null && regions != null)
+                {
+                    var region = regions.Where(c => c.Name == value)?.First();
+                    if (region != null)
+                        registerModel.Country.Region.Id = region.Id;
+                }
+                _regionText = value;
+            }
+        }
+
+        async Task<IEnumerable<string>?> SearchCountry(string value, CancellationToken token)
+        {
+            if (string.IsNullOrWhiteSpace(value))
+                return countries.Select(s => s.Name);
+
+            return countries?.Select(s => s.Name)
+                .Where(x => x.Contains(value, StringComparison.InvariantCultureIgnoreCase));
+        }
+
+        async Task<IEnumerable<string>?> SearchRegion(string value, CancellationToken token)
+        {
+            if (string.IsNullOrWhiteSpace(value))
+                return regions?.Select(s => s.Name);
+
+            return regions?.Select(s => s.Name)
+                .Where(x => x.Contains(value, StringComparison.InvariantCultureIgnoreCase));
         }
         #endregion
 

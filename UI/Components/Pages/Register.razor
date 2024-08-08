@@ -1,5 +1,7 @@
 ﻿@page "/register"
 
+@using Common;
+
 <PageTitle>Регистрация</PageTitle>
 
 <MudText Align="Align.Left" Typo="Typo.h6" Class="mb-1 mb-md-3">Регистрация</MudText>
@@ -8,6 +10,8 @@
 
 <MudStack Style="min-width:300px; max-width:750px" Class="ml-md-5">
     <MudExpansionPanels MultiExpansion="true" Elevation="3">
+
+        @* ОБЩИЕ *@
         <MudExpansionPanel Expanded="true">
             <TitleContent>
                 <div class="d-flex">
@@ -17,12 +21,12 @@
             </TitleContent>
             <ChildContent>
                 <MudStack Row="true" Wrap="Wrap.Wrap" Class="mb-6">
-                    <MudTextField @bind-Value="registerModel.Name" HelperText="Пример: Андрей и Наталья Мск" Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Outlined.Person" Label="Имя учётной записи" Typo="Typo.body1" Margin="Margin.Normal" Variant="Variant.Text" />
-                    <MudTextField @bind-Value="registerModel.Email" HelperText="Пример: andnat@mail.ru" Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Outlined.Email" Label="Email" Typo="Typo.body1" Margin="Margin.Normal" Variant="Variant.Text" />
+                    <MudTextField MaxLength="StaticData.DB_ACCOUNTS_NAME_MAX" @bind-Value="registerModel.Name" HelperText="Пример: Андрей и Наталья Мск" Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Outlined.Person" Label="Имя учётной записи" Typo="Typo.body1" Margin="Margin.Normal" Variant="Variant.Text" />
+                    <MudTextField MaxLength="StaticData.DB_ACCOUNTS_EMAIL_MAX" @bind-Value="registerModel.Email" HelperText="Пример: andnat@mail.ru" Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Outlined.Email" Label="Email" Typo="Typo.body1" Margin="Margin.Normal" Variant="Variant.Text" />
                 </MudStack>
                 <MudStack Row="true" Wrap="Wrap.Wrap" Class="mb-6">
-                    <MudTextField @bind-Value="registerModel.Password" HelperText="От 4 до 15 символов" Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Outlined.Lock" Label="Пароль" Typo="Typo.body1" Margin="Margin.Normal" Variant="Variant.Text" />
-                    <MudTextField @bind-Value="registerModel.Password2" HelperText="Повторите тот же пароль" Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Outlined.Lock" Label="Повтор пароля" Typo="Typo.body1" Margin="Margin.Normal" Variant="Variant.Text" />
+                    <MudTextField MaxLength="StaticData.DB_ACCOUNTS_PASSWORD_MAX" @bind-Value="registerModel.Password" HelperText="От 4 до 15 символов" Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Outlined.Lock" Label="Пароль" Typo="Typo.body1" Margin="Margin.Normal" Variant="Variant.Text" />
+                    <MudTextField MaxLength="StaticData.DB_ACCOUNTS_PASSWORD_MAX" @bind-Value="registerModel.Password2" HelperText="Повторите тот же пароль" Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Outlined.Lock" Label="Повтор пароля" Typo="Typo.body1" Margin="Margin.Normal" Variant="Variant.Text" />
                 </MudStack>
 
                 <MudStack Row="true" Wrap="Wrap.Wrap" Class="mx-2">
@@ -35,6 +39,7 @@
             </ChildContent>
         </MudExpansionPanel>
 
+        @* АВАТАР *@
         <MudExpansionPanel Disabled="true">
             <TitleContent>
                 <div class="d-flex">
@@ -47,6 +52,7 @@
             </ChildContent>
         </MudExpansionPanel>
 
+        @* ПАРТНЁРЫ *@
         <MudExpansionPanel Disabled="true">
             <TitleContent>
                 <div class="d-flex">

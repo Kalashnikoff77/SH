@@ -7,7 +7,6 @@ using Common.JSProcessor;
 using Common.Repository;
 using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
 using Microsoft.AspNetCore.Components;
-using static MudBlazor.Colors;
 
 namespace UI.Components.Pages
 {
@@ -81,11 +80,10 @@ namespace UI.Components.Pages
         {
             if (string.IsNullOrWhiteSpace(value))
                 return regions?.Select(s => s.Name);
-
+            
             return regions?.Select(s => s.Name)
                 .Where(x => x.Contains(value, StringComparison.InvariantCultureIgnoreCase));
         }
         #endregion
-
     }
 }

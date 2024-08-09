@@ -139,12 +139,14 @@ namespace UI.Components.Pages
             if (NameIconColor == Color.Error || EmailIconColor == Color.Error || PasswordIconColor == Color.Error || Password2IconColor == Color.Error)
             {
                 Panel2Disabled = true;
+                Panel2Expanded = false;
                 Panel1Color = Color.Error;
             }
 
             if (NameIconColor == Color.Success && EmailIconColor == Color.Success && PasswordIconColor == Color.Success && Password2IconColor == Color.Success)
             {
                 Panel2Disabled = false;
+                Panel2Expanded = true;
                 Panel1Color = Color.Success;
             }
             StateHasChanged();
@@ -154,6 +156,7 @@ namespace UI.Components.Pages
 
         #region /// ШАГ 2: АВАТАР ///
         bool Panel2Disabled = true;
+        bool Panel2Expanded = false;
         #endregion
 
         #region /// ШАГ 3: ПАРТНЁРЫ ///

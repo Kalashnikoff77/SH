@@ -2,12 +2,14 @@
 
 <PageTitle>Вход</PageTitle>
 
-<MudPaper Class="pa-5 mt-10" Style="min-width:300px; max-width:500px; margin:auto" Elevation="3">
-    <MudText Align="Align.Center" Typo="Typo.h6" Class="mb-3">Вход на сайт</MudText>
+<MudText Align="Align.Left" Typo="Typo.h6" Class="mb-1 mb-md-3">Вход на сайт</MudText>
+<MudDivider DividerType="DividerType.FullWidth" Light="false" Class="mb-5 mb-md-8" />
+
+<MudPaper Class="pa-5 mt-10 ml-md-5" Style="min-width:300px; max-width:500px" Elevation="3">
 
     <MudStack Spacing="0">
-        <MudTextField @bind-Value="loginModel.Email" Required="true" RequiredError="Введите email" Label="Email" Typo="Typo.body1" Margin="Margin.Normal" Variant="Variant.Text" />
-        <MudTextField @bind-Value="loginModel.Password" Required="true" RequiredError="Введите пароль" Label="Пароль" Typo="Typo.body1" Margin="Margin.Normal" Variant="Variant.Text" />
+        <MudTextField @bind-Value="loginModel.Email" Validation="@(new Func<string, string?>(EmailValidator))" AdornmentIcon="@Icons.Material.Outlined.Mail" Adornment="Adornment.End" AdornmentColor="@EmailIconColor" Label="Email" Margin="Margin.Normal" Variant="Variant.Text" />
+        <MudTextField @bind-Value="loginModel.Password" Validation="@(new Func<string, string?>(PasswordValidator))" AdornmentIcon="@Icons.Material.Outlined.Lock" Adornment="Adornment.End" AdornmentColor="@PasswordIconColor" Label="Пароль" Margin="Margin.Normal" Variant="Variant.Text" />
         <MudStack Spacing="0" Justify="Justify.Center" AlignItems="AlignItems.Center">
             <MudCheckBox @bind-Value="loginModel.Remember" Label="Запомнить меня" Color="Color.Info" Class="mr-4" />
             <MudButton ButtonType="ButtonType.Submit" Color="Color.Info" Variant="Variant.Filled" OnClick="OnLoginAsync" Style="width:180px">Войти</MudButton>

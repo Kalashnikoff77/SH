@@ -4,20 +4,20 @@ namespace Common.Models
 {
     public class AccountRegisterModel : ModelBase //AccountBaseModel
     {
-        // TODO REMOVE
+        // TODO Убрать начальные значения
         public AccountRegisterModel()
         {
             //Name = "Олег и Марина Мск";
             //Email = "oleg_reg@mail.ru";
             //Password = "pass2";
             //Password2 = "pass2";
-            Country = new CountriesDto
-            {
-                Region = new RegionsDto
-                {
-                    Id = 1
-                }
-            };
+            //Country = new CountriesDto
+            //{
+            //    Region = new RegionsDto
+            //    {
+            //        Id = 1
+            //    }
+            //};
         }
 
         public Guid Guid { get; set; }

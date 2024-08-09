@@ -7,6 +7,8 @@ using Common.Repository;
 using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
 using Microsoft.AspNetCore.Components;
 using System.Net;
+using Common;
+using MudBlazor;
 
 namespace UI.Components.Pages
 {
@@ -23,9 +25,9 @@ namespace UI.Components.Pages
         // TODO Убрать начальные значения (OK)
         LoginModel loginModel = new LoginModel
         {
-            Email = "oleg@mail.ru",
-            Password = "pass2",
-            Remember = true
+            //Email = "oleg@mail.ru",
+            //Password = "pass2",
+            //Remember = true
         };
 
         string? errorLogin { get; set; } = null;
@@ -54,6 +56,51 @@ namespace UI.Components.Pages
 
         void OnResetPassword(string email)
         {
+        }
+
+
+        Color EmailIconColor = Color.Default;
+        string? EmailValidator(string email)
+        {
+            string? errorMessage = null;
+            EmailIconColor = Color.Success;
+
+            if (string.IsNullOrWhiteSpace(email))
+            {
+                errorMessage = $"Укажите email";
+                EmailIconColor = Color.Error;
+            }
+
+            if (string.IsNullOrWhiteSpace(email) || email.Length < StaticData.DB_ACCOUNTS_EMAIL_MIN)
+            {
+                errorMessage = $"Email может содержать {StaticData.DB_ACCOUNTS_EMAIL_MIN}-{StaticData.DB_ACCOUNTS_EMAIL_MAX} символов";
+                EmailIconColor = Color.Error;
+            }
+
+            StateHasChanged();
+            return errorMessage;
+        }
+
+        Color PasswordIconColor = Color.Default;
+        string? PasswordValidator(string pass)
+        {
+            string? errorMessage = null;
+            PasswordIconColor = Color.Success;
+
+            if (string.IsNullOrWhiteSpace(pass))
+            {
+                errorMessage = $"Введите пароль";
+                PasswordIconColor = Color.Error;
+            }
+
+            if (string.IsNullOrWhiteSpace(pass) || pass.Length < StaticData.DB_ACCOUNTS_PASSWORD_MIN)
+            {
+                errorMessage = $"Пароль может содержать {StaticData.DB_ACCOUNTS_PASSWORD_MIN}-{StaticData.DB_ACCOUNTS_PASSWORD_MAX} символов";
+                PasswordIconColor = Color.Error;
+            }
+
+            StateHasChanged();
+            return errorMessage;
         }
 
     }

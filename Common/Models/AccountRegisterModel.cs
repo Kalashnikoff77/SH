@@ -7,10 +7,10 @@ namespace Common.Models
         // TODO REMOVE
         public AccountRegisterModel()
         {
-            Name = "Олег и Марина Мск";
-            Email = "oleg_reg@mail.ru";
-            Password = "pass2";
-            Password2 = "pass2";
+            //Name = "Олег и Марина Мск";
+            //Email = "oleg_reg@mail.ru";
+            //Password = "pass2";
+            //Password2 = "pass2";
             Country = new CountriesDto
             {
                 Region = new RegionsDto

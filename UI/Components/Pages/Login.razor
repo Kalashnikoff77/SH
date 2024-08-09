@@ -6,8 +6,8 @@
     <MudText Align="Align.Center" Typo="Typo.h6" Class="mb-3">Вход на сайт</MudText>
 
     <MudStack Spacing="0">
-        <MudTextField @bind-Value="loginModel.Email" Label="Email" Typo="Typo.body1" Margin="Margin.Normal" Variant="Variant.Text" />
-        <MudTextField @bind-Value="loginModel.Password" Label="Пароль" Typo="Typo.body1" Margin="Margin.Normal" Variant="Variant.Text" />
+        <MudTextField @bind-Value="loginModel.Email" Required="true" RequiredError="Введите email" Label="Email" Typo="Typo.body1" Margin="Margin.Normal" Variant="Variant.Text" />
+        <MudTextField @bind-Value="loginModel.Password" Required="true" RequiredError="Введите пароль" Label="Пароль" Typo="Typo.body1" Margin="Margin.Normal" Variant="Variant.Text" />
         <MudStack Spacing="0" Justify="Justify.Center" AlignItems="AlignItems.Center">
             <MudCheckBox @bind-Value="loginModel.Remember" Label="Запомнить меня" Color="Color.Info" Class="mr-4" />
             <MudButton ButtonType="ButtonType.Submit" Color="Color.Info" Variant="Variant.Filled" OnClick="OnLoginAsync" Style="width:180px">Войти</MudButton>

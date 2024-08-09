@@ -15,18 +15,18 @@
         <MudExpansionPanel Expanded="true">
             <TitleContent>
                 <div class="d-flex">
-                    <MudIcon Icon="@Icons.Material.Filled.Settings" class="mr-3" />
-                    <MudText><b>1. Общие данные</b></MudText>
+                    <MudIcon Color="Panel1Color" Icon="@Icons.Material.Filled.Settings" class="mr-3" />
+                    <MudText Color="Panel1Color"><b>1. Общие данные</b></MudText>
                 </div>
             </TitleContent>
             <ChildContent>
                 <MudStack Row="true" Wrap="Wrap.Wrap" Class="mb-6">
-                    <MudTextField MaxLength="StaticData.DB_ACCOUNTS_NAME_MAX" @bind-Value="registerModel.Name" HelperText="Пример: Андрей и Наталья Мск" Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Outlined.Person" Label="Имя учётной записи" Typo="Typo.body1" Margin="Margin.Normal" Variant="Variant.Text" />
-                    <MudTextField MaxLength="StaticData.DB_ACCOUNTS_EMAIL_MAX" @bind-Value="registerModel.Email" HelperText="Пример: andnat@mail.ru" Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Outlined.Email" Label="Email" Typo="Typo.body1" Margin="Margin.Normal" Variant="Variant.Text" />
+                    <MudTextField Class="w-md-5" @bind-Value="registerModel.Name" Validation="@(new Func<string, string?>(NameValidator))" HelperText="Пример: Иван да Марья Мск" AdornmentIcon="@Icons.Material.Outlined.Person" AdornmentColor="@NameIconColor" Adornment="Adornment.End" Label="Имя учётной записи" Typo="Typo.body1" Margin="Margin.Normal" Variant="Variant.Text" MaxLength="StaticData.DB_ACCOUNTS_NAME_MAX" />
+                    <MudTextField @bind-Value="registerModel.Email" Validation="@(new Func<string, string?>(EmailValidator))" HelperText="Пример: email@mail.ru" AdornmentIcon="@Icons.Material.Outlined.Mail" AdornmentColor="@EmailIconColor" Adornment="Adornment.End" Label="Email" Typo="Typo.body1" Margin="Margin.Normal" Variant="Variant.Text" MaxLength="StaticData.DB_ACCOUNTS_EMAIL_MAX" />
                 </MudStack>
                 <MudStack Row="true" Wrap="Wrap.Wrap" Class="mb-6">
-                    <MudTextField MaxLength="StaticData.DB_ACCOUNTS_PASSWORD_MAX" @bind-Value="registerModel.Password" HelperText="От 4 до 15 символов" Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Outlined.Lock" Label="Пароль" Typo="Typo.body1" Margin="Margin.Normal" Variant="Variant.Text" />
-                    <MudTextField MaxLength="StaticData.DB_ACCOUNTS_PASSWORD_MAX" @bind-Value="registerModel.Password2" HelperText="Повторите тот же пароль" Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Outlined.Lock" Label="Повтор пароля" Typo="Typo.body1" Margin="Margin.Normal" Variant="Variant.Text" />
+                    <MudTextField @bind-Value="registerModel.Password" Validation="@(new Func<string, string?>(PasswordValidator))" AdornmentColor="@PasswordIconColor" HelperText="Длина от 4 до 35 символов" Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Outlined.Lock" Label="Пароль" Typo="Typo.body1" Margin="Margin.Normal" Variant="Variant.Text" MaxLength="StaticData.DB_ACCOUNTS_PASSWORD_MAX" />
+                    <MudTextField @bind-Value="registerModel.Password2" Validation="@(new Func<string, string?>(Password2Validator))" AdornmentColor="@Password2IconColor" HelperText="Повторите тот же пароль" Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Outlined.Lock" Label="Повтор пароля" Typo="Typo.body1" Margin="Margin.Normal" Variant="Variant.Text" MaxLength="StaticData.DB_ACCOUNTS_PASSWORD_MAX" />
                 </MudStack>
 
                 <MudStack Row="true" Wrap="Wrap.Wrap" Class="mx-2">
@@ -40,7 +40,7 @@
         </MudExpansionPanel>
 
         @* АВАТАР *@
-        <MudExpansionPanel Disabled="true">
+        <MudExpansionPanel Disabled="@Panel2Disabled">
             <TitleContent>
                 <div class="d-flex">
                     <MudIcon Icon="@Icons.Material.Filled.Image" class="mr-3" />
@@ -53,7 +53,7 @@
         </MudExpansionPanel>
 
         @* ПАРТНЁРЫ *@
-        <MudExpansionPanel Disabled="true">
+        <MudExpansionPanel Disabled="@Panel3Disabled">
             <TitleContent>
                 <div class="d-flex">
                     <MudIcon Icon="@Icons.Material.Filled.Group" class="mr-3" />

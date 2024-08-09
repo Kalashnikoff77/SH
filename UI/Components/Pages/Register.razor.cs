@@ -7,6 +7,8 @@ using Common.JSProcessor;
 using Common.Repository;
 using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
 using Microsoft.AspNetCore.Components;
+using Common;
+using MudBlazor;
 
 namespace UI.Components.Pages
 {
@@ -30,6 +32,7 @@ namespace UI.Components.Pages
         }
 
         #region /// ШАГ 1: ОБЩЕЕ ///
+        Color Panel1Color = Color.Default;
         string? _countryText;
         string? countryText { 
             get => _countryText;
@@ -84,6 +87,77 @@ namespace UI.Components.Pages
             return regions?.Select(s => s.Name)
                 .Where(x => x.Contains(value, StringComparison.InvariantCultureIgnoreCase));
         }
+
+        Color NameIconColor = Color.Default;
+        string? NameValidator(string name)
+        {
+            string? errorMessage = null;
+            if (string.IsNullOrWhiteSpace(name) || name.Length < StaticData.DB_ACCOUNTS_NAME_MIN)
+                errorMessage = $"Имя должно содержать {StaticData.DB_ACCOUNTS_NAME_MIN}-{StaticData.DB_ACCOUNTS_NAME_MAX} символов";
+
+            CheckPanel1Validation(ref NameIconColor, errorMessage);
+            return errorMessage;
+        }
+
+        Color EmailIconColor = Color.Default;
+        string? EmailValidator(string email)
+        {
+            string? errorMessage = null;
+            if (string.IsNullOrWhiteSpace(email) || email.Length < StaticData.DB_ACCOUNTS_EMAIL_MIN)
+                errorMessage = $"Email может содержать {StaticData.DB_ACCOUNTS_EMAIL_MIN}-{StaticData.DB_ACCOUNTS_EMAIL_MAX} символов";
+
+            CheckPanel1Validation(ref EmailIconColor, errorMessage);
+            return errorMessage;
+        }
+
+        Color PasswordIconColor = Color.Default;
+        string? PasswordValidator(string password)
+        {
+            string? errorMessage = null;
+            if (string.IsNullOrWhiteSpace(password) || password.Length < StaticData.DB_ACCOUNTS_PASSWORD_MIN)
+                errorMessage = $"Пароль может содержать {StaticData.DB_ACCOUNTS_PASSWORD_MIN}-{StaticData.DB_ACCOUNTS_PASSWORD_MAX} символов";
+
+            CheckPanel1Validation(ref PasswordIconColor, errorMessage);
+            return errorMessage;
+        }
+
+        Color Password2IconColor = Color.Default;
+        string? Password2Validator(string password)
+        {
+            string? errorMessage = null;
+            if (registerModel.Password != password)
+                errorMessage = $"Пароли не совпадают";
+
+            CheckPanel1Validation(ref Password2IconColor, errorMessage);
+            return errorMessage;
+        }
+
+        void CheckPanel1Validation(ref Color color, string? errorMessage)
+        {
+            color = errorMessage == null ? Color.Success : Color.Error;
+
+            if (NameIconColor == Color.Error || EmailIconColor == Color.Error || PasswordIconColor == Color.Error || Password2IconColor == Color.Error)
+            {
+                Panel2Disabled = true;
+                Panel1Color = Color.Error;
+            }
+
+            if (NameIconColor == Color.Success && EmailIconColor == Color.Success && PasswordIconColor == Color.Success && Password2IconColor == Color.Success)
+            {
+                Panel2Disabled = false;
+                Panel1Color = Color.Success;
+            }
+            StateHasChanged();
+        }
+        #endregion
+
+
+        #region /// ШАГ 2: АВАТАР ///
+        bool Panel2Disabled = true;
+        #endregion
+
+        #region /// ШАГ 3: ПАРТНЁРЫ ///
+        bool Panel3Disabled = true;
         #endregion
     }
 }

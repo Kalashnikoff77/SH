@@ -1,7 +1,5 @@
 ﻿@page "/register"
 
-@using Common;
-
 <PageTitle>Регистрация</PageTitle>
 
 <MudText Align="Align.Left" Typo="Typo.h6" Class="mb-1 mb-md-3">Регистрация</MudText>
@@ -19,50 +17,59 @@
                 </div>
             </TitleContent>
             <ChildContent>
-                <MudStack Row="true" Wrap="Wrap.Wrap" Class="mb-6">
-                    <MudTextField @bind-Value="registerModel.Name" Validation="@(new Func<string, Task<string?>>(NameValidator))" HelperText="Пример: Иван да Марья Мск" AdornmentIcon="@Icons.Material.Outlined.Person" AdornmentColor="@NameIconColor" Adornment="Adornment.End" Label="Имя учётной записи" Typo="Typo.body1" Margin="Margin.Normal" Variant="Variant.Text" MaxLength="StaticData.DB_ACCOUNTS_NAME_MAX" />
-                    <MudTextField @bind-Value="registerModel.Email" Validation="@(new Func<string, Task<string?>>(EmailValidator))" HelperText="Пример: email@mail.ru" AdornmentIcon="@Icons.Material.Outlined.Mail" AdornmentColor="@EmailIconColor" Adornment="Adornment.End" Label="Email" Typo="Typo.body1" Margin="Margin.Normal" Variant="Variant.Text" MaxLength="StaticData.DB_ACCOUNTS_EMAIL_MAX" />
-                </MudStack>
-                <MudStack Row="true" Wrap="Wrap.Wrap" Class="mb-6">
-                    <MudTextField @bind-Value="registerModel.Password" Validation="@(new Func<string, string?>(PasswordValidator))" AdornmentColor="@PasswordIconColor" HelperText="Длина от 4 до 35 символов" Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Outlined.Lock" Label="Пароль" Typo="Typo.body1" Margin="Margin.Normal" Variant="Variant.Text" MaxLength="StaticData.DB_ACCOUNTS_PASSWORD_MAX" />
-                    <MudTextField @bind-Value="registerModel.Password2" Validation="@(new Func<string, string?>(Password2Validator))" AdornmentColor="@Password2IconColor" HelperText="Повторите тот же пароль" Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Outlined.Lock" Label="Повтор пароля" Typo="Typo.body1" Margin="Margin.Normal" Variant="Variant.Text" MaxLength="StaticData.DB_ACCOUNTS_PASSWORD_MAX" />
-                </MudStack>
-
-                <MudStack Row="true" Wrap="Wrap.Wrap" Class="mx-2">
-                    <MudAutocomplete T="string" Label="Страна" @bind-Value="countryText" SearchFunc="@SearchCountry"
-                        ResetValueOnEmptyText="true" CoerceText="true" CoerceValue="false" />
-                    <MudAutocomplete T="string" Label="Регион" @bind-Value="regionText" SearchFunc="@SearchRegion"
-                        ResetValueOnEmptyText="true" CoerceText="true" CoerceValue="false" Disabled="countryText == null ? true : false" />
-                </MudStack>
-
-            </ChildContent>
-        </MudExpansionPanel>
-
-        @* АВАТАР *@
-        <MudExpansionPanel Disabled="@Panel2Disabled" Expanded="Panel2Expanded">
-            <TitleContent>
-                <div class="d-flex">
-                    <MudIcon Icon="@Icons.Material.Filled.Image" class="mr-3" />
-                    <MudText><b>2. Аватар</b></MudText>
-                </div>
-            </TitleContent>
-            <ChildContent>
-                Panel Content
+                <MudGrid>
+                    <MudItem sm="6" xs="12">
+                        <MudTextField @bind-Value="registerModel.Name" Validation="@(new Func<string, Task<string?>>(NameValidator))" HelperText="Пример: Иван да Марья Мск" AdornmentIcon="@Icons.Material.Outlined.Person" AdornmentColor="@NameIconColor" Adornment="Adornment.End" Label="Имя учётной записи" Typo="Typo.body1" Margin="Margin.Normal" Variant="Variant.Text" MaxLength="StaticData.DB_ACCOUNTS_NAME_MAX" />
+                    </MudItem>
+                    <MudItem sm="6" xs="12">
+                        <MudTextField @bind-Value="registerModel.Email" Validation="@(new Func<string, Task<string?>>(EmailValidator))" HelperText="Пример: email@mail.ru" AdornmentIcon="@Icons.Material.Outlined.Mail" AdornmentColor="@EmailIconColor" Adornment="Adornment.End" Label="Email" Typo="Typo.body1" Margin="Margin.Normal" Variant="Variant.Text" MaxLength="StaticData.DB_ACCOUNTS_EMAIL_MAX" />
+                    </MudItem>
+                </MudGrid>
+                <MudGrid>
+                    <MudItem sm="6" xs="12">
+                        <MudTextField @bind-Value="registerModel.Password" Validation="@(new Func<string, string?>(PasswordValidator))" AdornmentColor="@PasswordIconColor" HelperText="Длина от 4 до 35 символов" Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Outlined.Lock" Label="Пароль" Typo="Typo.body1" Margin="Margin.Normal" Variant="Variant.Text" MaxLength="StaticData.DB_ACCOUNTS_PASSWORD_MAX" />
+                    </MudItem>
+                    <MudItem sm="6" xs="12">
+                        <MudTextField @bind-Value="registerModel.Password2" Validation="@(new Func<string, string?>(Password2Validator))" AdornmentColor="@Password2IconColor" HelperText="Повторите тот же пароль" Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Outlined.Lock" Label="Повтор пароля" Typo="Typo.body1" Margin="Margin.Normal" Variant="Variant.Text" MaxLength="StaticData.DB_ACCOUNTS_PASSWORD_MAX" />
+                    </MudItem>
+                </MudGrid>
+                <MudGrid>
+                    <MudItem sm="6" xs="12">
+                        <MudAutocomplete T="string" Label="Страна" @bind-Value="countryText" SearchFunc="@SearchCountry" ResetValueOnEmptyText="true" CoerceText="true" CoerceValue="false" />
+                    </MudItem>
+                    <MudItem sm="6" xs="12">
+                        <MudAutocomplete T="string" Label="Регион" @bind-Value="regionText" SearchFunc="@SearchRegion" ResetValueOnEmptyText="true" CoerceText="true" CoerceValue="false" Disabled="countryText == null ? true : false" />
+                    </MudItem>
+                </MudGrid>
             </ChildContent>
         </MudExpansionPanel>
 
         @* ПАРТНЁРЫ *@
-        <MudExpansionPanel Disabled="@Panel3Disabled">
+        <MudExpansionPanel Disabled="@Panel2Disabled" Expanded="Panel2Expanded">
             <TitleContent>
                 <div class="d-flex">
                     <MudIcon Icon="@Icons.Material.Filled.Group" class="mr-3" />
-                    <MudText><b>3. Партнёры</b></MudText>
+                    <MudText><b>2. Партнёры</b></MudText>
                 </div>
             </TitleContent>
             <ChildContent>
-                Panel Content
+                Партнёры
             </ChildContent>
         </MudExpansionPanel>
+
+        @* АВАТАР *@
+        <MudExpansionPanel Disabled="@Panel3Disabled" Expanded="Panel3Expanded">
+            <TitleContent>
+                <div class="d-flex">
+                    <MudIcon Icon="@Icons.Material.Filled.Image" class="mr-3" />
+                    <MudText><b>3. Аватар</b></MudText>
+                </div>
+            </TitleContent>
+            <ChildContent>
+                Аватар
+            </ChildContent>
+        </MudExpansionPanel>
+
     </MudExpansionPanels>
 
     <MudStack AlignItems="AlignItems.Center" Class="mt-5">

@@ -9,7 +9,6 @@ using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
 using Microsoft.AspNetCore.Components;
 using Common;
 using MudBlazor;
-using System.Xml.Linq;
 
 namespace UI.Components.Pages
 {
@@ -169,13 +168,13 @@ namespace UI.Components.Pages
         #endregion
 
 
-        #region /// ШАГ 2: АВАТАР ///
+        #region /// ШАГ 2: ПАРТНЁРЫ ///
         bool Panel2Disabled = true;
         bool Panel2Expanded = false;
         #endregion
 
 
-        #region /// ШАГ 3: ПАРТНЁРЫ ///
+        #region /// ШАГ 3: АВАТАР ///
         bool Panel3Disabled = true;
         bool Panel3Expanded = false;
         #endregion

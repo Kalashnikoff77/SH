@@ -12,6 +12,7 @@ namespace Common.Mapping
         {
             CreateMap<LoginModel, LoginRequestDto>();
             CreateMap<UpdatePhotoModel, UpdatePhotoRequestDto>();
+            CreateMap<AccountCheckRegisterModel, AccountCheckRegisterRequestDto>();
             CreateMap<AccountRegisterModel, AccountRegisterRequestDto>();
             CreateMap<AccountReloadModel, AccountReloadRequestDto>();
             CreateMap<AccountUpdateModel, AccountUpdateRequestDto>();

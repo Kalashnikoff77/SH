@@ -9,14 +9,15 @@ using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
 using Microsoft.AspNetCore.Components;
 using Common;
 using MudBlazor;
+using System.Xml.Linq;
 
 namespace UI.Components.Pages
 {
     public partial class Register
     {
         [Inject] IRepository<GetCountriesModel, GetCountriesRequestDto, GetCountriesResponseDto> _repoGetCountries { get; set; } = null!;
+        [Inject] IRepository<AccountCheckRegisterModel, AccountCheckRegisterRequestDto, AccountCheckRegisterResponseDto> _repoCheckRegister { get; set; } = null!;
         [Inject] IRepository<AccountRegisterModel, AccountRegisterRequestDto, ResponseDtoBase> _repoRegister { get; set; } = null!;
-        [Inject] IRepository<LoginModel, LoginRequestDto, LoginResponseDto> _repoLogin { get; set; } = null!;
         [Inject] ProtectedLocalStorage _protectedLocalStore { get; set; } = null!;
         [Inject] ProtectedSessionStorage _protectedSessionStore { get; set; } = null!;
         [Inject] IJSProcessor _JSProcessor { get; set; } = null!;
@@ -30,6 +31,7 @@ namespace UI.Components.Pages
             var apiResponse = await _repoGetCountries.HttpPostAsync(new GetCountriesModel());
             countries.AddRange(apiResponse.Response.Countries);
         }
+
 
         #region /// ШАГ 1: ОБЩЕЕ ///
         Color Panel1Color = Color.Default;
@@ -88,28 +90,39 @@ namespace UI.Components.Pages
                 .Where(x => x.Contains(value, StringComparison.InvariantCultureIgnoreCase));
         }
 
+        // NameValidator
         Color NameIconColor = Color.Default;
-        string? NameValidator(string name)
+        async Task<string?> NameValidator(string name)
         {
             string? errorMessage = null;
             if (string.IsNullOrWhiteSpace(name) || name.Length < StaticData.DB_ACCOUNTS_NAME_MIN)
                 errorMessage = $"Имя должно содержать {StaticData.DB_ACCOUNTS_NAME_MIN}-{StaticData.DB_ACCOUNTS_NAME_MAX} символов";
 
-            CheckPanel1Validation(ref NameIconColor, errorMessage);
+            var apiResponse = await _repoCheckRegister.HttpPostAsync(new AccountCheckRegisterModel { AccountName = name });
+            if (apiResponse.Response.AccountNameExists)
+                errorMessage = $"Это имя уже занято. Выберите другое.";
+
+            CheckPanel1Validator(ref NameIconColor, errorMessage);
             return errorMessage;
         }
 
+        // EmailValidator
         Color EmailIconColor = Color.Default;
-        string? EmailValidator(string email)
+        async Task<string?> EmailValidator(string email)
         {
             string? errorMessage = null;
             if (string.IsNullOrWhiteSpace(email) || email.Length < StaticData.DB_ACCOUNTS_EMAIL_MIN)
                 errorMessage = $"Email может содержать {StaticData.DB_ACCOUNTS_EMAIL_MIN}-{StaticData.DB_ACCOUNTS_EMAIL_MAX} символов";
 
-            CheckPanel1Validation(ref EmailIconColor, errorMessage);
+            var apiResponse = await _repoCheckRegister.HttpPostAsync(new AccountCheckRegisterModel { AccountEmail = email });
+            if (apiResponse.Response.AccountEmailExists)
+                errorMessage = $"Этот email уже зарегистрирован. Забыли пароль?";
+
+            CheckPanel1Validator(ref EmailIconColor, errorMessage);
             return errorMessage;
         }
 
+        // PasswordValidator
         Color PasswordIconColor = Color.Default;
         string? PasswordValidator(string password)
         {
@@ -117,10 +130,11 @@ namespace UI.Components.Pages
             if (string.IsNullOrWhiteSpace(password) || password.Length < StaticData.DB_ACCOUNTS_PASSWORD_MIN)
                 errorMessage = $"Пароль может содержать {StaticData.DB_ACCOUNTS_PASSWORD_MIN}-{StaticData.DB_ACCOUNTS_PASSWORD_MAX} символов";
 
-            CheckPanel1Validation(ref PasswordIconColor, errorMessage);
+            CheckPanel1Validator(ref PasswordIconColor, errorMessage);
             return errorMessage;
         }
 
+        // Password2Validator
         Color Password2IconColor = Color.Default;
         string? Password2Validator(string password)
         {
@@ -128,11 +142,12 @@ namespace UI.Components.Pages
             if (registerModel.Password != password)
                 errorMessage = $"Пароли не совпадают";
 
-            CheckPanel1Validation(ref Password2IconColor, errorMessage);
+            CheckPanel1Validator(ref Password2IconColor, errorMessage);
             return errorMessage;
         }
 
-        void CheckPanel1Validation(ref Color color, string? errorMessage)
+        // CheckPanel1Validator
+        void CheckPanel1Validator(ref Color color, string? errorMessage)
         {
             color = errorMessage == null ? Color.Success : Color.Error;
 
@@ -159,8 +174,10 @@ namespace UI.Components.Pages
         bool Panel2Expanded = false;
         #endregion
 
+
         #region /// ШАГ 3: ПАРТНЁРЫ ///
         bool Panel3Disabled = true;
+        bool Panel3Expanded = false;
         #endregion
     }
 }

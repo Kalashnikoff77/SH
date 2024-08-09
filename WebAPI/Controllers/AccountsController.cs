@@ -182,6 +182,33 @@ namespace WebAPI.Controllers
         }
 
 
+        [Route("CheckRegister"), HttpPost]
+        public async Task<AccountCheckRegisterResponseDto> CheckRegisterAsync(AccountCheckRegisterRequestDto request)
+        {
+            var response = new AccountCheckRegisterResponseDto();
+
+            using (var conn = new SqlConnection(connectionString))
+            {
+                conn.Open();
+
+                if (request.AccountName != null)
+                {
+                    var sql = $"SELECT TOP 1 Id FROM Accounts WHERE Name = @AccountName";
+                    var result = await conn.QueryFirstOrDefaultAsync<int?>(sql, new { request.AccountName });
+                    response.AccountNameExists = result == null ? false : true;
+                }
+
+                if (request.AccountEmail != null)
+                {
+                    var sql = $"SELECT TOP 1 Id FROM Accounts WHERE Email = @AccountEmail";
+                    var result = await conn.QueryFirstOrDefaultAsync<int?>(sql, new { request.AccountEmail });
+                    response.AccountEmailExists = result == null ? false : true;
+                }
+            }
+            return response;
+        }
+
+
         [Route("Update"), HttpPost, Authorize]
         public async Task<AccountUpdateResponseDto> UpdateAsync(AccountUpdateRequestDto request)
         {

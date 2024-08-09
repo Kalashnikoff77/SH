@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
 using Microsoft.AspNetCore.Components;
 using Common;
 using MudBlazor;
+using Microsoft.AspNetCore.Components.Web;
 
 namespace UI.Components.Pages
 {
@@ -171,6 +172,26 @@ namespace UI.Components.Pages
         #region /// ШАГ 2: ПАРТНЁРЫ ///
         bool Panel2Disabled = true;
         bool Panel2Expanded = false;
+        List<UsersDto> Users = new List<UsersDto> { 
+            new UsersDto { Id = 0, Name = "Олег", Gender = 0, Weight=80, Height=180, BirthDate = DateTime.Parse("29.01.1977") },
+            new UsersDto { Id = 1, Name = "Марина", Gender = 1, Weight=74, Height=173, BirthDate = DateTime.Parse("01.07.1969") }
+        };
+
+        void StartedEditingUser(UsersDto user)
+        {
+        }
+
+        void CanceledEditingUser(UsersDto user)
+        {
+        }
+
+        void CommittedUserChanges(UsersDto user)
+        {
+        }
+
+        void AddItem(MouseEventArgs args)
+        {
+        }
         #endregion
 
 

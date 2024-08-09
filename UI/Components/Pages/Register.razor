@@ -9,7 +9,8 @@
     <MudExpansionPanels MultiExpansion="true" Elevation="3">
 
         @* ОБЩИЕ *@
-        <MudExpansionPanel Expanded="true">
+        @* <MudExpansionPanel Expanded="true"> *@
+        <MudExpansionPanel Expanded="false">
             <TitleContent>
                 <div class="d-flex">
                     <MudIcon Color="Panel1Color" Icon="@Icons.Material.Filled.Settings" class="mr-3" />
@@ -45,7 +46,8 @@
         </MudExpansionPanel>
 
         @* ПАРТНЁРЫ *@
-        <MudExpansionPanel Disabled="@Panel2Disabled" Expanded="Panel2Expanded">
+        @* <MudExpansionPanel Disabled="@Panel2Disabled" Expanded="Panel2Expanded"> *@
+        <MudExpansionPanel Disabled="false" Expanded="true">
             <TitleContent>
                 <div class="d-flex">
                     <MudIcon Icon="@Icons.Material.Filled.Group" class="mr-3" />
@@ -53,7 +55,53 @@
                 </div>
             </TitleContent>
             <ChildContent>
-                Партнёры
+                
+                <MudDataGrid T="UsersDto" Items="@Users" Striped="true" ReadOnly="true" EditMode="DataGridEditMode.Form"
+                             StartedEditingItem="@StartedEditingUser" CanceledEditingItem="@CanceledEditingUser" CommittedItemChanges="@CommittedUserChanges"
+                             Bordered="true" Dense="false" EditTrigger="DataGridEditTrigger.Manual"
+                             EditDialogOptions="new DialogOptions { NoHeader=true }">
+                    <Columns>
+                        <PropertyColumn Property="x => x.Name" Title="Имя" Hidden="true" Editable="true" />
+                        <PropertyColumn Property="x => x.Height" Title="Рост" Hidden="true" Editable="true" />
+                        <PropertyColumn Property="x => x.Weight" Title="Вес" Hidden="true" Editable="true" />
+                        <PropertyColumn Property="x => x.BirthDate" Title="Дата рождения" Hidden="true" Editable="true">
+                            <EditTemplate>
+                                <MudDatePicker Date="context.Item.BirthDate" Label="Дата рождения" DateFormat="dd.MM.yyyy" Editable="true" />
+                            </EditTemplate>
+                        </PropertyColumn>
+                        <TemplateColumn Title="Общее" Context="user">
+                            <CellTemplate>
+                                <MudStack AlignItems="AlignItems.Center" Row="true">
+                                    @if (user.Item.Gender == 0)
+                                    {
+                                        <MudIcon Icon="@Icons.Material.Outlined.Man" Color="Color.Info" Size="Size.Large" />
+                                    }
+                                    else
+                                    {
+                                        <MudIcon Icon="@Icons.Material.Outlined.Woman" Color="Color.Error" Size="Size.Large" />
+                                    }
+                                    <MudText Typo="Typo.body2"><b>@user.Item.Name</b><br />@user.Item.ToGenderAgeString()</MudText>
+                                </MudStack>
+                            </CellTemplate>
+                        </TemplateColumn>
+
+                        <TemplateColumn HeaderStyle="width:135px" Context="user" Title="Рост / вес">
+                            <CellTemplate>
+                                <MudText Typo="Typo.body2">@user.Item.Height см / @user.Item.Weight кг</MudText>
+                            </CellTemplate>
+                        </TemplateColumn>
+
+                        <TemplateColumn HeaderStyle="width:58px">
+                            <CellTemplate>
+                                <MudIconButton Size="@Size.Small" Icon="@Icons.Material.Outlined.Edit" OnClick="@context.Actions.StartEditingItemAsync" />
+                            </CellTemplate>
+                        </TemplateColumn>
+
+                    </Columns>
+                </MudDataGrid>
+                
+                <MudButton ButtonType="ButtonType.Button" Color="Color.Primary" Variant="Variant.Filled" OnClick="AddItem" Class="mt-5">Добавить</MudButton>
+
             </ChildContent>
         </MudExpansionPanel>
 

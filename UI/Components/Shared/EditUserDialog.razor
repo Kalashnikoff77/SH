@@ -2,9 +2,10 @@
     <TitleContent>@Title</TitleContent>
 
     <DialogContent>
-        <MudGrid>
+        <MudGrid Spacing="3">
             <MudItem xs="12">
                 <MudTextField @bind-Value="User.Name"
+                              Validation="@(new Func<string, string?>(NameValidator))"
                               HelperText="Пример: Марина"
                               AdornmentIcon="@Icons.Material.Outlined.Person"
                               AdornmentColor="@NameIconColor"
@@ -15,23 +16,28 @@
                               MaxLength="StaticData.DB_USERS_NAME_MAX" />
             </MudItem>
 
-            <MudItem sm="6" xs="12">
-                <MudRadioGroup @bind-Value="User.Gender">
+            <MudItem sm="6" xs="12" Class="pt-0">
+                <MudRadioGroup Class="mt-sm-5 mt-xs-1" @bind-Value="User.Gender">
                     <MudRadio Value="0" Color="Color.Info">Муж.</MudRadio>
                     <MudRadio Value="1" Color="Color.Secondary">Жен.</MudRadio>
                 </MudRadioGroup>
             </MudItem>
 
-            <MudItem sm="6" xs="12">
-                <MudDatePicker Label="Дата рождения" @bind-Date="birthDate" HelperText="От 20 до 75 лет" ShowToolbar="false" />
+            <MudItem sm="6" xs="12" Class="pt-0">
+                <MudDatePicker Label="Дата рождения"
+                    @bind-Date="birthDate"
+                    OpenTo="OpenTo.Year"
+                    MinDate="DateTime.Now.AddYears(-75)"
+                    MaxDate="DateTime.Now.AddYears(-20)"
+                    HelperText="От 20 до 75 лет" ShowToolbar="false" />
             </MudItem>
 
             <MudItem sm="6" xs="12">
-                <MudNumericField @bind-Value="User.Height" Label="Рост" HelperText="@($"От {StaticData.DB_USERS_HEIGHT_MIN} до {StaticData.DB_USERS_HEIGHT_MAX} см")" Variant="Variant.Text" />
+                <MudNumericField @bind-Value="User.Height" Validation="@(new Func<short, string?>(HeightValidator))" Label="Рост" HelperText="@($"От {StaticData.DB_USERS_HEIGHT_MIN} до {StaticData.DB_USERS_HEIGHT_MAX} см")" Variant="Variant.Text" />
             </MudItem>
 
             <MudItem sm="6" xs="12">
-                <MudNumericField @bind-Value="User.Weight" Label="Вес" HelperText="@($"От {StaticData.DB_USERS_WEIGHT_MIN} до {StaticData.DB_USERS_WEIGHT_MAX} кг")" Variant="Variant.Text" />
+                <MudNumericField @bind-Value="User.Weight" Validation="@(new Func<short, string?>(WeightValidator))" Label="Вес" HelperText="@($"От {StaticData.DB_USERS_WEIGHT_MIN} до {StaticData.DB_USERS_WEIGHT_MAX} кг")" Variant="Variant.Text" />
             </MudItem>
 
         </MudGrid>
@@ -39,24 +45,6 @@
 
     <DialogActions>
         <MudButton Color="Color.Error" StartIcon="@Icons.Material.Outlined.Close" OnClick="Cancel">Отмена</MudButton>
-        <MudButton Color="Color.Info" Variant="Variant.Filled" StartIcon="@Icons.Material.Outlined.Check" Size="Size.Small" OnClick="Submit">Добавить</MudButton>
+        <MudButton Color="Color.Info" Variant="Variant.Filled" StartIcon="@Icons.Material.Outlined.Add" Size="Size.Small" OnClick="Submit">Добавить</MudButton>
     </DialogActions>
 </MudDialog>
-
-
-@code {
-    [CascadingParameter]
-    MudDialogInstance MudDialog { get; set; } = null!;
-
-    [Parameter]
-    public UsersDto User { get; set; } = new UsersDto();
-
-    [Parameter]
-    public string Title { get; set; } = null!;
-
-    Color NameIconColor = Color.Default;
-    DateTime? birthDate { get; set; }
-
-    void Submit() => MudDialog.Close(DialogResult.Ok(User));
-    void Cancel() => MudDialog.Cancel();
-}

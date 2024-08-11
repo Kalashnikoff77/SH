@@ -56,10 +56,7 @@
             </TitleContent>
             <ChildContent>
                 
-                <MudDataGrid T="UsersDto" Items="@Users" Striped="true" ReadOnly="true" EditMode="DataGridEditMode.Form"
-                             StartedEditingItem="@StartedEditingUser" CanceledEditingItem="@CanceledEditingUser" CommittedItemChanges="@CommittedUserChanges"
-                             Bordered="true" Dense="false" EditTrigger="DataGridEditTrigger.Manual"
-                             EditDialogOptions="new DialogOptions { NoHeader=true }">
+                <MudDataGrid T="UsersDto" Items="@Users" Striped="true" ReadOnly="true" EditMode="DataGridEditMode.Form" Bordered="true">
                     <Columns>
                         <PropertyColumn Property="x => x.Name" Title="Имя" Hidden="true" Editable="true" />
                         <PropertyColumn Property="x => x.Height" Title="Рост" Hidden="true" Editable="true" />
@@ -95,7 +92,7 @@
                             <CellTemplate>
                                 <MudStack Row="true" Spacing="2">
                                     <MudIconButton Size="@Size.Small" Icon="@Icons.Material.Outlined.Edit" Color="Color.Info" OnClick="@context.Actions.StartEditingItemAsync" />
-                                    <MudIconButton Size="@Size.Small" Icon="@Icons.Material.Outlined.Delete" Color="Color.Error" OnClick="@context.Actions.StartEditingItemAsync" />
+                                    <MudIconButton Size="@Size.Small" Icon="@Icons.Material.Outlined.Delete" Color="Color.Error" OnClick="async () => await DeleteUserDialogAsync(context.Item)" />
                                 </MudStack>
                             </CellTemplate>
                         </TemplateColumn>

@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Components;
 using Common;
 using MudBlazor;
 using Microsoft.AspNetCore.Components.Web;
+using UI.Components.Shared;
 
 namespace UI.Components.Pages
 {
@@ -21,6 +22,7 @@ namespace UI.Components.Pages
         [Inject] ProtectedLocalStorage _protectedLocalStore { get; set; } = null!;
         [Inject] ProtectedSessionStorage _protectedSessionStore { get; set; } = null!;
         [Inject] IJSProcessor _JSProcessor { get; set; } = null!;
+        [Inject] IDialogService DialogService { get; set; } = null!;
 
         AccountRegisterModel registerModel = new AccountRegisterModel();
         List<CountriesViewDto> countries { get; set; } = new List<CountriesViewDto>();
@@ -177,20 +179,33 @@ namespace UI.Components.Pages
             new UsersDto { Id = 1, Name = "Марина", Gender = 1, Weight=74, Height=173, BirthDate = DateTime.Parse("01.07.1969") }
         };
 
-        void StartedEditingUser(UsersDto user)
+        async Task DeleteUserDialogAsync(UsersDto user)
         {
+            var parameters = new DialogParameters<ConfirmDialog>
+            {
+                { x => x.ContentText, $"Удалить пользователя {user.Name}?" },
+                { x => x.ButtonText, "Удалить" },
+                { x => x.Color, Color.Error }
+            };
+            var options = new DialogOptions() { CloseButton = true, MaxWidth = MaxWidth.ExtraSmall };
+            var resultDialog = await DialogService.ShowAsync<ConfirmDialog>($"Удаление {user.Name}", parameters, options);
+            var result = await resultDialog.Result;
+            
+            if (result != null && result.Canceled == false && Users.Contains(user))
+                Users.Remove(user);
         }
 
-        void CanceledEditingUser(UsersDto user)
+        async Task AddItem(MouseEventArgs args)
         {
-        }
+            var parameters = new DialogParameters<EditUserDialog>
+            {
+                { x => x.Title, "Добавление партнёра" },
+                { x => x.User, new UsersDto() }
+            };
+            var options = new DialogOptions { CloseOnEscapeKey = true };
 
-        void CommittedUserChanges(UsersDto user)
-        {
-        }
-
-        void AddItem(MouseEventArgs args)
-        {
+            var resultDialog = await DialogService.ShowAsync<EditUserDialog>("Добавление пользователя", parameters, options);
+            var result = await resultDialog.Result;
         }
         #endregion
 

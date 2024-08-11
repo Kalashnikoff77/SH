@@ -91,17 +91,21 @@
                             </CellTemplate>
                         </TemplateColumn>
 
-                        <TemplateColumn HeaderStyle="width:58px">
+                        <TemplateColumn HeaderStyle="width:90px">
                             <CellTemplate>
-                                <MudIconButton Size="@Size.Small" Icon="@Icons.Material.Outlined.Edit" OnClick="@context.Actions.StartEditingItemAsync" />
+                                <MudStack Row="true" Spacing="2">
+                                    <MudIconButton Size="@Size.Small" Icon="@Icons.Material.Outlined.Edit" Color="Color.Info" OnClick="@context.Actions.StartEditingItemAsync" />
+                                    <MudIconButton Size="@Size.Small" Icon="@Icons.Material.Outlined.Delete" Color="Color.Error" OnClick="@context.Actions.StartEditingItemAsync" />
+                                </MudStack>
                             </CellTemplate>
                         </TemplateColumn>
 
                     </Columns>
                 </MudDataGrid>
-                
-                <MudButton ButtonType="ButtonType.Button" Color="Color.Primary" Variant="Variant.Filled" OnClick="AddItem" Class="mt-5">Добавить</MudButton>
 
+                <MudStack AlignItems="AlignItems.End">
+                    <MudButton ButtonType="ButtonType.Button" Color="Color.Info" Size="Size.Small" Variant="Variant.Filled" OnClick="AddItem" Class="mt-5">Добавить</MudButton>
+                </MudStack>
             </ChildContent>
         </MudExpansionPanel>
 

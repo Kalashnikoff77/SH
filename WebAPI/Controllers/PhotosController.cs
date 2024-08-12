@@ -97,31 +97,6 @@ namespace WebAPI.Controllers
         }
 
 
-        [Route("UploadTemp"), HttpPost]
-        public async Task<UploadTempFileResponseDto> UploadTempAsync(IBrowserFile file)
-        {
-            var response = new UploadTempFileResponseDto();
-
-            //if (file == null)
-            //    throw new BadRequestException("Размер файла не более 35 Мб.");
-
-            //var dir = "../UI/wwwroot/images/AccountsPhotos/temp/";
-            //var baseFileName = DateTime.Now.ToString("yyyyMMdd") + "_" + Guid.NewGuid().ToString();
-            //response.originalFileName = baseFileName + Path.GetExtension(file.FileName);
-            //response.previewFileName = baseFileName + "_" + EnumImageSize.s150x150 + ".jpg";
-
-            //using (var stream = new FileStream(dir + response.originalFileName, FileMode.Create))
-            //    file.CopyTo(stream);
-
-            //using (MemoryStream output = new MemoryStream(500000))
-            //{
-            //    MagicImageProcessor.ProcessImage(dir + response.originalFileName, output, StaticData.Images[EnumImageSize.s150x150]);
-            //    await System.IO.File.WriteAllBytesAsync(dir + response.previewFileName, output.ToArray());
-            //}
-            return response;
-        }
-
-
         private async Task ProcessPhotoFile(IFormFile file, int accountId, Guid guid)
         {
             if (!string.IsNullOrWhiteSpace(file.FileName))

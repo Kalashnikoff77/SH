@@ -3,6 +3,7 @@ using Common.Dto;
 using Common.Dto.Requests;
 using Common.Dto.Responses;
 using Common.Dto.Views;
+using Common.Enums;
 using Common.JSProcessor;
 using Common.Models;
 using Common.Repository;
@@ -11,10 +12,9 @@ using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
 using Microsoft.AspNetCore.Components.Web;
 using MudBlazor;
-using System;
+using PhotoSauce.MagicScaler;
 using UI.Components.Shared;
 using UI.Extensions;
-using static MudBlazor.CategoryTypes;
 
 namespace UI.Components.Pages
 {
@@ -23,8 +23,6 @@ namespace UI.Components.Pages
         [Inject] IRepository<GetCountriesModel, GetCountriesRequestDto, GetCountriesResponseDto> _repoGetCountries { get; set; } = null!;
         [Inject] IRepository<AccountCheckRegisterModel, AccountCheckRegisterRequestDto, AccountCheckRegisterResponseDto> _repoCheckRegister { get; set; } = null!;
         [Inject] IRepository<AccountRegisterModel, AccountRegisterRequestDto, ResponseDtoBase> _repoRegister { get; set; } = null!;
-
-        [Inject] IRepository<AccountRegisterModel, AccountRegisterRequestDto, UploadTempFileResponseDto> _repoUpload { get; set; } = null!;
 
         [Inject] ProtectedLocalStorage _protectedLocalStore { get; set; } = null!;
         [Inject] ProtectedSessionStorage _protectedSessionStore { get; set; } = null!;
@@ -233,24 +231,31 @@ namespace UI.Components.Pages
         #region /// ШАГ 3: АВАТАР ///
         bool Panel3Disabled = true;
         bool Panel3Expanded = false;
-        
+
+        const string dir = "../UI/wwwroot/images/AccountsPhotos/temp/";
+        string? baseFileName;
+        string? originalFileName;
+        string? previewFileName;
+
         async void UploadAvatar(IBrowserFile file)
         {
-            var uploadResponse = await _repoUpload.HttpPostAsync(registerModel);
+            if (File.Exists(originalFileName))
+                File.Delete(originalFileName);
+            if (File.Exists(previewFileName))
+                File.Delete(previewFileName);
 
+            baseFileName = DateTime.Now.ToString("yyyyMMdd") + "_" + Guid.NewGuid().ToString();
+            originalFileName = dir + baseFileName + Path.GetExtension(file.Name);
+            previewFileName = dir + baseFileName + "_" + EnumImageSize.s150x150 + ".jpg";
 
-            var buffer = new byte[file.Size];
+            await using (FileStream fs = new(originalFileName, FileMode.Create))
+                await file.OpenReadStream(file.Size).CopyToAsync(fs);
 
-            var rs = file.OpenReadStream(file.Size);
-            await rs.ReadAsync(buffer.AsMemory(0, (int)file.Size));
-
-            var f = File.Create(@"C:\!!!\test\image.jpg", buffer.Length, FileOptions.None);
-
-            await f.WriteAsync(buffer);
-
-            await f.FlushAsync();
-            f.Dispose();
-            rs.Dispose();
+            using (MemoryStream output = new MemoryStream(500000))
+            {
+                MagicImageProcessor.ProcessImage(originalFileName, output, StaticData.Images[EnumImageSize.s150x150]);
+                await File.WriteAllBytesAsync(previewFileName, output.ToArray());
+            }
         }
         #endregion
     }

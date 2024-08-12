@@ -15,10 +15,11 @@ using MudBlazor;
 using PhotoSauce.MagicScaler;
 using UI.Components.Shared;
 using UI.Extensions;
+using UI.Models;
 
 namespace UI.Components.Pages
 {
-    public partial class Register
+    public partial class Register : IDisposable
     {
         [Inject] IRepository<GetCountriesModel, GetCountriesRequestDto, GetCountriesResponseDto> _repoGetCountries { get; set; } = null!;
         [Inject] IRepository<AccountCheckRegisterModel, AccountCheckRegisterRequestDto, AccountCheckRegisterResponseDto> _repoCheckRegister { get; set; } = null!;
@@ -33,8 +34,46 @@ namespace UI.Components.Pages
         List<CountriesViewDto> countries { get; set; } = new List<CountriesViewDto>();
         List<RegionsDto>? regions { get; set; } = new List<RegionsDto>();
 
+        Dictionary<short, TabPanel> TabPanels { get; set; } = null!;
+
+        bool RegisterButtonDisabled = true;
+
         protected override async Task OnInitializedAsync()
         {
+            TabPanels = new Dictionary<short, TabPanel>
+            {
+                { 
+                    1, new TabPanel {
+                        IsDisabled = false, IsExpanded = true,
+                        Items = new Dictionary<string, TabPanelItem>
+                        {
+                            { nameof(registerModel.Name), new TabPanelItem() },
+                            { nameof(registerModel.Email), new TabPanelItem() },
+                            { nameof(registerModel.Password), new TabPanelItem() },
+                            { nameof(registerModel.Password2), new TabPanelItem() },
+                            { nameof(registerModel.Country), new TabPanelItem() },
+                            { nameof(registerModel.Country.Region), new TabPanelItem() }
+                        }
+                    }
+                },
+                {
+                    2, new TabPanel {
+                        IsDisabled = true, IsExpanded = false,
+                        Items = new Dictionary<string, TabPanelItem> { { nameof(registerModel.Users), new TabPanelItem() } } 
+                    }
+                },
+                {
+                    3, new TabPanel {
+                        IsDisabled = true, IsExpanded = false,
+                        Items = new Dictionary<string, TabPanelItem> { { nameof(registerModel.Avatar), new TabPanelItem() } }
+                    }
+                }
+            };
+
+            var valid = TabPanels[1].Items.All(x => x.Value.IsValid == false) && TabPanels[2].Items.All(x => x.Value.IsValid == false);
+
+            var valid2 = TabPanels.Any(x => x.Value.Items.Any(x => x.Value.IsValid == false));
+
             var apiResponse = await _repoGetCountries.HttpPostAsync(new GetCountriesModel());
             countries.AddRange(apiResponse.Response.Countries);
         }
@@ -97,7 +136,6 @@ namespace UI.Components.Pages
                 .Where(x => x.Contains(value, StringComparison.InvariantCultureIgnoreCase));
         }
 
-        // NameValidator
         Color NameIconColor = Color.Default;
         async Task<string?> NameValidator(string name)
         {
@@ -113,7 +151,6 @@ namespace UI.Components.Pages
             return errorMessage;
         }
 
-        // EmailValidator
         Color EmailIconColor = Color.Default;
         async Task<string?> EmailValidator(string email)
         {
@@ -129,7 +166,6 @@ namespace UI.Components.Pages
             return errorMessage;
         }
 
-        // PasswordValidator
         Color PasswordIconColor = Color.Default;
         string? PasswordValidator(string password)
         {
@@ -141,7 +177,6 @@ namespace UI.Components.Pages
             return errorMessage;
         }
 
-        // Password2Validator
         Color Password2IconColor = Color.Default;
         string? Password2Validator(string password)
         {
@@ -153,19 +188,43 @@ namespace UI.Components.Pages
             return errorMessage;
         }
 
-        // CheckPanel1Validator
+        Color CountryIconColor = Color.Default;
+        string? CountryValidator(string country)
+        {
+            string? errorMessage = null;
+            if (string.IsNullOrWhiteSpace(countryText))
+                errorMessage = $"Выберите страну";
+
+            CheckPanel1Validator(ref CountryIconColor, errorMessage);
+            return errorMessage;
+        }
+
+        Color RegionIconColor = Color.Default;
+        string? RegionValidator(string region)
+        {
+            string? errorMessage = null;
+            if (string.IsNullOrWhiteSpace(regionText))
+                errorMessage = $"Выберите регион";
+
+            CheckPanel1Validator(ref RegionIconColor, errorMessage);
+            return errorMessage;
+        }
+
+
         void CheckPanel1Validator(ref Color color, string? errorMessage)
         {
             color = errorMessage == null ? Color.Success : Color.Error;
 
-            if (NameIconColor == Color.Error || EmailIconColor == Color.Error || PasswordIconColor == Color.Error || Password2IconColor == Color.Error)
+            if (NameIconColor == Color.Error || EmailIconColor == Color.Error || PasswordIconColor == Color.Error || Password2IconColor == Color.Error || regionText == null)
             {
                 Panel2Disabled = true;
+                Panel3Disabled = true;
                 Panel2Expanded = false;
+                Panel3Expanded = false;
                 Panel1Color = Color.Error;
             }
 
-            if (NameIconColor == Color.Success && EmailIconColor == Color.Success && PasswordIconColor == Color.Success && Password2IconColor == Color.Success)
+            if (NameIconColor == Color.Success && EmailIconColor == Color.Success && PasswordIconColor == Color.Success && Password2IconColor == Color.Success && regionText != null)
             {
                 Panel2Disabled = false;
                 Panel2Expanded = true;
@@ -177,12 +236,15 @@ namespace UI.Components.Pages
 
 
         #region /// ШАГ 2: ПАРТНЁРЫ ///
+        Color Panel2Color = Color.Default;
         bool Panel2Disabled = true;
         bool Panel2Expanded = false;
-        List<UsersDto> Users = new List<UsersDto> { 
-            new UsersDto { Id = 0, Name = "Олег", Gender = 0, Weight=80, Height=180, BirthDate = DateTime.Parse("29.01.1977") },
-            new UsersDto { Id = 1, Name = "Марина", Gender = 1, Weight=74, Height=173, BirthDate = DateTime.Parse("01.07.1969") }
-        };
+        //List<UsersDto> Users = new List<UsersDto> { 
+        //    new UsersDto { Id = 0, Name = "Олег", Gender = 0, Weight=80, Height=180, BirthDate = DateTime.Parse("29.01.1977") },
+        //    new UsersDto { Id = 1, Name = "Марина", Gender = 1, Weight=74, Height=173, BirthDate = DateTime.Parse("01.07.1969") }
+        //};
+
+        List<UsersDto> Users = new List<UsersDto>();
 
         async Task DeleteUserDialogAsync(UsersDto user)
         {
@@ -198,6 +260,8 @@ namespace UI.Components.Pages
             
             if (result != null && result.Canceled == false && Users.Contains(user))
                 Users.Remove(user);
+
+            CheckPanel2Validator();
         }
 
         async Task AddUserAsync(MouseEventArgs args)
@@ -209,6 +273,8 @@ namespace UI.Components.Pages
             var result = await resultDialog.Result;
             if (result != null && result.Canceled == false && result.Data != null)
                 Users.Add((UsersDto)result.Data);
+
+            CheckPanel2Validator();
         }
 
         async Task UpdateUserAsync(UsersDto user)
@@ -225,6 +291,23 @@ namespace UI.Components.Pages
                 Users.Insert(position, result.Data.DeepCopy<UsersDto>()!);
             }
         }
+
+        void CheckPanel2Validator()
+        {
+            if (Users.Count == 0)
+            {
+                Panel3Disabled = true;
+                Panel3Expanded = false;
+                Panel2Color = Color.Error;
+            }
+            else
+            {
+                Panel3Disabled = false;
+                Panel3Expanded = true;
+                Panel2Color = Color.Success;
+            }
+            StateHasChanged();
+        }
         #endregion
 
 
@@ -236,27 +319,50 @@ namespace UI.Components.Pages
         string? baseFileName;
         string? originalFileName;
         string? previewFileName;
+        string? urlPreviewImage;
 
         async void UploadAvatar(IBrowserFile file)
         {
-            if (File.Exists(originalFileName))
-                File.Delete(originalFileName);
-            if (File.Exists(previewFileName))
-                File.Delete(previewFileName);
+            if (File.Exists(dir + originalFileName))
+                File.Delete(dir + originalFileName);
+            if (File.Exists(dir + previewFileName))
+                File.Delete(dir + previewFileName);
 
             baseFileName = DateTime.Now.ToString("yyyyMMdd") + "_" + Guid.NewGuid().ToString();
-            originalFileName = dir + baseFileName + Path.GetExtension(file.Name);
-            previewFileName = dir + baseFileName + "_" + EnumImageSize.s150x150 + ".jpg";
+            originalFileName = baseFileName + Path.GetExtension(file.Name);
+            previewFileName = baseFileName + "_" + EnumImageSize.s150x150 + ".jpg";
 
-            await using (FileStream fs = new(originalFileName, FileMode.Create))
+            await using (FileStream fs = new(dir + originalFileName, FileMode.Create))
                 await file.OpenReadStream(file.Size).CopyToAsync(fs);
 
             using (MemoryStream output = new MemoryStream(500000))
             {
-                MagicImageProcessor.ProcessImage(originalFileName, output, StaticData.Images[EnumImageSize.s150x150]);
-                await File.WriteAllBytesAsync(previewFileName, output.ToArray());
+                MagicImageProcessor.ProcessImage(dir + originalFileName, output, StaticData.Images[EnumImageSize.s150x150]);
+                await File.WriteAllBytesAsync(dir + previewFileName, output.ToArray());
             }
+
+            urlPreviewImage = previewFileName;
+
+            CheckRegisterButton();
+            StateHasChanged();
         }
         #endregion
+
+
+        void CheckRegisterButton()
+        {
+            if (Panel3Expanded && urlPreviewImage != null)
+                RegisterButtonDisabled = false;
+            else
+                RegisterButtonDisabled = true;
+        }
+
+        public void Dispose()
+        {
+            if (File.Exists(dir + originalFileName))
+                File.Delete(dir + originalFileName);
+            if (File.Exists(dir + previewFileName))
+                File.Delete(dir + previewFileName);
+        }
     }
 }

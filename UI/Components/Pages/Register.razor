@@ -9,8 +9,8 @@
     <MudExpansionPanels MultiExpansion="true" Elevation="3">
 
         @* ОБЩИЕ *@
-        @* <MudExpansionPanel Expanded="true"> *@
-        <MudExpansionPanel Expanded="false">
+        <MudExpansionPanel Expanded="true">
+        @* <MudExpansionPanel Expanded="false"> *@
             <TitleContent>
                 <div class="d-flex">
                     <MudIcon Color="Panel1Color" Icon="@Icons.Material.Filled.Settings" class="mr-3" />
@@ -36,10 +36,14 @@
                 </MudGrid>
                 <MudGrid>
                     <MudItem sm="6" xs="12">
-                        <MudAutocomplete T="string" Label="Страна" @bind-Value="countryText" SearchFunc="@SearchCountry" ResetValueOnEmptyText="true" CoerceText="true" CoerceValue="false" />
+                        <MudStack Spacing="0" Class="mx-2 mt-6">
+                            <MudAutocomplete AdornmentIcon="@Icons.Material.Outlined.LocationOn" AdornmentColor="@CountryIconColor" Validation="@(new Func<string, string?>(CountryValidator))" T="string" Label="Страна" @bind-Value="countryText" SearchFunc="@SearchCountry" ResetValueOnEmptyText="true" CoerceText="true" CoerceValue="false" />
+                        </MudStack>
                     </MudItem>
                     <MudItem sm="6" xs="12">
-                        <MudAutocomplete T="string" Label="Регион" @bind-Value="regionText" SearchFunc="@SearchRegion" ResetValueOnEmptyText="true" CoerceText="true" CoerceValue="false" Disabled="countryText == null ? true : false" />
+                        <MudStack Spacing="0" Class="mx-2 mt-6">
+                            <MudAutocomplete AdornmentIcon="@Icons.Material.Outlined.LocationOn" AdornmentColor="@RegionIconColor" Validation="@(new Func<string, string?>(RegionValidator))" T="string" Label="Регион" @bind-Value="regionText" SearchFunc="@SearchRegion" ResetValueOnEmptyText="true" CoerceText="true" CoerceValue="false" Disabled="countryText == null ? true : false" />
+                        </MudStack>
                     </MudItem>
                 </MudGrid>
             </ChildContent>
@@ -50,8 +54,8 @@
         <MudExpansionPanel Disabled="@Panel2Disabled" Expanded="Panel2Expanded">
             <TitleContent>
                 <div class="d-flex">
-                    <MudIcon Icon="@Icons.Material.Filled.Group" class="mr-3" />
-                    <MudText><b>2. Партнёры</b></MudText>
+                    <MudIcon Color="Panel2Color" Icon="@Icons.Material.Filled.Group" class="mr-3" />
+                    <MudText Color="Panel2Color"><b>2. Партнёры</b></MudText>
                 </div>
             </TitleContent>
             <ChildContent>
@@ -108,8 +112,8 @@
 
 
         @* АВАТАР *@
-        <MudExpansionPanel Disabled="false" Expanded="true">
-        @* <MudExpansionPanel Disabled="@Panel3Disabled" Expanded="Panel3Expanded"> *@
+        @* <MudExpansionPanel Disabled="false" Expanded="true"> *@
+        <MudExpansionPanel Disabled="@Panel3Disabled" Expanded="Panel3Expanded">
             <TitleContent>
                 <div class="d-flex">
                     <MudIcon Icon="@Icons.Material.Filled.Image" class="mr-3" />
@@ -117,19 +121,23 @@
                 </div>
             </TitleContent>
             <ChildContent>
-                <MudFileUpload T="IBrowserFile" FilesChanged="UploadAvatar">
-                    <ActivatorContent>
-                        <MudFab Color="Color.Info"
-                                StartIcon="@Icons.Material.Filled.Image"
-                                Label="Выберите фото для аватара" />
-                    </ActivatorContent>
-                </MudFileUpload>
+                <MudStack AlignItems="AlignItems.Center">
+                    @if (urlPreviewImage != null)
+                    {
+                        <MudImage Src=@($"/images/AccountsPhotos/temp/{urlPreviewImage}") Fluid="true" ObjectFit="ObjectFit.Fill" Elevation="4" Class="rounded-lg" />
+                    }
+                    <MudFileUpload T="IBrowserFile" Accept=".jpg,.jpeg,.png" FilesChanged="UploadAvatar">
+                        <ActivatorContent>
+                            <MudFab Size="Size.Small" Color="Color.Info" StartIcon="@Icons.Material.Sharp.Image" Label="Выберите фото для аватара" />
+                        </ActivatorContent>
+                    </MudFileUpload>
+                </MudStack>
             </ChildContent>
         </MudExpansionPanel>
 
     </MudExpansionPanels>
 
     <MudStack AlignItems="AlignItems.Center" Class="mt-5">
-        <MudButton StartIcon="@Icons.Material.Outlined.Check" Disabled="true" Variant="Variant.Filled" Size="Size.Large" Color="Color.Info" Style="margin:auto">Зарегистрироваться</MudButton>
+        <MudButton StartIcon="@Icons.Material.Outlined.Check" Disabled="RegisterButtonDisabled" Variant="Variant.Filled" Size="Size.Large" Color="Color.Info" Style="margin:auto">Зарегистрироваться</MudButton>
     </MudStack>
 </MudStack>

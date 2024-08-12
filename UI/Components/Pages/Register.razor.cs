@@ -38,14 +38,16 @@ namespace UI.Components.Pages
 
         bool RegisterButtonDisabled = true;
 
+        bool IsPanel1Valid => TabPanels[1].Items.All(x => x.Value.IsValid == true);
+        bool IsPanel2Valid => TabPanels[2].Items.All(x => x.Value.IsValid == true);
+        bool IsPanel3Valid => TabPanels[3].Items.All(x => x.Value.IsValid == true);
+
+
         protected override async Task OnInitializedAsync()
         {
             TabPanels = new Dictionary<short, TabPanel>
             {
-                { 
-                    1, new TabPanel {
-                        IsDisabled = false, IsExpanded = true,
-                        Items = new Dictionary<string, TabPanelItem>
+                { 1, new TabPanel { Items = new Dictionary<string, TabPanelItem>
                         {
                             { nameof(registerModel.Name), new TabPanelItem() },
                             { nameof(registerModel.Email), new TabPanelItem() },
@@ -56,23 +58,9 @@ namespace UI.Components.Pages
                         }
                     }
                 },
-                {
-                    2, new TabPanel {
-                        IsDisabled = true, IsExpanded = false,
-                        Items = new Dictionary<string, TabPanelItem> { { nameof(registerModel.Users), new TabPanelItem() } } 
-                    }
-                },
-                {
-                    3, new TabPanel {
-                        IsDisabled = true, IsExpanded = false,
-                        Items = new Dictionary<string, TabPanelItem> { { nameof(registerModel.Avatar), new TabPanelItem() } }
-                    }
-                }
+                { 2, new TabPanel { Items = new Dictionary<string, TabPanelItem> { { nameof(registerModel.Users), new TabPanelItem() } } } },
+                { 3, new TabPanel { Items = new Dictionary<string, TabPanelItem> { { nameof(registerModel.Avatar), new TabPanelItem() } } } }
             };
-
-            var valid = TabPanels[1].Items.All(x => x.Value.IsValid == false) && TabPanels[2].Items.All(x => x.Value.IsValid == false);
-
-            var valid2 = TabPanels.Any(x => x.Value.Items.Any(x => x.Value.IsValid == false));
 
             var apiResponse = await _repoGetCountries.HttpPostAsync(new GetCountriesModel());
             countries.AddRange(apiResponse.Response.Countries);
@@ -80,7 +68,7 @@ namespace UI.Components.Pages
 
 
         #region /// ШАГ 1: ОБЩЕЕ ///
-        Color Panel1Color = Color.Default;
+        //Color Panel1Color = Color.Default;
         string? _countryText;
         string? countryText { 
             get => _countryText;
@@ -147,7 +135,19 @@ namespace UI.Components.Pages
             if (apiResponse.Response.AccountNameExists)
                 errorMessage = $"Это имя уже занято. Выберите другое.";
 
-            CheckPanel1Validator(ref NameIconColor, errorMessage);
+            if (errorMessage == null)
+            {
+                TabPanels[1].Items[nameof(registerModel.Name)].IsValid = true;
+                NameIconColor = Color.Success;
+            }
+            else
+            {
+                TabPanels[1].Items[nameof(registerModel.Name)].IsValid = false;
+                NameIconColor = Color.Error;
+            }
+
+            StateHasChanged();
+            //CheckPanel1Validator(ref NameIconColor, errorMessage);
             return errorMessage;
         }
 
@@ -155,6 +155,7 @@ namespace UI.Components.Pages
         async Task<string?> EmailValidator(string email)
         {
             string? errorMessage = null;
+
             if (string.IsNullOrWhiteSpace(email) || email.Length < StaticData.DB_ACCOUNTS_EMAIL_MIN)
                 errorMessage = $"Email может содержать {StaticData.DB_ACCOUNTS_EMAIL_MIN}-{StaticData.DB_ACCOUNTS_EMAIL_MAX} символов";
 
@@ -162,7 +163,19 @@ namespace UI.Components.Pages
             if (apiResponse.Response.AccountEmailExists)
                 errorMessage = $"Этот email уже зарегистрирован. Забыли пароль?";
 
-            CheckPanel1Validator(ref EmailIconColor, errorMessage);
+            if (errorMessage == null)
+            {
+                TabPanels[1].Items[nameof(registerModel.Email)].IsValid = true;
+                EmailIconColor = Color.Success;
+            }
+            else
+            {
+                TabPanels[1].Items[nameof(registerModel.Email)].IsValid = false;
+                EmailIconColor = Color.Error;
+            }
+
+            StateHasChanged();
+            //CheckPanel1Validator(ref EmailIconColor, errorMessage);
             return errorMessage;
         }
 
@@ -173,7 +186,19 @@ namespace UI.Components.Pages
             if (string.IsNullOrWhiteSpace(password) || password.Length < StaticData.DB_ACCOUNTS_PASSWORD_MIN)
                 errorMessage = $"Пароль может содержать {StaticData.DB_ACCOUNTS_PASSWORD_MIN}-{StaticData.DB_ACCOUNTS_PASSWORD_MAX} символов";
 
-            CheckPanel1Validator(ref PasswordIconColor, errorMessage);
+            if (errorMessage == null)
+            {
+                TabPanels[1].Items[nameof(registerModel.Password)].IsValid = true;
+                PasswordIconColor = Color.Success;
+            }
+            else
+            {
+                TabPanels[1].Items[nameof(registerModel.Password)].IsValid = false;
+                PasswordIconColor = Color.Error;
+            }
+
+            StateHasChanged();
+            //CheckPanel1Validator(ref PasswordIconColor, errorMessage);
             return errorMessage;
         }
 
@@ -181,10 +206,22 @@ namespace UI.Components.Pages
         string? Password2Validator(string password)
         {
             string? errorMessage = null;
-            if (registerModel.Password != password)
+            if (registerModel.Password != password) 
                 errorMessage = $"Пароли не совпадают";
 
-            CheckPanel1Validator(ref Password2IconColor, errorMessage);
+            if (errorMessage == null)
+            {
+                TabPanels[1].Items[nameof(registerModel.Password2)].IsValid = true;
+                Password2IconColor = Color.Success;
+            }
+            else
+            {
+                TabPanels[1].Items[nameof(registerModel.Password2)].IsValid = false;
+                Password2IconColor = Color.Error;
+            }
+
+            StateHasChanged();
+            //CheckPanel1Validator(ref Password2IconColor, errorMessage);
             return errorMessage;
         }
 
@@ -192,10 +229,22 @@ namespace UI.Components.Pages
         string? CountryValidator(string country)
         {
             string? errorMessage = null;
-            if (string.IsNullOrWhiteSpace(countryText))
+            if (string.IsNullOrWhiteSpace(countryText)) 
                 errorMessage = $"Выберите страну";
 
-            CheckPanel1Validator(ref CountryIconColor, errorMessage);
+            if (errorMessage == null)
+            {
+                TabPanels[1].Items[nameof(registerModel.Country)].IsValid = true;
+                CountryIconColor = Color.Success;
+            }
+            else
+            {
+                TabPanels[1].Items[nameof(registerModel.Country)].IsValid = false;
+                CountryIconColor = Color.Error;
+            }
+
+            StateHasChanged();
+            //CheckPanel1Validator(ref CountryIconColor, errorMessage);
             return errorMessage;
         }
 
@@ -206,13 +255,28 @@ namespace UI.Components.Pages
             if (string.IsNullOrWhiteSpace(regionText))
                 errorMessage = $"Выберите регион";
 
-            CheckPanel1Validator(ref RegionIconColor, errorMessage);
+            if (errorMessage == null)
+            {
+                TabPanels[1].Items[nameof(registerModel.Country.Region)].IsValid = true;
+                RegionIconColor = Color.Success;
+            }
+            else
+            {
+                TabPanels[1].Items[nameof(registerModel.Country.Region)].IsValid = false;
+                RegionIconColor = Color.Error;
+            }
+
+            StateHasChanged();
+            //CheckPanel1Validator(ref RegionIconColor, errorMessage);
             return errorMessage;
         }
 
 
         void CheckPanel1Validator(ref Color color, string? errorMessage)
         {
+            StateHasChanged();
+            return;
+
             color = errorMessage == null ? Color.Success : Color.Error;
 
             if (NameIconColor == Color.Error || EmailIconColor == Color.Error || PasswordIconColor == Color.Error || Password2IconColor == Color.Error || regionText == null)
@@ -221,14 +285,14 @@ namespace UI.Components.Pages
                 Panel3Disabled = true;
                 Panel2Expanded = false;
                 Panel3Expanded = false;
-                Panel1Color = Color.Error;
+                //Panel1Color = Color.Error;
             }
 
             if (NameIconColor == Color.Success && EmailIconColor == Color.Success && PasswordIconColor == Color.Success && Password2IconColor == Color.Success && regionText != null)
             {
                 Panel2Disabled = false;
                 Panel2Expanded = true;
-                Panel1Color = Color.Success;
+                //Panel1Color = Color.Success;
             }
             StateHasChanged();
         }

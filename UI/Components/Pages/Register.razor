@@ -13,8 +13,8 @@
         @* <MudExpansionPanel Expanded="false"> *@
             <TitleContent>
                 <div class="d-flex">
-                    <MudIcon Color="Panel1Color" Icon="@Icons.Material.Filled.Settings" class="mr-3" />
-                    <MudText Color="Panel1Color"><b>1. Общие данные</b></MudText>
+                    <MudIcon Color="IsPanel1Valid ? Color.Success : Color.Error" Icon="@Icons.Material.Filled.Settings" class="mr-3" />
+                    <MudText Color="IsPanel1Valid ? Color.Success : Color.Error"><b>1. Общие данные</b></MudText>
                 </div>
             </TitleContent>
             <ChildContent>
@@ -51,11 +51,11 @@
 
 
         @* ПАРТНЁРЫ *@
-        <MudExpansionPanel Disabled="@Panel2Disabled" Expanded="Panel2Expanded">
+        <MudExpansionPanel Disabled="@(!IsPanel1Valid)" Expanded="@IsPanel1Valid">
             <TitleContent>
                 <div class="d-flex">
-                    <MudIcon Color="Panel2Color" Icon="@Icons.Material.Filled.Group" class="mr-3" />
-                    <MudText Color="Panel2Color"><b>2. Партнёры</b></MudText>
+                    <MudIcon Color="IsPanel2Valid ? Color.Success : Color.Error" Icon="@Icons.Material.Filled.Group" class="mr-3" />
+                    <MudText Color="IsPanel2Valid ? Color.Success : Color.Error"><b>2. Партнёры</b></MudText>
                 </div>
             </TitleContent>
             <ChildContent>
@@ -113,11 +113,11 @@
 
         @* АВАТАР *@
         @* <MudExpansionPanel Disabled="false" Expanded="true"> *@
-        <MudExpansionPanel Disabled="@Panel3Disabled" Expanded="Panel3Expanded">
+        <MudExpansionPanel Disabled="@(!IsPanel2Valid)" Expanded="@IsPanel2Valid">
             <TitleContent>
                 <div class="d-flex">
-                    <MudIcon Icon="@Icons.Material.Filled.Image" class="mr-3" />
-                    <MudText><b>3. Аватар</b></MudText>
+                    <MudIcon Color="IsPanel2Valid ? Color.Success : Color.Error" Icon="@Icons.Material.Filled.Image" class="mr-3" />
+                    <MudText Color="IsPanel2Valid ? Color.Success : Color.Error"><b>3. Аватар</b></MudText>
                 </div>
             </TitleContent>
             <ChildContent>

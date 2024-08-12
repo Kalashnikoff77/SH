@@ -4,7 +4,7 @@
     <DialogContent>
         <MudGrid Spacing="3">
             <MudItem xs="12">
-                <MudTextField @bind-Value="User.Name"
+                <MudTextField @bind-Value="UserCopy.Name"
                               Validation="@(new Func<string, string?>(NameValidator))"
                               HelperText="Пример: Марина"
                               AdornmentIcon="@Icons.Material.Outlined.Person"
@@ -17,7 +17,7 @@
             </MudItem>
 
             <MudItem sm="6" xs="12" Class="pt-0">
-                <MudRadioGroup Class="mt-sm-5 mt-xs-1" @bind-Value="User.Gender">
+                <MudRadioGroup Class="mt-sm-5 mt-xs-1" @bind-Value="UserCopy.Gender">
                     <MudRadio Value="0" Color="Color.Info">Муж.</MudRadio>
                     <MudRadio Value="1" Color="Color.Secondary">Жен.</MudRadio>
                 </MudRadioGroup>
@@ -33,11 +33,11 @@
             </MudItem>
 
             <MudItem sm="6" xs="12">
-                <MudNumericField @bind-Value="User.Height" Validation="@(new Func<short, string?>(HeightValidator))" Label="Рост" HelperText="@($"От {StaticData.DB_USERS_HEIGHT_MIN} до {StaticData.DB_USERS_HEIGHT_MAX} см")" Variant="Variant.Text" />
+                <MudNumericField @bind-Value="UserCopy.Height" Validation="@(new Func<short, string?>(HeightValidator))" Label="Рост" HelperText="@($"От {StaticData.DB_USERS_HEIGHT_MIN} до {StaticData.DB_USERS_HEIGHT_MAX} см")" Variant="Variant.Text" />
             </MudItem>
 
             <MudItem sm="6" xs="12">
-                <MudNumericField @bind-Value="User.Weight" Validation="@(new Func<short, string?>(WeightValidator))" Label="Вес" HelperText="@($"От {StaticData.DB_USERS_WEIGHT_MIN} до {StaticData.DB_USERS_WEIGHT_MAX} кг")" Variant="Variant.Text" />
+                <MudNumericField @bind-Value="UserCopy.Weight" Validation="@(new Func<short, string?>(WeightValidator))" Label="Вес" HelperText="@($"От {StaticData.DB_USERS_WEIGHT_MIN} до {StaticData.DB_USERS_WEIGHT_MAX} кг")" Variant="Variant.Text" />
             </MudItem>
 
         </MudGrid>
@@ -45,6 +45,6 @@
 
     <DialogActions>
         <MudButton Color="Color.Error" StartIcon="@Icons.Material.Outlined.Close" OnClick="Cancel">Отмена</MudButton>
-        <MudButton Color="Color.Info" Variant="Variant.Filled" StartIcon="@Icons.Material.Outlined.Add" Size="Size.Small" OnClick="Submit">Добавить</MudButton>
+        <MudButton Color="Color.Info" Variant="Variant.Filled" StartIcon="@StartIcon" Size="Size.Small" OnClick="Submit">@ButtonSubmitText</MudButton>
     </DialogActions>
 </MudDialog>

@@ -2,22 +2,41 @@
 using Common.Dto;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
+using UI.Extensions;
 
 namespace UI.Components.Shared
 {
     public partial class EditUserDialog
     {
-        [CascadingParameter]
-        MudDialogInstance MudDialog { get; set; } = null!;
-
-        [Parameter]
-        public UsersDto User { get; set; } = new UsersDto();
-
-        [Parameter]
-        public string Title { get; set; } = null!;
+        [CascadingParameter] MudDialogInstance MudDialog { get; set; } = null!;
+        [Parameter] public UsersDto User { get; set; } = null!;
 
         Color NameIconColor = Color.Default;
+        UsersDto UserCopy { get; set; } = null!;
         DateTime? birthDate { get; set; } = null;
+
+        string Title { get; set; } = null!;
+        string StartIcon = null!;
+        string ButtonSubmitText = null!;
+
+        protected override void OnParametersSet()
+        {
+            if (User == null)
+            {
+                UserCopy = new UsersDto { Id = -1 };
+                Title = "Добавление партнёра";
+                StartIcon = Icons.Material.Outlined.Add;
+                ButtonSubmitText = "Добавить";
+            }
+            else
+            {
+                Title = $"Редактирование партнёра - {User.Name}";
+                StartIcon = Icons.Material.Outlined.Check;
+                ButtonSubmitText = "Сохранить";
+                birthDate = User.BirthDate;
+                UserCopy = User.DeepCopy<UsersDto>()!;
+            }
+        }
 
         string? NameValidator(string name)
         {
@@ -65,8 +84,8 @@ namespace UI.Components.Shared
         void Submit()
         {
             if (birthDate.HasValue)
-                User.BirthDate = birthDate.Value;
-            MudDialog.Close(DialogResult.Ok(User));
+                UserCopy.BirthDate = birthDate.Value;
+            MudDialog.Close(DialogResult.Ok(UserCopy));
         }
 
         void Cancel() => MudDialog.Cancel();

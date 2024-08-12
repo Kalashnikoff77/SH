@@ -10,7 +10,7 @@
 
         public short Weight { get; set; }
 
-        // RadzenRadioButtonList работает только с int!
+        // MudBlazor не работает с short.
         public int Gender { get; set; }
 
         public string? About { get; set; }

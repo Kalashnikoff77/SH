@@ -1,16 +1,17 @@
-﻿using Common.Dto.Views;
+﻿using Common;
 using Common.Dto;
-using Common.Models;
 using Common.Dto.Requests;
 using Common.Dto.Responses;
+using Common.Dto.Views;
 using Common.JSProcessor;
+using Common.Models;
 using Common.Repository;
-using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
 using Microsoft.AspNetCore.Components;
-using Common;
-using MudBlazor;
+using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
 using Microsoft.AspNetCore.Components.Web;
+using MudBlazor;
 using UI.Components.Shared;
+using UI.Extensions;
 
 namespace UI.Components.Pages
 {
@@ -183,7 +184,7 @@ namespace UI.Components.Pages
         {
             var parameters = new DialogParameters<ConfirmDialog>
             {
-                { x => x.ContentText, $"Удалить пользователя {user.Name}?" },
+                { x => x.ContentText, $"Удалить партнёра {user.Name}?" },
                 { x => x.ButtonText, "Удалить" },
                 { x => x.Color, Color.Error }
             };
@@ -195,17 +196,30 @@ namespace UI.Components.Pages
                 Users.Remove(user);
         }
 
-        async Task AddItem(MouseEventArgs args)
+        async Task AddUserAsync(MouseEventArgs args)
         {
-            var parameters = new DialogParameters<EditUserDialog>
-            {
-                { x => x.Title, "Добавление партнёра" },
-                { x => x.User, new UsersDto() }
-            };
+            var parameters = new DialogParameters<EditUserDialog> { { x => x.User, null } };
             var options = new DialogOptions { CloseOnEscapeKey = true };
 
-            var resultDialog = await DialogService.ShowAsync<EditUserDialog>("Добавление пользователя", parameters, options);
+            var resultDialog = await DialogService.ShowAsync<EditUserDialog>("Добавление партнёра", parameters, options);
             var result = await resultDialog.Result;
+            if (result != null && result.Canceled == false && result.Data != null)
+                Users.Add((UsersDto)result.Data);
+        }
+
+        async Task UpdateUserAsync(UsersDto user)
+        {
+            var parameters = new DialogParameters<EditUserDialog> { { x => x.User, user } };
+            var options = new DialogOptions { CloseOnEscapeKey = true };
+
+            var resultDialog = await DialogService.ShowAsync<EditUserDialog>("Редактирование партнёра", parameters, options);
+            var result = await resultDialog.Result;
+            if (result != null && result.Canceled == false && result.Data != null)
+            {
+                var position = Users.IndexOf(user);
+                Users.RemoveAt(position);
+                Users.Insert(position, result.Data.DeepCopy<UsersDto>()!);
+            }
         }
         #endregion
 

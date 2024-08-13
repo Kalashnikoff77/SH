@@ -20,10 +20,10 @@
 
             <MudItem sm="6" xs="12" Class="pt-0">
                 <MudDatePicker Label="Дата рождения"
-                    @bind-Date="_birthDate"
+                    DateChanged="BirthDateChanged" Date="BirthDate"
+                    Mask="@(new DateMask("dd.MM.yyyy"))" DateFormat="dd.MM.yyyy"
                     AdornmentIcon="@Icons.Material.Filled.CalendarMonth" AdornmentColor="@BirthDateIconColor" Adornment="Adornment.End" 
                     Validation="@(new Func<DateTime?, string?>(BirthDateValidator))" 
-                    Editable="true"
                     OpenTo="OpenTo.Year"
                     MinDate="DateTime.Now.AddYears(-75)"
                     MaxDate="DateTime.Now.AddYears(-20)"

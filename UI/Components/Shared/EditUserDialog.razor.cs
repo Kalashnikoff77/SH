@@ -16,11 +16,16 @@ namespace UI.Components.Shared
         bool IsFormValid => TabPanels[1].Items.All(x => x.Value.IsValid == true);
 
         UsersDto UserCopy { get; set; } = null!;
-        DateTime? _birthDate { get; set; } = null;
 
         string Title { get; set; } = null!;
         string StartIcon = null!;
         string ButtonSubmitText = null!;
+
+        DateTime? BirthDate
+        {
+            get => UserCopy.BirthDate == DateTime.MinValue ? null : UserCopy.BirthDate;
+            set { if (value != null) { UserCopy.BirthDate = value.Value; } }
+        }
 
         protected override void OnParametersSet()
         {
@@ -38,7 +43,6 @@ namespace UI.Components.Shared
                 Title = $"Редактирование партнёра - {User.Name}";
                 StartIcon = Icons.Material.Outlined.Check;
                 ButtonSubmitText = "Сохранить";
-                _birthDate = User.BirthDate;
                 UserCopy = User.DeepCopy<UsersDto>()!;
                 IsValid = true;
             }
@@ -85,6 +89,9 @@ namespace UI.Components.Shared
             return errorMessage;
         }
 
+        void BirthDateChanged(DateTime? birthDate) =>
+            BirthDate = birthDate;
+
         Color HeightIconColor = Color.Default;
         string? HeightValidator(short height)
         {
@@ -124,12 +131,7 @@ namespace UI.Components.Shared
         }
 
 
-        void Submit()
-        {
-            if (_birthDate.HasValue)
-                UserCopy.BirthDate = _birthDate.Value;
-            MudDialog.Close(DialogResult.Ok(UserCopy));
-        }
+        void Submit() => MudDialog.Close(DialogResult.Ok(UserCopy));
 
         void Cancel() => MudDialog.Cancel();
     }

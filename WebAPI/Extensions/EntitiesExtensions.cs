@@ -39,7 +39,6 @@ namespace WebAPI.Extensions
                     $"(@{nameof(AccountsPhotosEntity.Comment)}, @{nameof(AccountsPhotosEntity.Guid)}, @{nameof(AccountsPhotosEntity.IsAvatar)}, @{nameof(AccountsPhotosEntity.AccountId)})";
                 await conn.ExecuteAsync(sql, new { Comment = accountsEntity.Name, Guid = guid, IsAvatar = true, AccountId = accountsEntity.Id});
 
-                File.Delete($"{dir}/temp/{request.PreviewPhoto}");
                 File.Delete($"{dir}/temp/{request.OriginalPhoto}");
             }
         }

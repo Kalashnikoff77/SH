@@ -29,9 +29,7 @@ namespace Common.Models
         public string Password { get; set; } = null!;
         public string Password2 { get; set; } = null!;
 
-        public string PreviewPhoto { get; set; } = null!;
         public string OriginalPhoto { get; set; } = null!;
-        public string? ErrorUploadMessage { get; set; }
 
         public string? ErrorRegisterMessage { get; set; }
 

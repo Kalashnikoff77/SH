@@ -311,6 +311,7 @@ namespace UI.Components.Pages
             }
 
             urlPreviewImage = previewFileName;
+            registerModel.OriginalPhoto = originalFileName;
 
             TabPanels[3].Items[nameof(registerModel.Avatar)].IsValid = true;
 

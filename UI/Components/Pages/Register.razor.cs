@@ -36,12 +36,9 @@ namespace UI.Components.Pages
 
         Dictionary<short, TabPanel> TabPanels { get; set; } = null!;
 
-        bool RegisterButtonDisabled = true;
-
         bool IsPanel1Valid => TabPanels[1].Items.All(x => x.Value.IsValid == true);
         bool IsPanel2Valid => TabPanels[2].Items.All(x => x.Value.IsValid == true);
         bool IsPanel3Valid => TabPanels[3].Items.All(x => x.Value.IsValid == true);
-
 
         protected override async Task OnInitializedAsync()
         {
@@ -68,7 +65,6 @@ namespace UI.Components.Pages
 
 
         #region /// ШАГ 1: ОБЩЕЕ ///
-        //Color Panel1Color = Color.Default;
         string? _countryText;
         string? countryText { 
             get => _countryText;
@@ -106,24 +102,6 @@ namespace UI.Components.Pages
             }
         }
 
-        async Task<IEnumerable<string>?> SearchCountry(string value, CancellationToken token)
-        {
-            if (string.IsNullOrWhiteSpace(value))
-                return countries.Select(s => s.Name);
-
-            return countries?.Select(s => s.Name)
-                .Where(x => x.Contains(value, StringComparison.InvariantCultureIgnoreCase));
-        }
-
-        async Task<IEnumerable<string>?> SearchRegion(string value, CancellationToken token)
-        {
-            if (string.IsNullOrWhiteSpace(value))
-                return regions?.Select(s => s.Name);
-            
-            return regions?.Select(s => s.Name)
-                .Where(x => x.Contains(value, StringComparison.InvariantCultureIgnoreCase));
-        }
-
         Color NameIconColor = Color.Default;
         async Task<string?> NameValidator(string name)
         {
@@ -135,19 +113,8 @@ namespace UI.Components.Pages
             if (apiResponse.Response.AccountNameExists)
                 errorMessage = $"Это имя уже занято. Выберите другое.";
 
-            if (errorMessage == null)
-            {
-                TabPanels[1].Items[nameof(registerModel.Name)].IsValid = true;
-                NameIconColor = Color.Success;
-            }
-            else
-            {
-                TabPanels[1].Items[nameof(registerModel.Name)].IsValid = false;
-                NameIconColor = Color.Error;
-            }
+            CheckPanel1Properties(errorMessage, nameof(registerModel.Name), ref NameIconColor);
 
-            StateHasChanged();
-            //CheckPanel1Validator(ref NameIconColor, errorMessage);
             return errorMessage;
         }
 
@@ -163,19 +130,8 @@ namespace UI.Components.Pages
             if (apiResponse.Response.AccountEmailExists)
                 errorMessage = $"Этот email уже зарегистрирован. Забыли пароль?";
 
-            if (errorMessage == null)
-            {
-                TabPanels[1].Items[nameof(registerModel.Email)].IsValid = true;
-                EmailIconColor = Color.Success;
-            }
-            else
-            {
-                TabPanels[1].Items[nameof(registerModel.Email)].IsValid = false;
-                EmailIconColor = Color.Error;
-            }
+            CheckPanel1Properties(errorMessage, nameof(registerModel.Email), ref EmailIconColor);
 
-            StateHasChanged();
-            //CheckPanel1Validator(ref EmailIconColor, errorMessage);
             return errorMessage;
         }
 
@@ -186,19 +142,7 @@ namespace UI.Components.Pages
             if (string.IsNullOrWhiteSpace(password) || password.Length < StaticData.DB_ACCOUNTS_PASSWORD_MIN)
                 errorMessage = $"Пароль может содержать {StaticData.DB_ACCOUNTS_PASSWORD_MIN}-{StaticData.DB_ACCOUNTS_PASSWORD_MAX} символов";
 
-            if (errorMessage == null)
-            {
-                TabPanels[1].Items[nameof(registerModel.Password)].IsValid = true;
-                PasswordIconColor = Color.Success;
-            }
-            else
-            {
-                TabPanels[1].Items[nameof(registerModel.Password)].IsValid = false;
-                PasswordIconColor = Color.Error;
-            }
-
-            StateHasChanged();
-            //CheckPanel1Validator(ref PasswordIconColor, errorMessage);
+            CheckPanel1Properties(errorMessage, nameof(registerModel.Password), ref PasswordIconColor);
             return errorMessage;
         }
 
@@ -209,19 +153,7 @@ namespace UI.Components.Pages
             if (registerModel.Password != password) 
                 errorMessage = $"Пароли не совпадают";
 
-            if (errorMessage == null)
-            {
-                TabPanels[1].Items[nameof(registerModel.Password2)].IsValid = true;
-                Password2IconColor = Color.Success;
-            }
-            else
-            {
-                TabPanels[1].Items[nameof(registerModel.Password2)].IsValid = false;
-                Password2IconColor = Color.Error;
-            }
-
-            StateHasChanged();
-            //CheckPanel1Validator(ref Password2IconColor, errorMessage);
+            CheckPanel1Properties(errorMessage, nameof(registerModel.Password2), ref Password2IconColor);
             return errorMessage;
         }
 
@@ -232,19 +164,7 @@ namespace UI.Components.Pages
             if (string.IsNullOrWhiteSpace(countryText)) 
                 errorMessage = $"Выберите страну";
 
-            if (errorMessage == null)
-            {
-                TabPanels[1].Items[nameof(registerModel.Country)].IsValid = true;
-                CountryIconColor = Color.Success;
-            }
-            else
-            {
-                TabPanels[1].Items[nameof(registerModel.Country)].IsValid = false;
-                CountryIconColor = Color.Error;
-            }
-
-            StateHasChanged();
-            //CheckPanel1Validator(ref CountryIconColor, errorMessage);
+            CheckPanel1Properties(errorMessage, nameof(registerModel.Country), ref CountryIconColor);
             return errorMessage;
         }
 
@@ -255,54 +175,47 @@ namespace UI.Components.Pages
             if (string.IsNullOrWhiteSpace(regionText))
                 errorMessage = $"Выберите регион";
 
-            if (errorMessage == null)
-            {
-                TabPanels[1].Items[nameof(registerModel.Country.Region)].IsValid = true;
-                RegionIconColor = Color.Success;
-            }
-            else
-            {
-                TabPanels[1].Items[nameof(registerModel.Country.Region)].IsValid = false;
-                RegionIconColor = Color.Error;
-            }
-
-            StateHasChanged();
-            //CheckPanel1Validator(ref RegionIconColor, errorMessage);
+            CheckPanel1Properties(errorMessage, nameof(registerModel.Country.Region), ref RegionIconColor);
             return errorMessage;
         }
 
-
-        void CheckPanel1Validator(ref Color color, string? errorMessage)
+        void CheckPanel1Properties(string? errorMessage, string property, ref Color iconColor)
         {
-            StateHasChanged();
-            return;
-
-            color = errorMessage == null ? Color.Success : Color.Error;
-
-            if (NameIconColor == Color.Error || EmailIconColor == Color.Error || PasswordIconColor == Color.Error || Password2IconColor == Color.Error || regionText == null)
+            if (errorMessage == null)
             {
-                Panel2Disabled = true;
-                Panel3Disabled = true;
-                Panel2Expanded = false;
-                Panel3Expanded = false;
-                //Panel1Color = Color.Error;
+                TabPanels[1].Items[property].IsValid = true;
+                iconColor = Color.Success;
             }
-
-            if (NameIconColor == Color.Success && EmailIconColor == Color.Success && PasswordIconColor == Color.Success && Password2IconColor == Color.Success && regionText != null)
+            else
             {
-                Panel2Disabled = false;
-                Panel2Expanded = true;
-                //Panel1Color = Color.Success;
+                TabPanels[1].Items[property].IsValid = false;
+                iconColor = Color.Error;
             }
             StateHasChanged();
+        }
+
+
+        async Task<IEnumerable<string>?> SearchCountry(string value, CancellationToken token)
+        {
+            if (string.IsNullOrWhiteSpace(value))
+                return countries.Select(s => s.Name);
+
+            return countries?.Select(s => s.Name)
+                .Where(x => x.Contains(value, StringComparison.InvariantCultureIgnoreCase));
+        }
+
+        async Task<IEnumerable<string>?> SearchRegion(string value, CancellationToken token)
+        {
+            if (string.IsNullOrWhiteSpace(value))
+                return regions?.Select(s => s.Name);
+
+            return regions?.Select(s => s.Name)
+                .Where(x => x.Contains(value, StringComparison.InvariantCultureIgnoreCase));
         }
         #endregion
 
 
         #region /// ШАГ 2: ПАРТНЁРЫ ///
-        Color Panel2Color = Color.Default;
-        bool Panel2Disabled = true;
-        bool Panel2Expanded = false;
         //List<UsersDto> Users = new List<UsersDto> { 
         //    new UsersDto { Id = 0, Name = "Олег", Gender = 0, Weight=80, Height=180, BirthDate = DateTime.Parse("29.01.1977") },
         //    new UsersDto { Id = 1, Name = "Марина", Gender = 1, Weight=74, Height=173, BirthDate = DateTime.Parse("01.07.1969") }
@@ -325,7 +238,7 @@ namespace UI.Components.Pages
             if (result != null && result.Canceled == false && Users.Contains(user))
                 Users.Remove(user);
 
-            CheckPanel2Validator();
+            CheckPanel2Properties();
         }
 
         async Task AddUserAsync(MouseEventArgs args)
@@ -338,7 +251,7 @@ namespace UI.Components.Pages
             if (result != null && result.Canceled == false && result.Data != null)
                 Users.Add((UsersDto)result.Data);
 
-            CheckPanel2Validator();
+            CheckPanel2Properties();
         }
 
         async Task UpdateUserAsync(UsersDto user)
@@ -356,29 +269,20 @@ namespace UI.Components.Pages
             }
         }
 
-        void CheckPanel2Validator()
+        void CheckPanel2Properties()
         {
             if (Users.Count == 0)
             {
-                Panel3Disabled = true;
-                Panel3Expanded = false;
-                Panel2Color = Color.Error;
-            }
+                TabPanels[2].Items[nameof(registerModel.Users)].IsValid = false;            }
             else
             {
-                Panel3Disabled = false;
-                Panel3Expanded = true;
-                Panel2Color = Color.Success;
+                TabPanels[2].Items[nameof(registerModel.Users)].IsValid = true;
             }
-            StateHasChanged();
         }
         #endregion
 
 
         #region /// ШАГ 3: АВАТАР ///
-        bool Panel3Disabled = true;
-        bool Panel3Expanded = false;
-
         const string dir = "../UI/wwwroot/images/AccountsPhotos/temp/";
         string? baseFileName;
         string? originalFileName;
@@ -407,19 +311,12 @@ namespace UI.Components.Pages
 
             urlPreviewImage = previewFileName;
 
-            CheckRegisterButton();
+            TabPanels[3].Items[nameof(registerModel.Avatar)].IsValid = true;
+
             StateHasChanged();
         }
         #endregion
 
-
-        void CheckRegisterButton()
-        {
-            if (Panel3Expanded && urlPreviewImage != null)
-                RegisterButtonDisabled = false;
-            else
-                RegisterButtonDisabled = true;
-        }
 
         public void Dispose()
         {

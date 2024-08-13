@@ -6,6 +6,7 @@ using Common.Dto.Views;
 using Common.Enums;
 using Common.JSProcessor;
 using Common.Models;
+using Common.Models.States;
 using Common.Repository;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
@@ -13,6 +14,7 @@ using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
 using Microsoft.AspNetCore.Components.Web;
 using MudBlazor;
 using PhotoSauce.MagicScaler;
+using System.Net;
 using System.Text.RegularExpressions;
 using UI.Components.Shared;
 using UI.Extensions;
@@ -22,14 +24,17 @@ namespace UI.Components.Pages
 {
     public partial class Register : IDisposable
     {
+        [CascadingParameter] CurrentState CurrentState { get; set; } = null!;
         [Inject] IRepository<GetCountriesModel, GetCountriesRequestDto, GetCountriesResponseDto> _repoGetCountries { get; set; } = null!;
         [Inject] IRepository<AccountCheckRegisterModel, AccountCheckRegisterRequestDto, AccountCheckRegisterResponseDto> _repoCheckRegister { get; set; } = null!;
         [Inject] IRepository<AccountRegisterModel, AccountRegisterRequestDto, ResponseDtoBase> _repoRegister { get; set; } = null!;
+        [Inject] IRepository<LoginModel, LoginRequestDto, LoginResponseDto> _repoLogin { get; set; } = null!;
 
         [Inject] ProtectedLocalStorage _protectedLocalStore { get; set; } = null!;
         [Inject] ProtectedSessionStorage _protectedSessionStore { get; set; } = null!;
         [Inject] IJSProcessor _JSProcessor { get; set; } = null!;
         [Inject] IDialogService DialogService { get; set; } = null!;
+        [Inject] IConfiguration _config { get; set; } = null!;
 
         AccountRegisterModel registerModel = new AccountRegisterModel();
         List<CountriesViewDto> countries { get; set; } = new List<CountriesViewDto>();
@@ -62,6 +67,13 @@ namespace UI.Components.Pages
 
             var apiResponse = await _repoGetCountries.HttpPostAsync(new GetCountriesModel());
             countries.AddRange(apiResponse.Response.Countries);
+
+            // TODO УДАЛИТЬ (OK)
+            registerModel.Users = new List<UsersDto> 
+            {
+                new UsersDto { Id = 0, Name = "Олег", Gender = 0, Weight=80, Height=180, BirthDate = DateTime.Parse("29.01.1977") },
+                new UsersDto { Id = 1, Name = "Марина", Gender = 1, Weight=74, Height=173, BirthDate = DateTime.Parse("01.07.1969") }
+            };
         }
 
 
@@ -220,13 +232,6 @@ namespace UI.Components.Pages
 
 
         #region /// ШАГ 2: ПАРТНЁРЫ ///
-        //List<UsersDto> Users = new List<UsersDto> { 
-        //    new UsersDto { Id = 0, Name = "Олег", Gender = 0, Weight=80, Height=180, BirthDate = DateTime.Parse("29.01.1977") },
-        //    new UsersDto { Id = 1, Name = "Марина", Gender = 1, Weight=74, Height=173, BirthDate = DateTime.Parse("01.07.1969") }
-        //};
-
-        List<UsersDto> Users = new List<UsersDto>();
-
         async Task DeleteUserDialogAsync(UsersDto user)
         {
             var parameters = new DialogParameters<ConfirmDialog>
@@ -239,8 +244,8 @@ namespace UI.Components.Pages
             var resultDialog = await DialogService.ShowAsync<ConfirmDialog>($"Удаление {user.Name}", parameters, options);
             var result = await resultDialog.Result;
             
-            if (result != null && result.Canceled == false && Users.Contains(user))
-                Users.Remove(user);
+            if (result != null && result.Canceled == false && registerModel.Users.Contains(user))
+                registerModel.Users.Remove(user);
 
             CheckPanel2Properties();
         }
@@ -253,7 +258,7 @@ namespace UI.Components.Pages
             var resultDialog = await DialogService.ShowAsync<EditUserDialog>("Добавление партнёра", parameters, options);
             var result = await resultDialog.Result;
             if (result != null && result.Canceled == false && result.Data != null)
-                Users.Add((UsersDto)result.Data);
+                registerModel.Users.Add((UsersDto)result.Data);
 
             CheckPanel2Properties();
         }
@@ -267,22 +272,14 @@ namespace UI.Components.Pages
             var result = await resultDialog.Result;
             if (result != null && result.Canceled == false && result.Data != null)
             {
-                var position = Users.IndexOf(user);
-                Users.RemoveAt(position);
-                Users.Insert(position, result.Data.DeepCopy<UsersDto>()!);
+                var position = registerModel.Users.IndexOf(user);
+                registerModel.Users.RemoveAt(position);
+                registerModel.Users.Insert(position, result.Data.DeepCopy<UsersDto>()!);
             }
         }
 
-        void CheckPanel2Properties()
-        {
-            if (Users.Count == 0)
-            {
-                TabPanels[2].Items[nameof(registerModel.Users)].IsValid = false;            }
-            else
-            {
-                TabPanels[2].Items[nameof(registerModel.Users)].IsValid = true;
-            }
-        }
+        void CheckPanel2Properties() =>
+            TabPanels[2].Items[nameof(registerModel.Users)].IsValid = registerModel.Users.Count == 0 ? false : true;
         #endregion
 
 
@@ -321,6 +318,47 @@ namespace UI.Components.Pages
         }
         #endregion
 
+
+        async void SubmitAsync()
+        {
+            var response = await _repoRegister.HttpPostAsync(registerModel);
+
+            if (response.StatusCode != HttpStatusCode.OK)
+            {
+                registerModel.ErrorRegisterMessage = response.Response.ErrorMessage;
+                StateHasChanged();
+            }
+            else
+            {
+                LoginModel loginModel = new LoginModel
+                {
+                    Email = registerModel.Email,
+                    Password = registerModel.Password,
+                    Remember = registerModel.RememberMe
+                };
+
+                var apiResponse = await _repoLogin.HttpPostAsync(loginModel);
+
+                if (apiResponse.StatusCode == HttpStatusCode.OK)
+                {
+                    apiResponse.Response.Account!.Token = StaticData.GenerateToken(apiResponse.Response.Account.Id, apiResponse.Response.Account.Guid, _config);
+                    CurrentState.SetAccount(apiResponse.Response.Account);
+
+                    if (loginModel.Remember)
+                        await _protectedLocalStore.SetAsync(nameof(LoginModel), loginModel);
+                    else
+                        await _protectedSessionStore.SetAsync(nameof(LoginModel), loginModel);
+
+                    await _JSProcessor.Redirect("/");
+                }
+                else
+                {
+                    registerModel.ErrorRegisterMessage = apiResponse.Response.ErrorMessage;
+                    StateHasChanged();
+                }
+            }
+
+        }
 
         public void Dispose()
         {

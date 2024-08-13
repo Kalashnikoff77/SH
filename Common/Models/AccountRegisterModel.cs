@@ -7,17 +7,17 @@ namespace Common.Models
         // TODO Убрать начальные значения
         public AccountRegisterModel()
         {
-            //Name = "Олег и Марина Мск";
-            //Email = "oleg_reg@mail.ru";
-            //Password = "pass2";
-            //Password2 = "pass2";
-            //Country = new CountriesDto
-            //{
-            //    Region = new RegionsDto
-            //    {
-            //        Id = 1
-            //    }
-            //};
+            Name = "Олег и Марина Мск2";
+            Email = "oleg_reg@mail.ru";
+            Password = "pass2";
+            Password2 = "pass2";
+            Country = new CountriesDto
+            {
+                Region = new RegionsDto
+                {
+                    Id = 1
+                }
+            };
         }
 
         public Guid Guid { get; set; }

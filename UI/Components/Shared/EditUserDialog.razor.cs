@@ -3,6 +3,7 @@ using Common.Dto;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
 using UI.Extensions;
+using UI.Models;
 
 namespace UI.Components.Shared
 {
@@ -11,9 +12,11 @@ namespace UI.Components.Shared
         [CascadingParameter] MudDialogInstance MudDialog { get; set; } = null!;
         [Parameter] public UsersDto User { get; set; } = null!;
 
-        Color NameIconColor = Color.Default;
+        Dictionary<short, TabPanel> TabPanels { get; set; } = null!;
+        bool IsFormValid => TabPanels[1].Items.All(x => x.Value.IsValid == true);
+
         UsersDto UserCopy { get; set; } = null!;
-        DateTime? birthDate { get; set; } = null;
+        DateTime? _birthDate { get; set; } = null;
 
         string Title { get; set; } = null!;
         string StartIcon = null!;
@@ -21,6 +24,8 @@ namespace UI.Components.Shared
 
         protected override void OnParametersSet()
         {
+            bool IsValid = false;
+
             if (User == null)
             {
                 UserCopy = new UsersDto { Id = -1 };
@@ -33,43 +38,65 @@ namespace UI.Components.Shared
                 Title = $"Редактирование партнёра - {User.Name}";
                 StartIcon = Icons.Material.Outlined.Check;
                 ButtonSubmitText = "Сохранить";
-                birthDate = User.BirthDate;
+                _birthDate = User.BirthDate;
                 UserCopy = User.DeepCopy<UsersDto>()!;
+                IsValid = true;
             }
+
+            TabPanels = new Dictionary<short, TabPanel>
+            {
+                { 1, new TabPanel { Items = new Dictionary<string, TabPanelItem>
+                        {
+                            { nameof(UserCopy.Name), new TabPanelItem { IsValid = IsValid } },
+                            { nameof(UserCopy.BirthDate), new TabPanelItem { IsValid = IsValid } },
+                            { nameof(UserCopy.Height), new TabPanelItem { IsValid = IsValid } },
+                            { nameof(UserCopy.Weight), new TabPanelItem { IsValid = IsValid } }
+                        }
+                    }
+                }
+            };
         }
 
+        Color NameIconColor = Color.Default;
         string? NameValidator(string name)
         {
             string? errorMessage = null;
-            NameIconColor = Color.Success;
-
             if (string.IsNullOrWhiteSpace(name))
-            {
                 errorMessage = $"Укажите имя партнёра";
-                NameIconColor = Color.Error;
-            }
 
             if (string.IsNullOrWhiteSpace(name) || name.Length < StaticData.DB_USERS_NAME_MIN)
-            {
-                errorMessage = $"Имя может содержать {StaticData.DB_USERS_NAME_MIN}-{StaticData.DB_USERS_NAME_MAX} символов";
-                NameIconColor = Color.Error;
-            }
+                errorMessage = $"Имя должно содержать {StaticData.DB_USERS_NAME_MIN}-{StaticData.DB_USERS_NAME_MAX} символов";
 
-            StateHasChanged();
+            CheckFormProperties(errorMessage, nameof(UserCopy.Name), ref NameIconColor);
             return errorMessage;
         }
 
+        Color BirthDateIconColor = Color.Default;
+        string? BirthDateValidator(DateTime? birthDate)
+        {
+            string? errorMessage = null;
+            if (birthDate == null)
+                errorMessage = $"Укажите дату рождения";
+
+            if (birthDate.HasValue && (birthDate < DateTime.Now.AddYears(-75) || birthDate > DateTime.Now.AddYears(-20)))
+                errorMessage = $"Возраст от 20 до 75 лет";
+
+            CheckFormProperties(errorMessage, nameof(UserCopy.BirthDate), ref BirthDateIconColor);
+            return errorMessage;
+        }
+
+        Color HeightIconColor = Color.Default;
         string? HeightValidator(short height)
         {
             string? errorMessage = null;
-
             if (height < StaticData.DB_USERS_HEIGHT_MIN || height > StaticData.DB_USERS_HEIGHT_MAX)
                 errorMessage = $"Рост в пределах {StaticData.DB_USERS_HEIGHT_MIN}-{StaticData.DB_USERS_HEIGHT_MAX} см";
 
-            StateHasChanged();
+            CheckFormProperties(errorMessage, nameof(UserCopy.Height), ref HeightIconColor);
             return errorMessage;
         }
 
+        Color WeightIconColor = Color.Default;
         string? WeightValidator(short height)
         {
             string? errorMessage = null;
@@ -77,14 +104,30 @@ namespace UI.Components.Shared
             if (height < StaticData.DB_USERS_WEIGHT_MIN || height > StaticData.DB_USERS_WEIGHT_MAX)
                 errorMessage = $"Вес в пределах {StaticData.DB_USERS_WEIGHT_MIN}-{StaticData.DB_USERS_WEIGHT_MAX} кг";
 
-            StateHasChanged();
+            CheckFormProperties(errorMessage, nameof(UserCopy.Weight), ref WeightIconColor);
             return errorMessage;
         }
 
+        void CheckFormProperties(string? errorMessage, string property, ref Color iconColor)
+        {
+            if (errorMessage == null)
+            {
+                TabPanels[1].Items[property].IsValid = true;
+                iconColor = Color.Success;
+            }
+            else
+            {
+                TabPanels[1].Items[property].IsValid = false;
+                iconColor = Color.Error;
+            }
+            StateHasChanged();
+        }
+
+
         void Submit()
         {
-            if (birthDate.HasValue)
-                UserCopy.BirthDate = birthDate.Value;
+            if (_birthDate.HasValue)
+                UserCopy.BirthDate = _birthDate.Value;
             MudDialog.Close(DialogResult.Ok(UserCopy));
         }
 

@@ -13,6 +13,7 @@ using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
 using Microsoft.AspNetCore.Components.Web;
 using MudBlazor;
 using PhotoSauce.MagicScaler;
+using System.Text.RegularExpressions;
 using UI.Components.Shared;
 using UI.Extensions;
 using UI.Models;
@@ -126,6 +127,9 @@ namespace UI.Components.Pages
             if (string.IsNullOrWhiteSpace(email) || email.Length < StaticData.DB_ACCOUNTS_EMAIL_MIN)
                 errorMessage = $"Email может содержать {StaticData.DB_ACCOUNTS_EMAIL_MIN}-{StaticData.DB_ACCOUNTS_EMAIL_MAX} символов";
 
+            if (!Regex.IsMatch(email, @"^[a-z0-9_\.-]{1,32}@[a-z0-9\.-]{1,32}\.[a-z]{2,8}$"))
+                errorMessage = $"Проверьте корректность email";
+
             var apiResponse = await _repoCheckRegister.HttpPostAsync(new AccountCheckRegisterModel { AccountEmail = email });
             if (apiResponse.Response.AccountEmailExists)
                 errorMessage = $"Этот email уже зарегистрирован. Забыли пароль?";
@@ -140,17 +144,17 @@ namespace UI.Components.Pages
         {
             string? errorMessage = null;
             if (string.IsNullOrWhiteSpace(password) || password.Length < StaticData.DB_ACCOUNTS_PASSWORD_MIN)
-                errorMessage = $"Пароль может содержать {StaticData.DB_ACCOUNTS_PASSWORD_MIN}-{StaticData.DB_ACCOUNTS_PASSWORD_MAX} символов";
+                errorMessage = $"Пароль должен содержать {StaticData.DB_ACCOUNTS_PASSWORD_MIN}-{StaticData.DB_ACCOUNTS_PASSWORD_MAX} символов";
 
             CheckPanel1Properties(errorMessage, nameof(registerModel.Password), ref PasswordIconColor);
             return errorMessage;
         }
 
         Color Password2IconColor = Color.Default;
-        string? Password2Validator(string password)
+        string? Password2Validator(string password2)
         {
             string? errorMessage = null;
-            if (registerModel.Password != password) 
+            if (registerModel.Password != password2) 
                 errorMessage = $"Пароли не совпадают";
 
             CheckPanel1Properties(errorMessage, nameof(registerModel.Password2), ref Password2IconColor);

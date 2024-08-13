@@ -3,6 +3,7 @@ using Common.Dto.Requests;
 using Common.Dto.Views;
 using Dapper;
 using Microsoft.Data.SqlClient;
+using System.Text.RegularExpressions;
 using WebAPI.Exceptions;
 
 namespace WebAPI.Extensions
@@ -13,6 +14,9 @@ namespace WebAPI.Extensions
         {
             if (string.IsNullOrWhiteSpace(request.Email))
                 throw new BadRequestException("Укажите Ваш email!");
+
+            if (!Regex.IsMatch(request.Email, @"^[a-z0-9_\.-]{1,32}@[a-z0-9\.-]{1,32}\.[a-z]{2,8}$"))
+                throw new BadRequestException("Проверьте корректность email!");
 
             if (request.Email.Length < 5 || request.Email.Length > 75)
                 throw new BadRequestException("Длина email должна быть от 5 до 75 символов!");
@@ -70,6 +74,9 @@ namespace WebAPI.Extensions
         {
             if (string.IsNullOrWhiteSpace(request.Email))
                 throw new BadRequestException("Укажите Ваш email!");
+
+            if (!Regex.IsMatch(request.Email, @"^[a-z0-9_\.-]{1,32}@[a-z0-9\.-]{1,32}\.[a-z]{2,8}$"))
+                throw new BadRequestException("Проверьте корректность email!");
 
             if (request.Email.Length < StaticData.DB_ACCOUNTS_EMAIL_MIN || request.Email.Length > StaticData.DB_ACCOUNTS_EMAIL_MAX)
                 throw new BadRequestException($"Длина email должна быть от {StaticData.DB_ACCOUNTS_EMAIL_MIN} до {StaticData.DB_ACCOUNTS_EMAIL_MAX} символов!");

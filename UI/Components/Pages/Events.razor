@@ -16,7 +16,7 @@
 
         <TemplateColumn Title="Фото">
             <CellTemplate>
-                <ImageEvent Event="context.Item" Size="EnumImageSize.s64x64" Title="@context.Item.Description" Style="border-radius:15%" />
+                <ImageEvent Event="context.Item" Size="EnumImageSize.s64x64" Title="@context.Item.Name" Style="border-radius:15%" />
             </CellTemplate>
         </TemplateColumn>
 
@@ -39,7 +39,7 @@
     <ChildRowContent>
         <MudGrid>
             <MudItem xs="12" sm="3" Style="min-width:160px">
-                <ImageEvent Event="context.Item" Size="EnumImageSize.s150x150" Title="@context.Item.Description" Style="border-radius:15%" />
+                <ImageEvent Event="context.Item" Size="EnumImageSize.s150x150" Title="@context.Item.Name" Style="border-radius:15%" />
             </MudItem>
             <MudItem xs="12" sm="9">
                 <MudStack>
@@ -50,6 +50,7 @@
                     </MudStack>
                     
                     <MudText Typo="Typo.body2"><b>@context.Item.ToRegionString(). @context.Item.Address</b></MudText>
+
                     <MudText Typo="Typo.body2">@context.Item.Description</MudText>
                 </MudStack>
             </MudItem>

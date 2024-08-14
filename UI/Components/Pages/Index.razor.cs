@@ -8,6 +8,16 @@ namespace UI.Components.Pages
         string searchString = null!;
         int counter = 5;
 
+        DateTime[] dates = [DateTime.Parse("13.08.2024")];
+
+        string? DateClass(DateTime date)
+        {
+            if (dates.Contains(date))
+                return "event-selected-date";
+            else
+                return null;
+        }
+
         private async Task<GridData<Item>> ServerReload(GridState<Item> state)
         {
             var t1 = state.Page;

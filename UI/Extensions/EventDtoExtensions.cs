@@ -17,13 +17,13 @@ namespace UI.Extensions
             string dateClass = null!;
 
             if (evt.StartDate < DateTime.Now && evt.EndDate < DateTime.Now)
-                dateClass = "rz-color-danger";
+                dateClass = "red-text";
             else if (evt.StartDate < DateTime.Now)
-                dateClass = "rz-color-warning-dark";
+                dateClass = "orange-text";
             else if (evt.StartDate < DateTime.Now.AddDays(3))
-                dateClass = "rz-color-success-dark";
+                dateClass = "green-text";
             else if (evt.StartDate < DateTime.Now.AddDays(7))
-                dateClass = "rz-color-series-7";
+                dateClass = "blue-text";
 
             return dateClass;
         }

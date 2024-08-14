@@ -1,0 +1,62 @@
+﻿@page "/events"
+
+<PageTitle>Мероприятия</PageTitle>
+
+<MudDataGrid @ref="dataGrid" T="EventsViewDto" ServerData="ServerReload" Style="min-width:300px; max-width:750px" Filterable="false">
+    <ToolBarContent>
+        <MudText Typo="Typo.h6">Мероприятия</MudText>
+        <MudSpacer />
+        <MudTextField T="string" ValueChanged="@(s => OnSearch(s))" Placeholder="Поиск"
+                        Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0">
+        </MudTextField>
+        <MudSpacer />
+    </ToolBarContent>
+    <Columns>
+        <HierarchyColumn />
+
+        <TemplateColumn Title="Фото">
+            <CellTemplate>
+                <ImageEvent Event="context.Item" Size="EnumImageSize.s64x64" Title="@context.Item.Description" Style="border-radius:15%" />
+            </CellTemplate>
+        </TemplateColumn>
+
+        <TemplateColumn Title="Название">
+            <CellTemplate>
+                <MudStack Spacing="0">
+                    <MudText Typo="Typo.subtitle1"><b>@context.Item.Name</b></MudText>
+                    <MudText Typo="Typo.body2">@context.Item.ToRegionString()</MudText>
+                </MudStack>
+            </CellTemplate>
+        </TemplateColumn>
+
+        <TemplateColumn Title="Даты проведения">
+            <CellTemplate>
+                <MudText Typo="Typo.subtitle2" Class="@context.Item.ToDateClass()"><b>@context.Item.StartDate.ToMyString() -<br />@context.Item.EndDate.ToMyString()</b></MudText>
+            </CellTemplate>
+        </TemplateColumn>
+    </Columns>
+
+    <ChildRowContent>
+        <MudGrid>
+            <MudItem xs="12" sm="3" Style="min-width:160px">
+                <ImageEvent Event="context.Item" Size="EnumImageSize.s150x150" Title="@context.Item.Description" Style="border-radius:15%" />
+            </MudItem>
+            <MudItem xs="12" sm="9">
+                <MudStack>
+                    
+                    <MudStack Row="true" AlignItems="AlignItems.Center">
+                        <ImageAvatar Account="context.Item.Admin" Size="EnumImageSize.s64x64" Class="avatar s45" Title="Организатор" />
+                        <MudText Typo="Typo.body2"><b>Организатор:</b><br />@context.Item.Admin?.Name (@context.Item.Admin?.ToGendersAgesString())</MudText>
+                    </MudStack>
+                    
+                    <MudText Typo="Typo.body2"><b>@context.Item.ToRegionString(). @context.Item.Address</b></MudText>
+                    <MudText Typo="Typo.body2">@context.Item.Description</MudText>
+                </MudStack>
+            </MudItem>
+        </MudGrid>
+    </ChildRowContent>
+
+    <PagerContent>
+        <MudDataGridPager RowsPerPageString="Показывать по:" ShowPageNumber="false" T="EventsViewDto" />
+    </PagerContent>
+</MudDataGrid>

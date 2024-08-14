@@ -39,6 +39,7 @@ namespace WebAPI.Controllers
             return response;
         }
 
+
         [Route("Get"), HttpPost, Authorize]
         public async Task<GetNotificationsResponseDto?> GetAsync(GetNotificationsRequestDto request)
         {
@@ -54,8 +55,8 @@ namespace WebAPI.Controllers
                 var sql = "SELECT * FROM NotificationsView " +
                     $"WHERE {nameof(NotificationsViewEntity.RecipientId)} = @_accountId" + request.Filters() +
                     $"ORDER BY {nameof(NotificationsViewEntity.CreateDate)} DESC " +
-                    $"OFFSET @Skip ROWS FETCH NEXT @Top ROWS ONLY";
-                var notifications = await conn.QueryAsync<NotificationsViewEntity>(sql, new { _accountId, request.Top, request.Skip });
+                    $"OFFSET {request.Skip} ROWS FETCH NEXT {request.Take} ROWS ONLY";
+                var notifications = await conn.QueryAsync<NotificationsViewEntity>(sql, new { _accountId });
                 response.Notifications = _mapper.Map<List<NotificationsViewDto>>(notifications);
 
                 // Подсчитаем кол-во уведомлений (с фильтром)

@@ -6,22 +6,10 @@
 
         public string? Token { get; set; }
 
-
-        int _top;
-        public int? Top
-        {
-            get => _top;
-            set => _top = value ?? 5;
-        }
-
-        int _skip;
-        public int? Skip
-        {
-            get => _skip;
-            set => _skip = value ?? 0;
-        }
+        public int Take = 5;
+        public int Skip = 0;
 
         public string? FilterProperty { get; set; }
-        public object? FilterValue { get; set; }
+        public string? FilterValue { get; set; }
     }
 }

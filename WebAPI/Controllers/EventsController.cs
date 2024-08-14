@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using WebAPI.Exceptions;
+using WebAPI.Extensions;
 
 namespace WebAPI.Controllers
 {
@@ -59,23 +60,34 @@ namespace WebAPI.Controllers
 
             using (var conn = new SqlConnection(connectionString))
             {
-                IEnumerable<EventsViewEntity> result;
-
+                // (НЕ ДОДЕЛАНО!!!) Получить мероприятия конкретного пользователя
                 if (request.AccountId.HasValue && request.AccountId.Value > 0)
-                    result = await conn.QueryAsync<EventsViewEntity>($"SELECT {columns.Aggregate((a, b) => a + ", " + b)} " +
-                        $"FROM AccountsEventsView " +
-                        $"WHERE AccountId = @AccountId", new { request.AccountId });
+                {
+                    var sql = $"SELECT {columns.Aggregate((a, b) => a + ", " + b)} " +
+                        "FROM AccountsEventsView " +
+                        $"WHERE AccountId = {request.AccountId} " +
+                        $"OFFSET {request.Skip} ROWS FETCH NEXT {request.Take} ROWS ONLY";
+                    var result = await conn.QueryAsync<EventsViewEntity>(sql);
+                }
+                // Получить все мероприятия
                 else
-                    result = await conn.QueryAsync<EventsViewEntity>($"SELECT {columns.Aggregate((a, b) => a + ", " + b)} " +
-                        $"FROM EventsView");
+                {
+                    var sql = $"SELECT {columns.Aggregate((a, b) => a + ", " + b)} " +
+                        "FROM EventsView " +
+                        $"WHERE {nameof(EventsViewDto.EndDate)} > getdate() " + request.Filters() +
+                        $"ORDER BY {nameof(EventsViewDto.StartDate)}";
+                    var result = await conn.QueryAsync<EventsViewEntity>(sql, new { FilterValue = "%" + request.FilterValue + "%" });
 
-                response.Events = _mapper.Map<List<EventsViewDto>>(result);
+                    response.Count = result.Count();
+                    response.Events = _mapper.Map<List<EventsViewDto>>(result.Skip(request.Skip).Take(request.Take));
+                }
             }
 
             return response;
         }
 
         
+        // Количество Subscribers, Registers, Discussions (SRD)
         [Route("GetSRD"), HttpPost]
         public async Task<GetEventsResponseDto?> GetSRDAsync(GetEventsSRDRequestDto request)
         {

@@ -2,6 +2,7 @@
 {
     public class ResponseDtoBase
     {
+        public int? Count { get; set; }
         public string? ErrorMessage { get; set; }
     }
 }

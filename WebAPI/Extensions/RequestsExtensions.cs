@@ -141,23 +141,22 @@ namespace WebAPI.Extensions
         }
 
 
-        public static string? Filters(this GetNotificationsRequestDto request)
+        public static string? Filters(this RequestDtoBase request)
         {
-            string? filter = null;
-            if (request.FilterProperty != null && request.FilterValue != null)
-            {
-                switch(request.FilterProperty)
-                {
-                    case nameof(NotificationsViewDto.Text):
-                        var text = request.FilterValue.ToString()?.Substring(0, request.FilterValue.ToString()!.Length);
-                        if (string.IsNullOrWhiteSpace(text))
-                            return null;
-                        filter = $"AND {request.FilterProperty} LIKE '%{text}%'";
-                        break;
-                }
-            }
+            if (string.IsNullOrWhiteSpace(request.FilterProperty) || string.IsNullOrWhiteSpace(request.FilterValue))
+                return null;
 
-            return " " + filter + " ";
+            request.FilterValue = request.FilterValue.Substring(0, request.FilterValue.Length > 20 ? 20 : request.FilterValue.Length);
+
+            switch(request.FilterProperty)
+            {
+                case "Name":
+                case "Text":
+                    return $"AND {request.FilterProperty} LIKE @FilterValue ";
+                default:
+                    return null;
+            }
+           
         }
     }
 }

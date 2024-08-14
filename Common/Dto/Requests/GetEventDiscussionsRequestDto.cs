@@ -8,7 +8,5 @@
 
         public int? GetPreviousFromId { get; set; }
         public int? GetNextAfterId { get; set; }
-
-        public int Take { get; set; }
     }
 }

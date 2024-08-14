@@ -10,6 +10,8 @@
 
         public List<EventsPhotosDto>? Photos { get; set; }
 
+        public List<EventsSchedulesDto>? Schedule { get; set; }
+
         public int? NumOfSubscribers { get; set; }
         public int? NumOfRegisters { get; set; }
         public int? NumOfDiscussions { get; set; }

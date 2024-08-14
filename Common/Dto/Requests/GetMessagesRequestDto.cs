@@ -10,7 +10,5 @@
         public int? GetNextAfterId { get; set; }
 
         public bool MarkAsRead { get; set; } = false;
-
-        public int Take { get; set; } = 20;
     }
 }

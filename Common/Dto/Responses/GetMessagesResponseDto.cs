@@ -8,6 +8,5 @@ namespace Common.Dto.Responses
         public AccountsViewDto Recipient { get; set; } = null!;
 
         public List<MessagesDto> Messages { get; set; } = null!;
-        public int Count { get; set; }
     }
 }

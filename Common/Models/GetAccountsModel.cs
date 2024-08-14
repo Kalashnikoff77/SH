@@ -9,9 +9,6 @@ namespace Common.Models
         public int? Id { get; set; }
         public Guid? Guid { get; set; }
 
-        public int Take { get; set; } = 10;
-        public int Skip { get; set; } = 0;
-
         public bool IsUsersIncluded { get; set; } = false;
         public bool IsAvatarIncluded { get; set; } = false;
         public bool IsPhotosIncluded { get; set; } = false;

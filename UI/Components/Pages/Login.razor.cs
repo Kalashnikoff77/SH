@@ -25,9 +25,9 @@ namespace UI.Components.Pages
         // TODO Убрать начальные значения (OK)
         LoginModel loginModel = new LoginModel
         {
-            //Email = "oleg@mail.ru",
-            //Password = "pass2",
-            //Remember = true
+            Email = "oleg@mail.ru",
+            Password = "pass2",
+            Remember = true
         };
 
         string? errorLogin { get; set; } = null;
@@ -37,7 +37,7 @@ namespace UI.Components.Pages
             var apiResponse = await _repoLogin.HttpPostAsync(loginModel);
             if (apiResponse.StatusCode == HttpStatusCode.OK)
             {
-                apiResponse.Response.Account!.Token = Common.StaticData.GenerateToken(apiResponse.Response.Account.Id, apiResponse.Response.Account.Guid, _configuration);
+                apiResponse.Response.Account!.Token = StaticData.GenerateToken(apiResponse.Response.Account.Id, apiResponse.Response.Account.Guid, _configuration);
                 CurrentState.SetAccount(apiResponse.Response.Account);
 
                 if (loginModel.Remember)

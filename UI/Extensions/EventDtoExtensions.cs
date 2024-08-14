@@ -16,14 +16,14 @@ namespace UI.Extensions
         {
             string dateClass = null!;
 
-            if (evt.StartDate < DateTime.Now && evt.EndDate < DateTime.Now)
-                dateClass = "red-text";
-            else if (evt.StartDate < DateTime.Now)
-                dateClass = "orange-text";
-            else if (evt.StartDate < DateTime.Now.AddDays(3))
-                dateClass = "green-text";
-            else if (evt.StartDate < DateTime.Now.AddDays(7))
-                dateClass = "blue-text";
+            //if (evt.StartDate < DateTime.Now && evt.EndDate < DateTime.Now)
+            //    dateClass = "red-text";
+            //else if (evt.StartDate < DateTime.Now)
+            //    dateClass = "orange-text";
+            //else if (evt.StartDate < DateTime.Now.AddDays(3))
+            //    dateClass = "green-text";
+            //else if (evt.StartDate < DateTime.Now.AddDays(7))
+            //    dateClass = "blue-text";
 
             return dateClass;
         }

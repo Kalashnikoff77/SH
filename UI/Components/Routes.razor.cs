@@ -37,7 +37,7 @@ namespace UI.Components
                         CurrentState.StateHasChanged();
                     }
                     else
-                        throw new Exception("Логин вернул null!!! См. App.razor.cs.");
+                        throw new Exception("Логин вернул null!!! См. Routes.razor.cs.");
                 }
 
                 await CurrentState.SignalRConnect();

@@ -15,12 +15,6 @@ namespace DataContext.Entities
 
         public int AdminId { get; set; }
 
-        [Required]
-        public DateTime StartDate { get; set; }
-
-        [Required]
-        public DateTime EndDate { get; set; }
-
         public int RegionId { get; set; }
 
         [Required]

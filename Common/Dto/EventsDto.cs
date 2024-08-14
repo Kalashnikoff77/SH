@@ -8,9 +8,6 @@
 
         public string Description { get; set; } = null!;
 
-        public DateTime StartDate { get; set; }
-        public DateTime EndDate { get; set; }
-
         public int RegionId { get; set; }
 
         public string Address { get; set; } = null!;

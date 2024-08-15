@@ -2,6 +2,11 @@
 
 <PageTitle>Главная страница</PageTitle>
 
+<p class="event-selected-date">Test</p>
+
+<MudDatePicker AdditionalDateClassesFunc="DateClass" />
+
+
 <MudDataGrid @ref="dataGrid" T="Item" ServerData="ServerReload" Filterable="false">
     <ToolBarContent>
         <MudText Typo="Typo.h6">Партнёры</MudText>

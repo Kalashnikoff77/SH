@@ -12,10 +12,10 @@
 
     protected override void OnParametersSet()
     {
-        var photo = Event.Photos!.FirstOrDefault(x => x.IsAvatar == true);
-
         width = StaticData.Images[Size].Width;
         height = StaticData.Images[Size].Height;
+
+        var photo = Event.Photos?.FirstOrDefault(x => x.IsAvatar == true);
 
         if (photo != null)
             uri = $"/images/EventsPhotos/{Event.Id}/{photo.Guid}/{Size}.jpg";

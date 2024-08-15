@@ -45,3 +45,21 @@
 
 
 <MudButton ButtonType="ButtonType.Button" Color="Color.Primary" Variant="Variant.Filled" OnClick="AddItem">Добавить</MudButton>
+
+
+@* <MudCarousel @ref="_carousel" ItemsSource="@_source" Style="width:150px; height:150px" ShowArrows="false" ShowBullets="false" AutoCycle="true">
+    <ItemTemplate>
+        <img src="@context" />
+    </ItemTemplate>
+</MudCarousel>
+ *@
+@code {
+    MudCarousel<EventsPhotosDto> _carousel = null!;
+
+    IList<string> _source = new List<string>
+    {
+        "/images/EventsPhotos/1/51f12539-9aa3-469e-b383-654195bb9cbe/s150x150.jpg",
+        "/images/EventsPhotos/2/974cf18d-1a56-4762-a2b7-8bda6c43606c/s150x150.jpg",
+        "/images/EventsPhotos/3/b122a522-0d36-4517-9748-c5cc1bdfd8f9/s150x150.jpg"
+    };
+}

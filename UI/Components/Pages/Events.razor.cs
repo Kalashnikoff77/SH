@@ -1,4 +1,5 @@
-﻿using Common.Dto.Requests;
+﻿using Common.Dto;
+using Common.Dto.Requests;
 using Common.Dto.Responses;
 using Common.Dto.Views;
 using Common.Models;
@@ -15,6 +16,8 @@ namespace UI.Components.Pages
         MudDataGrid<EventsViewDto> dataGrid = null!;
         List<EventsViewDto> EventsList = new List<EventsViewDto>();
         string filterValue = null!;
+        
+        MudCarousel<EventsPhotosDto> Carousel = null!;
 
         protected override async Task OnInitializedAsync()
         {

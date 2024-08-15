@@ -2,6 +2,8 @@
 {
     public class EventsViewDto : EventsDto
     {
+        public DateTime NearestDate { get; set; }
+
         public AccountsViewDto? Admin { get; set; }
 
         public CountriesDto? Country { get; set; }

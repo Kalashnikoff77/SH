@@ -1,4 +1,5 @@
-﻿using Common.Dto.Views;
+﻿using Common.Dto;
+using Common.Dto.Views;
 
 namespace UI.Extensions
 {
@@ -12,18 +13,19 @@ namespace UI.Extensions
         public static string ToRegionString(this EventsViewDto evt) =>
             $"{evt.Country!.Name}, {evt.Country.Region.Name}";
 
-        public static string ToDateClass(this EventsViewDto evt) 
+
+        public static string ToDateClass(this EventsSchedulesDto evt) 
         {
             string dateClass = null!;
 
-            //if (evt.StartDate < DateTime.Now && evt.EndDate < DateTime.Now)
-            //    dateClass = "red-text";
-            //else if (evt.StartDate < DateTime.Now)
-            //    dateClass = "orange-text";
-            //else if (evt.StartDate < DateTime.Now.AddDays(3))
-            //    dateClass = "green-text";
-            //else if (evt.StartDate < DateTime.Now.AddDays(7))
-            //    dateClass = "blue-text";
+            if (evt.StartDate < DateTime.Now && evt.EndDate < DateTime.Now)
+                dateClass = "red-text";
+            else if (evt.StartDate < DateTime.Now)
+                dateClass = "orange-text";
+            else if (evt.StartDate < DateTime.Now.AddDays(3))
+                dateClass = "green-text";
+            else if (evt.StartDate < DateTime.Now.AddDays(7))
+                dateClass = "blue-text";
 
             return dateClass;
         }

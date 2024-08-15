@@ -70,17 +70,17 @@ namespace WebAPI.Controllers
                     var result = await conn.QueryAsync<EventsViewEntity>(sql);
                 }
                 // Получить все мероприятия
-                //else
-                //{
-                //    var sql = $"SELECT {columns.Aggregate((a, b) => a + ", " + b)} " +
-                //        "FROM EventsView " +
-                //        $"WHERE {nameof(EventsViewDto.EndDate)} > getdate() " + request.Filters() +
-                //        $"ORDER BY {nameof(EventsViewDto.StartDate)}";
-                //    var result = await conn.QueryAsync<EventsViewEntity>(sql, new { FilterValue = "%" + request.FilterValue + "%" });
+                else
+                {
+                    var sql = $"SELECT {columns.Aggregate((a, b) => a + ", " + b)} " +
+                        "FROM EventsView " +
+                        $"WHERE 1=1 {request.Filters()} " +
+                        $"ORDER BY {nameof(EventsViewDto.NearestDate)}";
+                    var result = await conn.QueryAsync<EventsViewEntity>(sql, new { FilterValue = "%" + request.FilterValue + "%" });
 
-                //    response.Count = result.Count();
-                //    response.Events = _mapper.Map<List<EventsViewDto>>(result.Skip(request.Skip).Take(request.Take));
-                //}
+                    response.Count = result.Count();
+                    response.Events = _mapper.Map<List<EventsViewDto>>(result.Skip(request.Skip).Take(request.Take));
+                }
             }
 
             return response;

@@ -1,7 +1,6 @@
 ﻿// Обновление кол-ва подписавшихся или зарегистрированных на мероприятие
-function UpdateEventSubscribeOrRegisterClient(updateEventSubscribeOrRegisterModel) {
-    updateEventSubscribeOrRegisterModel.events.forEach(evt => {
-        ChangeNumberFadeInOut('sw-event-subscribed-' + evt.id, evt.numOfSubscribers, true);
+function UpdateEventRegisterClient(updateEventRegisterModel) {
+    updateEventRegisterModel.events.forEach(evt => {
         ChangeNumberFadeInOut('sw-event-registered-' + evt.id, evt.numOfRegisters, true);
     })
 }

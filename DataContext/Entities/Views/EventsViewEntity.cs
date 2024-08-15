@@ -21,14 +21,11 @@ namespace DataContext.Entities.Views
         public string? Schedule { get; set; }
 
         [Required]
-        public int? NumOfSubscribers { get; set; }
-        [Required]
         public int? NumOfRegisters { get; set; }
         [Required]
         public int? NumOfDiscussions { get; set; }
 
         // Для AccountsEventsView
-        public bool IsSubscribed { get; set; }
         public bool IsRegistered { get; set; }
     }
 }

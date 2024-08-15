@@ -35,7 +35,7 @@ namespace Common.Mapping
             CreateMap<GetEventsSRDModel, GetEventsSRDRequestDto>();
             CreateMap<GetEventDiscussionsModel, GetEventDiscussionsRequestDto>();
             CreateMap<AddEventDiscussionModel, AddEventDiscussionRequestDto>();
-            CreateMap<UpdateEventSubscriptionModel, UpdateEventSubscriptionRequestDto>();
+            CreateMap<UpdateEventRegistrationModel, UpdateEventRegistrationRequestDto>();
             CreateMap<GetAccountRelationsModel, GetAccountRelationsRequestDto>();
 
             // В компоненте редактирования учётной записи

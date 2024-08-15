@@ -26,7 +26,7 @@
         GetRelationsClient,
         GetRelationsServer,
 
-        UpdateEventSubscribeOrRegisterServer,
-        UpdateEventSubscribeOrRegisterClient
+        UpdateEventRegisterServer,
+        UpdateEventRegisterClient
     }
 }

@@ -14,7 +14,7 @@ namespace Common.Models.States
         IDisposable? updateOnlineAccountsHandler;
         IDisposable? avatarChangedTriggerHandler;
         IDisposable? updateRelationsTriggerHandler;
-        IDisposable? updateEventSubscribeOrRegisterTriggerHandler;
+        IDisposable? updateEventRegisterTriggerHandler;
 
         public async Task SignalRConnect()
         {
@@ -35,8 +35,8 @@ namespace Common.Models.States
             // Пользователь изменил взаимоотношения с другим (дружба, подписка, блокировка)
             updateRelationsTriggerHandler = updateRelationsTriggerHandler.SignalRClient<GetRelationsModel>(this);
 
-            // Триггер для обновления кол-ва подписавшихся или зареганых на определённое мероприятие
-            updateEventSubscribeOrRegisterTriggerHandler = updateEventSubscribeOrRegisterTriggerHandler.SignalRClient<UpdateEventSubscribeOrRegisterModel>(this);
+            // Триггер для обновления кол-ва зареганых на определённое мероприятие
+            updateEventRegisterTriggerHandler = updateEventRegisterTriggerHandler.SignalRClient<UpdateEventRegisterModel>(this);
 
             await SignalR.StartAsync();
         }
@@ -55,7 +55,7 @@ namespace Common.Models.States
             updateOnlineAccountsHandler?.Dispose();
             avatarChangedTriggerHandler?.Dispose();
             updateRelationsTriggerHandler?.Dispose();
-            updateEventSubscribeOrRegisterTriggerHandler?.Dispose();
+            updateEventRegisterTriggerHandler?.Dispose();
         }
     }
 }

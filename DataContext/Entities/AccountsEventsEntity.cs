@@ -6,7 +6,6 @@
 
         public int EventId { get; set; }
 
-        public bool IsSubscribed { get; set; }
         public bool IsRegistered { get; set; }
     }
 }

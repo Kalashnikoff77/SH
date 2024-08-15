@@ -10,16 +10,16 @@ namespace SignalR
     {
         // Триггер для обновления кол-ва подписавшихся или зареганых на определённое мероприятие
         [Authorize]
-        public async Task UpdateEventSubscribeOrRegisterServer(UpdateEventSubscribeOrRegisterModel model)
+        public async Task UpdateEventRegisterServer(UpdateEventRegisterModel model)
         {
-            var loggerScope = _logger.BeginScope("{@CurrentMethod}", nameof(UpdateEventSubscribeOrRegisterServer));
-            _logger.LogInformation("МЕТОД: {0}({@model})", nameof(UpdateEventSubscribeOrRegisterServer), model);
+            var loggerScope = _logger.BeginScope("{@CurrentMethod}", nameof(UpdateEventRegisterServer));
+            _logger.LogInformation("МЕТОД: {0}({@model})", nameof(UpdateEventRegisterServer), model);
 
             var apiResponse = await _repoGetEventsSRD.HttpPostAsync(new GetEventsSRDModel());
             model.Events = apiResponse.Response.Events;
 
-            _logger.LogInformation("Clients.All({1}, {@model})", EnumSignalRHandlers.UpdateEventSubscribeOrRegisterClient, model);
-            await Clients.All.SendAsync(nameof(EnumSignalRHandlers.UpdateEventSubscribeOrRegisterClient), model);
+            _logger.LogInformation("Clients.All({1}, {@model})", EnumSignalRHandlers.UpdateEventRegisterClient, model);
+            await Clients.All.SendAsync(nameof(EnumSignalRHandlers.UpdateEventRegisterClient), model);
         }
 
 

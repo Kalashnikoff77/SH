@@ -87,7 +87,7 @@ namespace WebAPI.Controllers
         }
 
         
-        // Количество Subscribers, Registers, Discussions (SRD)
+        // Количество Registers, Discussions (SRD)
         [Route("GetSRD"), HttpPost]
         public async Task<GetEventsResponseDto?> GetSRDAsync(GetEventsSRDRequestDto request)
         {
@@ -96,7 +96,7 @@ namespace WebAPI.Controllers
             using (var conn = new SqlConnection(connectionString))
             {
                 var result = await conn.QueryAsync<EventsViewEntity>($"SELECT Id, " +
-                    $"{nameof(EventsViewEntity.NumOfSubscribers)}, {nameof(EventsViewEntity.NumOfRegisters)}, {nameof(EventsViewEntity.NumOfDiscussions)} " +
+                    $"{nameof(EventsViewEntity.NumOfRegisters)}, {nameof(EventsViewEntity.NumOfDiscussions)} " +
                     $"FROM EventsView");
 
                 response.Events = _mapper.Map<List<EventsViewDto>>(result);
@@ -185,8 +185,8 @@ namespace WebAPI.Controllers
         }
 
 
-        [Route("UpdateSubscription"), HttpPost, Authorize]
-        public async Task<UpdateEventSubscriptionResponseDto> UpdateSubscriptionAsync(UpdateEventSubscriptionRequestDto request)
+        [Route("UpdateRegistration"), HttpPost, Authorize]
+        public async Task<UpdateEventRegistrationResponseDto> UpdateRegistrationAsync(UpdateEventRegistrationRequestDto request)
         {
             AuthenticateUser();
 
@@ -198,32 +198,28 @@ namespace WebAPI.Controllers
                 if (accountEvent == null)
                 {
                     sql = $"INSERT INTO AccountsEvents " +
-                        $"({nameof(AccountsEventsEntity.AccountId)}, {nameof(AccountsEventsEntity.EventId)}, {nameof(AccountsEventsEntity.IsSubscribed)}, {nameof(AccountsEventsEntity.IsRegistered)}) " +
+                        $"({nameof(AccountsEventsEntity.AccountId)}, {nameof(AccountsEventsEntity.EventId)}, {nameof(AccountsEventsEntity.IsRegistered)}) " +
                         $"VALUES (@_accountId, @EventId, 0, 0)";
                     await conn.ExecuteAsync(sql, new { _accountId, request.EventId });
                     accountEvent = new AccountsEventsEntity();
                 }
 
-                var response = new UpdateEventSubscriptionResponseDto 
+                var response = new UpdateEventRegistrationResponseDto 
                 {
                     EventId = request.EventId,
-                    IsSubscribed = accountEvent.IsSubscribed,
-                    IsRegistered = accountEvent.IsRegistered
                 };
 
-                if (request.ToSubscribe)
-                    response.IsSubscribed = !response.IsSubscribed;
-                else
+                if (request.ToRegister)
                     response.IsRegistered = !response.IsRegistered;
 
-                if (response.IsSubscribed || response.IsRegistered)
-                    sql = $"UPDATE AccountsEvents SET {nameof(AccountsEventsEntity.IsSubscribed)} = @{nameof(AccountsEventsEntity.IsSubscribed)}, {nameof(AccountsEventsEntity.IsRegistered)} = @{nameof(AccountsEventsEntity.IsRegistered)} " +
+                if (response.IsRegistered)
+                    sql = $"UPDATE AccountsEvents SET {nameof(AccountsEventsEntity.IsRegistered)} = @{nameof(AccountsEventsEntity.IsRegistered)} " +
                         $"WHERE {nameof(AccountsEventsEntity.AccountId)} = @_accountId AND {nameof(AccountsEventsEntity.EventId)} = @EventId";
                 else
                     sql = $"DELETE FROM AccountsEvents " +
                         $"WHERE {nameof(AccountsEventsEntity.AccountId)} = @_accountId AND {nameof(AccountsEventsEntity.EventId)} = @EventId";
 
-                await conn.ExecuteAsync(sql, new { _accountId, request.EventId, response.IsSubscribed, response.IsRegistered });
+                await conn.ExecuteAsync(sql, new { _accountId, request.EventId, response.IsRegistered });
 
                 return response;
             }

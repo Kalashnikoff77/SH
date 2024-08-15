@@ -14,12 +14,10 @@
 
         public List<EventsSchedulesDto>? Schedule { get; set; }
 
-        public int? NumOfSubscribers { get; set; }
         public int? NumOfRegisters { get; set; }
         public int? NumOfDiscussions { get; set; }
 
         // Для AccountsEventsView
-        public bool IsSubscribed { get; set; }
         public bool IsRegistered { get; set; }
     }
 }

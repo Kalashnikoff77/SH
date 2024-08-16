@@ -56,7 +56,9 @@
                             <img src="/images/EventsPhotos/@photo.EventId/@photo.Guid/@(EnumImageSize.s150x150).jpg" Style="border-radius:5%" />
                         </ItemTemplate>
                     </MudCarousel>
-                    <MudButton Color="Color.Info" Size="Size.Small" StartIcon="@Icons.Material.Outlined.HowToReg" Variant="Variant.Outlined">Регистрация</MudButton>
+                    @if (CurrentState.Account != null) {
+                        <MudButton Color="Color.Info" Size="Size.Small" StartIcon="@Icons.Material.Outlined.HowToReg" Variant="Variant.Outlined">Регистрация</MudButton>
+                    }
                 </MudStack>
             </MudItem>
             <MudItem xs="12" sm="9">

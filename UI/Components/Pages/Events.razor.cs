@@ -3,6 +3,7 @@ using Common.Dto.Requests;
 using Common.Dto.Responses;
 using Common.Dto.Views;
 using Common.Models;
+using Common.Models.States;
 using Common.Repository;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
@@ -11,6 +12,7 @@ namespace UI.Components.Pages
 {
     public partial class Events
     {
+        [CascadingParameter] public CurrentState CurrentState { get; set; } = null!;
         [Inject] IRepository<GetEventsModel, GetEventsRequestDto, GetEventsResponseDto> _repoGetEvents { get; set; } = null!;
 
         MudDataGrid<EventsViewDto> dataGrid = null!;

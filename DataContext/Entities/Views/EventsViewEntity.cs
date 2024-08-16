@@ -17,11 +17,13 @@ namespace DataContext.Entities.Views
         public string Avatar { get; set; } = null!;
 
         public string? Photos { get; set; }
+
+        [Required]
+        public string? RegisteredAccounts { get; set; }
+
         [Required]
         public string? Schedule { get; set; }
 
-        [Required]
-        public int? NumOfRegisters { get; set; }
         [Required]
         public int? NumOfDiscussions { get; set; }
 

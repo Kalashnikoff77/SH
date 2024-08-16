@@ -82,7 +82,6 @@ namespace WebAPI.Controllers
                     response.Events = _mapper.Map<List<EventsViewDto>>(result.Skip(request.Skip).Take(request.Take));
                 }
             }
-
             return response;
         }
 
@@ -95,11 +94,12 @@ namespace WebAPI.Controllers
 
             using (var conn = new SqlConnection(connectionString))
             {
-                var result = await conn.QueryAsync<EventsViewEntity>($"SELECT Id, " +
-                    $"{nameof(EventsViewEntity.NumOfRegisters)}, {nameof(EventsViewEntity.NumOfDiscussions)} " +
-                    $"FROM EventsView");
+                // Доработать!!!
+                //var result = await conn.QueryAsync<EventsViewEntity>($"SELECT Id, " +
+                //    $"{nameof(EventsViewEntity.NumOfRegisters)}, {nameof(EventsViewEntity.NumOfDiscussions)} " +
+                //    $"FROM EventsView");
 
-                response.Events = _mapper.Map<List<EventsViewDto>>(result);
+                //response.Events = _mapper.Map<List<EventsViewDto>>(result);
             }
 
             return response;
@@ -198,7 +198,7 @@ namespace WebAPI.Controllers
                 if (accountEvent == null)
                 {
                     sql = $"INSERT INTO AccountsEvents " +
-                        $"({nameof(AccountsEventsEntity.AccountId)}, {nameof(AccountsEventsEntity.EventId)}, {nameof(AccountsEventsEntity.IsRegistered)}) " +
+                        $"({nameof(AccountsEventsEntity.AccountId)}, {nameof(AccountsEventsEntity.EventId)}) " +
                         $"VALUES (@_accountId, @EventId, 0, 0)";
                     await conn.ExecuteAsync(sql, new { _accountId, request.EventId });
                     accountEvent = new AccountsEventsEntity();
@@ -212,12 +212,13 @@ namespace WebAPI.Controllers
                 if (request.ToRegister)
                     response.IsRegistered = !response.IsRegistered;
 
-                if (response.IsRegistered)
-                    sql = $"UPDATE AccountsEvents SET {nameof(AccountsEventsEntity.IsRegistered)} = @{nameof(AccountsEventsEntity.IsRegistered)} " +
-                        $"WHERE {nameof(AccountsEventsEntity.AccountId)} = @_accountId AND {nameof(AccountsEventsEntity.EventId)} = @EventId";
-                else
-                    sql = $"DELETE FROM AccountsEvents " +
-                        $"WHERE {nameof(AccountsEventsEntity.AccountId)} = @_accountId AND {nameof(AccountsEventsEntity.EventId)} = @EventId";
+                // Доработать
+                //if (response.IsRegistered)
+                //    sql = $"UPDATE AccountsEvents SET {nameof(AccountsEventsEntity.IsRegistered)} = @{nameof(AccountsEventsEntity.IsRegistered)} " +
+                //        $"WHERE {nameof(AccountsEventsEntity.AccountId)} = @_accountId AND {nameof(AccountsEventsEntity.EventId)} = @EventId";
+                //else
+                //    sql = $"DELETE FROM AccountsEvents " +
+                //        $"WHERE {nameof(AccountsEventsEntity.AccountId)} = @_accountId AND {nameof(AccountsEventsEntity.EventId)} = @EventId";
 
                 await conn.ExecuteAsync(sql, new { _accountId, request.EventId, response.IsRegistered });
 

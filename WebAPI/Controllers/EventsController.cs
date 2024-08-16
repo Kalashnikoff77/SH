@@ -64,7 +64,7 @@ namespace WebAPI.Controllers
                 if (request.AccountId.HasValue && request.AccountId.Value > 0)
                 {
                     var sql = $"SELECT {columns.Aggregate((a, b) => a + ", " + b)} " +
-                        "FROM AccountsEventsView " +
+                        "FROM EventsForAccountsView " +
                         $"WHERE AccountId = {request.AccountId} " +
                         $"OFFSET {request.Skip} ROWS FETCH NEXT {request.Take} ROWS ONLY";
                     var result = await conn.QueryAsync<EventsViewEntity>(sql);
@@ -107,61 +107,61 @@ namespace WebAPI.Controllers
 
 
         [Route("GetDiscussions"), HttpPost]
-        public async Task<GetEventDiscussionsResponseDto?> GetDiscussions(GetEventDiscussionsRequestDto request)
+        public async Task<GetDiscussionsForEventsResponseDto?> GetDiscussions(GetDiscussionsForEventsRequestDto request)
         {
             if (request.EventId == 0)
                 throw new NotFoundException("Не указано мероприятие (EventId = 0)!");
 
-            var response = new GetEventDiscussionsResponseDto();
-            IEnumerable<EventsDiscussionsEntity> result;
+            var response = new GetDiscussionsForEventsResponseDto();
+            IEnumerable<DiscussionsForEventsEntity> result;
 
             using (var conn = new SqlConnection(connectionString))
             {
                 // Получим кол-во сообщений в чате мероприятия
-                var sql = $"SELECT COUNT(*) FROM EventsDiscussions " +
-                    $"WHERE {nameof(EventsDiscussionsViewEntity.EventId)} = @{nameof(EventsDiscussionsViewEntity.EventId)}";
+                var sql = $"SELECT COUNT(*) FROM DiscussionsForEvents " +
+                    $"WHERE {nameof(DiscussionsForEventsViewEntity.EventId)} = @{nameof(DiscussionsForEventsViewEntity.EventId)}";
                 response.NumOfDiscussions = await conn.QuerySingleAsync<int>(sql, new { request.EventId });
 
                 // Запрос на получение предыдущих сообщений
                 if (request.GetPreviousFromId.HasValue)
                 {
-                    sql = $"SELECT TOP (@Take) * FROM EventsDiscussionsView " +
-                            $"WHERE {nameof(EventsDiscussionsViewEntity.EventId)} = @{nameof(EventsDiscussionsViewEntity.EventId)} " +
+                    sql = $"SELECT TOP (@Take) * FROM DiscussionsForEventsView " +
+                            $"WHERE {nameof(DiscussionsForEventsViewEntity.EventId)} = @{nameof(DiscussionsForEventsViewEntity.EventId)} " +
                             $"AND Id < {request.GetPreviousFromId} " +
                             $"ORDER BY Id DESC";
-                    result = (await conn.QueryAsync<EventsDiscussionsViewEntity>(sql, new { request.EventId, request.Take })).Reverse();
+                    result = (await conn.QueryAsync<DiscussionsForEventsViewEntity>(sql, new { request.EventId, request.Take })).Reverse();
                 }
 
                 // Запрос на получение следующих сообщений
                 else if (request.GetNextAfterId.HasValue)
                 {
-                    sql = $"SELECT TOP (@Take) * FROM EventsDiscussionsView " +
-                            $"WHERE {nameof(EventsDiscussionsViewEntity.EventId)} = @{nameof(EventsDiscussionsViewEntity.EventId)} " +
+                    sql = $"SELECT TOP (@Take) * FROM DiscussionsForEventsView " +
+                            $"WHERE {nameof(DiscussionsForEventsViewEntity.EventId)} = @{nameof(DiscussionsForEventsViewEntity.EventId)} " +
                             $"AND Id > {request.GetNextAfterId} " +
                             $"ORDER BY Id ASC";
-                    result = await conn.QueryAsync<EventsDiscussionsViewEntity>(sql, new { request.EventId, request.Take });
+                    result = await conn.QueryAsync<DiscussionsForEventsViewEntity>(sql, new { request.EventId, request.Take });
                 }
 
                 // Запрос на получение последних сообщений (по умолчанию)
                 else
                 {
                     int offset = response.NumOfDiscussions > StaticData.EVENT_DISCUSSIONS_PER_BLOCK ? response.NumOfDiscussions - StaticData.EVENT_DISCUSSIONS_PER_BLOCK : 0;
-                    sql = $"SELECT * FROM EventsDiscussionsView " +
-                        $"WHERE {nameof(EventsDiscussionsViewEntity.EventId)} = @{nameof(EventsDiscussionsViewEntity.EventId)} " +
+                    sql = $"SELECT * FROM DiscussionsForEventsView " +
+                        $"WHERE {nameof(DiscussionsForEventsViewEntity.EventId)} = @{nameof(DiscussionsForEventsViewEntity.EventId)} " +
                         $"ORDER BY Id ASC " +
                         $"OFFSET {offset} ROWS";
-                    result = await conn.QueryAsync<EventsDiscussionsViewEntity>(sql, new { request.EventId });
+                    result = await conn.QueryAsync<DiscussionsForEventsViewEntity>(sql, new { request.EventId });
                 }
             }
 
-            response.Discussions = _mapper.Map<List<EventsDiscussionsViewDto>>(result);
+            response.Discussions = _mapper.Map<List<DiscussionsForEventsViewDto>>(result);
 
             return response;
         }
 
 
         [Route("AddDiscussion"), HttpPost, Authorize]
-        public async Task<AddEventDiscussionResponseDto?> AddDiscussion(AddEventDiscussionRequestDto request)
+        public async Task<AddDiscussionsForEventsResponseDto?> AddDiscussion(AddDiscussionsForEventsRequestDto request)
         {
             if (request.EventId == 0)
                 throw new NotFoundException("Не указано мероприятие (EventId = 0)!");
@@ -173,14 +173,14 @@ namespace WebAPI.Controllers
 
             using (var conn = new SqlConnection(connectionString))
             {
-                var sql = $"INSERT INTO EventsDiscussions " +
-                    $"({nameof(EventsDiscussionsEntity.EventId)}, {nameof(EventsDiscussionsEntity.SenderId)}, {nameof(EventsDiscussionsEntity.RecipientId)}, {nameof(EventsDiscussionsEntity.DiscussionId)}, {nameof(EventsDiscussionsEntity.Text)}) " +
+                var sql = $"INSERT INTO DiscussionsForEvents " +
+                    $"({nameof(DiscussionsForEventsEntity.EventId)}, {nameof(DiscussionsForEventsEntity.SenderId)}, {nameof(DiscussionsForEventsEntity.RecipientId)}, {nameof(DiscussionsForEventsEntity.DiscussionId)}, {nameof(DiscussionsForEventsEntity.Text)}) " +
                     $"OUTPUT INSERTED.Id " +
                     $"VALUES " +
-                    $"(@{nameof(EventsDiscussionsEntity.EventId)}, @_accountId, @{nameof(EventsDiscussionsEntity.RecipientId)}, @{nameof(EventsDiscussionsEntity.DiscussionId)}, @{nameof(EventsDiscussionsEntity.Text)})";
+                    $"(@{nameof(DiscussionsForEventsEntity.EventId)}, @_accountId, @{nameof(DiscussionsForEventsEntity.RecipientId)}, @{nameof(DiscussionsForEventsEntity.DiscussionId)}, @{nameof(DiscussionsForEventsEntity.Text)})";
                 var newId = await conn.QuerySingleAsync<int>(sql, new { request.EventId, _accountId, request.RecipientId, request.DiscussionId, request.Text });
 
-                return new AddEventDiscussionResponseDto { NewDiscussionId = newId };
+                return new AddDiscussionsForEventsResponseDto { NewDiscussionId = newId };
             }
         }
 
@@ -192,16 +192,16 @@ namespace WebAPI.Controllers
 
             using (var conn = new SqlConnection(connectionString))
             {
-                var sql = $"SELECT TOP 1 * FROM AccountsEvents WHERE {nameof(AccountsEventsEntity.AccountId)} = @_accountId AND {nameof(AccountsEventsEntity.EventId)} = @EventId";
-                var accountEvent = await conn.QueryFirstOrDefaultAsync<AccountsEventsEntity>(sql, new { _accountId, request.EventId });
+                var sql = $"SELECT TOP 1 * FROM EventsForAccounts WHERE {nameof(EventsForAccountsEntity.AccountId)} = @_accountId AND {nameof(EventsForAccountsEntity.EventId)} = @EventId";
+                var accountEvent = await conn.QueryFirstOrDefaultAsync<EventsForAccountsEntity>(sql, new { _accountId, request.EventId });
 
                 if (accountEvent == null)
                 {
-                    sql = $"INSERT INTO AccountsEvents " +
-                        $"({nameof(AccountsEventsEntity.AccountId)}, {nameof(AccountsEventsEntity.EventId)}) " +
+                    sql = $"INSERT INTO EventsForAccounts " +
+                        $"({nameof(EventsForAccountsEntity.AccountId)}, {nameof(EventsForAccountsEntity.EventId)}) " +
                         $"VALUES (@_accountId, @EventId, 0, 0)";
                     await conn.ExecuteAsync(sql, new { _accountId, request.EventId });
-                    accountEvent = new AccountsEventsEntity();
+                    accountEvent = new EventsForAccountsEntity();
                 }
 
                 var response = new UpdateEventRegistrationResponseDto 
@@ -214,11 +214,11 @@ namespace WebAPI.Controllers
 
                 // Доработать
                 //if (response.IsRegistered)
-                //    sql = $"UPDATE AccountsEvents SET {nameof(AccountsEventsEntity.IsRegistered)} = @{nameof(AccountsEventsEntity.IsRegistered)} " +
-                //        $"WHERE {nameof(AccountsEventsEntity.AccountId)} = @_accountId AND {nameof(AccountsEventsEntity.EventId)} = @EventId";
+                //    sql = $"UPDATE AccountsEvents SET {nameof(EventsForAccountsEntity.IsRegistered)} = @{nameof(EventsForAccountsEntity.IsRegistered)} " +
+                //        $"WHERE {nameof(EventsForAccountsEntity.AccountId)} = @_accountId AND {nameof(EventsForAccountsEntity.EventId)} = @EventId";
                 //else
-                //    sql = $"DELETE FROM AccountsEvents " +
-                //        $"WHERE {nameof(AccountsEventsEntity.AccountId)} = @_accountId AND {nameof(AccountsEventsEntity.EventId)} = @EventId";
+                //    sql = $"DELETE FROM EventsForAccounts " +
+                //        $"WHERE {nameof(EventsForAccountsEntity.AccountId)} = @_accountId AND {nameof(EventsForAccountsEntity.EventId)} = @EventId";
 
                 await conn.ExecuteAsync(sql, new { _accountId, request.EventId, response.IsRegistered });
 

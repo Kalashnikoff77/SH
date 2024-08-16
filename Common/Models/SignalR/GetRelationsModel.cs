@@ -9,6 +9,6 @@ namespace Common.Models.SignalR
 
         public int SenderId { get; set; }
         public int RecipientId { get; set; }
-        public List<AccountsRelationsDto>? Relations { get; set; }
+        public List<RelationsForAccountsDto>? Relations { get; set; }
     }
 }

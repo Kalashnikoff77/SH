@@ -18,7 +18,7 @@ namespace WebAPI.Models
 
         public async Task RemoveAllRelationsAsync()
         {
-            var sql = $"DELETE FROM AccountsRelations WHERE ({nameof(AccountsRelationsEntity.SenderId)} = @SenderId AND {nameof(AccountsRelationsEntity.RecipientId)} = @RecipientId) OR ({nameof(AccountsRelationsEntity.SenderId)} = @RecipientId AND {nameof(AccountsRelationsEntity.RecipientId)} = @SenderId)";
+            var sql = $"DELETE FROM AccountsRelations WHERE ({nameof(RelationsForAccountsEntity.SenderId)} = @SenderId AND {nameof(RelationsForAccountsEntity.RecipientId)} = @RecipientId) OR ({nameof(RelationsForAccountsEntity.SenderId)} = @RecipientId AND {nameof(RelationsForAccountsEntity.RecipientId)} = @SenderId)";
             await Conn.ExecuteAsync(sql, new { SenderId, RecipientId });
         }
 
@@ -26,9 +26,9 @@ namespace WebAPI.Models
         {
             // Проверим, заблокирован ли пользователь в данный момент?
             var sql = $"SELECT TOP 1 Id FROM AccountsRelations WHERE " +
-                $"(({nameof(AccountsRelationsEntity.SenderId)} = @SenderId AND {nameof(AccountsRelationsEntity.RecipientId)} = @RecipientId) " +
+                $"(({nameof(RelationsForAccountsEntity.SenderId)} = @SenderId AND {nameof(RelationsForAccountsEntity.RecipientId)} = @RecipientId) " +
                 $"OR " +
-                $"({nameof(AccountsRelationsEntity.SenderId)} = @RecipientId AND {nameof(AccountsRelationsEntity.RecipientId)} = @SenderId)) " +
+                $"({nameof(RelationsForAccountsEntity.SenderId)} = @RecipientId AND {nameof(RelationsForAccountsEntity.RecipientId)} = @SenderId)) " +
                 $"AND Type = @Type";
             var currentBlocked = await Conn.QueryFirstOrDefaultAsync<int?>(sql, new { SenderId, RecipientId, Type = (short)EnumRelations.Blocked });
 
@@ -38,9 +38,9 @@ namespace WebAPI.Models
             // Добавим связь "Заблокирован"
             if (currentBlocked == null)
             {
-                sql = $"INSERT INTO AccountsRelations ({nameof(AccountsRelationsEntity.SenderId)}, {nameof(AccountsRelationsEntity.RecipientId)}, {nameof(AccountsRelationsEntity.Type)}, {nameof(AccountsRelationsEntity.IsConfirmed)}) " +
+                sql = $"INSERT INTO AccountsRelations ({nameof(RelationsForAccountsEntity.SenderId)}, {nameof(RelationsForAccountsEntity.RecipientId)}, {nameof(RelationsForAccountsEntity.Type)}, {nameof(RelationsForAccountsEntity.IsConfirmed)}) " +
                     $"VALUES " +
-                    $"(@{nameof(AccountsRelationsEntity.SenderId)}, @{nameof(AccountsRelationsEntity.RecipientId)}, {(short)EnumRelations.Blocked}, 1)";
+                    $"(@{nameof(RelationsForAccountsEntity.SenderId)}, @{nameof(RelationsForAccountsEntity.RecipientId)}, {(short)EnumRelations.Blocked}, 1)";
                 await Conn.ExecuteAsync(sql, new { SenderId, RecipientId });
 
                 Response.IsRelationAdded = true;
@@ -51,14 +51,14 @@ namespace WebAPI.Models
         {
             // Проверим, есть ли такая связь?
             var sql = $"SELECT TOP 1 Id FROM AccountsRelations WHERE " +
-                $"({nameof(AccountsRelationsEntity.SenderId)} = @SenderId AND {nameof(AccountsRelationsEntity.RecipientId)} = @RecipientId) AND {nameof(AccountsRelationsEntity.Type)} = {(short)EnumRelations.Subscriber}";
+                $"({nameof(RelationsForAccountsEntity.SenderId)} = @SenderId AND {nameof(RelationsForAccountsEntity.RecipientId)} = @RecipientId) AND {nameof(RelationsForAccountsEntity.Type)} = {(short)EnumRelations.Subscriber}";
             var relationId = await Conn.QueryFirstOrDefaultAsync<int?>(sql, new { SenderId, RecipientId });
 
             if (relationId == null)
             {
-                sql = $"INSERT INTO AccountsRelations ({nameof(AccountsRelationsEntity.SenderId)}, {nameof(AccountsRelationsEntity.RecipientId)}, {nameof(AccountsRelationsEntity.Type)}, {nameof(AccountsRelationsEntity.IsConfirmed)}) " +
+                sql = $"INSERT INTO AccountsRelations ({nameof(RelationsForAccountsEntity.SenderId)}, {nameof(RelationsForAccountsEntity.RecipientId)}, {nameof(RelationsForAccountsEntity.Type)}, {nameof(RelationsForAccountsEntity.IsConfirmed)}) " +
                     $"VALUES " +
-                    $"(@{nameof(AccountsRelationsEntity.SenderId)}, @{nameof(AccountsRelationsEntity.RecipientId)}, {(short)EnumRelations.Subscriber}, 1)";
+                    $"(@{nameof(RelationsForAccountsEntity.SenderId)}, @{nameof(RelationsForAccountsEntity.RecipientId)}, {(short)EnumRelations.Subscriber}, 1)";
                 await Conn.ExecuteAsync(sql, new { SenderId, RecipientId });
                 Response.IsRelationAdded = true;
             }
@@ -75,16 +75,16 @@ namespace WebAPI.Models
         {
             // Проверим, есть ли такая связь?
             var sql = $"SELECT TOP 1 * FROM AccountsRelations WHERE " +
-                $"(({nameof(AccountsRelationsEntity.SenderId)} = @SenderId AND {nameof(AccountsRelationsEntity.RecipientId)} = @RecipientId) " +
-                $"OR ({nameof(AccountsRelationsEntity.SenderId)} = @RecipientId AND {nameof(AccountsRelationsEntity.RecipientId)} = @SenderId)) " +
-                $"AND {nameof(AccountsRelationsEntity.Type)} = {(short)EnumRelations.Friend}";
-            var currentRelation = await Conn.QueryFirstOrDefaultAsync<AccountsRelationsEntity>(sql, new { SenderId, RecipientId });
+                $"(({nameof(RelationsForAccountsEntity.SenderId)} = @SenderId AND {nameof(RelationsForAccountsEntity.RecipientId)} = @RecipientId) " +
+                $"OR ({nameof(RelationsForAccountsEntity.SenderId)} = @RecipientId AND {nameof(RelationsForAccountsEntity.RecipientId)} = @SenderId)) " +
+                $"AND {nameof(RelationsForAccountsEntity.Type)} = {(short)EnumRelations.Friend}";
+            var currentRelation = await Conn.QueryFirstOrDefaultAsync<RelationsForAccountsEntity>(sql, new { SenderId, RecipientId });
 
             if (currentRelation == null)
             {
-                sql = $"INSERT INTO AccountsRelations ({nameof(AccountsRelationsEntity.SenderId)}, {nameof(AccountsRelationsEntity.RecipientId)}, {nameof(AccountsRelationsEntity.Type)}, {nameof(AccountsRelationsEntity.IsConfirmed)}) " +
+                sql = $"INSERT INTO AccountsRelations ({nameof(RelationsForAccountsEntity.SenderId)}, {nameof(RelationsForAccountsEntity.RecipientId)}, {nameof(RelationsForAccountsEntity.Type)}, {nameof(RelationsForAccountsEntity.IsConfirmed)}) " +
                     $"VALUES " +
-                    $"(@{nameof(AccountsRelationsEntity.SenderId)}, @{nameof(AccountsRelationsEntity.RecipientId)}, {(short)EnumRelations.Friend}, 0)";
+                    $"(@{nameof(RelationsForAccountsEntity.SenderId)}, @{nameof(RelationsForAccountsEntity.RecipientId)}, {(short)EnumRelations.Friend}, 0)";
                 await Conn.ExecuteAsync(sql, new { SenderId, RecipientId });
                 Response.IsRelationAdded = true;
             }
@@ -100,7 +100,7 @@ namespace WebAPI.Models
                 // Если связь не подтверждена, то подтверждаем
                 else
                 {
-                    sql = $"UPDATE AccountsRelations SET {nameof(AccountsRelationsEntity.IsConfirmed)} = 1 WHERE Id = {currentRelation.Id}";
+                    sql = $"UPDATE AccountsRelations SET {nameof(RelationsForAccountsEntity.IsConfirmed)} = 1 WHERE Id = {currentRelation.Id}";
                     await Conn.ExecuteAsync(sql);
                 }
             }

@@ -8,13 +8,13 @@
 
         public CountriesDto? Country { get; set; }
 
-        public EventsPhotosDto? Avatar { get; set; }
+        public PhotosForEventsDto? Avatar { get; set; }
 
-        public List<EventsPhotosDto>? Photos { get; set; }
+        public List<PhotosForEventsDto>? Photos { get; set; }
 
-        public List<AccountsEventsDto>? RegisteredAccounts { get; set; }
+        public List<EventsForAccountsDto>? RegisteredAccounts { get; set; }
 
-        public List<EventsSchedulesDto>? Schedule { get; set; }
+        public List<SchedulesForEventsDto>? Schedule { get; set; }
 
         public int? NumOfDiscussions { get; set; }
 

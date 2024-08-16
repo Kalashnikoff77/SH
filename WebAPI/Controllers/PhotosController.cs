@@ -3,12 +3,10 @@ using Common;
 using Common.Dto.Requests;
 using Common.Dto.Responses;
 using Common.Dto.Views;
-using Common.Enums;
 using Dapper;
 using DataContext.Entities;
 using DataContext.Entities.Views;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
@@ -24,26 +22,26 @@ namespace WebAPI.Controllers
         public PhotosController(IMapper mapper, IConfiguration configuration) : base(mapper, configuration) { }
 
         [Route("Get"), HttpPost, Authorize]
-        public async Task<GetAccountPhotosResponseDto> GetAsync(GetAccountPhotosRequestDto request)
+        public async Task<GetPhotosForAccountsResponseDto> GetAsync(GetPhotosForAccountRequestDto request)
         {
             AuthenticateUser();
 
-            var response = new GetAccountPhotosResponseDto();
+            var response = new GetPhotosForAccountsResponseDto();
 
             using (var conn = new SqlConnection(connectionString))
             {
-                var columns = GetRequiredColumns<AccountsPhotosViewEntity>();
+                var columns = GetRequiredColumns<PhotosForAccountsViewEntity>();
 
                 // Получаем фото текущего пользователя или указанного в request?
                 var accountId = request.AccountId == null ? _accountId : request.AccountId;
 
                 var sql = "SELECT TOP (@Take) " +
                     $"{columns.Aggregate((a, b) => a + ", " + b)} " +
-                    $"FROM AccountsPhotosView WHERE {nameof(AccountsPhotosViewEntity.AccountId)} = @accountId " +
+                    $"FROM AccountsPhotosView WHERE {nameof(PhotosForAccountsViewEntity.AccountId)} = @accountId " +
                     "ORDER BY Id DESC";
-                var result = await conn.QueryAsync<AccountsPhotosViewEntity>(sql, new { accountId, request.Take });
+                var result = await conn.QueryAsync<PhotosForAccountsViewEntity>(sql, new { accountId, request.Take });
 
-                response.Photos = _mapper.Map<List<AccountsPhotosViewDto>>(result);
+                response.Photos = _mapper.Map<List<PhotosForAccountsViewDto>>(result);
             }
             return response;
         }
@@ -58,15 +56,15 @@ namespace WebAPI.Controllers
 
             using (var conn = new SqlConnection(connectionString))
             {
-                var sql = "SELECT TOP 1 Id FROM AccountsPhotos " +
+                var sql = "SELECT TOP 1 Id FROM PhotosForAccounts " +
                     "WHERE AccountId = @_accountId AND Guid = @Guid";
                 var photoId = await conn.QueryFirstOrDefaultAsync<int?>(sql, new { _accountId, request.Guid }) ?? throw new NotFoundException("Соответствующее фото не найдено!");
 
-                sql = $"UPDATE AccountsPhotos SET " +
-                    $"{nameof(AccountsPhotosEntity.Comment)} = @Comment, " +
-                    $"{nameof(AccountsPhotosEntity.IsAvatar)} = @IsAvatar, " +
-                    $"{nameof(AccountsPhotosEntity.IsDeleted)} = @IsDeleted " +
-                    $"WHERE {nameof(AccountsPhotosEntity.AccountId)} = @_accountId AND {nameof(AccountsPhotosEntity.Guid)} = @Guid";
+                sql = $"UPDATE PhotosForAccounts SET " +
+                    $"{nameof(PhotosForAccountsEntity.Comment)} = @Comment, " +
+                    $"{nameof(PhotosForAccountsEntity.IsAvatar)} = @IsAvatar, " +
+                    $"{nameof(PhotosForAccountsEntity.IsDeleted)} = @IsDeleted " +
+                    $"WHERE {nameof(PhotosForAccountsEntity.AccountId)} = @_accountId AND {nameof(PhotosForAccountsEntity.Guid)} = @Guid";
                 await conn.ExecuteAsync(sql, new { request.Comment, request.IsAvatar, request.IsDeleted, _accountId, request.Guid });
 
                 return response;
@@ -87,8 +85,8 @@ namespace WebAPI.Controllers
 
                 await ProcessPhotoFile(file, _accountId, guid);
 
-                var sql = "INSERT INTO AccountsPhotos " +
-                    $"({nameof(AccountsPhotosEntity.Guid)}, {nameof(AccountsPhotosEntity.AccountId)}) " +
+                var sql = "INSERT INTO PhotosForAccounts " +
+                    $"({nameof(PhotosForAccountsEntity.Guid)}, {nameof(PhotosForAccountsEntity.AccountId)}) " +
                     $"VALUES (@guid, @_accountId)";
                 await conn.ExecuteAsync(sql, new { guid, _accountId });
 

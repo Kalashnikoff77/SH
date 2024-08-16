@@ -19,7 +19,7 @@ namespace UI.Components.Pages
         List<EventsViewDto> EventsList = new List<EventsViewDto>();
         string filterValue = null!;
         
-        MudCarousel<EventsPhotosDto> Carousel = null!;
+        MudCarousel<PhotosForEventsDto> Carousel = null!;
 
         protected override async Task OnInitializedAsync()
         {

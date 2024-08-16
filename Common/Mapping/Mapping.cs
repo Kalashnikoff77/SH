@@ -17,7 +17,7 @@ namespace Common.Mapping
             CreateMap<AccountReloadModel, AccountReloadRequestDto>();
             CreateMap<AccountUpdateModel, AccountUpdateRequestDto>();
             CreateMap<RelationsUpdateModel, RelationsUpdateRequestDto>();
-            CreateMap<AccountVisitsUpdateModel, AccountVisitsUpdateRequestDto>();
+            CreateMap<AccountVisitsUpdateModel, VisitsForAccountsUpdateRequestDto>();
             CreateMap<GetMessagesModel, GetMessagesRequestDto>();
             CreateMap<GetMessagesCountModel, GetMessagesCountRequestDto>();
             CreateMap<GetLastMessagesListModel, GetLastMessagesListRequestDto>();
@@ -25,7 +25,7 @@ namespace Common.Mapping
             CreateMap<AddNotificationModel, AddNotificationRequestDto>();
             CreateMap<GetNotificationsCountModel, GetNotificationsCountRequestDto>();
             CreateMap<GetNotificationsModel, GetNotificationsRequestDto>();
-            CreateMap<GetAccountPhotosModel, GetAccountPhotosRequestDto>();
+            CreateMap<GetAccountPhotosModel, GetPhotosForAccountRequestDto>();
             CreateMap<GetAccountsModel, GetAccountsRequestDto>();
             CreateMap<GetAccountModel, GetAccountsRequestDto>();
             CreateMap<GetCountriesModel, GetCountriesRequestDto>();
@@ -33,10 +33,10 @@ namespace Common.Mapping
             CreateMap<GetEventsModel, GetEventsRequestDto>();
             CreateMap<GetEventOneModel, GetEventOneRequestDto>();
             CreateMap<GetEventsSRDModel, GetEventsSRDRequestDto>();
-            CreateMap<GetEventDiscussionsModel, GetEventDiscussionsRequestDto>();
-            CreateMap<AddEventDiscussionModel, AddEventDiscussionRequestDto>();
+            CreateMap<GetEventDiscussionsModel, GetDiscussionsForEventsRequestDto>();
+            CreateMap<AddEventDiscussionModel, AddDiscussionsForEventsRequestDto>();
             CreateMap<UpdateEventRegistrationModel, UpdateEventRegistrationRequestDto>();
-            CreateMap<GetAccountRelationsModel, GetAccountRelationsRequestDto>();
+            CreateMap<GetAccountRelationsModel, GetRelationsForAccountsRequestDto>();
 
             // В компоненте редактирования учётной записи
             CreateMap<AccountsViewDto, AccountUpdateModel>()

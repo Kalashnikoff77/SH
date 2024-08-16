@@ -42,9 +42,9 @@ namespace Common.Models
 
         public CountriesDto Country { get; set; } = new CountriesDto() { Region = new RegionsDto() };
 
-        public AccountsPhotosDto? Avatar { get; set; }
+        public PhotosForAccountsDto? Avatar { get; set; }
 
-        public List<AccountsHobbiesDto>? Hobbies { get; set; }
+        public List<HobbiesForAccountsDto>? Hobbies { get; set; }
 
         public bool AcceptTerms { get; set; } = true;
     }

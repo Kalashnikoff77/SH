@@ -333,7 +333,7 @@ namespace WebAPI.Controllers
 
 
         [Route("UpdateVisits"), HttpPost, Authorize]
-        public async Task<ResponseDtoBase> UpdateVisitsAsync(AccountVisitsUpdateRequestDto request)
+        public async Task<ResponseDtoBase> UpdateVisitsAsync(VisitsForAccountsUpdateRequestDto request)
         {
             AuthenticateUser();
 
@@ -341,8 +341,8 @@ namespace WebAPI.Controllers
 
             using (var conn = new SqlConnection(connectionString))
             {
-                var sql = $"UPDATE AccountsVisits SET {nameof(AccountsVisitsEntity.LastDate)} = getdate() " +
-                    $"WHERE {nameof(AccountsVisitsEntity.AccountId)} = @_accountId";
+                var sql = $"UPDATE VisitsForAccounts SET {nameof(VisitsForAccountsEntity.LastDate)} = getdate() " +
+                    $"WHERE {nameof(VisitsForAccountsEntity.AccountId)} = @_accountId";
                 await conn.ExecuteAsync(sql, new { _accountId });
             }
             return response;
@@ -353,7 +353,7 @@ namespace WebAPI.Controllers
         /// Получить список друзей, подписчиков и т.п. указанного пользователя
         /// </summary>
         [Route("GetRelations"), HttpPost]
-        public async Task<GetAccountsResponseDto> GetRelationsAsync(GetAccountRelationsRequestDto request)
+        public async Task<GetAccountsResponseDto> GetRelationsAsync(GetRelationsForAccountsRequestDto request)
         {
             var response = new GetAccountsResponseDto();
 
@@ -369,15 +369,15 @@ namespace WebAPI.Controllers
                     case EnumRelations.Friend:
                         sql = $"SELECT {columns.Aggregate((a, b) => a + ", " + b)} FROM AccountsView " +
                             $"WHERE Id IN (" +
-                            $"SELECT {nameof(AccountsRelationsEntity.RecipientId)} FROM AccountsRelations WHERE {nameof(AccountsRelationsEntity.SenderId)} = @AccountId AND Type = @Relation AND IsConfirmed = 1 " +
+                            $"SELECT {nameof(RelationsForAccountsEntity.RecipientId)} FROM RelationsForAccounts WHERE {nameof(RelationsForAccountsEntity.SenderId)} = @AccountId AND Type = @Relation AND IsConfirmed = 1 " +
                             $"UNION " +
-                            $"SELECT {nameof(AccountsRelationsEntity.SenderId)} FROM AccountsRelations WHERE {nameof(AccountsRelationsEntity.RecipientId)} = @AccountId AND Type = @Relation AND IsConfirmed = 1)";
+                            $"SELECT {nameof(RelationsForAccountsEntity.SenderId)} FROM RelationsForAccounts WHERE {nameof(RelationsForAccountsEntity.RecipientId)} = @AccountId AND Type = @Relation AND IsConfirmed = 1)";
                         break;
 
                     case EnumRelations.Subscriber:
                         sql = $"SELECT {columns.Aggregate((a, b) => a + ", " + b)} FROM AccountsView " +
                             $"WHERE Id IN (" +
-                            $"SELECT {nameof(AccountsRelationsEntity.SenderId)} FROM AccountsRelations WHERE {nameof(AccountsRelationsEntity.RecipientId)} = @AccountId AND Type = @Relation AND IsConfirmed = 1)";
+                            $"SELECT {nameof(RelationsForAccountsEntity.SenderId)} FROM RelationsForAccounts WHERE {nameof(RelationsForAccountsEntity.RecipientId)} = @AccountId AND Type = @Relation AND IsConfirmed = 1)";
                         break;
 
                     default:

@@ -34,9 +34,9 @@ namespace WebAPI.Extensions
                 }
 
                 var sql = "INSERT INTO AccountsPhotos " +
-                    $"({nameof(AccountsPhotosEntity.Comment)}, {nameof(AccountsPhotosEntity.Guid)}, {nameof(AccountsPhotosEntity.IsAvatar)}, {nameof(AccountsPhotosEntity.AccountId)}) " +
+                    $"({nameof(PhotosForAccountsEntity.Comment)}, {nameof(PhotosForAccountsEntity.Guid)}, {nameof(PhotosForAccountsEntity.IsAvatar)}, {nameof(PhotosForAccountsEntity.AccountId)}) " +
                     "VALUES " +
-                    $"(@{nameof(AccountsPhotosEntity.Comment)}, @{nameof(AccountsPhotosEntity.Guid)}, @{nameof(AccountsPhotosEntity.IsAvatar)}, @{nameof(AccountsPhotosEntity.AccountId)})";
+                    $"(@{nameof(PhotosForAccountsEntity.Comment)}, @{nameof(PhotosForAccountsEntity.Guid)}, @{nameof(PhotosForAccountsEntity.IsAvatar)}, @{nameof(PhotosForAccountsEntity.AccountId)})";
                 await conn.ExecuteAsync(sql, new { Comment = accountsEntity.Name, Guid = guid, IsAvatar = true, AccountId = accountsEntity.Id});
 
                 File.Delete($"{dir}/temp/{request.OriginalPhoto}");

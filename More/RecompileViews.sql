@@ -1,12 +1,12 @@
-sp_refreshview 'AccountsEventsView'
+sp_refreshview 'EventsForAccountsView'
 go
-sp_refreshview 'AccountsPhotosView'
+sp_refreshview 'PhotosForAccountsView'
 go
 sp_refreshview 'AccountsView'
 go
 sp_refreshview 'CountriesView'
 go
-sp_refreshview 'EventsDiscussionsView'
+sp_refreshview 'DiscussionsForEventsView'
 go
 sp_refreshview 'EventsView'
 go

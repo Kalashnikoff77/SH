@@ -14,7 +14,7 @@ namespace UI.Extensions
             $"{evt.Country!.Name}, {evt.Country.Region.Name}";
 
 
-        public static string ToDateClass(this EventsSchedulesDto evt) 
+        public static string ToDateClass(this SchedulesForEventsDto evt) 
         {
             string dateClass = null!;
 

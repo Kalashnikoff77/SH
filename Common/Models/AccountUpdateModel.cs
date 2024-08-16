@@ -21,9 +21,9 @@ namespace Common.Models
 
         public CountriesDto Country { get; set; } = null!;
 
-        public AccountsPhotosDto? Avatar { get; set; }
+        public PhotosForAccountsDto? Avatar { get; set; }
 
-        public List<AccountsHobbiesDto>? Hobbies { get; set; }
+        public List<HobbiesForAccountsDto>? Hobbies { get; set; }
 
         public string? ErrorWhileUpdating { get; set; } = null;
         public string? ErrorUploadMessage { get; set; }

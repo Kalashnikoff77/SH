@@ -1,6 +1,6 @@
 ﻿namespace Common.Models
 {
-    public class GetEventDiscussionsModel : ModelBase
+    public class GetDiscussionsForEventsModel : ModelBase
     {
         public int EventId { get; set; }
 

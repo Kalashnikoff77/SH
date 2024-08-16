@@ -1,6 +1,6 @@
 ﻿namespace Common.Models
 {
-    public class GetAccountPhotosModel : ModelBase
+    public class GetPhotosForAccountsModel : ModelBase
     {
         public int? AccountId { get; set; }
     }

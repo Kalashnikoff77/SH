@@ -25,7 +25,7 @@ namespace Common.Mapping
             CreateMap<AddNotificationModel, AddNotificationRequestDto>();
             CreateMap<GetNotificationsCountModel, GetNotificationsCountRequestDto>();
             CreateMap<GetNotificationsModel, GetNotificationsRequestDto>();
-            CreateMap<GetAccountPhotosModel, GetPhotosForAccountRequestDto>();
+            CreateMap<GetPhotosForAccountsModel, GetPhotosForAccountRequestDto>();
             CreateMap<GetAccountsModel, GetAccountsRequestDto>();
             CreateMap<GetAccountModel, GetAccountsRequestDto>();
             CreateMap<GetCountriesModel, GetCountriesRequestDto>();
@@ -33,10 +33,10 @@ namespace Common.Mapping
             CreateMap<GetEventsModel, GetEventsRequestDto>();
             CreateMap<GetEventOneModel, GetEventOneRequestDto>();
             CreateMap<GetEventsSRDModel, GetEventsSRDRequestDto>();
-            CreateMap<GetEventDiscussionsModel, GetDiscussionsForEventsRequestDto>();
-            CreateMap<AddEventDiscussionModel, AddDiscussionsForEventsRequestDto>();
+            CreateMap<GetDiscussionsForEventsModel, GetDiscussionsForEventsRequestDto>();
+            CreateMap<AddDiscussionForEventModel, AddDiscussionsForEventsRequestDto>();
             CreateMap<UpdateEventRegistrationModel, UpdateEventRegistrationRequestDto>();
-            CreateMap<GetAccountRelationsModel, GetRelationsForAccountsRequestDto>();
+            CreateMap<GetRelationsForAccountsModel, GetRelationsForAccountsRequestDto>();
 
             // В компоненте редактирования учётной записи
             CreateMap<AccountsViewDto, AccountUpdateModel>()

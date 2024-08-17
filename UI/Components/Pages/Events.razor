@@ -1,10 +1,10 @@
 ﻿@page "/events"
 
-<PageTitle>Мероприятия</PageTitle>
+<PageTitle>Встречи</PageTitle>
 
 <MudDataGrid @ref="dataGrid" Striped="true" T="EventsViewDto" ServerData="ServerReload" Style="min-width:300px; max-width:750px" Filterable="false">
     <ToolBarContent>
-        <MudText Typo="Typo.h6">Мероприятия</MudText>
+        <MudText Typo="Typo.h6">Встречи</MudText>
         <MudSpacer />
         <MudTextField T="string" ValueChanged="@(s => OnSearch(s))" Placeholder="Поиск" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0" />
         <MudSpacer />
@@ -12,27 +12,46 @@
     <Columns>
         <HierarchyColumn />
 
-        <TemplateColumn>
+        <TemplateColumn CellStyle="max-width:90px">
             <CellTemplate>
-                <ImageEvent Event="context.Item" Size="EnumImageSize.s150x150" Title="@context.Item.Name" Style="border-radius:10%; width:85px; height:85px" />
+                <MudStack>
+                    <ImageEvent Event="context.Item" Size="EnumImageSize.s150x150" Title="@context.Item.Name" Style="border-radius:10%; width:90px; height:90px" />
+                </MudStack>
             </CellTemplate>
         </TemplateColumn>
 
-        <TemplateColumn>
+        <TemplateColumn CellStyle="text-align:start">
             <CellTemplate>
-                <MudStack Spacing="1">
+                <MudStack Spacing="2">
                     <MudText Typo="Typo.subtitle1"><b>@context.Item.Name</b></MudText>
                     <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2">
-                        <MudIcon Icon="@Icons.Material.Outlined.LocationOn" />
+                        <MudIcon Icon="@Icons.Material.Outlined.LocationOn" Style="font-size:18px" />
                         <MudText Typo="Typo.body2">@context.Item.ToRegionString()</MudText>
                     </MudStack>
                     @{
                         var sch = context.Item.Schedule!.Where(x => x.StartDate == context.Item.NearestDate).First();
                         <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2">
-                            <MudIcon Icon="@Icons.Material.Outlined.CalendarToday" Class="@sch.ToDateClass()" />
-                            <MudText Typo="Typo.subtitle2" Class="@sch.ToDateClass()">@sch.StartDate.ToMyString()</MudText>
+                            <MudIcon Icon="@Icons.Material.Outlined.CalendarToday" Class="@sch.ToDateClass()" Style="font-size:18px" />
+                            <MudText Typo="Typo.body2" Style="mt-1">@sch.StartDate.ToMyString()</MudText>
                         </MudStack>
                     }
+                    <MudStack Row="true" Spacing="0">
+                        <MudStack Row="true" Spacing="0" Style="margin-left:1px" Class="mr-1" title="Кол-во пар">
+                            <MudIcon Icon="@Icons.Material.Filled.PeopleAlt" Color="Color.Tertiary" Style="font-size:16px" Class="mr-1" />
+                            <MudText Style="font-size:13px">10</MudText>
+                        </MudStack>
+                        <MudStack Row="true" Spacing="0" Class="mr-1" title="Кол-во мужчин">
+                            <MudIcon Icon="@Icons.Material.Outlined.Man" Color="Color.Info" Style="font-size:16px" />
+                            <MudText Style="font-size:13px">12</MudText>
+                        </MudStack>
+                        <MudStack Row="true" Spacing="0" Class="mr-1" title="Кол-во женщин">
+                            <MudIcon Icon="@Icons.Material.Outlined.Woman" Color="Color.Error" Style="font-size:16px" />
+                            <MudText Style="font-size:13px">25</MudText>
+                        </MudStack>
+                        <MudStack Spacing="0">
+                            <MudText Style="font-size:13px" Class="ml-3">~37 лет</MudText>
+                        </MudStack>
+                    </MudStack>
                 </MudStack>
             </CellTemplate>
         </TemplateColumn>
@@ -56,7 +75,8 @@
                             <img src="/images/EventsPhotos/@photo.EventId/@photo.Guid/@(EnumImageSize.s150x150).jpg" Style="border-radius:5%" />
                         </ItemTemplate>
                     </MudCarousel>
-                    @if (CurrentState.Account != null) {
+                    @if (CurrentState.Account != null) 
+                    {
                         <MudButton Color="Color.Info" Size="Size.Small" StartIcon="@Icons.Material.Outlined.HowToReg" Variant="Variant.Outlined">Регистрация</MudButton>
                     }
                 </MudStack>

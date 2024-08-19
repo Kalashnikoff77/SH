@@ -7,5 +7,7 @@
         public int Number { get; set; }
 
         public int CountryId { get; set; }
+
+        public short Order { get; set; }
     }
 }

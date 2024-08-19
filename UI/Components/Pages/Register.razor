@@ -126,7 +126,17 @@
                     }
                     <MudFileUpload T="IBrowserFile" Accept=".jpg,.jpeg,.png" FilesChanged="UploadAvatar">
                         <ActivatorContent>
-                            <MudFab Size="Size.Small" Color="Color.Info" StartIcon="@Icons.Material.Sharp.Image" Label="Выберите фото для аватара" />
+                            <MudButton Disabled="processingPhoto" Size="Size.Small" Variant="Variant.Outlined" Color="Color.Info" StartIcon="@Icons.Material.Sharp.Upload">
+                                @if (processingPhoto)
+                                {
+                                    <MudProgressCircular Class="ms-n1" Size="Size.Small" Indeterminate="true" />
+                                    <MudText Class="ms-2">Обработка фото...</MudText>
+                                } 
+                                else
+                                {
+                                    <MudText>Выберите фото для аватара</MudText>
+                                }
+                            </MudButton>
                         </ActivatorContent>
                     </MudFileUpload>
                 </MudStack>

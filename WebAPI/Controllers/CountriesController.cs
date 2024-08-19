@@ -25,9 +25,9 @@ namespace WebAPI.Controllers
                 IEnumerable<CountriesViewEntity> result;
 
                 if (request.CountryId == null)
-                    result = await conn.QueryAsync<CountriesViewEntity>($"SELECT * FROM CountriesView");
+                    result = await conn.QueryAsync<CountriesViewEntity>($"SELECT * FROM CountriesView ORDER BY [Order] ASC, Name ASC");
                 else
-                    result = await conn.QueryAsync<CountriesViewEntity>($"SELECT * FROM CountriesView WHERE Id = @Id", new { Id = request.CountryId.Value });
+                    result = await conn.QueryAsync<CountriesViewEntity>($"SELECT TOP 1 * FROM CountriesView WHERE Id = @Id", new { Id = request.CountryId.Value });
 
                 response.Countries = _mapper.Map<List<CountriesViewDto>>(result);
             }

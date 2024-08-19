@@ -12,10 +12,10 @@
     <Columns>
         <HierarchyColumn />
 
-        <TemplateColumn CellStyle="max-width:90px">
+        <TemplateColumn CellStyle="max-width:105px">
             <CellTemplate>
                 <MudStack>
-                    <ImageEvent Event="context.Item" Size="EnumImageSize.s150x150" Title="@context.Item.Name" Style="border-radius:10%; width:90px; height:90px" />
+                    <ImageEvent Event="context.Item" Size="EnumImageSize.s150x150" Title="@context.Item.Name" Style="border-radius:10%; width:100px; height:100px" />
                 </MudStack>
             </CellTemplate>
         </TemplateColumn>
@@ -56,6 +56,16 @@
                             }
                         </MudStack>
                     </MudStack>
+                    @if (context.Item.Features != null)
+                    {
+                        <MudStack Row="true" Wrap="Wrap.Wrap" Spacing="2">
+                            @foreach (var feature in context.Item.Features)
+                            {
+                                <MudButton Variant="Variant.Outlined" Size="Size.Small" Color="Color.Info" Style="padding: 0 5px 0 5px; font-size:12px; text-transform:none; font-weight:500; opacity:0.6">@feature.Name</MudButton>
+                            }
+                        </MudStack>
+                    }
+                   
                 </MudStack>
             </CellTemplate>
         </TemplateColumn>

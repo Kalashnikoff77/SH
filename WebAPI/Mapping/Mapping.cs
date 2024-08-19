@@ -27,6 +27,7 @@ namespace WebAPI.Mapping
             CreateMap<EventsViewEntity, EventsViewDto>()
                 .ForMember(to => to.Admin, from => from.ConvertUsing<JsonToClassConverter<AccountsViewDto>, string?>(from => from.Admin))
                 .ForMember(to => to.Schedule, from => from.ConvertUsing<JsonToClassConverter<List<SchedulesForEventsDto>>, string?>(from => from.Schedule))
+                .ForMember(to => to.Features, from => from.ConvertUsing<JsonToClassConverter<List<FeaturesForEventsDto>>, string?>(from => from.Features))
                 .ForMember(to => to.Country, from => from.ConvertUsing<JsonToClassConverter<CountriesDto>, string?>(from => from.Country))
                 .ForMember(to => to.Avatar, from => from.ConvertUsing<JsonToClassConverter<PhotosForEventsDto>, string?>(from => from.Avatar))
                 .ForMember(to => to.Photos, from => from.ConvertUsing<JsonToClassConverter<List<PhotosForEventsDto>>, string?>(from => from.Photos))

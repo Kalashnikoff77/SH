@@ -41,6 +41,7 @@ namespace UI.Components.Pages
         List<RegionsDto>? regions { get; set; } = new List<RegionsDto>();
 
         Dictionary<short, TabPanel> TabPanels { get; set; } = null!;
+        bool processingPhoto = false;
 
         bool IsPanel1Valid => TabPanels[1].Items.All(x => x.Value.IsValid == true);
         bool IsPanel2Valid => TabPanels[2].Items.All(x => x.Value.IsValid == true);
@@ -292,6 +293,8 @@ namespace UI.Components.Pages
 
         async void UploadAvatar(IBrowserFile file)
         {
+            processingPhoto = true;
+
             if (File.Exists(dir + originalFileName))
                 File.Delete(dir + originalFileName);
             if (File.Exists(dir + previewFileName))
@@ -315,6 +318,7 @@ namespace UI.Components.Pages
 
             TabPanels[3].Items[nameof(registerModel.Avatar)].IsValid = true;
 
+            processingPhoto = false;
             StateHasChanged();
         }
         #endregion

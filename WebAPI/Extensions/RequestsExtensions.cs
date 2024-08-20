@@ -1,6 +1,5 @@
 ﻿using Common;
 using Common.Dto.Requests;
-using Common.Dto.Views;
 using Dapper;
 using Microsoft.Data.SqlClient;
 using System.Text.RegularExpressions;
@@ -18,17 +17,20 @@ namespace WebAPI.Extensions
             if (!Regex.IsMatch(request.Email, @"^[a-z0-9_\.-]{1,32}@[a-z0-9\.-]{1,32}\.[a-z]{2,8}$"))
                 throw new BadRequestException("Проверьте корректность email!");
 
-            if (request.Email.Length < 5 || request.Email.Length > 75)
-                throw new BadRequestException("Длина email должна быть от 5 до 75 символов!");
+            if (request.Email.Length < StaticData.DB_ACCOUNTS_EMAIL_MIN|| request.Email.Length > StaticData.DB_ACCOUNTS_EMAIL_MAX)
+                throw new BadRequestException($"Длина email должна быть от {StaticData.DB_ACCOUNTS_EMAIL_MIN} до {StaticData.DB_ACCOUNTS_EMAIL_MAX} символов!");
 
             if (string.IsNullOrWhiteSpace(request.Name))
                 throw new BadRequestException("Заполните имя учётной записи!");
 
-            if (request.Name.Length < 5 || request.Name.Length > 30)
-                throw new BadRequestException("Длина имени должна быть от 5 до 30 символов!");
+            if (request.Name.Length < StaticData.DB_ACCOUNTS_NAME_MIN || request.Name.Length > StaticData.DB_ACCOUNTS_NAME_MAX)
+                throw new BadRequestException($"Длина имени должна быть от {StaticData.DB_ACCOUNTS_NAME_MIN} до {StaticData.DB_ACCOUNTS_NAME_MAX} символов!");
 
             if (request.Users == null || request.Users.Count == 0)
                 throw new BadRequestException("Вы не добавили ни одного партнёра в аккаунт!");
+
+            if (request.Users != null && request.Users.Count > 2)
+                throw new BadRequestException("Можно добавить не более 2-х партнёров!");
 
             if (!string.IsNullOrWhiteSpace(request.NewPassword1))
             {
@@ -36,21 +38,21 @@ namespace WebAPI.Extensions
                     throw new BadRequestException("Пароль и повтор пароля не совпадают!");
             }
 
-            foreach (var user in request.Users.Where(u => u.IsDeleted == false))
+            foreach (var user in request.Users!.Where(u => u.IsDeleted == false))
             {
                 if (string.IsNullOrWhiteSpace(user.Name))
                     throw new BadRequestException("Не указано имя у одного из партнёров!");
 
-                if (user.Name.Length < 3 || user.Name.Length > 25)
-                    throw new BadRequestException($"Длина имени у {user.Name} должна быть от 3 до 25 символов!");
+                if (user.Name.Length < StaticData.DB_USERS_NAME_MIN || user.Name.Length > StaticData.DB_USERS_NAME_MAX)
+                    throw new BadRequestException($"Длина имени у {user.Name} должна быть от {StaticData.DB_USERS_NAME_MIN} до {StaticData.DB_USERS_NAME_MAX} символов!");
 
-                if (user.Height < 100 || user.Height > 230)
-                    throw new BadRequestException($"Рост у {user.Name} должна быть от 100 до 230 см!");
+                if (user.Height < StaticData.DB_USERS_HEIGHT_MIN || user.Height > StaticData.DB_USERS_HEIGHT_MAX)
+                    throw new BadRequestException($"Рост у {user.Name} должна быть от {StaticData.DB_USERS_HEIGHT_MIN} до {StaticData.DB_USERS_HEIGHT_MAX} см!");
 
-                if (user.Weight < 40 || user.Height > 200)
-                    throw new BadRequestException($"Вес у {user.Name} должен быть от 40 до 200 кг!");
+                if (user.Weight < StaticData.DB_USERS_WEIGHT_MIN || user.Weight > StaticData.DB_USERS_WEIGHT_MAX)
+                    throw new BadRequestException($"Вес у {user.Name} должен быть от {StaticData.DB_USERS_WEIGHT_MIN} до {StaticData.DB_USERS_WEIGHT_MAX} кг!");
 
-                if (user.Gender < 0 || user.Gender > 2)
+                if (user.Gender < 0 || user.Gender > 1)
                     throw new BadRequestException($"Укажите пол у {user.Name}!");
 
                 if (user.BirthDate.Date < DateTime.Now.AddYears(-75).Date || user.BirthDate.Date > DateTime.Now.AddYears(-20).Date)
@@ -101,6 +103,9 @@ namespace WebAPI.Extensions
 
             if (request.Country == null || request.Country.Region == null || request.Country.Region.Id == 0)
                 throw new BadRequestException("Вы не указали регион проживания!");
+
+            if (request.Users != null && request.Users.Count > 2)
+                throw new BadRequestException("Можно добавить не более 2-х партнёров!");
 
             if (request.Users == null || request.Users.Count == 0)
                 throw new BadRequestException("Вы не добавили ни одного партнёра в аккаунт!");

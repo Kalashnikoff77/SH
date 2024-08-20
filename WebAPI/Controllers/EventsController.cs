@@ -60,9 +60,9 @@ namespace WebAPI.Controllers
 
             using (var conn = new SqlConnection(connectionString))
             {
-                var json = JsonSerializer.Serialize(request);
+                // Сперва получим Id записей, которые нужно вытянуть + кол-во записей.
                 var p = new DynamicParameters();
-                p.Add("@request", json);
+                p.Add("@request", JsonSerializer.Serialize(request));
                 var ids = await conn.QueryAsync<int>("EventsView_sp", p, commandType: System.Data.CommandType.StoredProcedure);
                 response.Count = ids.Count();
 
@@ -70,10 +70,10 @@ namespace WebAPI.Controllers
                 {
                     var sql = $"SELECT {columns.Aggregate((a, b) => a + ", " + b)} " +
                         $"FROM EventsView WHERE Id IN ({string.Join(",", ids)}) " +
-                        $"ORDER BY {nameof(EventsViewDto.NearestDate)}";
+                        $"ORDER BY {nameof(EventsViewDto.NearestDate)} " +
+                        $"OFFSET {request.Skip} ROWS FETCH NEXT {request.Take} ROWS ONLY";
                     var result = await conn.QueryAsync<EventsViewEntity>(sql);
-
-                    response.Events = _mapper.Map<List<EventsViewDto>>(result.Skip(request.Skip).Take(request.Take));
+                    response.Events = _mapper.Map<List<EventsViewDto>>(result);
                 }
             }
             return response;

@@ -10,8 +10,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
+using System.Text.Json;
 using WebAPI.Exceptions;
-using WebAPI.Extensions;
 
 namespace WebAPI.Controllers
 {
@@ -60,25 +60,19 @@ namespace WebAPI.Controllers
 
             using (var conn = new SqlConnection(connectionString))
             {
-                // (НЕ ДОДЕЛАНО!!!) Получить мероприятия конкретного пользователя
-                if (request.AccountId.HasValue && request.AccountId.Value > 0)
-                {
-                    var sql = $"SELECT {columns.Aggregate((a, b) => a + ", " + b)} " +
-                        "FROM EventsForAccountsView " +
-                        $"WHERE AccountId = {request.AccountId} " +
-                        $"OFFSET {request.Skip} ROWS FETCH NEXT {request.Take} ROWS ONLY";
-                    var result = await conn.QueryAsync<EventsViewEntity>(sql);
-                }
-                // Получить все мероприятия
-                else
-                {
-                    var sql = $"SELECT {columns.Aggregate((a, b) => a + ", " + b)} " +
-                        "FROM EventsView " +
-                        $"WHERE 1=1 {request.Filters()} " +
-                        $"ORDER BY {nameof(EventsViewDto.NearestDate)}";
-                    var result = await conn.QueryAsync<EventsViewEntity>(sql, new { FilterValue = "%" + request.FilterValue + "%" });
+                var json = JsonSerializer.Serialize(request);
+                var p = new DynamicParameters();
+                p.Add("@request", json);
+                var ids = await conn.QueryAsync<int>("EventsView_sp", p, commandType: System.Data.CommandType.StoredProcedure);
+                response.Count = ids.Count();
 
-                    response.Count = result.Count();
+                if (response.Count > 0)
+                {
+                    var sql = $"SELECT {columns.Aggregate((a, b) => a + ", " + b)} " +
+                        $"FROM EventsView WHERE Id IN ({string.Join(",", ids)}) " +
+                        $"ORDER BY {nameof(EventsViewDto.NearestDate)}";
+                    var result = await conn.QueryAsync<EventsViewEntity>(sql);
+
                     response.Events = _mapper.Map<List<EventsViewDto>>(result.Skip(request.Skip).Take(request.Take));
                 }
             }

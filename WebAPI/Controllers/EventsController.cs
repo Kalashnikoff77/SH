@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Common;
+using Common.Dto;
 using Common.Dto.Requests;
 using Common.Dto.Responses;
 using Common.Dto.Views;
@@ -218,6 +219,22 @@ namespace WebAPI.Controllers
 
                 return response;
             }
+        }
+
+
+        [Route("GetFeatures"), HttpPost]
+        public async Task<GetFeaturesResponseDto> GetFeaturesAsync(GetFeaturesRequestDto request)
+        {
+            var response = new GetFeaturesResponseDto();
+
+            using (var conn = new SqlConnection(connectionString))
+            {
+                var sql = $"SELECT * FROM Features ORDER BY Name";
+                var result = await conn.QueryAsync<FeaturesEntity>(sql);
+
+                response.Features = _mapper.Map<List<FeaturesDto>>(result);
+            }
+            return response;
         }
     }
 }

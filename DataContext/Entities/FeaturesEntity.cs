@@ -1,6 +1,6 @@
 ﻿namespace DataContext.Entities
 {
-    public class Features : EntityBase
+    public class FeaturesEntity : EntityBase
     {
         public string Name { get; set; } = null!;
     }

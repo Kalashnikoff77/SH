@@ -7,10 +7,10 @@
 <MudStack Row="true" Wrap="Wrap.Wrap" Spacing="10" Style="min-width:300px; max-width:800px">
     <MudTextField T="string" ValueChanged="@(s => OnSearch(s))" Placeholder="Поиск" Style="min-width:250px" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="pl-2" />
 
-    <MudSelect T="string" Dense="true" Placeholder="Особенности" Adornment="Adornment.Start" IconSize="Size.Medium" MultiSelection="true" Style="min-width:250px" Class="pr-2">
-        @foreach (var evt in EventsList)
+    <MudSelect SelectedValuesChanged="OnFeaturesSelected" T="string" Dense="true" Placeholder="Особенности" Adornment="Adornment.Start" IconSize="Size.Medium" MultiSelection="true" Style="min-width:250px" Class="pr-2">
+        @foreach (var feat in FeaturesList)
         {
-            <MudSelectItem T="string" Value="evt.Name">@evt.Name</MudSelectItem>
+            <MudSelectItem T="string" Value="feat.Name">@feat.Name</MudSelectItem>
         }
     </MudSelect>
 </MudStack>

@@ -55,6 +55,8 @@ namespace WebAPI.Mapping
 
             CreateMap<MessagesEntity, MessagesDto>();
 
+            CreateMap<FeaturesEntity, FeaturesDto>();
+
             // Регистрация аккаунта
             CreateMap<AccountRegisterRequestDto, AccountsEntity>()
                 .ForMember(to => to.RegionId, from => from.MapFrom(from => from.Country.Region.Id))

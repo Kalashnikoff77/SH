@@ -9,7 +9,7 @@
         /// </summary>
         public int? AccountId { get; set; }
 
-        public List<int> FeaturesIds { get; set; } = new List<int>(5);
+        public List<int>? FeaturesIds { get; set; } = null;
 
         public bool IsPhotosIncluded { get; set; }
     }

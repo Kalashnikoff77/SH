@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Common;
+using Common.Dto;
 using Common.Dto.Requests;
 using Common.Dto.Responses;
 using Common.Dto.Views;
@@ -10,8 +11,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
+using System.Text.Json;
 using WebAPI.Exceptions;
-using WebAPI.Extensions;
 
 namespace WebAPI.Controllers
 {
@@ -60,26 +61,20 @@ namespace WebAPI.Controllers
 
             using (var conn = new SqlConnection(connectionString))
             {
-                // (НЕ ДОДЕЛАНО!!!) Получить мероприятия конкретного пользователя
-                if (request.AccountId.HasValue && request.AccountId.Value > 0)
+                // Сперва получим Id записей, которые нужно вытянуть + кол-во записей.
+                var p = new DynamicParameters();
+                p.Add("@request", JsonSerializer.Serialize(request));
+                var ids = await conn.QueryAsync<int>("EventsView_sp", p, commandType: System.Data.CommandType.StoredProcedure);
+                response.Count = ids.Count();
+
+                if (response.Count > 0)
                 {
                     var sql = $"SELECT {columns.Aggregate((a, b) => a + ", " + b)} " +
-                        "FROM EventsForAccountsView " +
-                        $"WHERE AccountId = {request.AccountId} " +
+                        $"FROM EventsView WHERE Id IN ({string.Join(",", ids)}) " +
+                        $"ORDER BY {nameof(EventsViewDto.NearestDate)} " +
                         $"OFFSET {request.Skip} ROWS FETCH NEXT {request.Take} ROWS ONLY";
                     var result = await conn.QueryAsync<EventsViewEntity>(sql);
-                }
-                // Получить все мероприятия
-                else
-                {
-                    var sql = $"SELECT {columns.Aggregate((a, b) => a + ", " + b)} " +
-                        "FROM EventsView " +
-                        $"WHERE 1=1 {request.Filters()} " +
-                        $"ORDER BY {nameof(EventsViewDto.NearestDate)}";
-                    var result = await conn.QueryAsync<EventsViewEntity>(sql, new { FilterValue = "%" + request.FilterValue + "%" });
-
-                    response.Count = result.Count();
-                    response.Events = _mapper.Map<List<EventsViewDto>>(result.Skip(request.Skip).Take(request.Take));
+                    response.Events = _mapper.Map<List<EventsViewDto>>(result);
                 }
             }
             return response;
@@ -224,6 +219,22 @@ namespace WebAPI.Controllers
 
                 return response;
             }
+        }
+
+
+        [Route("GetFeatures"), HttpPost]
+        public async Task<GetFeaturesResponseDto> GetFeaturesAsync(GetFeaturesRequestDto request)
+        {
+            var response = new GetFeaturesResponseDto();
+
+            using (var conn = new SqlConnection(connectionString))
+            {
+                var sql = $"SELECT * FROM Features ORDER BY Name";
+                var result = await conn.QueryAsync<FeaturesEntity>(sql);
+
+                response.Features = _mapper.Map<List<FeaturesDto>>(result);
+            }
+            return response;
         }
     }
 }

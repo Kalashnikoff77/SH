@@ -14,26 +14,33 @@ namespace UI.Components.Pages
     {
         [CascadingParameter] public CurrentState CurrentState { get; set; } = null!;
         [Inject] IRepository<GetEventsModel, GetEventsRequestDto, GetEventsResponseDto> _repoGetEvents { get; set; } = null!;
+        [Inject] IRepository<GetFeaturesModel, GetFeaturesRequestDto, GetFeaturesResponseDto> _repoGetFeatures { get; set; } = null!;
 
         MudDataGrid<EventsViewDto> dataGrid = null!;
-        List<EventsViewDto> EventsList = new List<EventsViewDto>();
         string filterValue = null!;
-        
+        List<int> featuresIds = null!;
+
+        List<EventsViewDto> EventsList = new List<EventsViewDto>();
+        List<FeaturesDto> FeaturesList = new List<FeaturesDto>();
+
         MudCarousel<PhotosForEventsDto> Carousel = null!;
 
         protected override async Task OnInitializedAsync()
         {
-            var apiResponse = await _repoGetEvents.HttpPostAsync(new GetEventsModel() { IsPhotosIncluded = true });
-            EventsList = apiResponse.Response.Events;
+            var eventsResponse = await _repoGetEvents.HttpPostAsync(new GetEventsModel() { IsPhotosIncluded = true });
+            EventsList = eventsResponse.Response.Events;
+
+            var featuresResponse = await _repoGetFeatures.HttpPostAsync(new GetFeaturesModel());
+            FeaturesList = featuresResponse.Response.Features;
         }
 
 
-        private async Task<GridData<EventsViewDto>> ServerReload(GridState<EventsViewDto> state)
+        async Task<GridData<EventsViewDto>> ServerReload(GridState<EventsViewDto> state)
         {
             var apiResponse = await _repoGetEvents.HttpPostAsync(new GetEventsModel
-            { 
-                FilterProperty = nameof(EventsViewDto.Name),
+            {
                 FilterValue = filterValue,
+                FeaturesIds = featuresIds,
                 IsPhotosIncluded = true
             });
             EventsList = apiResponse.Response.Events;
@@ -46,11 +53,23 @@ namespace UI.Components.Pages
             return items;
         }
 
-        private Task OnSearch(string text)
+        Task OnSearch(string text)
         {
             filterValue = text;
             return dataGrid.ReloadServerData();
         }
 
+        Task OnFeaturesSelected(IEnumerable<string> selectedFeatures)
+        {
+            featuresIds = new List<int>();
+
+            foreach (var feat in selectedFeatures)
+            {
+                var feature = FeaturesList.Where(w => w.Name == feat).FirstOrDefault();
+                if (feature != null)
+                    featuresIds.Add(feature.Id);
+            }
+            return dataGrid.ReloadServerData();
+        }
     }
 }

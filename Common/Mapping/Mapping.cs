@@ -33,6 +33,7 @@ namespace Common.Mapping
             CreateMap<GetEventsModel, GetEventsRequestDto>();
             CreateMap<GetEventOneModel, GetEventOneRequestDto>();
             CreateMap<GetEventsSRDModel, GetEventsSRDRequestDto>();
+            CreateMap<GetFeaturesModel, GetFeaturesRequestDto>();
             CreateMap<GetDiscussionsForEventsModel, GetDiscussionsForEventsRequestDto>();
             CreateMap<AddDiscussionForEventModel, AddDiscussionsForEventsRequestDto>();
             CreateMap<UpdateEventRegistrationModel, UpdateEventRegistrationRequestDto>();

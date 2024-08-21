@@ -15,7 +15,6 @@
         public List<EventsForAccountsDto>? RegisteredAccounts { get; set; }
 
         public List<SchedulesForEventsDto>? Schedule { get; set; }
-        public List<FeaturesForEventsDto>? Features { get; set; }
 
         public int? NumOfDiscussions { get; set; }
 

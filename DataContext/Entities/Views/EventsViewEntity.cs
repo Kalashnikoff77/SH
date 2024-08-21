@@ -25,9 +25,6 @@ namespace DataContext.Entities.Views
         public string? Schedule { get; set; }
 
         [Required]
-        public string? Features { get; set; }
-
-        [Required]
         public int? NumOfDiscussions { get; set; }
 
         // Для AccountsEventsView

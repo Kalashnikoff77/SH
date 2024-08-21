@@ -35,14 +35,14 @@
                         <MudIcon Icon="@Icons.Material.Outlined.LocationOn" Style="font-size:19px" />
                         <MudText Typo="Typo.body2">@context.Item.ToRegionString()</MudText>
                     </MudStack>
-                    @{
+@*                     @{
                         var sch = context.Item.Schedule!.Where(x => x.StartDate == context.Item.NearestDate).First();
                         <MudStack Row AlignItems="AlignItems.Center" Spacing="1">
                             <MudIcon Icon="@Icons.Material.Outlined.CalendarToday" Class="@sch.ToDateClass()" Style="font-size:18px" />
                             <MudText Typo="Typo.body2" Class="mt-1">@sch.StartDate.ToMyString()</MudText>
                         </MudStack>
                     }
-                    <MudStack Row Spacing="0">
+ *@                    <MudStack Row Spacing="0">
                         <MudStack Row Spacing="0" Style="margin-left:1px" Class="mr-2" title="Кол-во пар">
                             <MudIcon Icon="@Icons.Material.Filled.PeopleAlt" Color="Color.Tertiary" Style="font-size:16px" Class="mr-1" />
                             <MudText Style="font-size:13px">@context.Item.NumberOfRegisteredPairs()</MudText>
@@ -63,7 +63,7 @@
                             }
                         </MudStack>
                     </MudStack>
-                    @if (context.Item.Features != null)
+@*                     @if (context.Item.Features != null)
                     {
                         <MudStack Row Wrap="Wrap.Wrap" Spacing="2">
                             @foreach (var feature in context.Item.Features)
@@ -72,7 +72,7 @@
                             }
                         </MudStack>
                     }
-                   
+ *@                   
                 </MudStack>
             </CellTemplate>
         </TemplateColumn>
@@ -113,14 +113,14 @@
                     }
                     <MudText Typo="Typo.subtitle2"><b>@context.Item.ToRegionString().</b><br />@context.Item.Address</MudText>
 
-                    <MudStack Row AlignItems="AlignItems.Center">
+@*                     <MudStack Row AlignItems="AlignItems.Center">
                         <MudText Typo="Typo.subtitle2" Class="@sch.ToDateClass()">@sch.StartDate.ToMyString() - @sch.EndDate.ToMyString()</MudText>
                         @if (context.Item.Schedule!.Count() > 1)
                         {
                             <MudIcon Icon="@Icons.Material.Outlined.CalendarMonth" Title="Список всех аналогичных мероприятий" Style="font-size: 20px" Class="mb-1" />
                         }
                     </MudStack>
-
+ *@
                     <MudText Typo="Typo.body2">@context.Item.Description</MudText>
                 </MudStack>
             </MudItem>

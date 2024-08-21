@@ -17,8 +17,8 @@ namespace UI.Components.Pages
         [Inject] IRepository<GetFeaturesModel, GetFeaturesRequestDto, GetFeaturesResponseDto> _repoGetFeatures { get; set; } = null!;
 
         MudDataGrid<EventsViewDto> dataGrid = null!;
-        string filterValue = null!;
-        List<int> featuresIds = null!;
+        string? filterValue = null;
+        List<int> featuresIds = new List<int>();
 
         List<EventsViewDto> EventsList = new List<EventsViewDto>();
         List<FeaturesDto> FeaturesList = new List<FeaturesDto>();
@@ -39,7 +39,7 @@ namespace UI.Components.Pages
         {
             var apiResponse = await _repoGetEvents.HttpPostAsync(new GetEventsModel
             {
-                FilterValue = filterValue,
+                FilterFreeText = filterValue,
                 FeaturesIds = featuresIds,
                 IsPhotosIncluded = true
             });
@@ -61,7 +61,7 @@ namespace UI.Components.Pages
 
         Task OnFeaturesSelected(IEnumerable<string> selectedFeatures)
         {
-            featuresIds = new List<int>();
+            featuresIds.Clear();
 
             foreach (var feat in selectedFeatures)
             {

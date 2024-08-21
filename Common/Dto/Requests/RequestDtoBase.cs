@@ -9,7 +9,6 @@
         public int Take = 5;
         public int Skip = 0;
 
-        public string? FilterProperty { get; set; }
-        public string? FilterValue { get; set; }
+        public string? FilterFreeText { get; set; }
     }
 }

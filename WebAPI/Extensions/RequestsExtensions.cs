@@ -144,24 +144,5 @@ namespace WebAPI.Extensions
             if (!request.AcceptTerms)
                 throw new BadRequestException("Вы не приняли условия пользования сайтом!");
         }
-
-
-        public static string? Filters(this RequestDtoBase request)
-        {
-            if (string.IsNullOrWhiteSpace(request.FilterProperty) || string.IsNullOrWhiteSpace(request.FilterValue))
-                return null;
-
-            request.FilterValue = request.FilterValue.Substring(0, request.FilterValue.Length > 20 ? 20 : request.FilterValue.Length);
-
-            switch(request.FilterProperty)
-            {
-                case "Name":
-                case "Text":
-                    return $"AND {request.FilterProperty} LIKE @FilterValue ";
-                default:
-                    return null;
-            }
-           
-        }
     }
 }

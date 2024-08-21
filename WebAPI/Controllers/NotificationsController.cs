@@ -49,11 +49,9 @@ namespace WebAPI.Controllers
 
             using (var conn = new SqlConnection(connectionString))
             {
-                string? filter = request.Filters();
-
                 // Получим все уведомления (с фильтром)
                 var sql = "SELECT * FROM NotificationsView " +
-                    $"WHERE {nameof(NotificationsViewEntity.RecipientId)} = @_accountId" + request.Filters() +
+                    $"WHERE {nameof(NotificationsViewEntity.RecipientId)} = @_accountId" +
                     $"ORDER BY {nameof(NotificationsViewEntity.CreateDate)} DESC " +
                     $"OFFSET {request.Skip} ROWS FETCH NEXT {request.Take} ROWS ONLY";
                 var notifications = await conn.QueryAsync<NotificationsViewEntity>(sql, new { _accountId });
@@ -61,7 +59,7 @@ namespace WebAPI.Controllers
 
                 // Подсчитаем кол-во уведомлений (с фильтром)
                 sql = "SELECT COUNT(*) FROM NotificationsView " +
-                    $"WHERE {nameof(NotificationsViewEntity.RecipientId)} = @_accountId" + request.Filters();
+                    $"WHERE {nameof(NotificationsViewEntity.RecipientId)} = @_accountId";
                 response.Count = await conn.QuerySingleAsync<int>(sql, new { _accountId });
 
                 // Будем отмечать уведомления, как прочитанные?

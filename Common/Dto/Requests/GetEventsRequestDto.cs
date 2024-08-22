@@ -5,10 +5,13 @@
         public override string Uri => "/Events/Get";
 
         /// <summary>
-        /// Id пользователя, чьи события выводить
+        /// Встречи какого организатора выводить
         /// </summary>
-        public int? AccountId { get; set; }
+        public int? AdminId { get; set; }
 
+        /// <summary>
+        /// Встречи с какими тегами выводить
+        /// </summary>
         public List<int>? FeaturesIds { get; set; } = null;
 
         public bool IsPhotosIncluded { get; set; }

@@ -61,9 +61,10 @@ namespace WebAPI.Controllers
 
             using (var conn = new SqlConnection(connectionString))
             {
+                var jsonRequest = JsonSerializer.Serialize(request);
                 // Сперва получим Id записей, которые нужно вытянуть + кол-во записей.
                 var p = new DynamicParameters();
-                p.Add("@request", JsonSerializer.Serialize(request));
+                p.Add("@request", jsonRequest);
                 var ids = await conn.QueryAsync<int>("EventsView_sp", p, commandType: System.Data.CommandType.StoredProcedure);
                 response.Count = ids.Count();
 

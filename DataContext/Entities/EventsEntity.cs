@@ -27,13 +27,6 @@ namespace DataContext.Entities
         [Required]
         public short? MaxPairs { get; set; }
 
-        [Required]
-        public int? CostMan { get; set; }
-        [Required]
-        public int? CostWoman { get; set; }
-        [Required]
-        public int? CostPair { get; set; }
-
         public bool IsDeleted { get; set; }
     }
 }

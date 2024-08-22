@@ -56,16 +56,13 @@ namespace WebAPI.Controllers
 
             var columns = GetRequiredColumns<SchedulesForEventsViewEntity>();
 
-            if (request.IsPhotosIncluded)
-                columns.Add(nameof(SchedulesForEventsViewEntity.Photos));
-
             using (var conn = new SqlConnection(connectionString))
             {
                 var jsonRequest = JsonSerializer.Serialize(request);
                 // Сперва получим Id записей, которые нужно вытянуть + кол-во записей.
                 var p = new DynamicParameters();
                 p.Add("@request", jsonRequest);
-                var ids = await conn.QueryAsync<int>("EventsView_sp", p, commandType: System.Data.CommandType.StoredProcedure);
+                var ids = await conn.QueryAsync<int>("EventsFilter_sp", p, commandType: System.Data.CommandType.StoredProcedure);
                 response.Count = ids.Count();
 
                 if (response.Count > 0)

@@ -6,7 +6,7 @@
 
         public string? Token { get; set; }
 
-        public int Take = 5;
+        public int Take = 20;
         public int Skip = 0;
 
         public string? FilterFreeText { get; set; }

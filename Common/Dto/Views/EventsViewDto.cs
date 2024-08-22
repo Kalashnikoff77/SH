@@ -16,9 +16,6 @@
 
         public List<SchedulesForEventsDto>? Schedule { get; set; }
 
-        public int? NumOfDiscussions { get; set; }
-
-        // Для AccountsEventsView
-        public bool IsRegistered { get; set; }
+        public int NumOfDiscussions { get; set; }
     }
 }

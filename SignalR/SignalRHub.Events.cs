@@ -15,8 +15,8 @@ namespace SignalR
             var loggerScope = _logger.BeginScope("{@CurrentMethod}", nameof(UpdateEventRegisterServer));
             _logger.LogInformation("МЕТОД: {0}({@model})", nameof(UpdateEventRegisterServer), model);
 
-            var apiResponse = await _repoGetEventsSRD.HttpPostAsync(new GetEventsSRDModel());
-            model.Events = apiResponse.Response.Events;
+            //var apiResponse = await _repoGetEventsSRD.HttpPostAsync(new GetEventsSRDModel());
+            //model.Events = apiResponse.Response.Events;
 
             _logger.LogInformation("Clients.All({1}, {@model})", EnumSignalRHandlers.UpdateEventRegisterClient, model);
             await Clients.All.SendAsync(nameof(EnumSignalRHandlers.UpdateEventRegisterClient), model);

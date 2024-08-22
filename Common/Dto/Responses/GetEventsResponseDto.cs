@@ -4,6 +4,6 @@ namespace Common.Dto.Responses
 {
     public class GetEventsResponseDto : ResponseDtoBase
     {
-        public List<EventsViewDto> Events { get; set; } = new List<EventsViewDto>();
+        public List<SchedulesForEventsViewDto> Events { get; set; } = new List<SchedulesForEventsViewDto>();
     }
 }

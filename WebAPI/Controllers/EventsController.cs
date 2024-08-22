@@ -54,10 +54,10 @@ namespace WebAPI.Controllers
         {
             var response = new GetEventsResponseDto();
 
-            var columns = GetRequiredColumns<EventsViewEntity>();
+            var columns = GetRequiredColumns<SchedulesForEventsViewEntity>();
 
             if (request.IsPhotosIncluded)
-                columns.Add(nameof(EventsViewEntity.Photos));
+                columns.Add(nameof(SchedulesForEventsViewEntity.Photos));
 
             using (var conn = new SqlConnection(connectionString))
             {
@@ -71,11 +71,11 @@ namespace WebAPI.Controllers
                 if (response.Count > 0)
                 {
                     var sql = $"SELECT {columns.Aggregate((a, b) => a + ", " + b)} " +
-                        $"FROM EventsView WHERE Id IN ({string.Join(",", ids)}) " +
-                        $"ORDER BY {nameof(EventsViewDto.NearestDate)} " +
+                        $"FROM SchedulesForEventsView WHERE Id IN ({string.Join(",", ids)}) " +
+                        $"ORDER BY {nameof(SchedulesForEventsViewDto.StartDate)} " +
                         $"OFFSET {request.Skip} ROWS FETCH NEXT {request.Take} ROWS ONLY";
-                    var result = await conn.QueryAsync<EventsViewEntity>(sql);
-                    response.Events = _mapper.Map<List<EventsViewDto>>(result);
+                    var result = await conn.QueryAsync<SchedulesForEventsViewEntity>(sql);
+                    response.Events = _mapper.Map<List<SchedulesForEventsViewDto>>(result);
                 }
             }
             return response;

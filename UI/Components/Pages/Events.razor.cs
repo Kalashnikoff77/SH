@@ -20,7 +20,7 @@ namespace UI.Components.Pages
         string? filterValue = null;
         List<int> featuresIds = new List<int>();
 
-        List<EventsViewDto> EventsList = new List<EventsViewDto>();
+        List<SchedulesForEventsViewDto> EventsList = new List<SchedulesForEventsViewDto>();
         List<FeaturesDto> FeaturesList = new List<FeaturesDto>();
 
         MudCarousel<PhotosForEventsDto> Carousel = null!;
@@ -35,7 +35,7 @@ namespace UI.Components.Pages
         }
 
 
-        async Task<GridData<EventsViewDto>> ServerReload(GridState<EventsViewDto> state)
+        async Task<GridData<SchedulesForEventsViewDto>> ServerReload(GridState<EventsViewDto> state)
         {
             var apiResponse = await _repoGetEvents.HttpPostAsync(new GetEventsModel
             {
@@ -45,7 +45,7 @@ namespace UI.Components.Pages
             });
             EventsList = apiResponse.Response.Events;
 
-            var items = new GridData<EventsViewDto>
+            var items = new GridData<SchedulesForEventsViewDto>
             {
                 Items = EventsList.ToArray(),
                 TotalItems = EventsList.Count

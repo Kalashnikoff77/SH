@@ -1,4 +1,4 @@
-﻿using Common;
+﻿using Common.Models;
 using Microsoft.Data.SqlClient;
 using PhotoSauce.MagicScaler;
 

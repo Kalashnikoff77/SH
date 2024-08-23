@@ -150,7 +150,7 @@
         {
             <MudAlert Severity="Severity.Error">@registerModel.ErrorRegisterMessage</MudAlert>
         }
-        <MudCheckBox @bind-Value="registerModel.RememberMe" Disabled="!(IsPanel1Valid && IsPanel2Valid && IsPanel3Valid)" Color="Color.Info">
+        <MudCheckBox @bind-Value="registerModel.Remember" Disabled="!(IsPanel1Valid && IsPanel2Valid && IsPanel3Valid)" Color="Color.Info">
             <MudText Typo="Typo.body2">Запомнить меня</MudText>
         </MudCheckBox>
         <MudButton OnClick="SubmitAsync" StartIcon="@Icons.Material.Outlined.Check" Disabled="!(IsPanel1Valid && IsPanel2Valid && IsPanel3Valid)" Variant="Variant.Filled" Size="Size.Large" Color="Color.Info" Style="margin:auto">Зарегистрироваться</MudButton>

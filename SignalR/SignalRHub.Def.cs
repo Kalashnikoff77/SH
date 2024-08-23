@@ -1,6 +1,5 @@
 ﻿using Common.Dto.Requests;
 using Common.Dto.Responses;
-using Common.Models;
 using Common.Repository;
 using SignalR.Models;
 
@@ -16,20 +15,20 @@ namespace SignalR
         IConfiguration _configuration;
         ILogger<SignalRHub> _logger;
 
-        IRepository<AccountVisitsUpdateModel, VisitsForAccountsUpdateRequestDto, ResponseDtoBase> _repoUpdateVisits { get; set; } = null!;
-        IRepository<RelationsUpdateModel, RelationsUpdateRequestDto, RelationsUpdateResponseDto> _repoUpdateRelations { get; set; } = null!;
-        IRepository<GetAccountsModel, GetAccountsRequestDto, GetAccountsResponseDto> _repoGetAccounts { get; set; } = null!;
-        IRepository<AddNotificationModel, AddNotificationRequestDto, ResponseDtoBase> _repoAddNotification { get; set; } = null!;
-        IRepository<GetEventsModel, GetEventsRequestDto, GetEventsResponseDto> _repoGetEvents { get; set; } = null!;
-        IRepository<GetEventsSRDModel, GetEventsSRDRequestDto, GetEventsResponseDto> _repoGetEventsSRD { get; set; } = null!;
+        IRepository<VisitsForAccountsUpdateRequestDto, ResponseDtoBase> _repoUpdateVisits { get; set; } = null!;
+        IRepository<RelationsUpdateRequestDto, RelationsUpdateResponseDto> _repoUpdateRelations { get; set; } = null!;
+        IRepository<GetAccountsRequestDto, GetAccountsResponseDto> _repoGetAccounts { get; set; } = null!;
+        IRepository<AddNotificationRequestDto, ResponseDtoBase> _repoAddNotification { get; set; } = null!;
+        IRepository<GetEventsRequestDto, GetEventsResponseDto> _repoGetEvents { get; set; } = null!;
+        IRepository<GetEventsSRDRequestDto, GetEventsResponseDto> _repoGetEventsSRD { get; set; } = null!;
 
         public SignalRHub(
-            IRepository<AccountVisitsUpdateModel, VisitsForAccountsUpdateRequestDto, ResponseDtoBase> repoUpdateVisits,
-            IRepository<RelationsUpdateModel, RelationsUpdateRequestDto, RelationsUpdateResponseDto> repoUpdateRelations,
-            IRepository<GetAccountsModel, GetAccountsRequestDto, GetAccountsResponseDto> repoGetAccounts,
-            IRepository<AddNotificationModel, AddNotificationRequestDto, ResponseDtoBase> repoAddNotification,
-            IRepository<GetEventsModel, GetEventsRequestDto, GetEventsResponseDto> repoGetEvents,
-            IRepository<GetEventsSRDModel, GetEventsSRDRequestDto, GetEventsResponseDto> repoGetEventsSRD,
+            IRepository<VisitsForAccountsUpdateRequestDto, ResponseDtoBase> repoUpdateVisits,
+            IRepository<RelationsUpdateRequestDto, RelationsUpdateResponseDto> repoUpdateRelations,
+            IRepository<GetAccountsRequestDto, GetAccountsResponseDto> repoGetAccounts,
+            IRepository<AddNotificationRequestDto, ResponseDtoBase> repoAddNotification,
+            IRepository<GetEventsRequestDto, GetEventsResponseDto> repoGetEvents,
+            IRepository<GetEventsSRDRequestDto, GetEventsResponseDto> repoGetEventsSRD,
             Accounts connectedAccounts, IConfiguration configuration, ILogger<SignalRHub> logger)
         {
             _repoGetAccounts = repoGetAccounts;

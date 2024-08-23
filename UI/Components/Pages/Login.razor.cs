@@ -7,7 +7,6 @@ using Common.Repository;
 using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
 using Microsoft.AspNetCore.Components;
 using System.Net;
-using Common;
 using MudBlazor;
 
 namespace UI.Components.Pages
@@ -15,7 +14,7 @@ namespace UI.Components.Pages
     public partial class Login
     {
         [CascadingParameter] CurrentState CurrentState { get; set; } = null!;
-        [Inject] IRepository<LoginModel, LoginRequestDto, LoginResponseDto> _repoLogin { get; set; } = null!;
+        [Inject] IRepository<LoginRequestDto, LoginResponseDto> _repoLogin { get; set; } = null!;
         [Inject] ProtectedLocalStorage _protectedLocalStore { get; set; } = null!;
         [Inject] ProtectedSessionStorage _protectedSessionStore { get; set; } = null!;
         [Inject] IConfiguration _configuration { get; set; } = null!;
@@ -23,7 +22,7 @@ namespace UI.Components.Pages
         [Inject] NavigationManager Navigation { get; set; } = null!;
 
         // TODO Убрать начальные значения (OK)
-        LoginModel loginModel = new LoginModel
+        LoginRequestDto loginRequestDto = new LoginRequestDto
         {
             Email = "oleg@mail.ru",
             Password = "pass2",
@@ -34,16 +33,16 @@ namespace UI.Components.Pages
 
         async void OnLoginAsync()
         {
-            var apiResponse = await _repoLogin.HttpPostAsync(loginModel);
+            var apiResponse = await _repoLogin.HttpPostAsync(loginRequestDto);
             if (apiResponse.StatusCode == HttpStatusCode.OK)
             {
                 apiResponse.Response.Account!.Token = StaticData.GenerateToken(apiResponse.Response.Account.Id, apiResponse.Response.Account.Guid, _configuration);
                 CurrentState.SetAccount(apiResponse.Response.Account);
 
-                if (loginModel.Remember)
-                    await _protectedLocalStore.SetAsync(nameof(LoginModel), loginModel);
+                if (loginRequestDto.Remember)
+                    await _protectedLocalStore.SetAsync(nameof(LoginRequestDto), loginRequestDto);
                 else
-                    await _protectedSessionStore.SetAsync(nameof(LoginModel), loginModel);
+                    await _protectedSessionStore.SetAsync(nameof(LoginRequestDto), loginRequestDto);
 
                 await _JSProcessor.Redirect("/");
             }

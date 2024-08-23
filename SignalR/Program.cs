@@ -1,4 +1,3 @@
-using Common;
 using Common.Mapping;
 using Common.Repository;
 using Microsoft.AspNetCore.ResponseCompression;
@@ -6,6 +5,7 @@ using SignalR;
 using SignalR.Models;
 using Serilog;
 using Serilog.Events;
+using Common.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -26,7 +26,7 @@ builder.Services.AddJwtToken(builder);
 
 builder.Services.AddAutoMapper(typeof(Mapping));
 
-builder.Services.AddScoped(typeof(IRepository<,,>), typeof(Repository<,,>));
+builder.Services.AddScoped(typeof(IRepository<,>), typeof(Repository<,>));
 
 var app = builder.Build();
 

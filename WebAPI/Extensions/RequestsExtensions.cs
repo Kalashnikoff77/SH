@@ -1,5 +1,5 @@
-﻿using Common;
-using Common.Dto.Requests;
+﻿using Common.Dto.Requests;
+using Common.Models;
 using Dapper;
 using Microsoft.Data.SqlClient;
 using System.Text.RegularExpressions;

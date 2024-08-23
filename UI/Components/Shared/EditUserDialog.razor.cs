@@ -1,5 +1,5 @@
-﻿using Common;
-using Common.Dto;
+﻿using Common.Dto;
+using Common.Models;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
 using UI.Extensions;

@@ -4,11 +4,10 @@ using Common.Models;
 
 namespace Common.Repository
 {
-    public interface IRepository<TModel, TRequestDto, TResponseDto> 
-        where TModel : ModelBase 
+    public interface IRepository<TRequestDto, TResponseDto> 
         where TRequestDto : RequestDtoBase
         where TResponseDto : ResponseDtoBase, new()
     {
-        Task<ApiResponse<TResponseDto>> HttpPostAsync(TModel model);
+        Task<ApiResponse<TResponseDto>> HttpPostAsync(TRequestDto request);
     }
 }

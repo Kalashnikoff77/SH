@@ -2,7 +2,6 @@
 using Common.Dto.Requests;
 using Common.Dto.Responses;
 using Common.Dto.Views;
-using Common.Models;
 using Common.Models.States;
 using Common.Repository;
 using Microsoft.AspNetCore.Components;
@@ -13,8 +12,8 @@ namespace UI.Components.Pages
     public partial class Events
     {
         [CascadingParameter] public CurrentState CurrentState { get; set; } = null!;
-        [Inject] IRepository<GetEventsModel, GetEventsRequestDto, GetEventsResponseDto> _repoGetEvents { get; set; } = null!;
-        [Inject] IRepository<GetFeaturesModel, GetFeaturesRequestDto, GetFeaturesResponseDto> _repoGetFeatures { get; set; } = null!;
+        [Inject] IRepository<GetEventsRequestDto, GetEventsResponseDto> _repoGetEvents { get; set; } = null!;
+        [Inject] IRepository<GetFeaturesRequestDto, GetFeaturesResponseDto> _repoGetFeatures { get; set; } = null!;
 
         MudDataGrid<EventsViewDto> dataGrid = null!;
         string? filterValue = null;
@@ -27,17 +26,17 @@ namespace UI.Components.Pages
 
         protected override async Task OnInitializedAsync()
         {
-            var eventsResponse = await _repoGetEvents.HttpPostAsync(new GetEventsModel() { IsPhotosIncluded = true });
+            var eventsResponse = await _repoGetEvents.HttpPostAsync(new GetEventsRequestDto() { IsPhotosIncluded = true });
             EventsList = eventsResponse.Response.Events;
 
-            var featuresResponse = await _repoGetFeatures.HttpPostAsync(new GetFeaturesModel());
+            var featuresResponse = await _repoGetFeatures.HttpPostAsync(new GetFeaturesRequestDto());
             FeaturesList = featuresResponse.Response.Features;
         }
 
 
         async Task<GridData<SchedulesForEventsViewDto>> ServerReload(GridState<EventsViewDto> state)
         {
-            var apiResponse = await _repoGetEvents.HttpPostAsync(new GetEventsModel
+            var apiResponse = await _repoGetEvents.HttpPostAsync(new GetEventsRequestDto
             {
                 FilterFreeText = filterValue,
                 FeaturesIds = featuresIds,

@@ -1,4 +1,5 @@
-﻿using Common.Enums;
+﻿using Common.Dto.Requests;
+using Common.Enums;
 using Common.Models;
 using Common.Models.SignalR;
 using Microsoft.AspNetCore.Authorization;
@@ -25,13 +26,13 @@ namespace SignalR
                 // Сгенерим токен текущего пользователя
                 int.TryParse(Context.User!.Claims.FirstOrDefault(x => x.Type == "Id")?.Value, out int accountId);
                 Guid.TryParse(Context.User!.Claims.FirstOrDefault(x => x.Type == "Guid")?.Value, out Guid accountGuid);
-                var token = Common.StaticData.GenerateToken(accountId, accountGuid, _configuration);
+                var token = StaticData.GenerateToken(accountId, accountGuid, _configuration);
 
                 // Добавим пользователя в список онлайн пользователей
                 Accounts.ConnectedAccounts.Add(Context.UserIdentifier, new AccountDetails { Id = accountId, Token = token });
 
                 // В БД отметим текущую дату и время входа на сайт текущего пользователя
-                await _repoUpdateVisits.HttpPostAsync(new AccountVisitsUpdateModel { Token = token });
+                await _repoUpdateVisits.HttpPostAsync(new VisitsForAccountsUpdateRequestDto { Token = token });
             }
 
             // Отправим всем остальным пользователям актуальную информацию по залогиненным
@@ -56,7 +57,7 @@ namespace SignalR
             if (GetAccountDetails(out AccountDetails accountDetails, Context.UserIdentifier))
             {
                 // В БД отметим текущую дату и время ухода с сайта текущего пользователя
-                await _repoUpdateVisits.HttpPostAsync(new AccountVisitsUpdateModel { Token = accountDetails.Token });
+                await _repoUpdateVisits.HttpPostAsync(new VisitsForAccountsUpdateRequestDto { Token = accountDetails.Token });
                 // Удалим текущего пользователя из списка онлайн пользователей
                 Accounts.ConnectedAccounts.Remove(Context.UserIdentifier!);
             }

@@ -1,9 +1,9 @@
 ﻿using AutoMapper;
-using Common;
 using Common.Dto;
 using Common.Dto.Requests;
 using Common.Dto.Responses;
 using Common.Dto.Views;
+using Common.Models;
 using Dapper;
 using DataContext.Entities;
 using DataContext.Entities.Views;

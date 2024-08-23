@@ -1,7 +1,6 @@
-﻿using Common.Dto.Responses;
-using System.Net;
+﻿using System.Net;
 
-namespace Common.Models
+namespace Common.Dto.Responses
 {
     public class ApiResponse<TResponseDto> where TResponseDto : ResponseDtoBase, new()
     {

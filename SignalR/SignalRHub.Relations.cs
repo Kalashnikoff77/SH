@@ -1,6 +1,6 @@
-﻿using Common.Enums;
+﻿using Common.Dto.Requests;
+using Common.Enums;
 using Common.Models.SignalR;
-using Common.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
 using SignalR.Models;
@@ -19,7 +19,7 @@ namespace SignalR
             if (GetAccountDetails(out AccountDetails accountDetails, Context.UserIdentifier))
             {
                 // Получим подробные данные о текущем пользователе
-                var apiResponse = await _repoGetAccounts.HttpPostAsync(new GetAccountsModel { Id = accountDetails.Id, IsRelationsIncluded = true, Take = 1 });
+                var apiResponse = await _repoGetAccounts.HttpPostAsync(new GetAccountsRequestDto { Id = accountDetails.Id, IsRelationsIncluded = true, Take = 1 });
                 var currentUser = apiResponse.Response.Accounts.FirstOrDefault();
 
                 if (currentUser != null)
@@ -27,7 +27,7 @@ namespace SignalR
                     currentUser.Token = accountDetails.Token;
 
                     // Добавим или удалим запись в таблице Relations
-                    var requestRelation = new RelationsUpdateModel
+                    var requestRelation = new RelationsUpdateRequestDto
                     {
                         RecipientId = model.RecipientId,
                         EnumRelation = model.EnumRelation,
@@ -36,10 +36,10 @@ namespace SignalR
                     var apiUpdateRelationResponse = await _repoUpdateRelations.HttpPostAsync(requestRelation);
 
                     // Добавляем инфу о запросе дружбы в Notifications в БД
-                    var requestNotification = new AddNotificationModel
+                    var requestNotification = new AddNotificationRequestDto
                     {
                         RecipientId = model.RecipientId,
-                        EnumRelation = model.EnumRelation,
+                        //EnumRelation = model.EnumRelation,
                         Token = currentUser.Token
                     };
 
@@ -86,7 +86,7 @@ namespace SignalR
 
             if (GetAccountDetails(out AccountDetails senderDetails, Context.UserIdentifier))
             {
-                var apiAccountResponse = await _repoGetAccounts.HttpPostAsync(new GetAccountsModel
+                var apiAccountResponse = await _repoGetAccounts.HttpPostAsync(new GetAccountsRequestDto
                 {
                     Id = recipientId,
                     IsRelationsIncluded = true,

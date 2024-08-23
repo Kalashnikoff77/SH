@@ -1,5 +1,4 @@
-﻿using Common;
-using Common.Dto;
+﻿using Common.Dto;
 using Common.Dto.Requests;
 using Common.Dto.Responses;
 using Common.Dto.Views;
@@ -25,10 +24,10 @@ namespace UI.Components.Pages
     public partial class Register : IDisposable
     {
         [CascadingParameter] CurrentState CurrentState { get; set; } = null!;
-        [Inject] IRepository<GetCountriesModel, GetCountriesRequestDto, GetCountriesResponseDto> _repoGetCountries { get; set; } = null!;
-        [Inject] IRepository<AccountCheckRegisterModel, AccountCheckRegisterRequestDto, AccountCheckRegisterResponseDto> _repoCheckRegister { get; set; } = null!;
-        [Inject] IRepository<AccountRegisterModel, AccountRegisterRequestDto, ResponseDtoBase> _repoRegister { get; set; } = null!;
-        [Inject] IRepository<LoginModel, LoginRequestDto, LoginResponseDto> _repoLogin { get; set; } = null!;
+        [Inject] IRepository<GetCountriesRequestDto, GetCountriesResponseDto> _repoGetCountries { get; set; } = null!;
+        [Inject] IRepository<AccountCheckRegisterRequestDto, AccountCheckRegisterResponseDto> _repoCheckRegister { get; set; } = null!;
+        [Inject] IRepository<AccountRegisterRequestDto, ResponseDtoBase> _repoRegister { get; set; } = null!;
+        [Inject] IRepository<LoginRequestDto, LoginResponseDto> _repoLogin { get; set; } = null!;
 
         [Inject] ProtectedLocalStorage _protectedLocalStore { get; set; } = null!;
         [Inject] ProtectedSessionStorage _protectedSessionStore { get; set; } = null!;
@@ -36,7 +35,7 @@ namespace UI.Components.Pages
         [Inject] IDialogService DialogService { get; set; } = null!;
         [Inject] IConfiguration _config { get; set; } = null!;
 
-        AccountRegisterModel registerModel = new AccountRegisterModel();
+        AccountRegisterRequestDto registerModel = new AccountRegisterRequestDto();
         List<CountriesViewDto> countries { get; set; } = new List<CountriesViewDto>();
         List<RegionsDto>? regions { get; set; } = new List<RegionsDto>();
 
@@ -66,7 +65,7 @@ namespace UI.Components.Pages
                 { 3, new TabPanel { Items = new Dictionary<string, TabPanelItem> { { nameof(registerModel.Avatar), new TabPanelItem() } } } }
             };
 
-            var apiResponse = await _repoGetCountries.HttpPostAsync(new GetCountriesModel());
+            var apiResponse = await _repoGetCountries.HttpPostAsync(new GetCountriesRequestDto());
             countries.AddRange(apiResponse.Response.Countries);
 
             // TODO УДАЛИТЬ (OK)
@@ -123,7 +122,7 @@ namespace UI.Components.Pages
             if (string.IsNullOrWhiteSpace(name) || name.Length < StaticData.DB_ACCOUNTS_NAME_MIN)
                 errorMessage = $"Имя должно содержать {StaticData.DB_ACCOUNTS_NAME_MIN}-{StaticData.DB_ACCOUNTS_NAME_MAX} символов";
 
-            var apiResponse = await _repoCheckRegister.HttpPostAsync(new AccountCheckRegisterModel { AccountName = name });
+            var apiResponse = await _repoCheckRegister.HttpPostAsync(new AccountCheckRegisterRequestDto { AccountName = name });
             if (apiResponse.Response.AccountNameExists)
                 errorMessage = $"Это имя уже занято. Выберите другое.";
 
@@ -143,7 +142,7 @@ namespace UI.Components.Pages
             if (!Regex.IsMatch(email, @"^[a-z0-9_\.-]{1,32}@[a-z0-9\.-]{1,32}\.[a-z]{2,8}$"))
                 errorMessage = $"Проверьте корректность email";
 
-            var apiResponse = await _repoCheckRegister.HttpPostAsync(new AccountCheckRegisterModel { AccountEmail = email });
+            var apiResponse = await _repoCheckRegister.HttpPostAsync(new AccountCheckRegisterRequestDto { AccountEmail = email });
             if (apiResponse.Response.AccountEmailExists)
                 errorMessage = $"Этот email уже зарегистрирован. Забыли пароль?";
 
@@ -335,11 +334,11 @@ namespace UI.Components.Pages
             }
             else
             {
-                LoginModel loginModel = new LoginModel
+                LoginRequestDto loginModel = new LoginRequestDto
                 {
                     Email = registerModel.Email,
                     Password = registerModel.Password,
-                    Remember = registerModel.RememberMe
+                    Remember = registerModel.Remember
                 };
 
                 var apiResponse = await _repoLogin.HttpPostAsync(loginModel);
@@ -350,9 +349,9 @@ namespace UI.Components.Pages
                     CurrentState.SetAccount(apiResponse.Response.Account);
 
                     if (loginModel.Remember)
-                        await _protectedLocalStore.SetAsync(nameof(LoginModel), loginModel);
+                        await _protectedLocalStore.SetAsync(nameof(LoginRequestDto), loginModel);
                     else
-                        await _protectedSessionStore.SetAsync(nameof(LoginModel), loginModel);
+                        await _protectedSessionStore.SetAsync(nameof(LoginRequestDto), loginModel);
 
                     await _JSProcessor.Redirect("/");
                 }

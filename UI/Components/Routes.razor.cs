@@ -1,10 +1,10 @@
 ﻿using Common.Dto.Requests;
 using Common.Dto.Responses;
-using Common.Models.States;
 using Common.Models;
+using Common.Models.States;
 using Common.Repository;
-using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
 using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
 
 namespace UI.Components
 {
@@ -15,7 +15,7 @@ namespace UI.Components
         [Inject] CurrentState CurrentState { get; set; } = null!;
         [Inject] IConfiguration _configuration { get; set; } = null!;
 
-        [Inject] IRepository<LoginModel, LoginRequestDto, LoginResponseDto> _repoLogin { get; set; } = null!;
+        [Inject] IRepository<LoginRequestDto, LoginResponseDto> _repoLogin { get; set; } = null!;
 
         protected override void OnInitialized() => CurrentState.OnChange += StateHasChanged;
 
@@ -23,16 +23,16 @@ namespace UI.Components
         {
             if (firstRender)
             {
-                var storage = await _protectedLocalStore.GetAsync<LoginModel>(nameof(LoginModel));
+                var storage = await _protectedLocalStore.GetAsync<LoginRequestDto>(nameof(LoginRequestDto));
                 if (!storage.Success)
-                    storage = await _protectedSessionStore.GetAsync<LoginModel>(nameof(LoginModel));
+                    storage = await _protectedSessionStore.GetAsync<LoginRequestDto>(nameof(LoginRequestDto));
 
                 if (storage.Success && storage.Value != null)
                 {
                     var apiResponse = await _repoLogin.HttpPostAsync(storage.Value);
                     if (apiResponse.Response.Account != null)
                     {
-                        apiResponse.Response.Account!.Token = Common.StaticData.GenerateToken(apiResponse.Response.Account.Id, apiResponse.Response.Account.Guid, _configuration);
+                        apiResponse.Response.Account!.Token = StaticData.GenerateToken(apiResponse.Response.Account.Id, apiResponse.Response.Account.Guid, _configuration);
                         CurrentState.SetAccount(apiResponse.Response.Account);
                         CurrentState.StateHasChanged();
                     }

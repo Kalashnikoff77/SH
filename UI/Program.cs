@@ -1,6 +1,6 @@
-using Common;
 using Common.JSProcessor;
 using Common.Mapping;
+using Common.Models;
 using Common.Models.States;
 using Common.Repository;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
@@ -22,7 +22,7 @@ builder.Services.AddJwtToken(builder);
 builder.Services.AddAutoMapper(typeof(Mapping));
 
 builder.Services.AddScoped<CurrentState>();
-builder.Services.AddScoped(typeof(IRepository<,,>), typeof(Repository<,,>));
+builder.Services.AddScoped(typeof(IRepository<,>), typeof(Repository<,>));
 builder.Services.AddScoped<IJSProcessor, JSProcessor>();
 
 // Максимальный размер загружаемых файлов = 35 Мб.

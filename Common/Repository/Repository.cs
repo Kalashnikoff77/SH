@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using Common.Dto.Requests;
 using Common.Dto.Responses;
-using Common.Models;
 using Microsoft.Extensions.Configuration;
 using System.Net;
 using System.Net.Http.Headers;
@@ -9,8 +8,7 @@ using System.Net.Http.Json;
 
 namespace Common.Repository
 {
-    public class Repository<TModel, TRequestDto, TResponseDto> : IRepository<TModel, TRequestDto, TResponseDto>
-        where TModel : ModelBase
+    public class Repository<TRequestDto, TResponseDto> : IRepository<TRequestDto, TResponseDto>
         where TRequestDto : RequestDtoBase
         where TResponseDto : ResponseDtoBase, new()
     {
@@ -27,9 +25,8 @@ namespace Common.Repository
         }
 
 
-        public async Task<ApiResponse<TResponseDto>> HttpPostAsync(TModel model)
+        public async Task<ApiResponse<TResponseDto>> HttpPostAsync(TRequestDto request)
         {
-            var request = _mapper.Map<TRequestDto>(model);
             var apiResponse = await PostAsJsonAsync<TRequestDto, TResponseDto>(request);
             return apiResponse;
         }

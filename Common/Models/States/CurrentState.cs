@@ -32,11 +32,11 @@ namespace Common.Models.States
 
         IJSProcessor _JSProcessor { get; set; } = null!;
 
-        IRepository<AccountReloadModel, AccountReloadRequestDto, AccountReloadResponseDto> _repoReload { get; set; } = null!;
+        IRepository<AccountReloadRequestDto, AccountReloadResponseDto> _repoReload { get; set; } = null!;
 
         public CurrentState(ProtectedLocalStorage protectedLocalStore, ProtectedSessionStorage protectedSessionStore,
             NavigationManager navigationManager, IConfiguration configuration, IJSProcessor JSProcessor, IJSRuntime JS,
-            IRepository<AccountReloadModel, AccountReloadRequestDto, AccountReloadResponseDto> repoReload)
+            IRepository<AccountReloadRequestDto, AccountReloadResponseDto> repoReload)
         {
             _protectedLocalStore = protectedLocalStore;
             _protectedSessionStore = protectedSessionStore;
@@ -68,7 +68,7 @@ namespace Common.Models.States
         /// </summary>
         public async Task ReloadAccountAsync()
         {
-            var reloadResponse = await _repoReload.HttpPostAsync(new AccountReloadModel() { Token = Account!.Token });
+            var reloadResponse = await _repoReload.HttpPostAsync(new AccountReloadRequestDto() { Token = Account!.Token });
 
             if (reloadResponse.StatusCode == HttpStatusCode.OK)
             {
@@ -84,8 +84,8 @@ namespace Common.Models.States
             await _JSProcessor.UpdateOnlineAccountsClient(ConnectedAccounts);
 
             SetAccount(null);
-            await _protectedLocalStore.DeleteAsync(nameof(LoginModel));
-            await _protectedSessionStore.DeleteAsync(nameof(LoginModel));
+            await _protectedLocalStore.DeleteAsync(nameof(LoginRequestDto));
+            await _protectedSessionStore.DeleteAsync(nameof(LoginRequestDto));
             StateHasChanged();
 
             await SignalRConnect();

@@ -9,7 +9,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 
-namespace Common
+namespace Common.Models
 {
     public static class StaticData
     {
@@ -19,7 +19,7 @@ namespace Common
         /// <summary>
         /// Настройки размеров изображений
         /// </summary>
-        public static Dictionary<EnumImageSize, ProcessImageSettings> Images = new ()
+        public static Dictionary<EnumImageSize, ProcessImageSettings> Images = new()
         {
             {
                 EnumImageSize.s64x64,
@@ -45,7 +45,7 @@ namespace Common
             public string Name { get; set; } = null!;
         }
 
-        public static Dictionary<int, Gender> Genders = new ()
+        public static Dictionary<int, Gender> Genders = new()
         {
             { 0, new Gender { ShortName = "М", Name = "Муж" } },
             { 1, new Gender { ShortName = "Ж", Name = "Жен" } }

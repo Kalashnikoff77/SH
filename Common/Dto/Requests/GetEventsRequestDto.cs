@@ -13,5 +13,7 @@
         /// Встречи с какими тегами выводить
         /// </summary>
         public List<int>? FeaturesIds { get; set; } = null;
+
+        public bool IsPhotosIncluded { get; set; }
     }
 }

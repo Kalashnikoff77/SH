@@ -10,7 +10,6 @@ using DataContext.Entities.Views;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
-using Microsoft.EntityFrameworkCore;
 using System.Text.Json;
 using WebAPI.Exceptions;
 
@@ -185,17 +184,17 @@ namespace WebAPI.Controllers
 
             using (var conn = new SqlConnection(connectionString))
             {
-                var sql = $"SELECT TOP 1 * FROM EventsForAccounts WHERE {nameof(EventsForAccountsEntity.AccountId)} = @_accountId AND {nameof(EventsForAccountsEntity.EventId)} = @EventId";
-                var accountEvent = await conn.QueryFirstOrDefaultAsync<EventsForAccountsEntity>(sql, new { _accountId, request.EventId });
+                //var sql = $"SELECT TOP 1 * FROM EventsForAccounts WHERE {nameof(EventsForAccountsEntity.AccountId)} = @_accountId AND {nameof(EventsForAccountsEntity.EventId)} = @EventId";
+                //var accountEvent = await conn.QueryFirstOrDefaultAsync<EventsForAccountsEntity>(sql, new { _accountId, request.EventId });
 
-                if (accountEvent == null)
-                {
-                    sql = $"INSERT INTO EventsForAccounts " +
-                        $"({nameof(EventsForAccountsEntity.AccountId)}, {nameof(EventsForAccountsEntity.EventId)}) " +
-                        $"VALUES (@_accountId, @EventId, 0, 0)";
-                    await conn.ExecuteAsync(sql, new { _accountId, request.EventId });
-                    accountEvent = new EventsForAccountsEntity();
-                }
+                //if (accountEvent == null)
+                //{
+                //    sql = $"INSERT INTO EventsForAccounts " +
+                //        $"({nameof(EventsForAccountsEntity.AccountId)}, {nameof(EventsForAccountsEntity.EventId)}) " +
+                //        $"VALUES (@_accountId, @EventId, 0, 0)";
+                //    await conn.ExecuteAsync(sql, new { _accountId, request.EventId });
+                //    accountEvent = new EventsForAccountsEntity();
+                //}
 
                 var response = new UpdateEventRegistrationResponseDto 
                 {
@@ -213,7 +212,7 @@ namespace WebAPI.Controllers
                 //    sql = $"DELETE FROM EventsForAccounts " +
                 //        $"WHERE {nameof(EventsForAccountsEntity.AccountId)} = @_accountId AND {nameof(EventsForAccountsEntity.EventId)} = @EventId";
 
-                await conn.ExecuteAsync(sql, new { _accountId, request.EventId, response.IsRegistered });
+                //await conn.ExecuteAsync(sql, new { _accountId, request.EventId, response.IsRegistered });
 
                 return response;
             }

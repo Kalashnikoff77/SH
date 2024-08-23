@@ -5,7 +5,7 @@ namespace DataContext.Entities.Views
     public class EventsViewEntity : EventsEntity
     {
         [Required]
-        public DateTime NearestDate { get; set; }
+        public string? Schedule { get; set; }
 
         [Required]
         public string Admin { get; set; } = null!;
@@ -19,15 +19,6 @@ namespace DataContext.Entities.Views
         public string? Photos { get; set; }
 
         [Required]
-        public string? RegisteredAccounts { get; set; }
-
-        [Required]
-        public string? Schedule { get; set; }
-
-        [Required]
         public int? NumOfDiscussions { get; set; }
-
-        // Для AccountsEventsView
-        public bool IsRegistered { get; set; }
     }
 }

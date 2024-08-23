@@ -29,11 +29,11 @@ namespace WebAPI.Mapping
                 .ForMember(to => to.Schedule, from => from.ConvertUsing<JsonToClassConverter<List<SchedulesForEventsDto>>, string?>(from => from.Schedule))
                 .ForMember(to => to.Country, from => from.ConvertUsing<JsonToClassConverter<CountriesDto>, string?>(from => from.Country))
                 .ForMember(to => to.Avatar, from => from.ConvertUsing<JsonToClassConverter<PhotosForEventsDto>, string?>(from => from.Avatar))
-                .ForMember(to => to.Photos, from => from.ConvertUsing<JsonToClassConverter<List<PhotosForEventsDto>>, string?>(from => from.Photos))
-                .ForMember(to => to.RegisteredAccounts, from => from.ConvertUsing<JsonToClassConverter<List<EventsForAccountsDto>>, string?>(from => from.RegisteredAccounts));
+                .ForMember(to => to.Photos, from => from.ConvertUsing<JsonToClassConverter<List<PhotosForEventsDto>>, string?>(from => from.Photos));
 
             CreateMap<SchedulesForEventsViewEntity, SchedulesForEventsViewDto>()
-                .ForMember(to => to.Event, from => from.ConvertUsing<JsonToClassConverter<EventsViewDto>, string?>(from => from.Event));
+                .ForMember(to => to.Event, from => from.ConvertUsing<JsonToClassConverter<EventsViewDto>, string?>(from => from.Event))
+                .ForMember(to => to.Features, from => from.ConvertUsing<JsonToClassConverter<List<FeaturesDto>>, string?>(from => from.Features));
 
             CreateMap<DiscussionsForEventsViewEntity, DiscussionsForEventsViewDto>()
                 .ForMember(to => to.Sender, from => from.ConvertUsing<JsonToClassConverter<AccountsViewDto>, string?>(from => from.Sender))

@@ -10,7 +10,5 @@
         public int CostMan { get; set; }
         public int CostWoman { get; set; }
         public int CostPair { get; set; }
-
-        public List<FeaturesDto> Features { get; set; } = null!;
     }
 }

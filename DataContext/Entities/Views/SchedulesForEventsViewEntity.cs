@@ -6,5 +6,7 @@ namespace DataContext.Entities.Views
     {
         [Required]
         public string? Event { get; set; }
+        [Required]
+        public string? Features { get; set; }
     }
 }

@@ -33,6 +33,7 @@ namespace WebAPI.Mapping
 
             CreateMap<SchedulesForEventsViewEntity, SchedulesForEventsViewDto>()
                 .ForMember(to => to.Event, from => from.ConvertUsing<JsonToClassConverter<EventsViewDto>, string?>(from => from.Event))
+                .ForMember(to => to.RegisteredAccounts, from => from.ConvertUsing<JsonToClassConverter<List<AccountsForSchedulesDto>>, string?>(from => from.RegisteredAccounts))
                 .ForMember(to => to.Features, from => from.ConvertUsing<JsonToClassConverter<List<FeaturesDto>>, string?>(from => from.Features));
 
             CreateMap<DiscussionsForEventsViewEntity, DiscussionsForEventsViewDto>()

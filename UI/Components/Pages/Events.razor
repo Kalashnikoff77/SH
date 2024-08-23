@@ -4,7 +4,7 @@
 
 <MudText Typo="Typo.h6" Class="mb-5">Встречи</MudText>
 
-@* <MudStack Row Wrap="Wrap.Wrap" Spacing="5" Style="min-width:300px; max-width:800px">
+<MudStack Row Wrap="Wrap.Wrap" Spacing="5" Style="min-width:300px; max-width:800px">
     <MudTextField T="string" ValueChanged="@(s => OnSearch(s))" Placeholder="Поиск" Style="min-width:250px" Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Clearable Class="pl-2" />
 
     <MudSelect SelectedValuesChanged="OnFeaturesSelected" T="string" Dense AnchorOrigin="Origin.BottomCenter" Placeholder="Особенности" Adornment="Adornment.End" IconSize="Size.Medium" MultiSelection Clearable Style="min-width:250px" Class="pr-2">
@@ -22,7 +22,7 @@
         <TemplateColumn CellStyle="max-width:105px">
             <CellTemplate>
                 <MudStack>
-                    <ImageEvent Event="context.Item" Size="EnumImageSize.s150x150" Title="@context.Item.Name" Style="border-radius:10%; width:100px; height:100px" />
+                    <ImageEvent Event="context.Item.Event" Size="EnumImageSize.s150x150" Title="@context.Item.Event?.Name" Style="border-radius:10%; width:100px; height:100px" />
                 </MudStack>
             </CellTemplate>
         </TemplateColumn>
@@ -30,34 +30,33 @@
         <TemplateColumn CellStyle="text-align:start">
             <CellTemplate>
                 <MudStack Spacing="1">
-                    <MudText Typo="Typo.subtitle1"><b>@context.Item.Name</b></MudText>
+                    <MudText Typo="Typo.subtitle1"><b>@context.Item.Event?.Name</b></MudText>
                     <MudStack Row AlignItems="AlignItems.Center" Spacing="1">
                         <MudIcon Icon="@Icons.Material.Outlined.LocationOn" Style="font-size:19px" />
-                        <MudText Typo="Typo.body2">@context.Item.ToRegionString()</MudText>
+                        <MudText Typo="Typo.body2">@context.Item.Event?.ToRegionString()</MudText>
                     </MudStack>
                     @{
-                        var sch = context.Item.Schedule!.Where(x => x.StartDate == context.Item.NearestDate).First();
                         <MudStack Row AlignItems="AlignItems.Center" Spacing="1">
-                            <MudIcon Icon="@Icons.Material.Outlined.CalendarToday" Class="@sch.ToDateClass()" Style="font-size:18px" />
-                            <MudText Typo="Typo.body2" Class="mt-1">@sch.StartDate.ToMyString()</MudText>
+                            <MudIcon Icon="@Icons.Material.Outlined.CalendarToday" Class="@context.Item.ToDateClass()" Style="font-size:18px" />
+                            <MudText Typo="Typo.body2" Class="mt-1">@context.Item.StartDate.ToMyString()</MudText>
                         </MudStack>
                     }
                     <MudStack Row Spacing="0">
                         <MudStack Row Spacing="0" Style="margin-left:1px" Class="mr-2" title="Кол-во пар">
                             <MudIcon Icon="@Icons.Material.Filled.PeopleAlt" Color="Color.Tertiary" Style="font-size:16px" Class="mr-1" />
-                            <MudText Style="font-size:13px">@context.Item.NumberOfRegisteredPairs()</MudText>
+                            <MudText Style="font-size:13px">@context.Item.Event?.NumberOfRegisteredPairs()</MudText>
                         </MudStack>
                         <MudStack Row Spacing="0" Class="mr-2" title="Кол-во мужчин">
                             <MudIcon Icon="@Icons.Material.Outlined.Man" Color="Color.Info" Style="font-size:16px" />
-                            <MudText Style="font-size:13px">@context.Item.NumberOfRegisteredMen()</MudText>
+                            <MudText Style="font-size:13px">@context.Item.Event?.NumberOfRegisteredMen()</MudText>
                         </MudStack>
                         <MudStack Row Spacing="0" Class="mr-2" title="Кол-во женщин">
                             <MudIcon Icon="@Icons.Material.Outlined.Woman" Color="Color.Error" Style="font-size:16px" />
-                            <MudText Style="font-size:13px">@context.Item.NumberOfRegisteredWomen()</MudText>
+                            <MudText Style="font-size:13px">@context.Item.Event?.NumberOfRegisteredWomen()</MudText>
                         </MudStack>
                         <MudStack Row Spacing="0">
-                            <MudText Style="font-size:13px" Class="ml-3" title="Средний возраст гостей">@context.Item.AverageAgeOfRegistered()</MudText>
-                            @if (context.Item.NumberOfRegisteredAll() > 0)
+                            <MudText Style="font-size:13px" Class="ml-3" title="Средний возраст гостей">@context.Item.Event?.AverageAgeOfRegistered()</MudText>
+                            @if (context.Item.Event?.NumberOfRegisteredAll() > 0)
                             {
                                 <MudIcon Icon="@Icons.Material.Outlined.Group" Class="ml-3" Title="Список всех гостей" Style="font-size: 22px" />
                             }
@@ -80,8 +79,8 @@
         <TemplateColumn>
             <CellTemplate>
                 <MudStack AlignItems="AlignItems.Center" Spacing="0">
-                    <ImageAvatar Account="context.Item.Admin" Size="EnumImageSize.s64x64" Title="Организатор" class="s45" Style="border-radius:50%" />
-                    <MudText Typo="Typo.body2" Style="font-size:12px">@context.Item.Admin!.Name</MudText>
+                    <ImageAvatar Account="context.Item.Event?.Admin" Size="EnumImageSize.s64x64" Title="Организатор" class="s45" Style="border-radius:50%" />
+                    <MudText Typo="Typo.body2" Style="font-size:12px">@context.Item.Event?.Admin?.Name</MudText>
                 </MudStack>
             </CellTemplate>
         </TemplateColumn>
@@ -91,12 +90,12 @@
         <MudGrid>
             <MudItem xs="12" sm="3" Style="text-align:center; width:160px">
                 <MudStack AlignItems="AlignItems.Center" Spacing="0">
-                    <MudCarousel @ref="Carousel" Context="photo" ItemsSource="@context.Item.Photos" Style="width:160px; height:160px" ShowArrows="false" ShowBullets="false" AutoCycle>
+                    <MudCarousel @ref="Carousel" Context="photo" ItemsSource="@context.Item.Event?.Photos" Style="width:160px; height:160px" ShowArrows="false" ShowBullets="false" AutoCycle>
                         <ItemTemplate>
                             <MudImage Src=@($"/images/EventsPhotos/{photo.EventId}/{photo.Guid}/{EnumImageSize.s150x150}.jpg") Style="border-radius:5%" />
                         </ItemTemplate>
                     </MudCarousel>
-                    @if (CurrentState.Account != null) 
+                    @if (CurrentState.Account != null)
                     {
                         <MudButton Color="Color.Info" Size="Size.Small" StartIcon="@Icons.Material.Outlined.HowToReg" Variant="Variant.Outlined">Регистрация</MudButton>
                     }
@@ -105,17 +104,14 @@
             <MudItem xs="12" sm="9">
                 <MudStack>
                     <MudStack Row AlignItems="AlignItems.Center">
-                        <ImageAvatar Account="context.Item.Admin" Size="EnumImageSize.s64x64" Class="avatar s45" Title="Организатор" />
-                        <MudText Typo="Typo.body2"><b>Организатор:</b><br />@context.Item.Admin?.Name (@context.Item.Admin?.ToGendersAgesString())</MudText>
+                        <ImageAvatar Account="context.Item.Event?.Admin" Size="EnumImageSize.s64x64" Class="avatar s45" Title="Организатор" />
+                        <MudText Typo="Typo.body2"><b>Организатор:</b><br />@context.Item.Event?.Admin?.Name (@context.Item.Event?.Admin?.ToGendersAgesString())</MudText>
                     </MudStack>
-                    @{
-                        var sch = context.Item.Schedule!.Where(x => x.StartDate == context.Item.NearestDate).First();
-                    }
-                    <MudText Typo="Typo.subtitle2"><b>@context.Item.ToRegionString().</b><br />@context.Item.Address</MudText>
+                    <MudText Typo="Typo.subtitle2"><b>@context.Item.Event?.ToRegionString().</b><br />@context.Item.Event?.Address</MudText>
 
                     <MudStack Row AlignItems="AlignItems.Center">
-                        <MudText Typo="Typo.subtitle2" Class="@sch.ToDateClass()">@sch.StartDate.ToMyString() - @sch.EndDate.ToMyString()</MudText>
-                        @if (context.Item.Schedule!.Count() > 1)
+                        <MudText Typo="Typo.subtitle2" Class="@context.Item.ToDateClass()">@context.Item.StartDate.ToMyString() - @context.Item.EndDate.ToMyString()</MudText>
+                        @if (context.Item.Event?.Schedule?.Count() > 1)
                         {
                             <MudIcon Icon="@Icons.Material.Outlined.CalendarMonth" Title="Список всех аналогичных мероприятий" Style="font-size: 20px" Class="mb-1" />
                         }
@@ -131,4 +127,3 @@
         <MudDataGridPager RowsPerPageString="Показывать по:" ShowPageNumber="false" T="EventsViewDto" />
     </PagerContent>
 </MudDataGrid>
- *@

@@ -15,7 +15,7 @@ namespace UI.Components.Pages
         [Inject] IRepository<GetEventsRequestDto, GetEventsResponseDto> _repoGetEvents { get; set; } = null!;
         [Inject] IRepository<GetFeaturesRequestDto, GetFeaturesResponseDto> _repoGetFeatures { get; set; } = null!;
 
-        MudDataGrid<EventsViewDto> dataGrid = null!;
+        MudDataGrid<SchedulesForEventsViewDto> dataGrid = null!;
         string? filterValue = null;
         List<int> featuresIds = new List<int>();
 
@@ -34,7 +34,7 @@ namespace UI.Components.Pages
         }
 
 
-        async Task<GridData<SchedulesForEventsViewDto>> ServerReload(GridState<EventsViewDto> state)
+        async Task<GridData<SchedulesForEventsViewDto>> ServerReload(GridState<SchedulesForEventsViewDto> state)
         {
             var apiResponse = await _repoGetEvents.HttpPostAsync(new GetEventsRequestDto
             {

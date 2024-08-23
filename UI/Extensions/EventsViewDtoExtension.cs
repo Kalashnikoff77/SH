@@ -15,17 +15,17 @@ namespace UI.Extensions
             $"{evt.Country!.Name}, {evt.Country.Region.Name}";
 
 
-        public static string ToDateClass(this FeaturesForSchedulesDto evt)
+        public static string ToDateClass(this SchedulesForEventsViewDto sch)
         {
             string dateClass = null!;
 
-            if (evt.StartDate < DateTime.Now && evt.EndDate < DateTime.Now)
+            if (sch.StartDate < DateTime.Now && sch.EndDate < DateTime.Now)
                 dateClass = "red-text";
-            else if (evt.StartDate < DateTime.Now)
+            else if (sch.StartDate < DateTime.Now)
                 dateClass = "orange-text";
-            else if (evt.StartDate < DateTime.Now.AddDays(3))
+            else if (sch.StartDate < DateTime.Now.AddDays(3))
                 dateClass = "green-text";
-            else if (evt.StartDate < DateTime.Now.AddDays(7))
+            else if (sch.StartDate < DateTime.Now.AddDays(7))
                 dateClass = "blue-text";
 
             return dateClass;
@@ -47,67 +47,67 @@ namespace UI.Extensions
         public static int NumberOfRegisteredMen(this EventsViewDto evt)
         {
             int count = 0;
-            if (evt.RegisteredAccounts != null)
-                count = evt.RegisteredAccounts.Where(w => w.UserGender == 0).Count();
+            //if (evt.RegisteredAccounts != null)
+            //    count = evt.RegisteredAccounts.Where(w => w.UserGender == 0).Count();
             return count;
         }
 
         public static int NumberOfRegisteredWomen(this EventsViewDto evt)
         {
             int count = 0;
-            if (evt.RegisteredAccounts != null)
-                count = evt.RegisteredAccounts.Where(w => w.UserGender == 1).Count();
+            //if (evt.RegisteredAccounts != null)
+            //    count = evt.RegisteredAccounts.Where(w => w.UserGender == 1).Count();
             return count;
         }
 
         public static int NumberOfRegisteredPairs(this EventsViewDto evt)
         {
             int count = 0;
-            if (evt.RegisteredAccounts != null)
-                count = evt.RegisteredAccounts.Where(w => w.UserGender == null).Count();
+            //if (evt.RegisteredAccounts != null)
+            //    count = evt.RegisteredAccounts.Where(w => w.UserGender == null).Count();
             return count;
         }
 
         public static int NumberOfRegisteredAll(this EventsViewDto evt)
         {
             int count = 0;
-            if (evt.RegisteredAccounts != null)
-                count = evt.RegisteredAccounts.Count();
+            //if (evt.RegisteredAccounts != null)
+            //    count = evt.RegisteredAccounts.Count();
             return count;
         }
 
         public static string? AverageAgeOfRegistered(this EventsViewDto evt)
         {
-            if (evt.RegisteredAccounts != null)
-            {
-                var usersDates = evt.RegisteredAccounts.Select(s => s.Account.Users)
-                    .Select(s => s.Select(s => s.BirthDate)).ToList();
+            //if (evt.RegisteredAccounts != null)
+            //{
+            //    var usersDates = evt.RegisteredAccounts.Select(s => s.Account.Users)
+            //        .Select(s => s.Select(s => s.BirthDate)).ToList();
 
-                List<int> ages = new List<int>();
+            //    List<int> ages = new List<int>();
 
-                foreach (var userDate in usersDates)
-                {
-                    foreach (var birthDate in userDate)
-                    {
-                        var age = DateTime.Today.Year - birthDate.Year;
-                        if (birthDate.Date > DateTime.Today.AddYears(-age)) age--;
-                        ages.Add(age);
-                    }
-                }
+            //    foreach (var userDate in usersDates)
+            //    {
+            //        foreach (var birthDate in userDate)
+            //        {
+            //            var age = DateTime.Today.Year - birthDate.Year;
+            //            if (birthDate.Date > DateTime.Today.AddYears(-age)) age--;
+            //            ages.Add(age);
+            //        }
+            //    }
 
-                var averageIntAge = ages.Sum(s => s) / ages.Count;
-                var lastDigit = averageIntAge % 10;
-                string years = null!;
+            //    var averageIntAge = ages.Sum(s => s) / ages.Count;
+            //    var lastDigit = averageIntAge % 10;
+            //    string years = null!;
 
-                switch (lastDigit)
-                {
-                    case 0: case 5: case 6: case 7: case 8: case 9: years = "лет"; break;
-                    case 1: years = "год"; break;
-                    case 2: case 3: case 4: years = "года"; break;
-                }
+            //    switch (lastDigit)
+            //    {
+            //        case 0: case 5: case 6: case 7: case 8: case 9: years = "лет"; break;
+            //        case 1: years = "год"; break;
+            //        case 2: case 3: case 4: years = "года"; break;
+            //    }
 
-                return "~" + averageIntAge + " " + years;
-            }
+            //    return "~" + averageIntAge + " " + years;
+            //}
 
             return null;
         }

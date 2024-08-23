@@ -77,36 +77,36 @@ namespace UI.Extensions
 
         public static string? AverageAgeOfRegistered(this SchedulesForEventsViewDto sch)
         {
-            //if (evt.RegisteredAccounts != null)
-            //{
-            //    var usersDates = evt.RegisteredAccounts.Select(s => s.Account.Users)
-            //        .Select(s => s.Select(s => s.BirthDate)).ToList();
+            if (sch.RegisteredAccounts != null)
+            {
+                var usersDates = sch.RegisteredAccounts.Select(s => s.Account.Users)
+                    .Select(s => s!.Select(s => s.BirthDate)).ToList();
 
-            //    List<int> ages = new List<int>();
+                List<int> ages = new List<int>();
 
-            //    foreach (var userDate in usersDates)
-            //    {
-            //        foreach (var birthDate in userDate)
-            //        {
-            //            var age = DateTime.Today.Year - birthDate.Year;
-            //            if (birthDate.Date > DateTime.Today.AddYears(-age)) age--;
-            //            ages.Add(age);
-            //        }
-            //    }
+                foreach (var userDate in usersDates)
+                {
+                    foreach (var birthDate in userDate)
+                    {
+                        var age = DateTime.Today.Year - birthDate.Year;
+                        if (birthDate.Date > DateTime.Today.AddYears(-age)) age--;
+                        ages.Add(age);
+                    }
+                }
 
-            //    var averageIntAge = ages.Sum(s => s) / ages.Count;
-            //    var lastDigit = averageIntAge % 10;
-            //    string years = null!;
+                var averageIntAge = ages.Sum(s => s) / ages.Count;
+                var lastDigit = averageIntAge % 10;
+                string years = null!;
 
-            //    switch (lastDigit)
-            //    {
-            //        case 0: case 5: case 6: case 7: case 8: case 9: years = "лет"; break;
-            //        case 1: years = "год"; break;
-            //        case 2: case 3: case 4: years = "года"; break;
-            //    }
+                switch (lastDigit)
+                {
+                    case 0: case 5: case 6: case 7: case 8: case 9: years = "лет"; break;
+                    case 1: years = "год"; break;
+                    case 2: case 3: case 4: years = "года"; break;
+                }
 
-            //    return "~" + averageIntAge + " " + years;
-            //}
+                return "~" + averageIntAge + " " + years;
+            }
 
             return null;
         }

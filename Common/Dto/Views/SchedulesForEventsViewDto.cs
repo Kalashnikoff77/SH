@@ -6,6 +6,6 @@
 
         public List<FeaturesDto>? Features { get; set; }
 
-        public List<AccountsForSchedulesDto>? RegisteredAccounts { get; set; }
+        public List<AccountsForSchedulesViewDto>? RegisteredAccounts { get; set; }
     }
 }

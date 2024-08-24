@@ -78,25 +78,6 @@ namespace WebAPI.Controllers
         }
 
         
-        // Количество Registers, Discussions (SRD)
-        [Route("GetSRD"), HttpPost]
-        public async Task<GetEventsResponseDto?> GetSRDAsync(GetEventsSRDRequestDto request)
-        {
-            var response = new GetEventsResponseDto();
-
-            using (var conn = new SqlConnection(connectionString))
-            {
-                // Доработать!!!
-                //var result = await conn.QueryAsync<EventsViewEntity>($"SELECT Id, " +
-                //    $"{nameof(EventsViewEntity.NumOfRegisters)}, {nameof(EventsViewEntity.NumOfDiscussions)} " +
-                //    $"FROM EventsView");
-
-                //response.Events = _mapper.Map<List<EventsViewDto>>(result);
-            }
-
-            return response;
-        }
-
 
         [Route("GetDiscussions"), HttpPost]
         public async Task<GetDiscussionsForEventsResponseDto?> GetDiscussions(GetDiscussionsForEventsRequestDto request)

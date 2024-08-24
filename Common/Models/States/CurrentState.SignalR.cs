@@ -35,9 +35,6 @@ namespace Common.Models.States
             // Пользователь изменил взаимоотношения с другим (дружба, подписка, блокировка)
             updateRelationsTriggerHandler = updateRelationsTriggerHandler.SignalRClient<GetRelationsModel>(this);
 
-            // Триггер для обновления кол-ва зареганых на определённое мероприятие
-            updateEventRegisterTriggerHandler = updateEventRegisterTriggerHandler.SignalRClient<UpdateEventRegisterModel>(this);
-
             await SignalR.StartAsync();
         }
 

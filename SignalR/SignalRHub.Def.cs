@@ -20,7 +20,6 @@ namespace SignalR
         IRepository<GetAccountsRequestDto, GetAccountsResponseDto> _repoGetAccounts { get; set; } = null!;
         IRepository<AddNotificationRequestDto, ResponseDtoBase> _repoAddNotification { get; set; } = null!;
         IRepository<GetEventsRequestDto, GetEventsResponseDto> _repoGetEvents { get; set; } = null!;
-        IRepository<GetEventsSRDRequestDto, GetEventsResponseDto> _repoGetEventsSRD { get; set; } = null!;
 
         public SignalRHub(
             IRepository<VisitsForAccountsUpdateRequestDto, ResponseDtoBase> repoUpdateVisits,
@@ -28,7 +27,6 @@ namespace SignalR
             IRepository<GetAccountsRequestDto, GetAccountsResponseDto> repoGetAccounts,
             IRepository<AddNotificationRequestDto, ResponseDtoBase> repoAddNotification,
             IRepository<GetEventsRequestDto, GetEventsResponseDto> repoGetEvents,
-            IRepository<GetEventsSRDRequestDto, GetEventsResponseDto> repoGetEventsSRD,
             Accounts connectedAccounts, IConfiguration configuration, ILogger<SignalRHub> logger)
         {
             _repoGetAccounts = repoGetAccounts;
@@ -36,7 +34,6 @@ namespace SignalR
             _repoUpdateRelations = repoUpdateRelations;
             _repoAddNotification = repoAddNotification;
             _repoGetEvents = repoGetEvents;
-            _repoGetEventsSRD = repoGetEventsSRD;
 
             _configuration = configuration;
             _logger = logger;

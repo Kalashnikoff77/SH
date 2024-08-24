@@ -117,7 +117,12 @@
                         }
                     </MudStack>
 
-                    <MudText Typo="Typo.body2">@context.Item.Description</MudText>
+                    @if (!string.IsNullOrWhiteSpace(context.Item.Description))
+                    {
+                        <MudText Typo="Typo.body2">@context.Item.Description</MudText>
+                        <MudDivider />
+                    }
+                    <MudText Typo="Typo.body2">@context.Item.Event!.Description</MudText>
                 </MudStack>
             </MudItem>
         </MudGrid>

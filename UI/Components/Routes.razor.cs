@@ -36,8 +36,11 @@ namespace UI.Components
                         CurrentState.SetAccount(apiResponse.Response.Account);
                         CurrentState.StateHasChanged();
                     }
+                    // Если пользователя из базы удалили, но он залогинен, то сделаем принудительный выход
                     else
-                        throw new Exception("Логин вернул null!!! См. Routes.razor.cs.");
+                    {
+                        await CurrentState.LogOutAsync();
+                    }
                 }
 
                 await CurrentState.SignalRConnect();

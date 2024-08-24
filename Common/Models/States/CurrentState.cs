@@ -80,7 +80,9 @@ namespace Common.Models.States
         public async Task LogOutAsync()
         {
             // Снимает статус онлайн с аватаров текущего пользователя
-            ConnectedAccounts.Remove(Account!.Id.ToString());
+            if (Account != null)
+                ConnectedAccounts.Remove(Account.Id.ToString());
+
             await _JSProcessor.UpdateOnlineAccountsClient(ConnectedAccounts);
 
             SetAccount(null);

@@ -33,7 +33,7 @@ namespace WebAPI.Extensions
                     }
                 }
 
-                var sql = "INSERT INTO AccountsPhotos " +
+                var sql = "INSERT INTO PhotosForAccounts " +
                     $"({nameof(PhotosForAccountsEntity.Comment)}, {nameof(PhotosForAccountsEntity.Guid)}, {nameof(PhotosForAccountsEntity.IsAvatar)}, {nameof(PhotosForAccountsEntity.AccountId)}) " +
                     "VALUES " +
                     $"(@{nameof(PhotosForAccountsEntity.Comment)}, @{nameof(PhotosForAccountsEntity.Guid)}, @{nameof(PhotosForAccountsEntity.IsAvatar)}, @{nameof(PhotosForAccountsEntity.AccountId)})";

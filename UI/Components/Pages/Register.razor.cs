@@ -35,12 +35,20 @@ namespace UI.Components.Pages
         [Inject] IDialogService DialogService { get; set; } = null!;
         [Inject] IConfiguration _config { get; set; } = null!;
 
-        AccountRegisterRequestDto registerModel = new AccountRegisterRequestDto();
+        AccountRegisterRequestDto accountRegisterDto = new AccountRegisterRequestDto
+        {
+            Name = "Олег и Марина Мск2",
+            Email = "olegmar@mail.ru",
+            Password = "pass1234",
+            Password2 = "pass1234"
+        };
+        
         List<CountriesViewDto> countries { get; set; } = new List<CountriesViewDto>();
         List<RegionsDto>? regions { get; set; } = new List<RegionsDto>();
 
         Dictionary<short, TabPanel> TabPanels { get; set; } = null!;
         bool processingPhoto = false;
+        bool processingAccount = false;
 
         bool IsPanel1Valid => TabPanels[1].Items.All(x => x.Value.IsValid == true);
         bool IsPanel2Valid => TabPanels[2].Items.All(x => x.Value.IsValid == true);
@@ -52,24 +60,24 @@ namespace UI.Components.Pages
             {
                 { 1, new TabPanel { Items = new Dictionary<string, TabPanelItem>
                         {
-                            { nameof(registerModel.Name), new TabPanelItem() },
-                            { nameof(registerModel.Email), new TabPanelItem() },
-                            { nameof(registerModel.Password), new TabPanelItem() },
-                            { nameof(registerModel.Password2), new TabPanelItem() },
-                            { nameof(registerModel.Country), new TabPanelItem() },
-                            { nameof(registerModel.Country.Region), new TabPanelItem() }
+                            { nameof(accountRegisterDto.Name), new TabPanelItem() },
+                            { nameof(accountRegisterDto.Email), new TabPanelItem() },
+                            { nameof(accountRegisterDto.Password), new TabPanelItem() },
+                            { nameof(accountRegisterDto.Password2), new TabPanelItem() },
+                            { nameof(accountRegisterDto.Country), new TabPanelItem() },
+                            { nameof(accountRegisterDto.Country.Region), new TabPanelItem() }
                         }
                     }
                 },
-                { 2, new TabPanel { Items = new Dictionary<string, TabPanelItem> { { nameof(registerModel.Users), new TabPanelItem() } } } },
-                { 3, new TabPanel { Items = new Dictionary<string, TabPanelItem> { { nameof(registerModel.Avatar), new TabPanelItem() } } } }
+                { 2, new TabPanel { Items = new Dictionary<string, TabPanelItem> { { nameof(accountRegisterDto.Users), new TabPanelItem() } } } },
+                { 3, new TabPanel { Items = new Dictionary<string, TabPanelItem> { { nameof(accountRegisterDto.Avatar), new TabPanelItem() } } } }
             };
 
             var apiResponse = await _repoGetCountries.HttpPostAsync(new GetCountriesRequestDto());
             countries.AddRange(apiResponse.Response.Countries);
 
             // TODO УДАЛИТЬ (OK)
-            registerModel.Users = new List<UsersDto> 
+            accountRegisterDto.Users = new List<UsersDto> 
             {
                 new UsersDto { Id = 0, Name = "Олег", Gender = 0, Weight=80, Height=180, BirthDate = DateTime.Parse("29.01.1977") },
                 new UsersDto { Id = 1, Name = "Марина", Gender = 1, Weight=74, Height=173, BirthDate = DateTime.Parse("01.07.1969") }
@@ -88,7 +96,7 @@ namespace UI.Components.Pages
                     var country = countries.Where(c => c.Name == value)?.First();
                     if (country != null)
                     {
-                        registerModel.Country.Id = country.Id;
+                        accountRegisterDto.Country.Id = country.Id;
                         regions = countries
                             .Where(x => x.Id == country.Id).FirstOrDefault()?
                             .Regions?.Select(s => s).ToList();
@@ -109,7 +117,7 @@ namespace UI.Components.Pages
                 {
                     var region = regions.Where(c => c.Name == value)?.First();
                     if (region != null)
-                        registerModel.Country.Region.Id = region.Id;
+                        accountRegisterDto.Country.Region.Id = region.Id;
                 }
                 _regionText = value;
             }
@@ -126,7 +134,7 @@ namespace UI.Components.Pages
             if (apiResponse.Response.AccountNameExists)
                 errorMessage = $"Это имя уже занято. Выберите другое.";
 
-            CheckPanel1Properties(errorMessage, nameof(registerModel.Name), ref NameIconColor);
+            CheckPanel1Properties(errorMessage, nameof(accountRegisterDto.Name), ref NameIconColor);
 
             return errorMessage;
         }
@@ -146,7 +154,7 @@ namespace UI.Components.Pages
             if (apiResponse.Response.AccountEmailExists)
                 errorMessage = $"Этот email уже зарегистрирован. Забыли пароль?";
 
-            CheckPanel1Properties(errorMessage, nameof(registerModel.Email), ref EmailIconColor);
+            CheckPanel1Properties(errorMessage, nameof(accountRegisterDto.Email), ref EmailIconColor);
 
             return errorMessage;
         }
@@ -158,7 +166,7 @@ namespace UI.Components.Pages
             if (string.IsNullOrWhiteSpace(password) || password.Length < StaticData.DB_ACCOUNTS_PASSWORD_MIN)
                 errorMessage = $"Пароль должен содержать {StaticData.DB_ACCOUNTS_PASSWORD_MIN}-{StaticData.DB_ACCOUNTS_PASSWORD_MAX} символов";
 
-            CheckPanel1Properties(errorMessage, nameof(registerModel.Password), ref PasswordIconColor);
+            CheckPanel1Properties(errorMessage, nameof(accountRegisterDto.Password), ref PasswordIconColor);
             return errorMessage;
         }
 
@@ -166,10 +174,10 @@ namespace UI.Components.Pages
         string? Password2Validator(string password2)
         {
             string? errorMessage = null;
-            if (registerModel.Password != password2) 
+            if (accountRegisterDto.Password != password2) 
                 errorMessage = $"Пароли не совпадают";
 
-            CheckPanel1Properties(errorMessage, nameof(registerModel.Password2), ref Password2IconColor);
+            CheckPanel1Properties(errorMessage, nameof(accountRegisterDto.Password2), ref Password2IconColor);
             return errorMessage;
         }
 
@@ -180,7 +188,7 @@ namespace UI.Components.Pages
             if (string.IsNullOrWhiteSpace(countryText)) 
                 errorMessage = $"Выберите страну";
 
-            CheckPanel1Properties(errorMessage, nameof(registerModel.Country), ref CountryIconColor);
+            CheckPanel1Properties(errorMessage, nameof(accountRegisterDto.Country), ref CountryIconColor);
             return errorMessage;
         }
 
@@ -191,7 +199,7 @@ namespace UI.Components.Pages
             if (string.IsNullOrWhiteSpace(regionText))
                 errorMessage = $"Выберите регион";
 
-            CheckPanel1Properties(errorMessage, nameof(registerModel.Country.Region), ref RegionIconColor);
+            CheckPanel1Properties(errorMessage, nameof(accountRegisterDto.Country.Region), ref RegionIconColor);
             return errorMessage;
         }
 
@@ -244,8 +252,8 @@ namespace UI.Components.Pages
             var resultDialog = await DialogService.ShowAsync<ConfirmDialog>($"Удаление {user.Name}", parameters, options);
             var result = await resultDialog.Result;
             
-            if (result != null && result.Canceled == false && registerModel.Users.Contains(user))
-                registerModel.Users.Remove(user);
+            if (result != null && result.Canceled == false && accountRegisterDto.Users.Contains(user))
+                accountRegisterDto.Users.Remove(user);
 
             CheckPanel2Properties();
         }
@@ -258,7 +266,7 @@ namespace UI.Components.Pages
             var resultDialog = await DialogService.ShowAsync<EditUserDialog>("Добавление партнёра", parameters, options);
             var result = await resultDialog.Result;
             if (result != null && result.Canceled == false && result.Data != null)
-                registerModel.Users.Add((UsersDto)result.Data);
+                accountRegisterDto.Users.Add((UsersDto)result.Data);
 
             CheckPanel2Properties();
         }
@@ -272,14 +280,14 @@ namespace UI.Components.Pages
             var result = await resultDialog.Result;
             if (result != null && result.Canceled == false && result.Data != null)
             {
-                var position = registerModel.Users.IndexOf(user);
-                registerModel.Users.RemoveAt(position);
-                registerModel.Users.Insert(position, result.Data.DeepCopy<UsersDto>()!);
+                var position = accountRegisterDto.Users.IndexOf(user);
+                accountRegisterDto.Users.RemoveAt(position);
+                accountRegisterDto.Users.Insert(position, result.Data.DeepCopy<UsersDto>()!);
             }
         }
 
         void CheckPanel2Properties() =>
-            TabPanels[2].Items[nameof(registerModel.Users)].IsValid = registerModel.Users.Count == 0 ? false : true;
+            TabPanels[2].Items[nameof(accountRegisterDto.Users)].IsValid = accountRegisterDto.Users.Count == 0 ? false : true;
         #endregion
 
 
@@ -313,9 +321,9 @@ namespace UI.Components.Pages
             }
 
             urlPreviewImage = previewFileName;
-            registerModel.OriginalPhoto = originalFileName;
+            accountRegisterDto.OriginalPhoto = originalFileName;
 
-            TabPanels[3].Items[nameof(registerModel.Avatar)].IsValid = true;
+            TabPanels[3].Items[nameof(accountRegisterDto.Avatar)].IsValid = true;
 
             processingPhoto = false;
             StateHasChanged();
@@ -325,43 +333,46 @@ namespace UI.Components.Pages
 
         async void SubmitAsync()
         {
-            var response = await _repoRegister.HttpPostAsync(registerModel);
+            accountRegisterDto.ErrorRegisterMessage = null;
+            processingAccount = true;
+
+            var response = await _repoRegister.HttpPostAsync(accountRegisterDto);
 
             if (response.StatusCode != HttpStatusCode.OK)
             {
-                registerModel.ErrorRegisterMessage = response.Response.ErrorMessage;
+                accountRegisterDto.ErrorRegisterMessage = response.Response.ErrorMessage;
+                processingAccount = false;
                 StateHasChanged();
             }
             else
             {
-                LoginRequestDto loginModel = new LoginRequestDto
+                LoginRequestDto loginRequestDto = new LoginRequestDto
                 {
-                    Email = registerModel.Email,
-                    Password = registerModel.Password,
-                    Remember = registerModel.Remember
+                    Email = accountRegisterDto.Email,
+                    Password = accountRegisterDto.Password,
+                    Remember = accountRegisterDto.Remember
                 };
 
-                var apiResponse = await _repoLogin.HttpPostAsync(loginModel);
+                var apiResponse = await _repoLogin.HttpPostAsync(loginRequestDto);
 
                 if (apiResponse.StatusCode == HttpStatusCode.OK)
                 {
                     apiResponse.Response.Account!.Token = StaticData.GenerateToken(apiResponse.Response.Account.Id, apiResponse.Response.Account.Guid, _config);
                     CurrentState.SetAccount(apiResponse.Response.Account);
 
-                    if (loginModel.Remember)
-                        await _protectedLocalStore.SetAsync(nameof(LoginRequestDto), loginModel);
+                    if (loginRequestDto.Remember)
+                        await _protectedLocalStore.SetAsync(nameof(LoginRequestDto), loginRequestDto);
                     else
-                        await _protectedSessionStore.SetAsync(nameof(LoginRequestDto), loginModel);
+                        await _protectedSessionStore.SetAsync(nameof(LoginRequestDto), loginRequestDto);
 
                     await _JSProcessor.Redirect("/");
                 }
                 else
                 {
-                    registerModel.ErrorRegisterMessage = apiResponse.Response.ErrorMessage;
+                    accountRegisterDto.ErrorRegisterMessage = apiResponse.Response.ErrorMessage;
                     StateHasChanged();
                 }
             }
-
         }
 
         public void Dispose()

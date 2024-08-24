@@ -15,9 +15,9 @@
 
         public Informing Informing { get; set; } = new Informing();
 
-        public CountriesDto Country { get; set; } = null!;
+        public List<UsersDto> Users { get; set; } = new List<UsersDto>();
 
-        public List<UsersDto> Users { get; set; } = null!;
+        public CountriesDto Country { get; set; } = new CountriesDto() { Region = new RegionsDto() };
 
         public bool IsConfirmed { get; set; } = false;
 

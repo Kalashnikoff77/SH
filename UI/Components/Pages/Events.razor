@@ -5,15 +5,30 @@
 <MudText Typo="Typo.h6" Class="mb-5">Встречи</MudText>
 
 <MudStack Row Wrap="Wrap.Wrap" Spacing="5" Style="min-width:300px; max-width:800px">
-    <MudTextField T="string" ValueChanged="@(s => OnSearch(s))" Placeholder="Поиск" Style="min-width:250px" Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Clearable Class="pl-2" />
-
-    <MudSelect SelectedValuesChanged="OnFeaturesSelected" T="string" Dense AnchorOrigin="Origin.BottomCenter" Placeholder="Особенности" Adornment="Adornment.End" IconSize="Size.Medium" MultiSelection Clearable Style="min-width:250px" Class="pr-2">
+    <MudTextField Placeholder="Поиск" T="string" ValueChanged="@(s => OnSearch(s))" Style="min-width:250px" Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Clearable Class="pl-2" />
+    <MudSelect Placeholder="Особенности" SelectedValuesChanged="OnFeaturesSelected" T="string" Dense AnchorOrigin="Origin.BottomCenter" Adornment="Adornment.End" IconSize="Size.Medium" MultiSelection Clearable Style="min-width:250px" Class="pr-2">
         @foreach (var feat in FeaturesList)
         {
             <MudSelectItem T="string" Value="feat.Name">@feat.Name</MudSelectItem>
         }
     </MudSelect>
 </MudStack>
+
+<MudStack Row Wrap="Wrap.Wrap" Spacing="5" Style="min-width:300px; max-width:800px" Class="pt-5">
+    <MudSelect Placeholder="Организаторы" SelectedValuesChanged="OnAdminsSelected" T="string" Dense AnchorOrigin="Origin.BottomCenter" Adornment="Adornment.End" IconSize="Size.Medium" MultiSelection Clearable Style="min-width:250px" Class="pl-2">
+        @foreach (var feat in FeaturesList)
+        {
+            <MudSelectItem T="string" Value="feat.Name">@feat.Name</MudSelectItem>
+        }
+    </MudSelect>
+    <MudSelect Placeholder="Регионы" SelectedValuesChanged="OnCountriesSelected" T="string" Dense AnchorOrigin="Origin.BottomCenter" Adornment="Adornment.End" IconSize="Size.Medium" MultiSelection Clearable Style="min-width:250px" Class="pr-2">
+        @foreach (var country in RegionsList)
+        {
+            <MudSelectItem T="string" Value="country.Name">@country.Name</MudSelectItem>
+        }
+    </MudSelect>
+</MudStack>
+
 
 <MudDataGrid @ref="dataGrid" Striped T="SchedulesForEventsViewDto" ServerData="ServerReload" Style="min-width:300px; max-width:800px" Filterable="false">
     <Columns>

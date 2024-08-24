@@ -14,13 +14,19 @@ namespace UI.Components.Pages
         [CascadingParameter] public CurrentState CurrentState { get; set; } = null!;
         [Inject] IRepository<GetEventsRequestDto, GetEventsResponseDto> _repoGetEvents { get; set; } = null!;
         [Inject] IRepository<GetFeaturesRequestDto, GetFeaturesResponseDto> _repoGetFeatures { get; set; } = null!;
+        [Inject] IRepository<GetCountriesRequestDto, GetCountriesResponseDto> _repoGetCountries { get; set; } = null!;
 
         MudDataGrid<SchedulesForEventsViewDto> dataGrid = null!;
         string? filterValue = null;
         List<int> featuresIds = new List<int>();
+        List<int> regionsIds = new List<int>();
+        List<int> adminsIds = new List<int>();
 
         List<SchedulesForEventsViewDto> EventsList = new List<SchedulesForEventsViewDto>();
+
         List<FeaturesDto> FeaturesList = new List<FeaturesDto>();
+        List<RegionsDto> RegionsList = new List<RegionsDto>();
+        List<AccountsDto> AdminsList = new List<AccountsDto>();
 
         MudCarousel<PhotosForEventsDto> Carousel = null!;
 
@@ -31,6 +37,9 @@ namespace UI.Components.Pages
 
             var featuresResponse = await _repoGetFeatures.HttpPostAsync(new GetFeaturesRequestDto());
             FeaturesList = featuresResponse.Response.Features;
+
+            var regionsResponse = await _repoGetCountries.HttpPostAsync(new GetCountriesRequestDto { CountryId = CurrentState.Account?.Country?.Id });
+            RegionsList = regionsResponse.Response.Countries[0].Regions;
         }
 
 
@@ -40,6 +49,7 @@ namespace UI.Components.Pages
             {
                 FilterFreeText = filterValue,
                 FeaturesIds = featuresIds,
+                RegionsIds = regionsIds,
                 IsPhotosIncluded = true
             });
             EventsList = apiResponse.Response.Events;
@@ -64,10 +74,36 @@ namespace UI.Components.Pages
 
             foreach (var feat in selectedFeatures)
             {
-                var feature = FeaturesList.Where(w => w.Name == feat).FirstOrDefault();
-                if (feature != null)
-                    featuresIds.Add(feature.Id);
+                var selectedFeature = FeaturesList.Where(w => w.Name == feat).FirstOrDefault();
+                if (selectedFeature != null)
+                    featuresIds.Add(selectedFeature.Id);
             }
+            return dataGrid.ReloadServerData();
+        }
+
+        Task OnCountriesSelected(IEnumerable<string> selectedRegions)
+        {
+            regionsIds.Clear();
+
+            foreach (var region in selectedRegions)
+            {
+                var selectedRegion = RegionsList.Where(w => w.Name == region).FirstOrDefault();
+                if (selectedRegion != null)
+                    regionsIds.Add(selectedRegion.Id);
+            }
+            return dataGrid.ReloadServerData();
+        }
+
+        Task OnAdminsSelected(IEnumerable<string> selectedAdmins)
+        {
+            adminsIds.Clear();
+
+            //foreach (var admin in selectedAdmins)
+            //{
+            //    var selectedAdmin = CountriesList.Where(w => w.Name == country).FirstOrDefault();
+            //    if (country != null)
+            //        countriesIds.Add(country.Id);
+            //}
             return dataGrid.ReloadServerData();
         }
     }

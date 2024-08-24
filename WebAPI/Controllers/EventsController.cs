@@ -60,7 +60,7 @@ namespace WebAPI.Controllers
                 var jsonRequest = JsonSerializer.Serialize(request);
                 // Сперва получим Id записей, которые нужно вытянуть + кол-во записей.
                 var p = new DynamicParameters();
-                p.Add("@request", jsonRequest);
+                p.Add("@GetEventsRequestDto", jsonRequest);
                 var ids = await conn.QueryAsync<int>("EventsFilter_sp", p, commandType: System.Data.CommandType.StoredProcedure);
                 response.Count = ids.Count();
 

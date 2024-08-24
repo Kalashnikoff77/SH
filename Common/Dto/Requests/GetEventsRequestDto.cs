@@ -10,6 +10,11 @@
         public int? AdminId { get; set; }
 
         /// <summary>
+        /// Встречи из каких регионов выводить
+        /// </summary>
+        public List<int>? RegionsIds { get; set; }
+
+        /// <summary>
         /// Встречи с какими тегами выводить
         /// </summary>
         public List<int>? FeaturesIds { get; set; } = null;

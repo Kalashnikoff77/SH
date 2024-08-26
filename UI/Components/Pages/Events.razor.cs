@@ -14,7 +14,7 @@ namespace UI.Components.Pages
         [CascadingParameter] public CurrentState CurrentState { get; set; } = null!;
         [Inject] IRepository<GetEventsRequestDto, GetEventsResponseDto> _repoGetEvents { get; set; } = null!;
         [Inject] IRepository<GetFeaturesRequestDto, GetFeaturesResponseDto> _repoGetFeatures { get; set; } = null!;
-        [Inject] IRepository<GetCountriesRequestDto, GetCountriesResponseDto> _repoGetCountries { get; set; } = null!;
+        [Inject] IRepository<GetRegionsForEventsRequestDto, GetRegionsForEventsResponseDto> _repoGetRegions { get; set; } = null!;
         [Inject] IRepository<GetAdminsForEventsRequestDto, GetAdminsForEventsResponseDto> _repoGetAdmins { get; set; } = null!;
 
         MudDataGrid<SchedulesForEventsViewDto> dataGrid = null!;
@@ -26,7 +26,7 @@ namespace UI.Components.Pages
         List<SchedulesForEventsViewDto> EventsList = new List<SchedulesForEventsViewDto>();
 
         List<FeaturesDto> FeaturesList = new List<FeaturesDto>();
-        List<RegionsDto> RegionsList = new List<RegionsDto>();
+        List<RegionsForEventsViewDto> RegionsList = new List<RegionsForEventsViewDto>();
         List<AccountsDto> AdminsList = new List<AccountsDto>();
 
         MudCarousel<PhotosForEventsDto> Carousel = null!;
@@ -39,9 +39,8 @@ namespace UI.Components.Pages
             var featuresResponse = await _repoGetFeatures.HttpPostAsync(new GetFeaturesRequestDto());
             FeaturesList = featuresResponse.Response.Features;
 
-            var regionsResponse = await _repoGetCountries.HttpPostAsync(new GetCountriesRequestDto { CountryId = CurrentState.Account?.Country?.Id });
-            if (regionsResponse!.Response.Countries.Count > 0 && regionsResponse.Response.Countries[0].Regions != null)
-                RegionsList = regionsResponse.Response.Countries[0].Regions!;
+            var regionsResponse = await _repoGetRegions.HttpPostAsync(new GetRegionsForEventsRequestDto());
+            RegionsList = regionsResponse.Response.RegionsForEvents;
 
             var adminsResponse = await _repoGetAdmins.HttpPostAsync(new GetAdminsForEventsRequestDto());
             if (adminsResponse != null && adminsResponse.Response.Admins?.Count() > 0)

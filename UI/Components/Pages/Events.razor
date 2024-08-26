@@ -8,8 +8,8 @@
     <MudItem xs="12">
         <MudTextField Placeholder="Поиск" T="string" ValueChanged="@(s => OnSearch(s))" Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Clearable/>
     </MudItem>
-    <MudItem xs="12" md="4">S
-        <MudSelect Placeholder="Особенности" SelectedValuesChanged="OnFeaturesSelected" T="string" Dense AnchorOrigin="Origin.BottomCenter" Adornment="Adornment.End" IconSize="Size.Medium" MultiSelection Clearable>
+    <MudItem xs="12" md="4">
+        <MudSelect Placeholder="Все особенности" SelectedValuesChanged="OnFeaturesSelected" T="string" Dense AnchorOrigin="Origin.BottomCenter" Adornment="Adornment.End" IconSize="Size.Medium" MultiSelection Clearable>
             @foreach (var feat in FeaturesList)
             {
                 <MudSelectItem T="string" Value="feat.Name">@feat.Name</MudSelectItem>
@@ -18,7 +18,7 @@
     </MudItem>
 
     <MudItem xs="12" md="4">
-        <MudSelect Placeholder="Организаторы" SelectedValuesChanged="OnAdminsSelected" T="string" Dense AnchorOrigin="Origin.BottomCenter" Adornment="Adornment.End" IconSize="Size.Medium" MultiSelection Clearable>
+        <MudSelect Placeholder="Все организаторы" SelectedValuesChanged="OnAdminsSelected" T="string" Dense AnchorOrigin="Origin.BottomCenter" Adornment="Adornment.End" IconSize="Size.Medium" MultiSelection Clearable>
             @foreach (var admin in AdminsList)
             {
                 <MudSelectItem T="string" Value="admin.Name">@admin.Name</MudSelectItem>
@@ -27,10 +27,13 @@
     </MudItem>
 
     <MudItem xs="12" md="4">
-        <MudSelect Placeholder="Регионы" SelectedValuesChanged="OnCountriesSelected" T="string" Dense AnchorOrigin="Origin.BottomCenter" Adornment="Adornment.End" IconSize="Size.Medium" MultiSelection Clearable>
-            @foreach (var country in RegionsList)
+        <MudSelect Placeholder="Все регионы" SelectedValuesChanged="OnCountriesSelected" T="string" Dense AnchorOrigin="Origin.BottomCenter" Adornment="Adornment.End" IconSize="Size.Medium" MultiSelection Clearable>
+            @if (RegionsList != null) 
             {
-                <MudSelectItem T="string" Value="country.Name">@country.Name</MudSelectItem>
+                @foreach (var region in RegionsList)
+                {
+                    <MudSelectItem T="string" Value="region.Name">@region.Name (@region.NumberOfEvents)</MudSelectItem>
+                }
             }
         </MudSelect>
     </MudItem>

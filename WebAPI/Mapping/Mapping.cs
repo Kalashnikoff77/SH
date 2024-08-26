@@ -24,6 +24,8 @@ namespace WebAPI.Mapping
             CreateMap<CountriesViewEntity, CountriesViewDto>()
                 .ForMember(to => to.Regions, from => from.ConvertUsing<JsonToClassConverter<List<RegionsDto>>, string?>(from => from.Regions));
 
+            CreateMap<RegionsForEventsViewEntity, RegionsForEventsViewDto>();
+
             CreateMap<EventsViewEntity, EventsViewDto>()
                 .ForMember(to => to.Admin, from => from.ConvertUsing<JsonToClassConverter<AccountsViewDto>, string?>(from => from.Admin))
                 .ForMember(to => to.Schedule, from => from.ConvertUsing<JsonToClassConverter<List<SchedulesForEventsDto>>, string?>(from => from.Schedule))

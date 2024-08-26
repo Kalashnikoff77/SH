@@ -31,8 +31,26 @@ namespace WebAPI.Controllers
 
                 response.Countries = _mapper.Map<List<CountriesViewDto>>(result);
             }
-
             return response;
         }
+
+
+        /// <summary>
+        /// Получает список регионов, в которых есть активные мероприятия
+        /// </summary>
+        [Route("GetRegionsForEvents"), HttpPost]
+        public async Task<GetRegionsForEventsResponseDto> GetRegionsForEventsAsync(GetRegionsForEventsRequestDto request)
+        {
+            var response = new GetRegionsForEventsResponseDto();
+
+            using (var conn = new SqlConnection(connectionString))
+            {
+                var sql = "SELECT * FROM RegionsForEventsView ORDER BY [Order]";
+                var result = await conn.QueryAsync<RegionsForEventsViewEntity>(sql);
+                response.RegionsForEvents = _mapper.Map<List<RegionsForEventsViewDto>>(result);
+            }
+            return response;
+        }
+
     }
 }

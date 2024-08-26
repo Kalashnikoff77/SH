@@ -1,4 +1,6 @@
 ﻿using AutoMapper;
+using Azure;
+using Common.Dto;
 using Common.Dto.Requests;
 using Common.Dto.Responses;
 using Common.Dto.Views;
@@ -73,6 +75,23 @@ namespace WebAPI.Controllers
 
             return response;
         }
+
+
+        [Route("GetAdminsForEvents"), HttpPost]
+        public async Task<GetAdminsForEventsResponseDto> GetAdminsForEventsAsync(GetAdminsForEventsRequestDto request)
+        {
+            var response = new GetAdminsForEventsResponseDto();
+
+            using (var conn = new SqlConnection(connectionString))
+            {
+                var sql = "SELECT a.Id, a.Name FROM Accounts a JOIN Events e ON e.AdminId = a.Id";
+                var result = await conn.QueryAsync<AccountsEntity>(sql);
+                response.Admins = _mapper.Map<List<AccountsDto>>(result);
+            }
+
+            return response;
+        }
+
 
 
         [Route("GetWishList"), HttpPost]

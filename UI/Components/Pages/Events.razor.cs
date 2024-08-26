@@ -15,6 +15,7 @@ namespace UI.Components.Pages
         [Inject] IRepository<GetEventsRequestDto, GetEventsResponseDto> _repoGetEvents { get; set; } = null!;
         [Inject] IRepository<GetFeaturesRequestDto, GetFeaturesResponseDto> _repoGetFeatures { get; set; } = null!;
         [Inject] IRepository<GetCountriesRequestDto, GetCountriesResponseDto> _repoGetCountries { get; set; } = null!;
+        [Inject] IRepository<GetAdminsForEventsRequestDto, GetAdminsForEventsResponseDto> _repoGetAdmins { get; set; } = null!;
 
         MudDataGrid<SchedulesForEventsViewDto> dataGrid = null!;
         string? filterValue = null;
@@ -39,7 +40,12 @@ namespace UI.Components.Pages
             FeaturesList = featuresResponse.Response.Features;
 
             var regionsResponse = await _repoGetCountries.HttpPostAsync(new GetCountriesRequestDto { CountryId = CurrentState.Account?.Country?.Id });
-            RegionsList = regionsResponse.Response.Countries[0].Regions;
+            if (regionsResponse!.Response.Countries.Count > 0 && regionsResponse.Response.Countries[0].Regions != null)
+                RegionsList = regionsResponse.Response.Countries[0].Regions!;
+
+            var adminsResponse = await _repoGetAdmins.HttpPostAsync(new GetAdminsForEventsRequestDto());
+            if (adminsResponse != null && adminsResponse.Response.Admins?.Count() > 0)
+                AdminsList = adminsResponse.Response.Admins;
         }
 
 
@@ -50,6 +56,7 @@ namespace UI.Components.Pages
                 FilterFreeText = filterValue,
                 FeaturesIds = featuresIds,
                 RegionsIds = regionsIds,
+                AdminsIds = adminsIds,
                 IsPhotosIncluded = true
             });
             EventsList = apiResponse.Response.Events;
@@ -68,42 +75,39 @@ namespace UI.Components.Pages
             return dataGrid.ReloadServerData();
         }
 
-        Task OnFeaturesSelected(IEnumerable<string> selectedFeatures)
+        Task OnFeaturesSelected(IEnumerable<string> selectedItems)
         {
             featuresIds.Clear();
-
-            foreach (var feat in selectedFeatures)
+            foreach (var selectedItem in selectedItems)
             {
-                var selectedFeature = FeaturesList.Where(w => w.Name == feat).FirstOrDefault();
-                if (selectedFeature != null)
-                    featuresIds.Add(selectedFeature.Id);
+                var item = RegionsList.Where(w => w.Name == selectedItem).FirstOrDefault();
+                if (item != null)
+                    featuresIds.Add(item.Id);
             }
             return dataGrid.ReloadServerData();
         }
 
-        Task OnCountriesSelected(IEnumerable<string> selectedRegions)
+        Task OnCountriesSelected(IEnumerable<string> selectedItems)
         {
             regionsIds.Clear();
-
-            foreach (var region in selectedRegions)
+            foreach (var selectedItem in selectedItems)
             {
-                var selectedRegion = RegionsList.Where(w => w.Name == region).FirstOrDefault();
-                if (selectedRegion != null)
-                    regionsIds.Add(selectedRegion.Id);
+                var item = RegionsList.Where(w => w.Name == selectedItem).FirstOrDefault();
+                if (item != null)
+                    regionsIds.Add(item.Id);
             }
             return dataGrid.ReloadServerData();
         }
 
-        Task OnAdminsSelected(IEnumerable<string> selectedAdmins)
+        Task OnAdminsSelected(IEnumerable<string> selectedItems)
         {
             adminsIds.Clear();
-
-            //foreach (var admin in selectedAdmins)
-            //{
-            //    var selectedAdmin = CountriesList.Where(w => w.Name == country).FirstOrDefault();
-            //    if (country != null)
-            //        countriesIds.Add(country.Id);
-            //}
+            foreach (var selectedItem in selectedItems)
+            {
+                var item = AdminsList.Where(w => w.Name == selectedItem).FirstOrDefault();
+                if (item != null)
+                    adminsIds.Add(item.Id);
+            }
             return dataGrid.ReloadServerData();
         }
     }

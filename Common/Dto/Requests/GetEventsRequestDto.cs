@@ -5,9 +5,9 @@
         public override string Uri => "/Events/Get";
 
         /// <summary>
-        /// Встречи какого организатора выводить
+        /// Встречи каких организаторов выводить
         /// </summary>
-        public int? AdminId { get; set; }
+        public List<int>? AdminsIds { get; set; }
 
         /// <summary>
         /// Встречи из каких регионов выводить

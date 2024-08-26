@@ -80,7 +80,7 @@ namespace UI.Components.Pages
             featuresIds.Clear();
             foreach (var selectedItem in selectedItems)
             {
-                var item = RegionsList.Where(w => w.Name == selectedItem).FirstOrDefault();
+                var item = FeaturesList.Where(w => w.Name == selectedItem).FirstOrDefault();
                 if (item != null)
                     featuresIds.Add(item.Id);
             }

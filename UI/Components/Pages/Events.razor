@@ -8,7 +8,7 @@
     <MudItem xs="12">
         <MudTextField Placeholder="Поиск" T="string" ValueChanged="@(s => OnSearch(s))" Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Clearable/>
     </MudItem>
-    <MudItem xs="12" md="4">
+    <MudItem xs="12" md="4">S
         <MudSelect Placeholder="Особенности" SelectedValuesChanged="OnFeaturesSelected" T="string" Dense AnchorOrigin="Origin.BottomCenter" Adornment="Adornment.End" IconSize="Size.Medium" MultiSelection Clearable>
             @foreach (var feat in FeaturesList)
             {

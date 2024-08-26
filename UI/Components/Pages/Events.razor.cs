@@ -109,5 +109,11 @@ namespace UI.Components.Pages
             }
             return dataGrid.ReloadServerData();
         }
+
+
+        void ShowRegisteredUsers()
+        {
+        }
+
     }
 }

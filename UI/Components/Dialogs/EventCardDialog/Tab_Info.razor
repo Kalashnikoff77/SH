@@ -1,0 +1,32 @@
+﻿@if (ScheduleForEvent != null && ScheduleForEvent.Event != null)
+{
+    <MudStack>
+        <MudStack Row AlignItems="AlignItems.Center">
+            <ImageAvatar Account="ScheduleForEvent.Event.Admin" Size="EnumImageSize.s64x64" Class="avatar s45" Title="Организатор" />
+            <MudText Typo="Typo.body2"><b>Организатор:</b><br />@ScheduleForEvent.Event.Admin?.Name (@ScheduleForEvent.Event.Admin?.ToGendersAgesString())</MudText>
+        </MudStack>
+
+        <MudStack Row AlignItems="AlignItems.Center" Spacing="1">
+            <MudIcon Icon="@Icons.Material.Outlined.LocationOn" Style="font-size:19px" />
+            <MudText Typo="Typo.body2">@ScheduleForEvent.Event.ToRegionString() (@ScheduleForEvent.Event.Address)</MudText>
+        </MudStack>
+
+        <MudStack Row AlignItems="AlignItems.Center" Spacing="1">
+            <MudIcon Icon="@Icons.Material.Outlined.CalendarToday" Class="@ScheduleForEvent.ToDateClass()" Style="font-size:18px" />
+            <MudText Typo="Typo.body2"><b>@ScheduleForEvent.StartDate.ToMyString()</b></MudText>
+        </MudStack>
+
+        @if (!string.IsNullOrWhiteSpace(ScheduleForEvent.Description))
+        {
+            <MudText Typo="Typo.body2">@ScheduleForEvent.Description</MudText>
+            <MudDivider />
+        }
+
+        <MudText Typo="Typo.body2">@ScheduleForEvent.Event.Description</MudText>
+    </MudStack>
+}
+
+
+@code {
+    [Parameter] public SchedulesForEventsViewDto ScheduleForEvent { get; set; } = null!;
+}

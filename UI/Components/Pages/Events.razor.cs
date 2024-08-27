@@ -5,10 +5,7 @@ using Common.Dto.Views;
 using Common.Models.States;
 using Common.Repository;
 using Microsoft.AspNetCore.Components;
-using Microsoft.Extensions.Options;
 using MudBlazor;
-using UI.Components.Dialogs;
-using static MudBlazor.CategoryTypes;
 
 namespace UI.Components.Pages
 {
@@ -115,15 +112,15 @@ namespace UI.Components.Pages
         }
 
 
-        Task ShowEventCardAsync(EventsViewDto Event)
+        Task ShowEventCardAsync(SchedulesForEventsViewDto Event)
         {
             DialogOptions dialogOptions = new() { CloseOnEscapeKey = true, CloseButton = true };
 
-            var dialogParams = new DialogParameters<EventCardDialog>
+            var dialogParams = new DialogParameters<Dialogs.EventCardDialog.EventCardDialog>
             {
-                { x => x.Event, Event }
+                { x => x.ScheduleForEvent, Event }
             };
-            return Dialog.ShowAsync<EventCardDialog>(Event.Name, dialogParams, dialogOptions);
+            return Dialog.ShowAsync<Dialogs.EventCardDialog.EventCardDialog>(Event.Event?.Name, dialogParams, dialogOptions);
         }
 
     }

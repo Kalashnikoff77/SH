@@ -1,0 +1,49 @@
+﻿@if (ScheduleForEvent.Event != null)
+{
+    <MudDialog Style="width:550px; min-width:360px">
+        <DialogContent>
+            <MudStack AlignItems="AlignItems.Center" Class="mb-3">
+                <MudCarousel @ref="Carousel" TData="PhotosForEventsDto" ShowArrows ShowBullets AutoCycle Style="width:300px; height:400px">
+                    @if (ScheduleForEvent.Event.Photos != null)
+                    {
+                        @foreach (var photo in ScheduleForEvent.Event.Photos)
+                        {
+                            <MudCarouselItem Transition="Transition.Slide">
+                                <MudImage Src=@($"/images/EventsPhotos/{photo.EventId}/{photo.Guid}/{EnumImageSize.s450x600}.jpg") Fluid="true" Style="border-radius:2%" />
+                            </MudCarouselItem>
+                        }
+                    }
+                </MudCarousel>
+
+                @if (CurrentState.Account != null)
+                {
+                    <MudButton Color="Color.Info" Size="Size.Small" StartIcon="@Icons.Material.Outlined.HowToReg" Variant="Variant.Outlined">Регистрация</MudButton>
+                }
+            </MudStack>
+
+            @* Закладки *@
+            <MudTabs Outlined="true" Rounded="true" ApplyEffectsToContainer="true" AlwaysShowScrollButtons="true" PanelClass="pa-6">
+                <MudTabPanel Text="Общее" Icon="@Icons.Material.Filled.Api">
+                    <Tab_Info ScheduleForEvent="@ScheduleForEvent" />
+                </MudTabPanel>
+
+                <MudTabPanel Text="Общение" Icon="@Icons.Material.Filled.Message">
+                    <Tab_Messages ScheduleForEvent="@ScheduleForEvent" />
+                </MudTabPanel>
+
+                <MudTabPanel Text="Гости" Icon="@Icons.Material.Filled.Group">
+                    <Tab_Accounts ScheduleForEvent="@ScheduleForEvent" />
+                </MudTabPanel>
+
+                <MudTabPanel Text="Расписание" Icon="@Icons.Material.Filled.CalendarMonth">
+                    <Tab_Schedule ScheduleForEvent="@ScheduleForEvent" />
+                </MudTabPanel>
+            </MudTabs>
+
+        </DialogContent>
+
+        <DialogActions>
+            <MudButton Color="Color.Info" OnClick="Submit">Закрыть</MudButton>
+        </DialogActions>
+    </MudDialog>
+}

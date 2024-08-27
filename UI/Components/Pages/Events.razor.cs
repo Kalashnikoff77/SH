@@ -117,7 +117,7 @@ namespace UI.Components.Pages
 
         Task ShowEventCardAsync(EventsViewDto Event)
         {
-            DialogOptions dialogOptions = new() { CloseOnEscapeKey=true };
+            DialogOptions dialogOptions = new() { CloseOnEscapeKey = true, CloseButton = true };
 
             var dialogParams = new DialogParameters<EventCardDialog>
             {

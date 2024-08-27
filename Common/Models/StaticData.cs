@@ -23,19 +23,19 @@ namespace Common.Models
         {
             {
                 EnumImageSize.s64x64,
-                new ProcessImageSettings { Width=64, Height=64, ResizeMode=CropScaleMode.Crop }
+                new ProcessImageSettings { Width=64, Height=64, OrientationMode = OrientationMode.Normalize, ResizeMode=CropScaleMode.Crop }
             },
             {
                 EnumImageSize.s150x150,
-                new ProcessImageSettings { Width=150, Height=150, ResizeMode=CropScaleMode.Crop }
+                new ProcessImageSettings { Width=150, Height=150, OrientationMode = OrientationMode.Normalize, ResizeMode=CropScaleMode.Crop }
             },
             {
-                EnumImageSize.s600x450,
-                new ProcessImageSettings { Width=600, Height=450, ResizeMode=CropScaleMode.Max, MatteColor = System.Drawing.Color.Black }
+                EnumImageSize.s450x600,
+                new ProcessImageSettings { Width=450, Height=600, ResizeMode=CropScaleMode.Pad, OrientationMode = OrientationMode.Normalize, MatteColor = System.Drawing.Color.Black }
             },
             {
                 EnumImageSize.s768x1024,
-                new ProcessImageSettings { Width=768, Height=1024, ResizeMode=CropScaleMode.Max, MatteColor = System.Drawing.Color.Black }
+                new ProcessImageSettings { Width=768, Height=1024, ResizeMode=CropScaleMode.Pad, OrientationMode = OrientationMode.Normalize, MatteColor = System.Drawing.Color.Black }
             }
         };
 

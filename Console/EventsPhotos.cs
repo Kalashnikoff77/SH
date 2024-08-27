@@ -52,7 +52,7 @@ namespace Program
                 SqlConnection conn = new SqlConnection(connectionString);
                 conn.Open();
 
-                SqlCommand command = new SqlCommand($"INSERT INTO EventsPhotos (Guid, Comment, IsAvatar, EventId, IsDeleted) VALUES ('{guid}', '{acc.Name}', 1, {acc.Id}, 0)", conn);
+                SqlCommand command = new SqlCommand($"INSERT INTO PhotosForEvents (Guid, Comment, IsAvatar, EventId, IsDeleted) VALUES ('{guid}', '{acc.Name}', 1, {acc.Id}, 0)", conn);
                 command.ExecuteNonQuery();
             }
         }

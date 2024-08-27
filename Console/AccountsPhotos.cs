@@ -13,7 +13,7 @@ namespace Program
             SqlConnection conn = new SqlConnection(connectionString);
             conn.Open();
 
-            SqlCommand command = new SqlCommand("TRUNCATE TABLE AccountsPhotos", conn);
+            SqlCommand command = new SqlCommand("TRUNCATE TABLE PhotosForAccounts", conn);
             command.ExecuteNonQuery();
 
             command = new SqlCommand("SELECT Id, Guid, Name FROM Accounts WHERE Id <= 6", conn);
@@ -55,7 +55,7 @@ namespace Program
                 SqlConnection conn = new SqlConnection(connectionString);
                 conn.Open();
 
-                SqlCommand command = new SqlCommand($"INSERT INTO AccountsPhotos (Guid, Comment, IsAvatar, AccountId, IsDeleted) VALUES ('{guid}', '{acc.Name}', 1, {acc.Id}, 0)", conn);
+                SqlCommand command = new SqlCommand($"INSERT INTO PhotosForAccounts (Guid, Comment, IsAvatar, AccountId, IsDeleted) VALUES ('{guid}', '{acc.Name}', 1, {acc.Id}, 0)", conn);
 
                 command.ExecuteNonQuery();
             }

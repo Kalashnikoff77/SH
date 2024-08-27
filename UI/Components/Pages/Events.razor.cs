@@ -5,7 +5,10 @@ using Common.Dto.Views;
 using Common.Models.States;
 using Common.Repository;
 using Microsoft.AspNetCore.Components;
+using Microsoft.Extensions.Options;
 using MudBlazor;
+using UI.Components.Dialogs;
+using static MudBlazor.CategoryTypes;
 
 namespace UI.Components.Pages
 {
@@ -16,6 +19,7 @@ namespace UI.Components.Pages
         [Inject] IRepository<GetFeaturesRequestDto, GetFeaturesResponseDto> _repoGetFeatures { get; set; } = null!;
         [Inject] IRepository<GetRegionsForEventsRequestDto, GetRegionsForEventsResponseDto> _repoGetRegions { get; set; } = null!;
         [Inject] IRepository<GetAdminsForEventsRequestDto, GetAdminsForEventsResponseDto> _repoGetAdmins { get; set; } = null!;
+        [Inject] IDialogService Dialog { get; set; } = null!;
 
         MudDataGrid<SchedulesForEventsViewDto> dataGrid = null!;
         string? filterValue = null;
@@ -111,8 +115,15 @@ namespace UI.Components.Pages
         }
 
 
-        void ShowRegisteredUsers()
+        Task ShowEventCardAsync(EventsViewDto Event)
         {
+            DialogOptions dialogOptions = new() { CloseOnEscapeKey=true };
+
+            var dialogParams = new DialogParameters<EventCardDialog>
+            {
+                { x => x.Event, Event }
+            };
+            return Dialog.ShowAsync<EventCardDialog>(Event.Name, dialogParams, dialogOptions);
         }
 
     }

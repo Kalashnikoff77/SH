@@ -1,0 +1,17 @@
+﻿<MudDialog>
+    <DialogContent>
+        @Event.Description
+    </DialogContent>
+    <DialogActions>
+        <MudButton Color="Color.Info" OnClick="Submit">Закрыть</MudButton>
+    </DialogActions>
+</MudDialog>
+
+
+@code {
+    [CascadingParameter] MudDialogInstance MudDialog { get; set; } = null!;
+    [Parameter] public EventsViewDto Event { get; set; } = null!;
+
+    void Submit() => MudDialog.Close(DialogResult.Ok(true));
+}
+

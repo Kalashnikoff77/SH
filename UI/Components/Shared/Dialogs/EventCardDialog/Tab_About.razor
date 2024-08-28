@@ -12,7 +12,7 @@
         </MudStack>
 
         <MudStack Row AlignItems="AlignItems.Center" Spacing="1">
-            <MudSelect T="SchedulesForEventsDto" @bind-Value="selectedSchedule" SelectedValuesChanged="OnScheduleChangedAsync" Variant="Variant.Text" Dense AnchorOrigin="Origin.BottomCenter" Margin="Margin.Dense">
+            <MudSelect T="SchedulesForEventsDto" Label="Расписание" AdornmentIcon="@Icons.Material.Outlined.CalendarMonth" @bind-Value="selectedSchedule" SelectedValuesChanged="OnScheduleChangedAsync" Variant="Variant.Outlined" Dense AnchorOrigin="Origin.BottomCenter" Margin="Margin.Dense">
                 @foreach (var schedule in schedules)
                 {
                     <MudSelectItem Value="@schedule" />
@@ -21,7 +21,8 @@
         </MudStack>
 
         <MudStack Row AlignItems="AlignItems.Center" Spacing="1">
-            <MudIcon Icon="@Icons.Material.Outlined.CalendarToday" Class="@ScheduleForEventView.ToDateClass()" Style="font-size:18px" />
+            <MudText Typo="Typo.body2" Class="@ScheduleForEventView.ToDateClass()">Статус мероприятия</MudText>
+            @* <MudIcon Icon="@Icons.Material.Outlined.CalendarToday" Class="@ScheduleForEventView.ToDateClass()" Style="font-size:18px" /> *@
             <MudText Typo="Typo.body2"><b>@ScheduleForEventView.StartDate.ToMyString() - @ScheduleForEventView.EndDate.ToMyString()</b></MudText>
         </MudStack>
 
@@ -71,6 +72,6 @@
 
         <MudDivider />
 
-        <MudText Typo="Typo.body2">@ScheduleForEventView.Event.Description</MudText>
+        <MudText Typo="Typo.body2"><b>Общее описание:</b><br />@ScheduleForEventView.Event.Description</MudText>
     </MudStack>
 }

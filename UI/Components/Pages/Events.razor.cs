@@ -19,10 +19,8 @@ namespace UI.Components.Pages
         [Inject] IDialogService Dialog { get; set; } = null!;
 
         MudDataGrid<SchedulesForEventsViewDto> dataGrid = null!;
-        string? filterValue = null;
-        List<int> featuresIds = new List<int>();
-        List<int> regionsIds = new List<int>();
-        List<int> adminsIds = new List<int>();
+
+        GetEventsRequestDto request = new GetEventsRequestDto { IsPhotosIncluded = true };
 
         List<SchedulesForEventsViewDto> EventsList = new List<SchedulesForEventsViewDto>();
 
@@ -51,14 +49,7 @@ namespace UI.Components.Pages
 
         async Task<GridData<SchedulesForEventsViewDto>> ServerReload(GridState<SchedulesForEventsViewDto> state)
         {
-            var apiResponse = await _repoGetEvents.HttpPostAsync(new GetEventsRequestDto
-            {
-                FilterFreeText = filterValue,
-                FeaturesIds = featuresIds,
-                RegionsIds = regionsIds,
-                AdminsIds = adminsIds,
-                IsPhotosIncluded = true
-            });
+            var apiResponse = await _repoGetEvents.HttpPostAsync(request);
             EventsList = apiResponse.Response.Events;
 
             var items = new GridData<SchedulesForEventsViewDto>
@@ -71,43 +62,25 @@ namespace UI.Components.Pages
 
         Task OnSearch(string text)
         {
-            filterValue = text;
+            request.FilterFreeText = text;
             return dataGrid.ReloadServerData();
         }
 
-        Task OnFeaturesSelected(IEnumerable<string> selectedItems)
+        Task OnFeaturesSelected(IEnumerable<FeaturesDto> selectedItems)
         {
-            featuresIds.Clear();
-            foreach (var selectedItem in selectedItems)
-            {
-                var item = FeaturesList.Where(w => w.Name == selectedItem).FirstOrDefault();
-                if (item != null)
-                    featuresIds.Add(item.Id);
-            }
+            request.FeaturesIds = selectedItems.Select(s => s.Id);
             return dataGrid.ReloadServerData();
         }
 
-        Task OnCountriesSelected(IEnumerable<string> selectedItems)
+        Task OnCountriesSelected(IEnumerable<RegionsForEventsViewDto> selectedItems)
         {
-            regionsIds.Clear();
-            foreach (var selectedItem in selectedItems)
-            {
-                var item = RegionsList.Where(w => w.Name == selectedItem).FirstOrDefault();
-                if (item != null)
-                    regionsIds.Add(item.Id);
-            }
+            request.RegionsIds = selectedItems.Select(s => s.Id);
             return dataGrid.ReloadServerData();
         }
 
-        Task OnAdminsSelected(IEnumerable<string> selectedItems)
+        Task OnAdminsSelected(IEnumerable<AccountsDto> selectedItems)
         {
-            adminsIds.Clear();
-            foreach (var selectedItem in selectedItems)
-            {
-                var item = AdminsList.Where(w => w.Name == selectedItem).FirstOrDefault();
-                if (item != null)
-                    adminsIds.Add(item.Id);
-            }
+            request.AdminsIds = selectedItems.Select(s => s.Id);
             return dataGrid.ReloadServerData();
         }
 

@@ -15,6 +15,11 @@
         public bool? IsConfirmed { get; set; }
 
         public string? Token { get; set; }
+
+        /// <summary>
+        /// Для корректного вывода названия региона в выпадающем меню в Events.razor.cs
+        /// </summary>
+        public override string ToString() => Name;
     }
 
     public class Informing

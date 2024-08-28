@@ -12,7 +12,7 @@
         <MudSelect Placeholder="Все услуги" SelectedValuesChanged="OnFeaturesSelected" T="FeaturesDto" Dense AnchorOrigin="Origin.BottomCenter" Adornment="Adornment.End" IconSize="Size.Medium" MultiSelection Clearable>
             @foreach (var feat in FeaturesList)
             {
-                <MudSelectItem Value="feat">@feat.Name</MudSelectItem>
+                <MudSelectItem Value="feat" />
             }
         </MudSelect>
     </MudItem>
@@ -21,7 +21,7 @@
         <MudSelect Placeholder="Все организаторы" SelectedValuesChanged="OnAdminsSelected" T="AccountsDto" Dense AnchorOrigin="Origin.BottomCenter" Adornment="Adornment.End" IconSize="Size.Medium" MultiSelection Clearable>
             @foreach (var admin in AdminsList)
             {
-                <MudSelectItem Value="admin">@admin.Name</MudSelectItem>
+                <MudSelectItem Value="admin" />
             }
         </MudSelect>
     </MudItem>

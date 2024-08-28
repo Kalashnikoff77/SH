@@ -23,20 +23,16 @@
 
             @* Закладки *@
             <MudTabs Outlined="true" Rounded="true" ApplyEffectsToContainer="true" AlwaysShowScrollButtons="true" PanelClass="pa-6">
-                <MudTabPanel Text="Общее" Icon="@Icons.Material.Filled.Api">
-                    <Tab_Info ScheduleForEvent="@ScheduleForEvent" />
+                <MudTabPanel Text="О встрече" Icon="@Icons.Material.Filled.Api">
+                    <Tab_About ScheduleForEventView="@ScheduleForEvent" />
                 </MudTabPanel>
 
-                <MudTabPanel Text="Общение" Icon="@Icons.Material.Filled.Message">
+                <MudTabPanel Text="Обсуждение" Icon="@Icons.Material.Filled.Message">
                     <Tab_Messages ScheduleForEvent="@ScheduleForEvent" />
                 </MudTabPanel>
 
                 <MudTabPanel Text="Гости" Icon="@Icons.Material.Filled.Group">
                     <Tab_Accounts ScheduleForEvent="@ScheduleForEvent" />
-                </MudTabPanel>
-
-                <MudTabPanel Text="Расписание" Icon="@Icons.Material.Filled.CalendarMonth">
-                    <Tab_Schedule ScheduleForEvent="@ScheduleForEvent" />
                 </MudTabPanel>
             </MudTabs>
 

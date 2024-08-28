@@ -6,6 +6,7 @@ using Common.Models.States;
 using Common.Repository;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
+using UI.Components.Shared.Dialogs.EventCardDialog;
 
 namespace UI.Components.Pages
 {
@@ -89,11 +90,11 @@ namespace UI.Components.Pages
         {
             DialogOptions dialogOptions = new() { CloseOnEscapeKey = true, CloseButton = true };
 
-            var dialogParams = new DialogParameters<Shared.Dialogs.EventCardDialog.EventCardDialog>
+            var dialogParams = new DialogParameters<EventCardDialog>
             {
                 { x => x.ScheduleForEvent, Event }
             };
-            return Dialog.ShowAsync<Shared.Dialogs.EventCardDialog.EventCardDialog>(Event.Event?.Name, dialogParams, dialogOptions);
+            return Dialog.ShowAsync<EventCardDialog>(Event.Event?.Name, dialogParams, dialogOptions);
         }
 
     }

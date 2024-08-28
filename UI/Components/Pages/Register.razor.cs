@@ -3,6 +3,7 @@ using Common.Dto.Requests;
 using Common.Dto.Responses;
 using Common.Dto.Views;
 using Common.Enums;
+using Common.Extensions;
 using Common.JSProcessor;
 using Common.Models;
 using Common.Models.States;
@@ -15,8 +16,7 @@ using MudBlazor;
 using PhotoSauce.MagicScaler;
 using System.Net;
 using System.Text.RegularExpressions;
-using UI.Components.Shared;
-using UI.Extensions;
+using UI.Components.Shared.Dialogs;
 using UI.Models;
 
 namespace UI.Components.Pages

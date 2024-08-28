@@ -1,11 +1,11 @@
 ﻿using Common.Dto;
+using Common.Extensions;
 using Common.Models;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
-using UI.Extensions;
 using UI.Models;
 
-namespace UI.Components.Shared
+namespace UI.Components.Shared.Dialogs
 {
     public partial class EditUserDialog
     {

@@ -1,6 +1,6 @@
 ﻿using System.Text.Json;
 
-namespace UI.Extensions
+namespace Common.Extensions
 {
     public static class GlobalExtension
     {

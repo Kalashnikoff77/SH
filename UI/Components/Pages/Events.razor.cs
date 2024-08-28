@@ -89,11 +89,11 @@ namespace UI.Components.Pages
         {
             DialogOptions dialogOptions = new() { CloseOnEscapeKey = true, CloseButton = true };
 
-            var dialogParams = new DialogParameters<Dialogs.EventCardDialog.EventCardDialog>
+            var dialogParams = new DialogParameters<Shared.Dialogs.EventCardDialog.EventCardDialog>
             {
                 { x => x.ScheduleForEvent, Event }
             };
-            return Dialog.ShowAsync<Dialogs.EventCardDialog.EventCardDialog>(Event.Event?.Name, dialogParams, dialogOptions);
+            return Dialog.ShowAsync<Shared.Dialogs.EventCardDialog.EventCardDialog>(Event.Event?.Name, dialogParams, dialogOptions);
         }
 
     }

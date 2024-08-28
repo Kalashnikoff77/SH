@@ -4,7 +4,7 @@ using Common.Enums;
 using Common.Models;
 using System.Text;
 
-namespace UI.Extensions
+namespace Common.Extensions
 {
     public static class AccountDtoExtension
     {

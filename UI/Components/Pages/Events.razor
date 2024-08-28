@@ -84,11 +84,6 @@
                             </MudStack>
                             <MudStack Row Spacing="0">
                                 <MudText Typo="Typo.body2" Class="ml-2" title="Средний возраст гостей">@context.Item.AverageAgeOfRegistered()</MudText>
-                                @*                                  @if (context.Item.NumberOfRegisteredAll() > 0)
-                            {
-                            <MudIcon Size="Size.Small" Icon="@Icons.Material.Outlined.Group" Class="ml-3" Title="Список всех гостей" Style="font-size:20px" />
-                            }
-                            *@
                             </MudStack>
                         </MudStack>
                         @if (context.Item.Features != null)

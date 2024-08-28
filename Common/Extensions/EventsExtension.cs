@@ -1,8 +1,6 @@
-﻿using Common;
-using Common.Dto;
-using Common.Dto.Views;
+﻿using Common.Dto.Views;
 
-namespace UI.Extensions
+namespace Common.Extensions
 {
     public static class EventsExtension
     {

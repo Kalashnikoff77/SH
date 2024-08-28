@@ -1,4 +1,4 @@
-﻿namespace UI.Extensions
+﻿namespace Common.Extensions
 {
     public static class DateTimeExtension
     {

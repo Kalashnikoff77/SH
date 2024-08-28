@@ -4,7 +4,7 @@ using Common.Models.States;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
 
-namespace UI.Components.Dialogs.EventCardDialog
+namespace UI.Components.Shared.Dialogs.EventCardDialog
 {
     public partial class EventCardDialog
     {

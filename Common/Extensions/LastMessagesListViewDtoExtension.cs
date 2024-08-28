@@ -1,7 +1,7 @@
 ﻿using Common.Dto.Views;
 using Common.Models.States;
 
-namespace UI.Extensions
+namespace Common.Extensions
 {
     public static class LastMessagesListViewDtoExtension
     {

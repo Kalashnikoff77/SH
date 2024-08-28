@@ -4,6 +4,6 @@
     {
         public override string Uri => "/Events/GetOne";
 
-        public int EventId { get; set; }
+        public int ScheduleId { get; set; }
     }
 }

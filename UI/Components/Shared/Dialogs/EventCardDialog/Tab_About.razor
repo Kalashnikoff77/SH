@@ -12,19 +12,19 @@
         </MudStack>
 
         <MudStack Row AlignItems="AlignItems.Center" Spacing="1">
-            <MudSelect T="SchedulesForEventsDto" @bind-Value="selectedSchedule" Variant="Variant.Text" Dense AnchorOrigin="Origin.BottomCenter" Margin="Margin.Dense">
-                @foreach (var schedule in ScheduleForEventView.Event.Schedule)
+            <MudSelect T="SchedulesForEventsDto" @bind-Value="selectedSchedule" SelectedValuesChanged="OnScheduleChangedAsync" Variant="Variant.Text" Dense AnchorOrigin="Origin.BottomCenter" Margin="Margin.Dense">
+                @foreach (var schedule in schedules)
                 {
                     <MudSelectItem Value="@schedule" />
                 }
             </MudSelect>
         </MudStack>
 
-@*         <MudStack Row AlignItems="AlignItems.Center" Spacing="1">
-            <MudIcon Icon="@Icons.Material.Outlined.CalendarToday" Class="@ScheduleForEvent.ToDateClass()" Style="font-size:18px" />
-            <MudText Typo="Typo.body2"><b>@ScheduleForEvent.StartDate.ToMyString() - @ScheduleForEvent.EndDate.ToMyString()</b></MudText>
+        <MudStack Row AlignItems="AlignItems.Center" Spacing="1">
+            <MudIcon Icon="@Icons.Material.Outlined.CalendarToday" Class="@ScheduleForEventView.ToDateClass()" Style="font-size:18px" />
+            <MudText Typo="Typo.body2"><b>@ScheduleForEventView.StartDate.ToMyString() - @ScheduleForEventView.EndDate.ToMyString()</b></MudText>
         </MudStack>
- *@
+
         @if (!string.IsNullOrWhiteSpace(ScheduleForEventView.Description))
         {
             <MudText Typo="Typo.body2">@ScheduleForEventView.Description</MudText>

@@ -29,19 +29,18 @@ namespace WebAPI.Controllers
 
             var response = new GetEventOneResponseDto();
 
-            var columns = GetRequiredColumns<EventsViewEntity>();
-            columns.Add(nameof(EventsViewEntity.Photos));
+            var columns = GetRequiredColumns<SchedulesForEventsViewEntity>();
 
             using (var conn = new SqlConnection(connectionString))
             {
-                EventsViewEntity result;
+                SchedulesForEventsViewEntity result;
 
                 var sql = $"SELECT {columns.Aggregate((a, b) => a + ", " + b)} " +
-                    $"FROM EventsView " +
-                    $"WHERE Id = @EventId";
-                result = await conn.QueryFirstOrDefaultAsync<EventsViewEntity>(sql, new { request.EventId }) ?? throw new NotFoundException("Событие не найдено!");
+                    $"FROM SchedulesForEventsView " +
+                    $"WHERE Id = @ScheduleId";
+                result = await conn.QueryFirstOrDefaultAsync<SchedulesForEventsViewEntity>(sql, new { request.ScheduleId }) ?? throw new NotFoundException("Встреча не найдена!");
 
-                response.Event = _mapper.Map<EventsViewDto>(result);
+                response.Event = _mapper.Map<SchedulesForEventsViewDto>(result);
             }
 
             return response;

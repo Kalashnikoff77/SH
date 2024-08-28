@@ -12,15 +12,64 @@
         </MudStack>
 
         <MudStack Row AlignItems="AlignItems.Center" Spacing="1">
-            <MudIcon Icon="@Icons.Material.Outlined.CalendarToday" Class="@ScheduleForEvent.ToDateClass()" Style="font-size:18px" />
-            <MudText Typo="Typo.body2"><b>@ScheduleForEvent.StartDate.ToMyString()</b></MudText>
+            <MudSelect T="SchedulesForEventsDto" @bind-Value="selectedSchedule" Variant="Variant.Text" Dense AnchorOrigin="Origin.BottomCenter" Margin="Margin.Dense">
+                @foreach (var schedule in ScheduleForEvent.Event.Schedule)
+                {
+                    <MudSelectItem Value="@schedule" />
+                }
+            </MudSelect>
         </MudStack>
 
+@*         <MudStack Row AlignItems="AlignItems.Center" Spacing="1">
+            <MudIcon Icon="@Icons.Material.Outlined.CalendarToday" Class="@ScheduleForEvent.ToDateClass()" Style="font-size:18px" />
+            <MudText Typo="Typo.body2"><b>@ScheduleForEvent.StartDate.ToMyString() - @ScheduleForEvent.EndDate.ToMyString()</b></MudText>
+        </MudStack>
+ *@
         @if (!string.IsNullOrWhiteSpace(ScheduleForEvent.Description))
         {
             <MudText Typo="Typo.body2">@ScheduleForEvent.Description</MudText>
             <MudDivider />
         }
+
+        <MudGrid Style="text-align:center">
+            @{
+                <MudItem xs="4" title="Зарегистрировано пар / Свободных мест для пар">
+                    <MudIcon Icon="@Icons.Material.Filled.PeopleAlt" Color="Color.Tertiary" /><br />
+                    @ScheduleForEvent.NumberOfRegisteredPairs()/@ScheduleForEvent.Event.MaxPairs
+                </MudItem>
+                <MudItem xs="4" title="Зарегистрировано мужчин / Свободных мест для мужчин">
+                    <MudIcon Icon="@Icons.Material.Outlined.Man" Color="Color.Primary" /><br />
+                    @ScheduleForEvent.NumberOfRegisteredMen()/@ScheduleForEvent.Event.MaxMen
+                </MudItem>
+                <MudItem xs="4" title="Зарегистрировано женщин / Свободных мест для женщин">
+                    <MudIcon Icon="@Icons.Material.Outlined.Woman" Color="Color.Error" /><br />
+                    @ScheduleForEvent.NumberOfRegisteredWomen()/@ScheduleForEvent.Event.MaxWomen
+                </MudItem>
+            }
+        </MudGrid>
+        <MudGrid Style="text-align:center">
+            @{
+                var costPair = ScheduleForEvent.CostPair == 0 ? "Бесплатно" : ScheduleForEvent.CostPair.ToString() + " руб.";
+                <MudItem xs="4">
+                    @costPair
+                </MudItem>
+                var costMan = ScheduleForEvent.CostMan == 0 ? "Бесплатно" : ScheduleForEvent.CostMan.ToString() + " руб.";
+                <MudItem xs="4">
+                    @costMan
+                </MudItem>
+                var costWoman = ScheduleForEvent.CostWoman == 0 ? "Бесплатно" : ScheduleForEvent.CostWoman.ToString() + " руб.";
+                <MudItem xs="4">
+                    @costWoman
+                </MudItem>
+            }
+        </MudGrid>
+
+        @if (CurrentState.Account != null)
+        {
+            <MudButton Color="Color.Primary" Size="Size.Small" StartIcon="@Icons.Material.Outlined.HowToReg" Variant="Variant.Outlined">Регистрация</MudButton>
+        }
+
+        <MudDivider />
 
         <MudText Typo="Typo.body2">@ScheduleForEvent.Event.Description</MudText>
     </MudStack>
@@ -28,5 +77,13 @@
 
 
 @code {
+    [CascadingParameter] public CurrentState CurrentState { get; set; } = null!;
     [Parameter] public SchedulesForEventsViewDto ScheduleForEvent { get; set; } = null!;
+
+    SchedulesForEventsDto selectedSchedule;
+
+    protected override void OnInitialized()
+    {
+        selectedSchedule = ScheduleForEvent;
+    }
 }

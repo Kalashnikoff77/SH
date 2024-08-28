@@ -42,7 +42,10 @@
                 }
             }
 
-            return dateTime.ToString("dd MMM yyyy, HH:mm");
+            if (dateTime.Year == DateTime.Now.Year)
+                return dateTime.ToString("dd MMM HH:mm");
+            else
+                return dateTime.ToString("dd MMM yyyy, HH:mm");
         }
 
 

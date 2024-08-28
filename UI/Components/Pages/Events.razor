@@ -57,7 +57,7 @@
                 {
                     <MudStack Spacing="1">
                         <MudStack Row>
-                            <MudButton OnClick="() => ShowEventCardAsync(context.Item)" Size="Size.Medium" Color="Color.Info" Variant="Variant.Text" Class="px-1 py-1">
+                            <MudButton OnClick="() => ShowEventCardAsync(context.Item)" Size="Size.Medium" Color="Color.Primary" Variant="Variant.Text" Class="px-1 py-1">
                                 <MudText Typo="Typo.body1"><b>@context.Item.Event.Name</b></MudText>
                             </MudButton>
                         </MudStack>
@@ -75,7 +75,7 @@
                                 <MudText Typo="Typo.body2">@context.Item.NumberOfRegisteredPairs()</MudText>
                             </MudStack>
                             <MudStack Row Spacing="0" Class="mr-2" title="Кол-во мужчин">
-                                <MudIcon Icon="@Icons.Material.Outlined.Man" Color="Color.Info" Style="font-size:16px" />
+                                <MudIcon Icon="@Icons.Material.Outlined.Man" Color="Color.Primary" Style="font-size:16px" />
                                 <MudText Typo="Typo.body2">@context.Item.NumberOfRegisteredMen()</MudText>
                             </MudStack>
                             <MudStack Row Spacing="0" Class="mr-2" title="Кол-во женщин">
@@ -96,7 +96,7 @@
                             <MudStack Row Wrap="Wrap.Wrap" Spacing="2" Class="mt-1">
                                 @foreach (var feature in context.Item.Features)
                                 {
-                                    <MudButton Variant="Variant.Outlined" Size="Size.Small" Color="Color.Info" Style="padding: 0 5px 0 5px; font-size:12px; text-transform:none; font-weight:500; opacity:0.6">@feature.Name</MudButton>
+                                    <MudButton Variant="Variant.Outlined" Size="Size.Small" Color="Color.Primary" Style="padding: 0 5px 0 5px; font-size:12px; text-transform:none; font-weight:500; opacity:0.6">@feature.Name</MudButton>
                                 }
                             </MudStack>
                         }
@@ -127,7 +127,7 @@
                     </MudCarousel>
                     @if (CurrentState.Account != null)
                     {
-                        <MudButton Color="Color.Info" Size="Size.Small" StartIcon="@Icons.Material.Outlined.HowToReg" Variant="Variant.Outlined">Регистрация</MudButton>
+                        <MudButton Color="Color.Primary" Size="Size.Small" StartIcon="@Icons.Material.Outlined.HowToReg" Variant="Variant.Outlined">Регистрация</MudButton>
                     }
                 </MudStack>
             </MudItem>

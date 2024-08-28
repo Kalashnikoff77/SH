@@ -10,5 +10,10 @@
         public int CostMan { get; set; }
         public int CostWoman { get; set; }
         public int CostPair { get; set; }
+
+        public override string ToString()
+        {
+            return $"{StartDate} - {EndDate}";
+        }
     }
 }

@@ -13,7 +13,7 @@
 
             <MudItem sm="6" xs="12" Class="pt-0">
                 <MudRadioGroup Class="mt-sm-5 mt-xs-1" @bind-Value="UserCopy.Gender">
-                    <MudRadio Value="0" Color="Color.Info">Муж.</MudRadio>
+                    <MudRadio Value="0" Color="Color.Primary">Муж.</MudRadio>
                     <MudRadio Value="1" Color="Color.Secondary">Жен.</MudRadio>
                 </MudRadioGroup>
             </MudItem>
@@ -48,7 +48,7 @@
     </DialogContent>
 
     <DialogActions>
-        <MudButton Color="Color.Info" Disabled="!IsFormValid" Variant="Variant.Filled" StartIcon="@StartIcon" Size="Size.Small" OnClick="Submit">@ButtonSubmitText</MudButton>
+        <MudButton Color="Color.Primary" Disabled="!IsFormValid" Variant="Variant.Filled" StartIcon="@StartIcon" Size="Size.Small" OnClick="Submit">@ButtonSubmitText</MudButton>
         <MudButton Color="Color.Error" StartIcon="@Icons.Material.Outlined.Close" OnClick="Cancel">Отмена</MudButton>
     </DialogActions>
 </MudDialog>

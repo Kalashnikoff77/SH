@@ -11,15 +11,15 @@
         <MudTextField @bind-Value="loginRequestDto.Email" Validation="@(new Func<string, string?>(EmailValidator))" AdornmentIcon="@Icons.Material.Outlined.Mail" Adornment="Adornment.End" AdornmentColor="@EmailIconColor" Label="Email" Margin="Margin.Normal" Variant="Variant.Text" />
         <MudTextField @bind-Value="loginRequestDto.Password" Validation="@(new Func<string, string?>(PasswordValidator))" AdornmentIcon="@Icons.Material.Outlined.Lock" Adornment="Adornment.End" AdornmentColor="@PasswordIconColor" Label="Пароль" Margin="Margin.Normal" Variant="Variant.Text" />
         <MudStack Spacing="0" Justify="Justify.Center" AlignItems="AlignItems.Center">
-            <MudCheckBox @bind-Value="loginRequestDto.Remember" Label="Запомнить меня" Color="Color.Info" Class="mr-4" />
-            <MudButton ButtonType="ButtonType.Submit" Color="Color.Info" Variant="Variant.Filled" OnClick="OnLoginAsync" Style="width:180px">Войти</MudButton>
+            <MudCheckBox @bind-Value="loginRequestDto.Remember" Label="Запомнить меня" Color="Color.Primary" Class="mr-4" />
+            <MudButton ButtonType="ButtonType.Submit" Color="Color.Primary" Variant="Variant.Filled" OnClick="OnLoginAsync" Style="width:180px">Войти</MudButton>
         </MudStack>
     </MudStack>
 
     <MudDivider Class="mt-8" />
 
     <MudStack Row="true" Justify="Justify.SpaceBetween" Class="mt-2">
-        <MudButton OnClick="@(() => Navigation.NavigateTo("/register"))" ButtonType="ButtonType.Button" Color="Color.Info" Size="Size.Small" Variant="Variant.Text">
+        <MudButton OnClick="@(() => Navigation.NavigateTo("/register"))" ButtonType="ButtonType.Button" Color="Color.Primary" Size="Size.Small" Variant="Variant.Text">
             <MudText Typo="Typo.body2">Регистрация</MudText>
         </MudButton>
         <MudButton ButtonType="ButtonType.Button" Color="Color.Secondary" Size="Size.Small" Variant="Variant.Text">

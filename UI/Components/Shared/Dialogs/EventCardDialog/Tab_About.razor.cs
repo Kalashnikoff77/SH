@@ -33,5 +33,12 @@ namespace UI.Components.Shared.Dialogs.EventCardDialog
             var eventResponse = await _repoGetEvent.HttpPostAsync(new GetEventOneRequestDto() { ScheduleId = items.First().Id });
             ScheduleForEventView = eventResponse.Response.Event;
         }
+
+        async Task OnScheduleDateChangedAsync(DateTime? date)
+        {
+            var sch = ScheduleForEventView.Event.Schedule.Select(s => s).Where(w => w.StartDate.Date == date).First();
+            var eventResponse = await _repoGetEvent.HttpPostAsync(new GetEventOneRequestDto() { ScheduleId = sch.Id });
+            ScheduleForEventView = eventResponse.Response.Event;
+        }
     }
 }

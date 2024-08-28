@@ -11,7 +11,15 @@
             <MudText Typo="Typo.body2">@ScheduleForEventView.Event.ToRegionString() (@ScheduleForEventView.Event.Address)</MudText>
         </MudStack>
 
-        <MudStack Row AlignItems="AlignItems.Center" Spacing="1">
+        @{
+            var _minDate = ScheduleForEventView.Event?.Schedule?.Select(s => s.StartDate).Min().Date;
+            var _maxDate = ScheduleForEventView.Event?.Schedule?.Select(s => s.StartDate).Max().Date;
+            <MudStack Row AlignItems="AlignItems.Center" Spacing="1">
+                <MudDatePicker DateChanged="OnScheduleDateChangedAsync" PickerVariant="PickerVariant.Dialog" Date="selectedSchedule.StartDate" MinDate="_minDate" MaxDate="_maxDate" ShowToolbar="false" AdornmentColor="Color.Success" Variant="Variant.Text" Margin="Margin.Dense" HelperText="Расписание" />
+            </MudStack>
+        }
+
+@*         <MudStack Row AlignItems="AlignItems.Center" Spacing="1">
             <MudSelect T="SchedulesForEventsDto" Label="Расписание" AdornmentIcon="@Icons.Material.Outlined.CalendarMonth" @bind-Value="selectedSchedule" SelectedValuesChanged="OnScheduleChangedAsync" Variant="Variant.Outlined" Dense AnchorOrigin="Origin.BottomCenter" Margin="Margin.Dense">
                 @foreach (var schedule in schedules)
                 {
@@ -19,10 +27,9 @@
                 }
             </MudSelect>
         </MudStack>
-
+ *@
         <MudStack Row AlignItems="AlignItems.Center" Spacing="1">
-            <MudText Typo="Typo.body2" Class="@ScheduleForEventView.ToDateClass()">Статус мероприятия</MudText>
-            @* <MudIcon Icon="@Icons.Material.Outlined.CalendarToday" Class="@ScheduleForEventView.ToDateClass()" Style="font-size:18px" /> *@
+            <MudIcon Icon="@Icons.Material.Outlined.CalendarToday" Class="@ScheduleForEventView.ToDateClass()" Style="font-size:18px" />
             <MudText Typo="Typo.body2"><b>@ScheduleForEventView.StartDate.ToMyString() - @ScheduleForEventView.EndDate.ToMyString()</b></MudText>
         </MudStack>
 

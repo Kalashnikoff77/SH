@@ -19,7 +19,7 @@ namespace UI.Components.Shared.Dialogs.EventCardDialog
             if (ScheduleForEventView.Event?.Schedule != null)
             {
                 schedules = ScheduleForEventView.Event.Schedule.Select(s => s);     // Получим массив расписания по событию
-                selectedSchedule = schedules.First(s => s.Id == ScheduleForEventView.Id);   // Из массива получим конкертное расписание передаваемой встречи
+                selectedSchedule = schedules.First(s => s.Id == ScheduleForEventView.Id);   // Из массива получим конкретное расписание передаваемой встречи
             }
         }
 

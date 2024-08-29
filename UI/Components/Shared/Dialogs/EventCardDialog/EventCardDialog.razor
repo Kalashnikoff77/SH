@@ -39,7 +39,7 @@
         </DialogContent>
 
         <DialogActions>
-            <MudButton Color="Color.Primary" OnClick="Close">Закрыть</MudButton>
+            <MudButton Color="Color.Primary" OnClick="() => MudDialog.Close(DialogResult.Ok(true))">Закрыть</MudButton>
         </DialogActions>
     </MudDialog>
 }

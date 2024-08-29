@@ -19,8 +19,6 @@ namespace UI.Components.Shared.Dialogs.EventCardDialog
 
         MudCarousel<PhotosForEventsDto> Carousel = null!;
 
-        void Close() => MudDialog.Close(DialogResult.Ok(true));
-
         async Task ScheduleChangedAsync(int scheduleId)
         {
             var eventResponse = await _repoGetEvent.HttpPostAsync(new GetEventOneRequestDto() { ScheduleId = scheduleId });

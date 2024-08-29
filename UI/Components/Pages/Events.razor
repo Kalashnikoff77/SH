@@ -65,7 +65,7 @@
                             <MudIcon Icon="@Icons.Material.Outlined.LocationOn" Style="font-size:19px" />
                             <MudText Typo="Typo.body2">@context.Item.Event.ToRegionString()</MudText>
                         </MudStack>
-                        <MudStack Row AlignItems="AlignItems.Center" Spacing="0" Title="Расписание">
+                        <MudStack Row AlignItems="AlignItems.Center" Spacing="0" Title="Дата и время начала">
                             <MudIcon Icon="@Icons.Material.Outlined.CalendarToday" Class="@context.Item.ToDateClass()" Style="font-size:18px" />
                             <MudText Typo="Typo.body2" Class="mt-1 ml-1">@context.Item.StartDate.ToMyString()</MudText>
                         </MudStack>
@@ -138,7 +138,7 @@
                         <MudText Typo="Typo.subtitle2" Class="@context.Item.ToDateClass()">@context.Item.ToStartEndString()</MudText>
                         @if (context.Item.Event?.Schedule?.Count() > 1)
                         {
-                            <MudIcon Icon="@Icons.Material.Outlined.CalendarMonth" Title="Список всех аналогичных мероприятий" Style="font-size: 20px" Class="mb-1" />
+                            <MudIconButton OnClick="() => ShowEventCardAsync(context.Item)" Icon="@Icons.Material.Outlined.CalendarMonth" Size="Size.Small" Title="Список всех аналогичных мероприятий" Class="mb-1" />
                         }
                     </MudStack>
 

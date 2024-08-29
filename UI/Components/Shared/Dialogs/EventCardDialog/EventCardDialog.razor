@@ -22,24 +22,24 @@
             </MudStack>
 
             @* Закладки *@
-            <MudTabs Outlined="true" MinimumTabWidth="120px" Rounded="true" ApplyEffectsToContainer="true" PanelClass="pa-6">
-                <MudTabPanel Icon="@Icons.Material.Filled.Info">
-                    <Tab_About ScheduleId="@ScheduleId" ScheduleIdChangedCallback="ScheduleIdChanged" />
+            <MudTabs Outlined Centered Rounded ApplyEffectsToContainer PanelClass="pa-6">
+                <MudTabPanel Text="Общее">
+                    <Tab_About ScheduleForEventView="@ScheduleForEventView" ScheduleChangedAsyncCallback="ScheduleChangedAsync" />
                 </MudTabPanel>
 
-                <MudTabPanel Icon="@Icons.Material.Filled.Message" BadgeData="@ScheduleId" BadgeColor="Color.Info">
-                    <Tab_Messages ScheduleId="@ScheduleId" />
+                <MudTabPanel Text="Общение" BadgeData="@ScheduleForEventView.Id" BadgeColor="Color.Info">
+                    <Tab_Messages ScheduleForEventView="@ScheduleForEventView" />
                 </MudTabPanel>
 
-                <MudTabPanel Icon="@Icons.Material.Filled.Group">
-                    <Tab_Accounts ScheduleId="@ScheduleId" />
+                <MudTabPanel Text="Гости">
+                    <Tab_Accounts ScheduleForEventView="@ScheduleForEventView" />
                 </MudTabPanel>
             </MudTabs>
 
         </DialogContent>
 
         <DialogActions>
-            <MudButton Color="Color.Primary" OnClick="Submit">Закрыть</MudButton>
+            <MudButton Color="Color.Primary" OnClick="Close">Закрыть</MudButton>
         </DialogActions>
     </MudDialog>
 }

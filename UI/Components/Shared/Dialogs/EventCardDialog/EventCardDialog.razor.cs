@@ -13,24 +13,18 @@ namespace UI.Components.Shared.Dialogs.EventCardDialog
     {
         [CascadingParameter] CurrentState CurrentState { get; set; } = null!;
         [CascadingParameter] MudDialogInstance MudDialog { get; set; } = null!;
-        [Parameter, EditorRequired] public int ScheduleId { get; set; }
+        [Parameter, EditorRequired] public SchedulesForEventsViewDto ScheduleForEventView { get; set; } = null!;
 
         [Inject] IRepository<GetEventOneRequestDto, GetEventOneResponseDto> _repoGetEvent { get; set; } = null!;
-        SchedulesForEventsViewDto ScheduleForEventView { get; set; } = null!;
 
         MudCarousel<PhotosForEventsDto> Carousel = null!;
 
-        protected override async Task OnParametersSetAsync()
+        void Close() => MudDialog.Close(DialogResult.Ok(true));
+
+        async Task ScheduleChangedAsync(int scheduleId)
         {
-            var eventResponse = await _repoGetEvent.HttpPostAsync(new GetEventOneRequestDto() { ScheduleId = ScheduleId });
+            var eventResponse = await _repoGetEvent.HttpPostAsync(new GetEventOneRequestDto() { ScheduleId = scheduleId });
             ScheduleForEventView = eventResponse.Response.Event;
-        }
-
-        void Submit() => MudDialog.Close(DialogResult.Ok(true));
-
-        void ScheduleIdChanged(int scheduleId)
-        {
-            ScheduleId = scheduleId;
         }
     }
 }

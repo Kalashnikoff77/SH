@@ -21,7 +21,7 @@
     @bind-Value="selectedSchedule" SelectedValuesChanged="OnScheduleChangedAsync"
     *@
         <MudStack Row AlignItems="AlignItems.Center" Spacing="1">
-            <MudSelect T="SchedulesForEventsDto" Value="selectedSchedule" ValueChanged="OnScheduleChanged" Variant="Variant.Outlined" Dense AnchorOrigin="Origin.BottomCenter" Margin="Margin.Dense" Label="Расписание" AdornmentIcon="@Icons.Material.Outlined.CalendarMonth">
+            <MudSelect T="SchedulesForEventsDto" Value="selectedSchedule" ValueChanged="OnScheduleChangedAsync" Variant="Variant.Outlined" Dense AnchorOrigin="Origin.BottomCenter" Margin="Margin.Dense" Label="Расписание" AdornmentIcon="@Icons.Material.Outlined.CalendarMonth">
                 @foreach (var schedule in schedules)
                 {
                     <MudSelectItem Value="@schedule" />

@@ -92,7 +92,7 @@ namespace UI.Components.Pages
 
             var dialogParams = new DialogParameters<EventCardDialog>
             {
-                { x => x.ScheduleId, schedule.Id }
+                { x => x.ScheduleForEventView, schedule }
             };
             return Dialog.ShowAsync<EventCardDialog>(schedule.Event?.Name, dialogParams, dialogOptions);
         }

@@ -1,7 +1,7 @@
 ﻿<MudText>Общение</MudText>
 
-<p>@ScheduleId</p>
+<p>@ScheduleForEventView.Id</p>
 
 @code {
-    [Parameter, EditorRequired] public int ScheduleId { get; set; }
+    [Parameter, EditorRequired] public SchedulesForEventsViewDto ScheduleForEventView { get; set; } = null!;
 }

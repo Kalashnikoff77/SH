@@ -1,4 +1,5 @@
-﻿using Common.Dto.Views;
+﻿using Common.Dto;
+using Common.Dto.Views;
 
 namespace Common.Extensions
 {
@@ -25,7 +26,7 @@ namespace Common.Extensions
         }
 
 
-        public static string ToDateClass(this SchedulesForEventsViewDto sch)
+        public static string ToDateClass(this SchedulesForEventsDto sch)
         {
             string dateClass = null!;
 

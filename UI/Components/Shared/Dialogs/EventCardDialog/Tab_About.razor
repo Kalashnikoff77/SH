@@ -1,4 +1,4 @@
-﻿@if (ScheduleForEventView != null && ScheduleForEventView.Event != null)
+﻿@if (ScheduleForEventView?.Event != null)
 {
     <MudStack>
         <MudStack Row AlignItems="AlignItems.Center">
@@ -11,31 +11,32 @@
             <MudText Typo="Typo.body2">@ScheduleForEventView.Event.ToRegionString() (@ScheduleForEventView.Event.Address)</MudText>
         </MudStack>
 
-        @{
+@*         @{
             var _minDate = ScheduleForEventView.Event?.Schedule?.Select(s => s.StartDate).Min().Date;
             var _maxDate = ScheduleForEventView.Event?.Schedule?.Select(s => s.StartDate).Max().Date;
             <MudStack Row AlignItems="AlignItems.Center" Spacing="1">
                 <MudDatePicker DateChanged="OnScheduleDateChangedAsync" PickerVariant="PickerVariant.Dialog" Date="selectedSchedule.StartDate" MinDate="_minDate" MaxDate="_maxDate" ShowToolbar="false" AdornmentColor="Color.Success" Variant="Variant.Text" Margin="Margin.Dense" HelperText="Расписание" />
             </MudStack>
         }
-
-@*         <MudStack Row AlignItems="AlignItems.Center" Spacing="1">
-            <MudSelect T="SchedulesForEventsDto" Label="Расписание" AdornmentIcon="@Icons.Material.Outlined.CalendarMonth" @bind-Value="selectedSchedule" SelectedValuesChanged="OnScheduleChangedAsync" Variant="Variant.Outlined" Dense AnchorOrigin="Origin.BottomCenter" Margin="Margin.Dense">
+    @bind-Value="selectedSchedule" SelectedValuesChanged="OnScheduleChangedAsync"
+    *@
+        <MudStack Row AlignItems="AlignItems.Center" Spacing="1">
+            <MudSelect T="SchedulesForEventsDto" Value="selectedSchedule" ValueChanged="OnScheduleChanged" Variant="Variant.Outlined" Dense AnchorOrigin="Origin.BottomCenter" Margin="Margin.Dense" Label="Расписание" AdornmentIcon="@Icons.Material.Outlined.CalendarMonth">
                 @foreach (var schedule in schedules)
                 {
                     <MudSelectItem Value="@schedule" />
                 }
             </MudSelect>
         </MudStack>
- *@
+
         <MudStack Row AlignItems="AlignItems.Center" Spacing="1">
-            <MudIcon Icon="@Icons.Material.Outlined.CalendarToday" Class="@ScheduleForEventView.ToDateClass()" Style="font-size:18px" />
-            <MudText Typo="Typo.body2"><b>@ScheduleForEventView.ToStartEndString()</b></MudText>
+            <MudIcon Icon="@Icons.Material.Outlined.CalendarToday" Class="@selectedSchedule.ToDateClass()" Style="font-size:18px" />
+            <MudText Typo="Typo.body2"><b>@selectedSchedule.ToStartEndString()</b></MudText>
         </MudStack>
 
-        @if (!string.IsNullOrWhiteSpace(ScheduleForEventView.Description))
+        @if (!string.IsNullOrWhiteSpace(selectedSchedule.Description))
         {
-            <MudText Typo="Typo.body2">@ScheduleForEventView.Description</MudText>
+            <MudText Typo="Typo.body2">@selectedSchedule.Description</MudText>
             <MudDivider />
         }
 
@@ -57,15 +58,15 @@
         </MudGrid>
         <MudGrid Style="text-align:center">
             @{
-                var costPair = ScheduleForEventView.CostPair == 0 ? "Бесплатно" : ScheduleForEventView.CostPair.ToString() + " руб.";
+                var costPair = selectedSchedule.CostPair == 0 ? "Бесплатно" : selectedSchedule.CostPair.ToString() + " руб.";
                 <MudItem xs="4">
                     @costPair
                 </MudItem>
-                var costMan = ScheduleForEventView.CostMan == 0 ? "Бесплатно" : ScheduleForEventView.CostMan.ToString() + " руб.";
+                var costMan = selectedSchedule.CostMan == 0 ? "Бесплатно" : selectedSchedule.CostMan.ToString() + " руб.";
                 <MudItem xs="4">
                     @costMan
                 </MudItem>
-                var costWoman = ScheduleForEventView.CostWoman == 0 ? "Бесплатно" : ScheduleForEventView.CostWoman.ToString() + " руб.";
+                var costWoman = selectedSchedule.CostWoman == 0 ? "Бесплатно" : selectedSchedule.CostWoman.ToString() + " руб.";
                 <MudItem xs="4">
                     @costWoman
                 </MudItem>

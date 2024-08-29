@@ -1,44 +1,56 @@
-﻿using Common.Dto.Views;
-using Common.Dto;
-using Common.Models.States;
-using Microsoft.AspNetCore.Components;
+﻿using Common.Dto;
 using Common.Dto.Requests;
 using Common.Dto.Responses;
+using Common.Dto.Views;
+using Common.Models.States;
 using Common.Repository;
+using Microsoft.AspNetCore.Components;
 
 namespace UI.Components.Shared.Dialogs.EventCardDialog
 {
     public partial class Tab_About
     {
         [CascadingParameter] public CurrentState CurrentState { get; set; } = null!;
-        [Parameter] public SchedulesForEventsViewDto ScheduleForEventView { get; set; } = null!;
+        [Parameter, EditorRequired] public int ScheduleId { get; set; }
+        [Parameter, EditorRequired] public Action<int> ScheduleIdChangedCallback { get; set; } = null!;
 
         [Inject] IRepository<GetEventOneRequestDto, GetEventOneResponseDto> _repoGetEvent { get; set; } = null!;
 
+        SchedulesForEventsViewDto ScheduleForEventView { get; set; } = null!;
+        SchedulesForEventsDto selectedSchedule { get; set; } = null!;
         IEnumerable<SchedulesForEventsDto> schedules { get; set; } = null!;
 
-        SchedulesForEventsDto selectedSchedule { get; set; } = null!;
-
-        protected override void OnInitialized()
+        protected override async Task OnInitializedAsync()
         {
+            var eventResponse = await _repoGetEvent.HttpPostAsync(new GetEventOneRequestDto() { ScheduleId = ScheduleId });
+            ScheduleForEventView = eventResponse.Response.Event;
+
             if (ScheduleForEventView.Event?.Schedule != null)
             {
-                schedules = ScheduleForEventView.Event.Schedule.Select(s => s);
-                selectedSchedule = schedules.First(w => w.Id == ScheduleForEventView.Id);
+                schedules = ScheduleForEventView.Event.Schedule.Select(s => s);     // Получим массив расписания по событию
+                selectedSchedule = schedules.First(s => s.Id == ScheduleForEventView.Id);   // Из массива получим конкертное расписание передаваемой встречи
             }
         }
 
-        async Task OnScheduleChangedAsync(IEnumerable<SchedulesForEventsDto> items)
+        void OnScheduleChanged(SchedulesForEventsDto item) 
         {
-            var eventResponse = await _repoGetEvent.HttpPostAsync(new GetEventOneRequestDto() { ScheduleId = items.First().Id });
-            ScheduleForEventView = eventResponse.Response.Event;
+            selectedSchedule = schedules.FirstOrDefault(s => s.Id == item.Id) ?? selectedSchedule;
+            ScheduleIdChangedCallback.Invoke(item.Id);
         }
 
-        async Task OnScheduleDateChangedAsync(DateTime? date)
-        {
-            var sch = ScheduleForEventView.Event.Schedule.Select(s => s).Where(w => w.StartDate.Date == date).First();
-            var eventResponse = await _repoGetEvent.HttpPostAsync(new GetEventOneRequestDto() { ScheduleId = sch.Id });
-            ScheduleForEventView = eventResponse.Response.Event;
-        }
+
+        //async Task OnScheduleChangedAsync(IEnumerable<SchedulesForEventsDto> items)
+        //{
+        //    var eventResponse = await _repoGetEvent.HttpPostAsync(new GetEventOneRequestDto() { ScheduleId = items.First().Id });
+        //    ScheduleForEventView = eventResponse.Response.Event;
+        //}
+
+        // Тестирую календарик с этим методом
+        //async Task OnScheduleDateChangedAsync(DateTime? date)
+        //{
+        //    var sch = ScheduleForEventView.Event.Schedule.Select(s => s).Where(w => w.StartDate.Date == date).First();
+        //    var eventResponse = await _repoGetEvent.HttpPostAsync(new GetEventOneRequestDto() { ScheduleId = sch.Id });
+        //    ScheduleForEventView = eventResponse.Response.Event;
+        //}
     }
 }

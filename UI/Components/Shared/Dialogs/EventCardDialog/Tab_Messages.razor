@@ -1,3 +1,7 @@
-﻿@code {
-    [Parameter] public SchedulesForEventsViewDto ScheduleForEvent { get; set; } = null!;
+﻿<MudText>Общение</MudText>
+
+<p>@ScheduleId</p>
+
+@code {
+    [Parameter, EditorRequired] public int ScheduleId { get; set; }
 }

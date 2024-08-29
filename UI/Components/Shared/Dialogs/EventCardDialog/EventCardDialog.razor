@@ -1,12 +1,12 @@
-﻿@if (ScheduleForEvent.Event != null)
+﻿@if (ScheduleForEventView?.Event != null)
 {
     <MudDialog Style="width:550px; min-width:360px">
         <DialogContent>
             <MudStack AlignItems="AlignItems.Center" Class="mb-3">
                 <MudCarousel @ref="Carousel" TData="PhotosForEventsDto" ShowArrows ShowBullets AutoCycle Style="width:300px; height:400px">
-                    @if (ScheduleForEvent.Event.Photos != null)
+                    @if (ScheduleForEventView.Event.Photos != null)
                     {
-                        @foreach (var photo in ScheduleForEvent.Event.Photos)
+                        @foreach (var photo in ScheduleForEventView.Event.Photos)
                         {
                             <MudCarouselItem Transition="Transition.Slide">
                                 <MudImage Src=@($"/images/EventsPhotos/{photo.EventId}/{photo.Guid}/{EnumImageSize.s450x600}.jpg") Fluid="true" Style="border-radius:2%" />
@@ -22,17 +22,17 @@
             </MudStack>
 
             @* Закладки *@
-            <MudTabs Outlined="true" Rounded="true" ApplyEffectsToContainer="true" AlwaysShowScrollButtons="true" PanelClass="pa-6">
-                <MudTabPanel Text="О встрече" Icon="@Icons.Material.Filled.Info">
-                    <Tab_About ScheduleForEventView="@ScheduleForEvent" />
+            <MudTabs Outlined="true" MinimumTabWidth="120px" Rounded="true" ApplyEffectsToContainer="true" PanelClass="pa-6">
+                <MudTabPanel Icon="@Icons.Material.Filled.Info">
+                    <Tab_About ScheduleId="@ScheduleId" ScheduleIdChangedCallback="ScheduleIdChanged" />
                 </MudTabPanel>
 
-                <MudTabPanel Text="Обсуждение" Icon="@Icons.Material.Filled.Message">
-                    <Tab_Messages ScheduleForEvent="@ScheduleForEvent" />
+                <MudTabPanel Icon="@Icons.Material.Filled.Message" BadgeData='"25"' BadgeColor="Color.Info">
+                    <Tab_Messages ScheduleId="@ScheduleId" />
                 </MudTabPanel>
 
-                <MudTabPanel Text="Гости" Icon="@Icons.Material.Filled.Group">
-                    <Tab_Accounts ScheduleForEvent="@ScheduleForEvent" />
+                <MudTabPanel Icon="@Icons.Material.Filled.Group">
+                    <Tab_Accounts ScheduleId="@ScheduleId" />
                 </MudTabPanel>
             </MudTabs>
 

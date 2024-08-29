@@ -86,15 +86,15 @@ namespace UI.Components.Pages
         }
 
 
-        Task ShowEventCardAsync(SchedulesForEventsViewDto Event)
+        Task ShowEventCardAsync(SchedulesForEventsViewDto schedule)
         {
             DialogOptions dialogOptions = new() { CloseOnEscapeKey = true, CloseButton = true };
 
             var dialogParams = new DialogParameters<EventCardDialog>
             {
-                { x => x.ScheduleForEvent, Event }
+                { x => x.ScheduleId, schedule.Id }
             };
-            return Dialog.ShowAsync<EventCardDialog>(Event.Event?.Name, dialogParams, dialogOptions);
+            return Dialog.ShowAsync<EventCardDialog>(schedule.Event?.Name, dialogParams, dialogOptions);
         }
 
     }

@@ -16,6 +16,6 @@ namespace Common.Dto
         /// <summary>
         /// Используется в Tab_About.razor для корректного вывода даты и времени
         /// </summary>
-        public override string ToString() => $"{StartDate.ToMyString()} - {EndDate.ToMyString()}";
+        public override string ToString() => StartDate.ToMyString();
     }
 }

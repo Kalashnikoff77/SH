@@ -30,7 +30,7 @@
  *@
         <MudStack Row AlignItems="AlignItems.Center" Spacing="1">
             <MudIcon Icon="@Icons.Material.Outlined.CalendarToday" Class="@ScheduleForEventView.ToDateClass()" Style="font-size:18px" />
-            <MudText Typo="Typo.body2"><b>@ScheduleForEventView.StartDate.ToMyString() - @ScheduleForEventView.EndDate.ToMyString()</b></MudText>
+            <MudText Typo="Typo.body2"><b>@ScheduleForEventView.ToStartEndString()</b></MudText>
         </MudStack>
 
         @if (!string.IsNullOrWhiteSpace(ScheduleForEventView.Description))

@@ -3,29 +3,31 @@
     public static class DateTimeExtension
     {
         /// <summary>
-        /// Конвертация даты и времени в слова "сегодня, 10:15", "завтра, 20:00", "вчера, 09:45" или "27 дек. 2023, 13:00"
+        /// Конвертация даты и времени в слова "сегодня 10:15", "завтра 20:00", "вчера 09:45" или "пн, 27 дек. 2023 13:00"
         /// </summary>
         public static string ToMyString(this DateTime dateTime)
         {
+            //dateTime = DateTime.Parse("31.08.2024 18:00");
+
             var time = dateTime.ToString("HH:mm");
             var now = DateTime.Now;
             var yesterday = now.AddDays(-1);
             var tomorrow = now.AddDays(1);
             var aftetomorrow = now.AddDays(2);
 
-            if (dateTime > now)
+            if (dateTime.Date > now.Date)
             {
                 if (dateTime < now.AddMinutes(1))
                     return "прямо сейчас";
 
-                if (dateTime < now.AddDays(2))
+                if (dateTime.Date <= now.AddDays(2).Date)
                 {
-                    if (dateTime.Day == now.Day)
-                        return $"сегодня, {time}";
-                    if (dateTime.Day == tomorrow.Day)
-                        return $"завтра, {time}";
-                    if (dateTime.Day == aftetomorrow.Day)
-                        return $"послезавтра, {time}";
+                    if (dateTime.Date == now.Date)
+                        return $"сегодня {time}";
+                    if (dateTime.Date == tomorrow.Date)
+                        return $"завтра {time}";
+                    if (dateTime.Date == aftetomorrow.Date)
+                        return $"послезавтра {time}";
                 }
             }
             else
@@ -33,21 +35,20 @@
                 if (dateTime > now.AddMinutes(-1))
                     return "только что";
 
-                if (dateTime > now.AddDays(-2))
+                if (dateTime.Date > now.AddDays(-2).Date)
                 {
-                    if (dateTime.Day == now.Day)
-                        return $"сегодня, {time}";
-                    if (dateTime.Day == yesterday.Day)
-                        return $"вчера, {time}";
+                    if (dateTime.Date == now.Date)
+                        return $"сегодня {time}";
+                    if (dateTime.Date == yesterday.Date)
+                        return $"вчера {time}";
                 }
             }
 
             if (dateTime.Year == DateTime.Now.Year)
-                return dateTime.ToString("dd MMM HH:mm");
+                return dateTime.ToString("ddd, dd MMM HH:mm");
             else
-                return dateTime.ToString("dd MMM yyyy, HH:mm");
+                return dateTime.ToString("ddd, dd MMM yyyy, HH:mm");
         }
-
 
         /// <summary>
         /// Конвертация даты и времени в прошлом в короткие слова "13:45", "вчера", "1 мес" или "давно"
@@ -59,14 +60,14 @@
             var yesterday = now.AddDays(-1);
             var tomorrow = now.AddDays(1);
 
-            if (dateTime > now.AddMinutes(-1))
+            if (dateTime.Date > now.AddMinutes(-1))
                 return "сейчас";
 
-            if (dateTime > now.AddDays(-2))
+            if (dateTime.Date > now.AddDays(-2))
             {
-                if (dateTime.Day == now.Day)
+                if (dateTime.Date == now.Date)
                     return time;
-                if (dateTime.Day == yesterday.Day)
+                if (dateTime.Date == yesterday.Date)
                     return "вчера";
             }
 

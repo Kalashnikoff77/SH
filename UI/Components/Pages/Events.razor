@@ -135,7 +135,7 @@
                     <MudText Typo="Typo.subtitle2"><b>@context.Item.Event?.ToRegionString().</b><br />@context.Item.Event?.Address</MudText>
 
                     <MudStack Row AlignItems="AlignItems.Center">
-                        <MudText Typo="Typo.subtitle2" Class="@context.Item.ToDateClass()">@context.Item.StartDate.ToMyString() - @context.Item.EndDate.ToMyString()</MudText>
+                        <MudText Typo="Typo.subtitle2" Class="@context.Item.ToDateClass()">@context.Item.ToStartEndString()</MudText>
                         @if (context.Item.Event?.Schedule?.Count() > 1)
                         {
                             <MudIcon Icon="@Icons.Material.Outlined.CalendarMonth" Title="Список всех аналогичных мероприятий" Style="font-size: 20px" Class="mb-1" />

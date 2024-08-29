@@ -12,7 +12,7 @@ namespace UI.Components.Shared.Dialogs.EventCardDialog
     {
         [CascadingParameter] public CurrentState CurrentState { get; set; } = null!;
         [Parameter, EditorRequired] public int ScheduleId { get; set; }
-        [Parameter, EditorRequired] public Action<int> ScheduleIdChangedCallback { get; set; } = null!;
+        [Parameter, EditorRequired] public EventCallback<int> ScheduleIdChangedCallback { get; set; }
 
         [Inject] IRepository<GetEventOneRequestDto, GetEventOneResponseDto> _repoGetEvent { get; set; } = null!;
 
@@ -32,10 +32,10 @@ namespace UI.Components.Shared.Dialogs.EventCardDialog
             }
         }
 
-        void OnScheduleChanged(SchedulesForEventsDto item) 
+        async Task OnScheduleChanged(SchedulesForEventsDto item) 
         {
             selectedSchedule = schedules.FirstOrDefault(s => s.Id == item.Id) ?? selectedSchedule;
-            ScheduleIdChangedCallback.Invoke(item.Id);
+            await ScheduleIdChangedCallback.InvokeAsync(item.Id);
         }
 
 

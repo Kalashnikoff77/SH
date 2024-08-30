@@ -42,69 +42,62 @@
     <Columns>
         <HierarchyColumn />
 
-        <TemplateColumn CellStyle="max-width:105px">
-            <CellTemplate>
-                <MudStack>
-                    <ImageEvent Event="context.Item.Event" Size="EnumImageSize.s150x150" Title="@context.Item.Event?.Name" Style="border-radius:10%; width:120px; height:120px" />
-                </MudStack>
-            </CellTemplate>
-        </TemplateColumn>
-
-        <TemplateColumn CellStyle="text-align:start">
-            <CellTemplate>
-                @if (context.Item.Event != null)
-                {
-                    <MudStack Spacing="1">
-                        <MudStack Row>
-                            <MudButton OnClick="() => ShowEventCardAsync(context.Item)" Size="Size.Medium" Color="Color.Primary" Variant="Variant.Text" Class="px-1 py-1">
-                                <MudText Typo="Typo.body1"><b>@context.Item.Event.Name</b></MudText>
-                            </MudButton>
-                        </MudStack>
-                        <MudStack Row AlignItems="AlignItems.Center" Spacing="1">
-                            <MudIcon Icon="@Icons.Material.Outlined.LocationOn" Style="font-size:19px" />
-                            <MudText Typo="Typo.body2">@context.Item.Event.ToRegionString()</MudText>
-                        </MudStack>
-                        <MudStack Row AlignItems="AlignItems.Center" Spacing="0" Title="Дата и время начала">
-                            <MudIcon Icon="@Icons.Material.Outlined.CalendarToday" Class="@context.Item.ToDateClass()" Style="font-size:18px" />
-                            <MudText Typo="Typo.body2" Class="mt-1 ml-1">@context.Item.StartDate.ToMyString()</MudText>
-                        </MudStack>
-                        <MudStack Row Spacing="0">
-                            <MudStack Row Spacing="0" Style="margin-left:1px" Class="mr-2" title="Кол-во пар">
-                                <MudIcon Icon="@Icons.Material.Filled.PeopleAlt" Color="Color.Tertiary" Style="font-size:16px" Class="mr-1" />
-                                <MudText Typo="Typo.body2">@context.Item.NumberOfRegisteredPairs()</MudText>
-                            </MudStack>
-                            <MudStack Row Spacing="0" Class="mr-2" title="Кол-во мужчин">
-                                <MudIcon Icon="@Icons.Material.Outlined.Man" Color="Color.Primary" Style="font-size:16px" />
-                                <MudText Typo="Typo.body2">@context.Item.NumberOfRegisteredMen()</MudText>
-                            </MudStack>
-                            <MudStack Row Spacing="0" Class="mr-2" title="Кол-во женщин">
-                                <MudIcon Icon="@Icons.Material.Outlined.Woman" Color="Color.Error" Style="font-size:16px" />
-                                <MudText Typo="Typo.body2">@context.Item.NumberOfRegisteredWomen()</MudText>
-                            </MudStack>
-                            <MudStack Row Spacing="0">
-                                <MudText Typo="Typo.body2" Class="ml-2" title="Средний возраст гостей">@context.Item.AverageAgeOfRegistered()</MudText>
-                            </MudStack>
-                        </MudStack>
-                        @if (context.Item.Features != null)
-                        {
-                            <MudStack Row Wrap="Wrap.Wrap" Spacing="2" Class="mt-1">
-                                @foreach (var feature in context.Item.Features)
-                                {
-                                    <MudButton Variant="Variant.Outlined" Size="Size.Small" Color="Color.Primary" Style="padding: 0 5px 0 5px; font-size:12px; text-transform:none; font-weight:500; opacity:0.6">@feature.Name</MudButton>
-                                }
-                            </MudStack>
-                        }
-
-                    </MudStack>
-                }
-            </CellTemplate>
-        </TemplateColumn>
-
         <TemplateColumn>
             <CellTemplate>
-                <MudStack AlignItems="AlignItems.Center" Spacing="0">
-                    <ImageAvatar Account="context.Item.Event?.Admin" Size="EnumImageSize.s64x64" Title="Организатор" class="s45" Style="border-radius:50%" />
-                    <MudText Typo="Typo.body2" Style="font-size:12px">@context.Item.Event?.Admin?.Name</MudText>
+                <MudStack Row Wrap="Wrap.Wrap" AlignItems="AlignItems.Center" StretchItems="StretchItems.Middle">
+                    <ImageEvent Event="context.Item.Event" Size="EnumImageSize.s150x150" Title="@context.Item.Event?.Name" Style="border-radius:10%; width:120px; height:120px" />
+
+                    @if (context.Item.Event != null)
+                    {
+                        <MudStack Spacing="1">
+                            <MudStack Row>
+                                <MudButton OnClick="() => ShowEventCardAsync(context.Item)" Size="Size.Medium" Color="Color.Primary" Variant="Variant.Text" Class="px-1 py-1">
+                                    <MudText Typo="Typo.body1"><b>@context.Item.Event.Name</b></MudText>
+                                </MudButton>
+                            </MudStack>
+                            <MudStack Row AlignItems="AlignItems.Center" Spacing="1">
+                                <MudIcon Icon="@Icons.Material.Outlined.LocationOn" Style="font-size:19px" />
+                                <MudText Typo="Typo.body2">@context.Item.Event.ToRegionString()</MudText>
+                            </MudStack>
+                            <MudStack Row AlignItems="AlignItems.Center" Spacing="0" Title="Дата и время начала">
+                                <MudIcon Icon="@Icons.Material.Outlined.CalendarToday" Class="@context.Item.ToDateClass()" Style="font-size:18px" />
+                                <MudText Typo="Typo.body2" Class="mt-1 ml-1">@context.Item.StartDate.ToMyString()</MudText>
+                            </MudStack>
+                            <MudStack Row Spacing="0">
+                                <MudStack Row Spacing="0" Style="margin-left:1px" Class="mr-2" title="Кол-во пар">
+                                    <MudIcon Icon="@Icons.Material.Filled.PeopleAlt" Color="Color.Tertiary" Style="font-size:16px" Class="mr-1" />
+                                    <MudText Typo="Typo.body2">@context.Item.NumberOfRegisteredPairs()</MudText>
+                                </MudStack>
+                                <MudStack Row Spacing="0" Class="mr-2" title="Кол-во мужчин">
+                                    <MudIcon Icon="@Icons.Material.Outlined.Man" Color="Color.Primary" Style="font-size:16px" />
+                                    <MudText Typo="Typo.body2">@context.Item.NumberOfRegisteredMen()</MudText>
+                                </MudStack>
+                                <MudStack Row Spacing="0" Class="mr-2" title="Кол-во женщин">
+                                    <MudIcon Icon="@Icons.Material.Outlined.Woman" Color="Color.Error" Style="font-size:16px" />
+                                    <MudText Typo="Typo.body2">@context.Item.NumberOfRegisteredWomen()</MudText>
+                                </MudStack>
+                                <MudStack Row Spacing="0">
+                                    <MudText Typo="Typo.body2" Class="ml-2" title="Средний возраст гостей">@context.Item.AverageAgeOfRegistered()</MudText>
+                                </MudStack>
+                            </MudStack>
+                            @if (context.Item.Features != null)
+                            {
+                                <MudStack Row Wrap="Wrap.Wrap" Spacing="2" Class="mt-1">
+                                    @foreach (var feature in context.Item.Features)
+                                    {
+                                        <MudButton Variant="Variant.Outlined" Size="Size.Small" Color="Color.Primary" Style="padding: 0 5px 0 5px; font-size:12px; text-transform:none; font-weight:500; opacity:0.6">@feature.Name</MudButton>
+                                    }
+                                </MudStack>
+                            }
+
+                        </MudStack>
+                    }
+
+                    <MudStack AlignItems="AlignItems.Center" Spacing="2" Style="width:100px">
+                        <ImageAvatar Account="context.Item.Event?.Admin" Size="EnumImageSize.s64x64" Title="Организатор" class="s45" Style="border-radius:50%" />
+                        <MudText Typo="Typo.body2" Style="font-size:12px; text-align:center">@context.Item.Event?.Admin?.Name</MudText>
+                    </MudStack>
+
                 </MudStack>
             </CellTemplate>
         </TemplateColumn>
@@ -114,11 +107,11 @@
         <MudGrid>
             <MudItem xs="12" sm="3" Style="text-align:center; width:160px">
                 <MudStack AlignItems="AlignItems.Center" Spacing="0">
-                    <MudCarousel @ref="Carousel" Context="photo" ItemsSource="@context.Item.Event?.Photos" Style="width:160px; height:160px" ShowArrows="false" ShowBullets="false" AutoCycle>
+@*                     <MudCarousel @ref="Carousel" Context="photo" ItemsSource="@context.Item.Event?.Photos" Style="width:160px; height:160px" ShowArrows="false" ShowBullets="false" AutoCycle>
                         <ItemTemplate>
                             <MudImage Src=@($"/images/EventsPhotos/{photo.EventId}/{photo.Guid}/{EnumImageSize.s150x150}.jpg") Style="border-radius:5%" />
                         </ItemTemplate>
-                    </MudCarousel>
+                    </MudCarousel> *@
                     @if (CurrentState.Account != null)
                     {
                         <MudButton Color="Color.Primary" Size="Size.Small" StartIcon="@Icons.Material.Outlined.HowToReg" Variant="Variant.Outlined">Регистрация</MudButton>

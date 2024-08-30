@@ -1,9 +1,45 @@
-﻿<MudText>Гости</MudText>
-<MudGrid>
-    <MudItem></MudItem>
-</MudGrid>
+﻿<MudDataGrid Items="ScheduleForEventView.RegisteredAccounts" Hover Striped Style="min-width:300px; max-width:800px;" HeaderClass="dataGridHideTHead" Filterable="false">
+    <ToolBarContent>
+        <MudText Typo="Typo.h6" Class="dataGrid">Зарегистрированные гости</MudText>
+    </ToolBarContent>
+    
+    <Columns>
+        <HierarchyColumn />
+        <TemplateColumn>
+            <CellTemplate>
+                <MudStack StretchItems="StretchItems.Start" Row AlignItems="AlignItems.Center">
+                    <MudStack Row AlignItems="AlignItems.Center">
+                        <ImageAvatar Account="context.Item.Account" Size="EnumImageSize.s64x64" Class="avatar s45" />
+                        <MudText>@context.Item.Account.Name</MudText>
+                    </MudStack>
+                    @switch (context.Item.UserGender)
+                    {
+                        case null:
+                            <MudIcon Icon="@Icons.Material.Outlined.PeopleAlt" Color="Color.Tertiary" />
+                            break;
+                        case 0:
+                            <MudIcon Icon="@Icons.Material.Outlined.Face5" Color="Color.Primary" />
+                            break;
+                        case 1:
+                            <MudIcon Icon="@Icons.Material.Outlined.Face3" Color="Color.Error" />
+                            break;
+                    }
+                </MudStack>
+            </CellTemplate>
+        </TemplateColumn>
+    </Columns>
+
+    <ChildRowContent>
+        @context.Item.Account.Email
+    </ChildRowContent>
+
+    <PagerContent>
+        <MudDataGridPager RowsPerPageString="Показывать по:" ShowPageNumber="false" T="SchedulesForEventsViewDto" />
+    </PagerContent>
+</MudDataGrid>
 
 
 @code {
     [Parameter, EditorRequired] public SchedulesForEventsViewDto ScheduleForEventView { get; set; } = null!;
 }
+

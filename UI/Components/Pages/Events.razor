@@ -1,9 +1,10 @@
 ﻿@page "/events"
 
-<PageTitle>Клубные встречи</PageTitle>
+<PageTitle>Клубные встречи, мероприятия</PageTitle>
 
-<MudText Typo="Typo.h6" Class="mb-5">Клубные встречи</MudText>
+<MudText Typo="Typo.h6" Class="mb-5">Клубные встречи, мероприятия</MudText>
 
+@* Фильтры запроса *@
 <MudGrid Style="min-width:300px; max-width:823px" Class="mb-4">
     <MudItem xs="12">
         <MudTextField Placeholder="Поиск" T="string" ValueChanged="@(s => OnSearch(s))" Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Clearable/>
@@ -16,7 +17,6 @@
             }
         </MudSelect>
     </MudItem>
-
     <MudItem xs="12" md="4">
         <MudSelect Placeholder="Все организаторы" SelectedValuesChanged="OnAdminsSelected" T="AccountsDto" Dense AnchorOrigin="Origin.BottomCenter" Adornment="Adornment.End" IconSize="Size.Medium" MultiSelection Clearable>
             @foreach (var admin in AdminsList)
@@ -25,7 +25,6 @@
             }
         </MudSelect>
     </MudItem>
-
     <MudItem xs="12" md="4">
         <MudSelect Placeholder="Все регионы" SelectedValuesChanged="OnCountriesSelected" T="RegionsForEventsViewDto" Dense AnchorOrigin="Origin.BottomCenter" Adornment="Adornment.End" IconSize="Size.Medium" MultiSelection Clearable>
             @if (RegionsList != null) 
@@ -39,14 +38,14 @@
     </MudItem>
 </MudGrid>
 
-<MudDataGrid @ref="dataGrid" Striped T="SchedulesForEventsViewDto" ServerData="ServerReload" Style="min-width:300px; max-width:800px" Filterable="false">
+<MudDataGrid @ref="dataGrid" Hover Striped T="SchedulesForEventsViewDto" ServerData="ServerReload" Style="min-width:300px; max-width:800px" HeaderClass="dataGridHideTHead" Filterable="false">
     <Columns>
         <HierarchyColumn />
 
         <TemplateColumn CellStyle="max-width:105px">
             <CellTemplate>
                 <MudStack>
-                    <ImageEvent Event="context.Item.Event" Size="EnumImageSize.s150x150" Title="@context.Item.Event?.Name" Style="border-radius:10%; width:100px; height:100px" />
+                    <ImageEvent Event="context.Item.Event" Size="EnumImageSize.s150x150" Title="@context.Item.Event?.Name" Style="border-radius:10%; width:120px; height:120px" />
                 </MudStack>
             </CellTemplate>
         </TemplateColumn>

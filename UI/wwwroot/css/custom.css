@@ -6,3 +6,7 @@
     background-color: lightcoral; 
     color: #FFFFFF;
 }
+
+.dataGridHideTHead {
+    display: none !important;
+}

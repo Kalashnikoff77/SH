@@ -12,13 +12,13 @@
         </MudStack>
 
         <MudStack Row AlignItems="AlignItems.Center" Spacing="1">
-            <MudIcon Icon="@Icons.Material.Outlined.CalendarToday" Class="@selectedSchedule.ToDateClass()" Style="font-size:18px" />
-            <MudText Typo="Typo.body2"><b>@selectedSchedule.ToStartEndString()</b></MudText>
+            <MudIcon Icon="@Icons.Material.Outlined.CalendarToday" Class="@ScheduleForEventView.ToDateClass()" Style="font-size:18px" />
+            <MudText Typo="Typo.body2"><b>@ScheduleForEventView.ToStartEndString()</b></MudText>
         </MudStack>
 
-        @if (!string.IsNullOrWhiteSpace(selectedSchedule.Description))
+        @if (!string.IsNullOrWhiteSpace(ScheduleForEventView.Description))
         {
-            <MudText Typo="Typo.body2">@selectedSchedule.Description</MudText>
+            <MudText Typo="Typo.body2">@ScheduleForEventView.Description</MudText>
             <MudDivider />
         }
 
@@ -29,26 +29,26 @@
                     @ScheduleForEventView.NumberOfRegisteredPairs()/@ScheduleForEventView.Event.MaxPairs
                 </MudItem>
                 <MudItem xs="4" title="Зарегистрировано мужчин / Свободных мест для мужчин">
-                    <MudIcon Icon="@Icons.Material.Outlined.Man" Color="Color.Primary" /><br />
+                    <MudIcon Icon="@Icons.Material.Outlined.Face5" Color="Color.Primary" /><br />
                     @ScheduleForEventView.NumberOfRegisteredMen()/@ScheduleForEventView.Event.MaxMen
                 </MudItem>
                 <MudItem xs="4" title="Зарегистрировано женщин / Свободных мест для женщин">
-                    <MudIcon Icon="@Icons.Material.Outlined.Woman" Color="Color.Error" /><br />
+                    <MudIcon Icon="@Icons.Material.Outlined.Face3" Color="Color.Error" /><br />
                     @ScheduleForEventView.NumberOfRegisteredWomen()/@ScheduleForEventView.Event.MaxWomen
                 </MudItem>
             }
         </MudGrid>
         <MudGrid Style="text-align:center">
             @{
-                var costPair = selectedSchedule.CostPair == 0 ? "Бесплатно" : selectedSchedule.CostPair.ToString() + " руб.";
+                var costPair = ScheduleForEventView.CostPair == 0 ? "Бесплатно" : ScheduleForEventView.CostPair.ToString() + " руб.";
                 <MudItem xs="4">
                     @costPair
                 </MudItem>
-                var costMan = selectedSchedule.CostMan == 0 ? "Бесплатно" : selectedSchedule.CostMan.ToString() + " руб.";
+                var costMan = ScheduleForEventView.CostMan == 0 ? "Бесплатно" : ScheduleForEventView.CostMan.ToString() + " руб.";
                 <MudItem xs="4">
                     @costMan
                 </MudItem>
-                var costWoman = selectedSchedule.CostWoman == 0 ? "Бесплатно" : selectedSchedule.CostWoman.ToString() + " руб.";
+                var costWoman = ScheduleForEventView.CostWoman == 0 ? "Бесплатно" : ScheduleForEventView.CostWoman.ToString() + " руб.";
                 <MudItem xs="4">
                     @costWoman
                 </MudItem>
@@ -59,4 +59,8 @@
 
         <MudText Typo="Typo.body2"><b>Общее описание:</b><br />@ScheduleForEventView.Event.Description</MudText>
     </MudStack>
+}
+
+@code {
+        [Parameter, EditorRequired] public SchedulesForEventsViewDto ScheduleForEventView { get; set; } = null!;
 }

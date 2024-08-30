@@ -15,16 +15,22 @@
                     }
                 </MudCarousel>
 
-                @if (CurrentState.Account != null)
-                {
-                    <MudButton Color="Color.Primary" Size="Size.Small" StartIcon="@Icons.Material.Outlined.HowToReg" Variant="Variant.Outlined">Регистрация</MudButton>
-                }
+                <MudStack Spacing="2" Row Style="width:100%" StretchItems="StretchItems.Start" Justify="Justify.Center" AlignItems="AlignItems.Center">
+                    <MudSelect T="SchedulesForEventsDto" Value="selectedSchedule" ValueChanged="ScheduleChangedAsync" Variant="Variant.Outlined" Dense AnchorOrigin="Origin.BottomCenter" Margin="Margin.Dense" Label="Расписание" AdornmentIcon="@Icons.Material.Outlined.CalendarMonth">
+                        @foreach (var schedule in schedules) { <MudSelectItem Value="@schedule" /> }
+                    </MudSelect>
+
+                    @if (CurrentState.Account != null)
+                    {
+                        <MudButton Style="height:39px; margin:2px 3px 0 0; padding: 0 20px" Color="Color.Primary" IconSize="Size.Large" Size="Size.Small" StartIcon="@Icons.Material.Outlined.HowToReg" Variant="Variant.Outlined">Регистрация</MudButton>
+                    }
+                </MudStack>
             </MudStack>
 
             @* Закладки *@
             <MudTabs Outlined Centered Rounded ApplyEffectsToContainer PanelClass="pa-6">
                 <MudTabPanel Text="Общее">
-                    <Tab_About ScheduleForEventView="@ScheduleForEventView" ScheduleChangedAsyncCallback="ScheduleChangedAsync" />
+                    <Tab_About ScheduleForEventView="@ScheduleForEventView" />
                 </MudTabPanel>
 
                 <MudTabPanel Text="Общение" BadgeData="@ScheduleForEventView.Id" BadgeColor="Color.Info">

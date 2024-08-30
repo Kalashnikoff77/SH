@@ -9,7 +9,6 @@ namespace UI.Components.Shared.Dialogs.EventCardDialog
     {
         [CascadingParameter] public CurrentState CurrentState { get; set; } = null!;
         [Parameter, EditorRequired] public SchedulesForEventsViewDto ScheduleForEventView { get; set; } = null!;
-        [Parameter, EditorRequired] public EventCallback<int> ScheduleChangedAsyncCallback { get; set; }
 
         SchedulesForEventsDto selectedSchedule { get; set; } = null!;
         IEnumerable<SchedulesForEventsDto> schedules { get; set; } = null!;
@@ -22,20 +21,5 @@ namespace UI.Components.Shared.Dialogs.EventCardDialog
                 selectedSchedule = schedules.First(s => s.Id == ScheduleForEventView.Id);   // Из массива получим конкретное расписание передаваемой встречи
             }
         }
-
-        async Task OnScheduleChangedAsync(SchedulesForEventsDto schedule) 
-        {
-            selectedSchedule = schedules.FirstOrDefault(s => s.Id == schedule.Id) ?? selectedSchedule;
-            await ScheduleChangedAsyncCallback.InvokeAsync(schedule.Id);
-        }
-
-
-        // Тестирую календарик с этим методом
-        //async Task OnScheduleDateChangedAsync(DateTime? date)
-        //{
-        //    var sch = ScheduleForEventView.Event.Schedule.Select(s => s).Where(w => w.StartDate.Date == date).First();
-        //    var eventResponse = await _repoGetEvent.HttpPostAsync(new GetEventOneRequestDto() { ScheduleId = sch.Id });
-        //    ScheduleForEventView = eventResponse.Response.Event;
-        //}
     }
 }

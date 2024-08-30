@@ -18,11 +18,24 @@ namespace UI.Components.Shared.Dialogs.EventCardDialog
         [Inject] IRepository<GetEventOneRequestDto, GetEventOneResponseDto> _repoGetEvent { get; set; } = null!;
 
         MudCarousel<PhotosForEventsDto> Carousel = null!;
+        SchedulesForEventsDto selectedSchedule { get; set; } = null!;
+        IEnumerable<SchedulesForEventsDto> schedules { get; set; } = null!;
 
-        async Task ScheduleChangedAsync(int scheduleId)
+        protected override void OnInitialized()
         {
-            var eventResponse = await _repoGetEvent.HttpPostAsync(new GetEventOneRequestDto() { ScheduleId = scheduleId });
+            if (ScheduleForEventView.Event?.Schedule != null)
+            {
+                schedules = ScheduleForEventView.Event.Schedule.Select(s => s);     // Получим массив расписания по событию
+                selectedSchedule = schedules.First(s => s.Id == ScheduleForEventView.Id);   // Из массива получим конкретное расписание передаваемой встречи
+            }
+        }
+
+
+        async Task ScheduleChangedAsync(SchedulesForEventsDto schedule)
+        {
+            var eventResponse = await _repoGetEvent.HttpPostAsync(new GetEventOneRequestDto() { ScheduleId = schedule.Id });
             ScheduleForEventView = eventResponse.Response.Event;
+            selectedSchedule = schedule;
         }
     }
 }

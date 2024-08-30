@@ -11,24 +11,6 @@
             <MudText Typo="Typo.body2">@ScheduleForEventView.Event.ToRegionString() (@ScheduleForEventView.Event.Address)</MudText>
         </MudStack>
 
-@*         @{
-            var _minDate = ScheduleForEventView.Event?.Schedule?.Select(s => s.StartDate).Min().Date;
-            var _maxDate = ScheduleForEventView.Event?.Schedule?.Select(s => s.StartDate).Max().Date;
-            <MudStack Row AlignItems="AlignItems.Center" Spacing="1">
-                <MudDatePicker DateChanged="OnScheduleDateChangedAsync" PickerVariant="PickerVariant.Dialog" Date="selectedSchedule.StartDate" MinDate="_minDate" MaxDate="_maxDate" ShowToolbar="false" AdornmentColor="Color.Success" Variant="Variant.Text" Margin="Margin.Dense" HelperText="Расписание" />
-            </MudStack>
-        }
-    @bind-Value="selectedSchedule" SelectedValuesChanged="OnScheduleChangedAsync"
-    *@
-        <MudStack Row AlignItems="AlignItems.Center" Spacing="1">
-            <MudSelect T="SchedulesForEventsDto" Value="selectedSchedule" ValueChanged="OnScheduleChangedAsync" Variant="Variant.Outlined" Dense AnchorOrigin="Origin.BottomCenter" Margin="Margin.Dense" Label="Расписание" AdornmentIcon="@Icons.Material.Outlined.CalendarMonth">
-                @foreach (var schedule in schedules)
-                {
-                    <MudSelectItem Value="@schedule" />
-                }
-            </MudSelect>
-        </MudStack>
-
         <MudStack Row AlignItems="AlignItems.Center" Spacing="1">
             <MudIcon Icon="@Icons.Material.Outlined.CalendarToday" Class="@selectedSchedule.ToDateClass()" Style="font-size:18px" />
             <MudText Typo="Typo.body2"><b>@selectedSchedule.ToStartEndString()</b></MudText>
@@ -72,11 +54,6 @@
                 </MudItem>
             }
         </MudGrid>
-
-        @if (CurrentState.Account != null)
-        {
-            <MudButton Color="Color.Primary" Size="Size.Small" StartIcon="@Icons.Material.Outlined.HowToReg" Variant="Variant.Outlined">Регистрация</MudButton>
-        }
 
         <MudDivider />
 

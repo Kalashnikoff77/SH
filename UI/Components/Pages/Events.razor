@@ -40,13 +40,12 @@
 
 <MudDataGrid @ref="dataGrid" Hover Striped T="SchedulesForEventsViewDto" ServerData="ServerReload" Style="min-width:300px; max-width:800px" HeaderClass="dataGridHideTHead" Filterable="false">
     <Columns>
-        @* <HierarchyColumn /> *@
-
         <TemplateColumn>
             <CellTemplate>
                 <MudStack Row Wrap="Wrap.Wrap" AlignItems="AlignItems.Center" Justify="Justify.Center" StretchItems="StretchItems.End">
-                    <ImageEvent Event="context.Item.Event" Size="EnumImageSize.s150x150" Title="@context.Item.Event?.Name" Style="border-radius:10%; width:120px; height:120px; margin-right:10px" />
-                    
+
+                    <ImageEvent Event="context.Item.Event" Size="EnumImageSize.s150x150" Title="@context.Item.Event?.Name" Style="border-radius:5%; width:140px; height:140px; margin-right:8px" />
+
                     <MudStack Row Justify="Justify.SpaceBetween" AlignItems="AlignItems.Center">
                         @if (context.Item.Event != null)
                         {
@@ -98,7 +97,6 @@
                             <MudText Typo="Typo.body2" Style="font-size:12px; text-align:center">@context.Item.Event?.Admin?.Name</MudText>
                         </MudStack>
                     </MudStack>
-
                 </MudStack>
             </CellTemplate>
         </TemplateColumn>

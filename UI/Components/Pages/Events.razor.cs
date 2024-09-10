@@ -27,7 +27,7 @@ namespace UI.Components.Pages
 
         List<FeaturesDto> FeaturesList = new List<FeaturesDto>();
         List<RegionsForEventsViewDto> RegionsList = new List<RegionsForEventsViewDto>();
-        List<AccountsDto> AdminsList = new List<AccountsDto>();
+        List<AdminsForEventsViewDto> AdminsList = new List<AdminsForEventsViewDto>();
 
         MudCarousel<PhotosForEventsDto> Carousel = null!;
 
@@ -43,8 +43,7 @@ namespace UI.Components.Pages
             RegionsList = regionsResponse.Response.RegionsForEvents;
 
             var adminsResponse = await _repoGetAdmins.HttpPostAsync(new GetAdminsForEventsRequestDto());
-            if (adminsResponse != null && adminsResponse.Response.Admins?.Count() > 0)
-                AdminsList = adminsResponse.Response.Admins;
+            AdminsList = adminsResponse.Response.AdminsForEvents;
         }
 
 

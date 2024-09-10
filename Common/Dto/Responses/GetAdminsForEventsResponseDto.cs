@@ -1,7 +1,9 @@
-﻿namespace Common.Dto.Responses
+﻿using Common.Dto.Views;
+
+namespace Common.Dto.Responses
 {
     public class GetAdminsForEventsResponseDto : ResponseDtoBase
     {
-        public List<AccountsDto>? Admins { get; set; }
+        public List<AdminsForEventsViewDto> AdminsForEvents { get; set; } = null!;
     }
 }

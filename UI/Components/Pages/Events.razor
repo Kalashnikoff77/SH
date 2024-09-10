@@ -18,10 +18,10 @@
         </MudSelect>
     </MudItem>
     <MudItem xs="12" md="4">
-        <MudSelect Placeholder="Все организаторы" SelectedValuesChanged="OnAdminsSelected" T="AccountsDto" Dense AnchorOrigin="Origin.BottomCenter" Adornment="Adornment.End" IconSize="Size.Medium" MultiSelection Clearable>
+        <MudSelect Placeholder="Все организаторы" SelectedValuesChanged="OnAdminsSelected" T="AdminsForEventsViewDto" Dense AnchorOrigin="Origin.BottomCenter" Adornment="Adornment.End" IconSize="Size.Medium" MultiSelection Clearable>
             @foreach (var admin in AdminsList)
             {
-                <MudSelectItem Value="admin" />
+                <MudSelectItem Value="admin">@admin.Name (@admin.NumberOfEvents)</MudSelectItem>
             }
         </MudSelect>
     </MudItem>

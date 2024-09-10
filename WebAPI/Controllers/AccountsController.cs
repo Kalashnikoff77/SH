@@ -87,9 +87,9 @@ namespace WebAPI.Controllers
 
             using (var conn = new SqlConnection(connectionString))
             {
-                var sql = "SELECT DISTINCT(a.Id), a.Name FROM Accounts a JOIN Events e ON e.AdminId = a.Id";
-                var result = await conn.QueryAsync<AccountsEntity>(sql);
-                response.Admins = _mapper.Map<List<AccountsDto>>(result);
+                var sql = "SELECT * FROM AdminsForEventsView ORDER BY Name";
+                var result = await conn.QueryAsync<AdminsForEventsViewEntity>(sql);
+                response.AdminsForEvents = _mapper.Map<List<AdminsForEventsViewDto>>(result);
             }
             return response;
         }

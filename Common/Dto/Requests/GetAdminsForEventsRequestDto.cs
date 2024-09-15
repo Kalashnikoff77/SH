@@ -2,6 +2,6 @@
 {
     public class GetAdminsForEventsRequestDto : RequestDtoBase
     {
-        public override string Uri => "/Accounts/GetAdminsForEvents";
+        public override string Uri => "/Events/GetAdminsForEvents";
     }
 }

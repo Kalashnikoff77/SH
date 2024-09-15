@@ -10,10 +10,10 @@
         <MudTextField Placeholder="Поиск" T="string" ValueChanged="@(s => OnSearch(s))" Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Clearable/>
     </MudItem>
     <MudItem xs="12" md="4">
-        <MudSelect Placeholder="Все услуги" SelectedValuesChanged="OnFeaturesSelected" T="FeaturesDto" Dense AnchorOrigin="Origin.BottomCenter" Adornment="Adornment.End" IconSize="Size.Medium" MultiSelection Clearable>
-            @foreach (var feat in FeaturesList)
+        <MudSelect Placeholder="Все услуги" SelectedValuesChanged="OnFeaturesSelected" T="FeaturesForEventsViewDto" Dense AnchorOrigin="Origin.BottomCenter" Adornment="Adornment.End" IconSize="Size.Medium" MultiSelection Clearable>
+            @foreach (var feature in FeaturesList)
             {
-                <MudSelectItem Value="feat" />
+                <MudSelectItem Value="feature">@feature.Name (@feature.NumberOfEvents)</MudSelectItem>
             }
         </MudSelect>
     </MudItem>

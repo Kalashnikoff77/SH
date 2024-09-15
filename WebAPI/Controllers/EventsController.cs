@@ -199,6 +199,24 @@ namespace WebAPI.Controllers
         }
 
 
+        /// <summary>
+        /// Получает список пользователей, которые являются админами текущих мероприятий
+        /// </summary>
+        [Route("GetAdminsForEvents"), HttpPost]
+        public async Task<GetAdminsForEventsResponseDto> GetAdminsForEventsAsync(GetAdminsForEventsRequestDto request)
+        {
+            var response = new GetAdminsForEventsResponseDto();
+
+            using (var conn = new SqlConnection(connectionString))
+            {
+                var sql = "SELECT * FROM AdminsForEventsView ORDER BY Name";
+                var result = await conn.QueryAsync<AdminsForEventsViewEntity>(sql);
+                response.AdminsForEvents = _mapper.Map<List<AdminsForEventsViewDto>>(result);
+            }
+            return response;
+        }
+
+
         [Route("GetFeatures"), HttpPost]
         public async Task<GetFeaturesResponseDto> GetFeaturesAsync(GetFeaturesRequestDto request)
         {
@@ -210,6 +228,22 @@ namespace WebAPI.Controllers
                 var result = await conn.QueryAsync<FeaturesEntity>(sql);
 
                 response.Features = _mapper.Map<List<FeaturesDto>>(result);
+            }
+            return response;
+        }
+
+
+        [Route("GetFeaturesForEvents"), HttpPost]
+        public async Task<GetFeaturesForEventsResponseDto> GetFeaturesForEventsAsync(GetFeaturesForEventsRequestDto request)
+        {
+            var response = new GetFeaturesForEventsResponseDto();
+
+            using (var conn = new SqlConnection(connectionString))
+            {
+                var sql = $"SELECT * FROM FeaturesForEventsView ORDER BY Name";
+                var result = await conn.QueryAsync<FeaturesForEventsViewEntity>(sql);
+
+                response.FeaturesForEvents = _mapper.Map<List<FeaturesForEventsViewDto>>(result);
             }
             return response;
         }

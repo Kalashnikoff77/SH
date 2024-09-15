@@ -14,7 +14,7 @@ namespace UI.Components.Pages
     {
         [CascadingParameter] public CurrentState CurrentState { get; set; } = null!;
         [Inject] IRepository<GetEventsRequestDto, GetEventsResponseDto> _repoGetEvents { get; set; } = null!;
-        [Inject] IRepository<GetFeaturesRequestDto, GetFeaturesResponseDto> _repoGetFeatures { get; set; } = null!;
+        [Inject] IRepository<GetFeaturesForEventsRequestDto, GetFeaturesForEventsResponseDto> _repoGetFeatures { get; set; } = null!;
         [Inject] IRepository<GetRegionsForEventsRequestDto, GetRegionsForEventsResponseDto> _repoGetRegions { get; set; } = null!;
         [Inject] IRepository<GetAdminsForEventsRequestDto, GetAdminsForEventsResponseDto> _repoGetAdmins { get; set; } = null!;
         [Inject] IDialogService Dialog { get; set; } = null!;
@@ -25,7 +25,7 @@ namespace UI.Components.Pages
 
         List<SchedulesForEventsViewDto> EventsList = new List<SchedulesForEventsViewDto>();
 
-        List<FeaturesDto> FeaturesList = new List<FeaturesDto>();
+        List<FeaturesForEventsViewDto> FeaturesList = new List<FeaturesForEventsViewDto>();
         List<RegionsForEventsViewDto> RegionsList = new List<RegionsForEventsViewDto>();
         List<AdminsForEventsViewDto> AdminsList = new List<AdminsForEventsViewDto>();
 
@@ -36,8 +36,8 @@ namespace UI.Components.Pages
             var eventsResponse = await _repoGetEvents.HttpPostAsync(new GetEventsRequestDto() { IsPhotosIncluded = true });
             EventsList = eventsResponse.Response.Events;
 
-            var featuresResponse = await _repoGetFeatures.HttpPostAsync(new GetFeaturesRequestDto());
-            FeaturesList = featuresResponse.Response.Features;
+            var featuresResponse = await _repoGetFeatures.HttpPostAsync(new GetFeaturesForEventsRequestDto());
+            FeaturesList = featuresResponse.Response.FeaturesForEvents;
 
             var regionsResponse = await _repoGetRegions.HttpPostAsync(new GetRegionsForEventsRequestDto());
             RegionsList = regionsResponse.Response.RegionsForEvents;

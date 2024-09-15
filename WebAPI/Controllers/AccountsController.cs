@@ -77,23 +77,6 @@ namespace WebAPI.Controllers
         }
 
 
-        /// <summary>
-        /// Получает список пользователей, которые являются админами текущих мероприятий
-        /// </summary>
-        [Route("GetAdminsForEvents"), HttpPost]
-        public async Task<GetAdminsForEventsResponseDto> GetAdminsForEventsAsync(GetAdminsForEventsRequestDto request)
-        {
-            var response = new GetAdminsForEventsResponseDto();
-
-            using (var conn = new SqlConnection(connectionString))
-            {
-                var sql = "SELECT * FROM AdminsForEventsView ORDER BY Name";
-                var result = await conn.QueryAsync<AdminsForEventsViewEntity>(sql);
-                response.AdminsForEvents = _mapper.Map<List<AdminsForEventsViewDto>>(result);
-            }
-            return response;
-        }
-
 
 
         [Route("GetWishList"), HttpPost]

@@ -26,6 +26,7 @@ namespace WebAPI.Mapping
 
             CreateMap<RegionsForEventsViewEntity, RegionsForEventsViewDto>();
             CreateMap<AdminsForEventsViewEntity, AdminsForEventsViewDto>();
+            CreateMap<FeaturesForEventsViewEntity, FeaturesForEventsViewDto>();
 
             CreateMap<EventsViewEntity, EventsViewDto>()
                 .ForMember(to => to.Admin, from => from.ConvertUsing<JsonToClassConverter<AccountsViewDto>, string?>(from => from.Admin))

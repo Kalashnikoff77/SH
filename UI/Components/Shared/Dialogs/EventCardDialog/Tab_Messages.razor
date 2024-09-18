@@ -1,6 +1,6 @@
-﻿<MudStack id="ChatMessageFrame" Style="max-height: 200px; overflow: auto">
+﻿<MudStack id="ChatMessageFrame" Style="max-height: 250px; overflow: auto">
 
-    <Virtualize ItemsProvider="LoadDiscussions" Context="discussion" ItemSize="100">
+    <Virtualize ItemsProvider="LoadDiscussions" Context="discussion" ItemSize="250">
         <MudStack Spacing="0">
             <ColorizedAccountName Account="discussion.Sender" Style="font-weight: 500" />
             <MudText Typo="Typo.body2">@discussion.Text</MudText>

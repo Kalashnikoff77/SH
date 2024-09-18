@@ -55,7 +55,7 @@ namespace Common.Models
         /// <summary>
         /// Кол-во сообщений в обсуждениях мероприятий в блоке
         /// </summary>
-        public const short EVENT_DISCUSSIONS_PER_BLOCK = 9;
+        public const short EVENT_DISCUSSIONS_PER_BLOCK = 5;
 
         /// <summary>
         /// Кол-во сообщений в чате

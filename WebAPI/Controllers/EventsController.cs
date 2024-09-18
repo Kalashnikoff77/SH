@@ -100,7 +100,7 @@ namespace WebAPI.Controllers
                     sql = $"SELECT TOP (@Take) * FROM DiscussionsForEventsView " +
                             $"WHERE {nameof(DiscussionsForEventsViewEntity.EventId)} = @{nameof(DiscussionsForEventsViewEntity.EventId)} " +
                             $"AND Id < {request.GetPreviousFromId} " +
-                            $"ORDER BY Id DESC";
+                            $"ORDER BY CreateDate DESC";
                     result = (await conn.QueryAsync<DiscussionsForEventsViewEntity>(sql, new { request.EventId, request.Take })).Reverse();
                 }
 
@@ -110,7 +110,7 @@ namespace WebAPI.Controllers
                     sql = $"SELECT TOP (@Take) * FROM DiscussionsForEventsView " +
                             $"WHERE {nameof(DiscussionsForEventsViewEntity.EventId)} = @{nameof(DiscussionsForEventsViewEntity.EventId)} " +
                             $"AND Id > {request.GetNextAfterId} " +
-                            $"ORDER BY Id ASC";
+                            $"ORDER BY CreateDate ASC";
                     result = await conn.QueryAsync<DiscussionsForEventsViewEntity>(sql, new { request.EventId, request.Take });
                 }
 
@@ -120,9 +120,10 @@ namespace WebAPI.Controllers
                     int offset = response.NumOfDiscussions > StaticData.EVENT_DISCUSSIONS_PER_BLOCK ? response.NumOfDiscussions - StaticData.EVENT_DISCUSSIONS_PER_BLOCK : 0;
                     sql = $"SELECT * FROM DiscussionsForEventsView " +
                         $"WHERE {nameof(DiscussionsForEventsViewEntity.EventId)} = @{nameof(DiscussionsForEventsViewEntity.EventId)} " +
-                        $"ORDER BY Id ASC " +
-                        $"OFFSET {offset} ROWS";
-                    result = await conn.QueryAsync<DiscussionsForEventsViewEntity>(sql, new { request.EventId });
+                        $"ORDER BY CreateDate ASC " +
+                        $"OFFSET {request.Skip} ROWS " +
+                        $"FETCH NEXT {request.Take} ROWS ONLY";
+                    result = await conn.QueryAsync<DiscussionsForEventsViewEntity>(sql, new { request.EventId, request.Take });
                 }
             }
 

@@ -1,39 +1,42 @@
-﻿<MudDataGrid Items="ScheduleForEventView.RegisteredAccounts" T="AccountsForSchedulesViewDto" Hover Striped Style="min-width:300px; max-width:800px;" HeaderClass="dataGridHideTHead" Filterable="false">
-    <Columns>
-        <TemplateColumn>
-            <CellTemplate>
-                <MudStack StretchItems="StretchItems.Start" Row AlignItems="AlignItems.Center">
-                    <MudStack Row AlignItems="AlignItems.Center">
-                        <ImageAvatar Account="context.Item.Account" Size="EnumImageSize.s64x64" Class="avatar s60" />
-                        <MudStack Spacing="0">
-                            <MudText Typo="Typo.subtitle2">@context.Item.Account.Name</MudText>
-                            <MudText Typo="Typo.body2" Style="font-size:12px">@context.Item.Account.ToGendersAgesString()<br />
-                                @context.Item.Account.ToRegionString()
-                            </MudText>
+﻿@if (ScheduleForEventView.RegisteredAccounts != null)
+{
+    <MudDataGrid Items="ScheduleForEventView.RegisteredAccounts" T="AccountsForSchedulesViewDto" Hover Striped Style="min-width:300px; max-width:800px;" HeaderClass="dataGridHideTHead" Filterable="false">
+        <Columns>
+            <TemplateColumn>
+                <CellTemplate>
+                    <MudStack StretchItems="StretchItems.Start" Row AlignItems="AlignItems.Center">
+                        <MudStack Row AlignItems="AlignItems.Center">
+                            <ImageAvatar Account="context.Item.Account" Size="EnumImageSize.s64x64" Class="avatar s60" />
+                            <MudStack Spacing="0">
+                                <MudText Typo="Typo.subtitle2">@context.Item.Account.Name</MudText>
+                                <MudText Typo="Typo.body2" Style="font-size:12px">
+                                    @context.Item.Account.ToGendersAgesString()<br />
+                                    @context.Item.Account.ToRegionString()
+                                </MudText>
+                            </MudStack>
                         </MudStack>
+                        @switch (context.Item.UserGender)
+                        {
+                            case null:
+                                <MudIcon Icon="@Icons.Material.Outlined.PeopleAlt" Color="Color.Tertiary" />
+                                break;
+                            case 0:
+                                <MudIcon Icon="@Icons.Material.Outlined.Face5" Color="Color.Primary" />
+                                break;
+                            case 1:
+                                <MudIcon Icon="@Icons.Material.Outlined.Face3" Color="Color.Error" />
+                                break;
+                        }
                     </MudStack>
-                    @switch (context.Item.UserGender)
-                    {
-                        case null:
-                            <MudIcon Icon="@Icons.Material.Outlined.PeopleAlt" Color="Color.Tertiary" />
-                            break;
-                        case 0:
-                            <MudIcon Icon="@Icons.Material.Outlined.Face5" Color="Color.Primary" />
-                            break;
-                        case 1:
-                            <MudIcon Icon="@Icons.Material.Outlined.Face3" Color="Color.Error" />
-                            break;
-                    }
-                </MudStack>
-            </CellTemplate>
-        </TemplateColumn>
-    </Columns>
+                </CellTemplate>
+            </TemplateColumn>
+        </Columns>
 
-    <PagerContent>
-        <MudDataGridPager RowsPerPageString="Показывать по:" ShowPageNumber="false" T="AccountsForSchedulesViewDto" />
-    </PagerContent>
-</MudDataGrid>
-
+        <PagerContent>
+            <MudDataGridPager RowsPerPageString="Показывать по:" ShowPageNumber="false" T="AccountsForSchedulesViewDto" />
+        </PagerContent>
+    </MudDataGrid>
+}
 
 @code {
     [Parameter, EditorRequired] public SchedulesForEventsViewDto ScheduleForEventView { get; set; } = null!;

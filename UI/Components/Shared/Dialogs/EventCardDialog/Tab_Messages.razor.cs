@@ -16,6 +16,15 @@ namespace UI.Components.Shared.Dialogs.EventCardDialog
 
         List<DiscussionsForEventsViewDto> discussions = null!;
 
+        protected override async Task OnInitializedAsync()
+        {
+            var response = await _repoGetDiscussions.HttpPostAsync(new GetDiscussionsForEventsRequestDto()
+            {
+                EventId = ScheduleForEventView.EventId
+            });
+            discussions = response.Response.Discussions;
+        }
+
         protected override async Task OnAfterRenderAsync(bool firstRender)
         {
             if (!firstRender)

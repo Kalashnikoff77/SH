@@ -1,7 +1,14 @@
-﻿<MudText>Общение</MudText>
-
-<p>@ScheduleForEventView.Id</p>
-
-@code {
-    [Parameter, EditorRequired] public SchedulesForEventsViewDto ScheduleForEventView { get; set; } = null!;
+﻿@if (discussions != null)
+{
+        @foreach (var discussion in discussions)
+        {
+            if (discussion?.Sender != null)
+            {
+                <MudPaper Elevation=2 Class="pa-2 mb-3">
+                    <ColorizedAccountName Account="@discussion.Sender" Style="font-weight: 500" />
+                    <MudText Typo="Typo.body2">@discussion.Text</MudText>
+                    <MudText Style="text-align: right; font-size: 12px; color: gray">@discussion.CreateDate.ToMyPastShortString()</MudText>
+                </MudPaper>
+            }
+        }
 }

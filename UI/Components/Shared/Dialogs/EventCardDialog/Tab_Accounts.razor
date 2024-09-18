@@ -1,6 +1,6 @@
 ﻿@if (ScheduleForEventView.RegisteredAccounts != null)
 {
-    <MudDataGrid Items="ScheduleForEventView.RegisteredAccounts" T="AccountsForSchedulesViewDto" Hover Striped Style="min-width:300px; max-width:800px;" HeaderClass="dataGridHideTHead" Filterable="false">
+    <MudDataGrid Items="ScheduleForEventView.RegisteredAccounts" T="AccountsForSchedulesViewDto" Virtualize Hover Striped Style="min-width:300px; max-width:800px;" HeaderClass="dataGridHideTHead" Filterable="false">
         <Columns>
             <TemplateColumn>
                 <CellTemplate>
@@ -31,10 +31,6 @@
                 </CellTemplate>
             </TemplateColumn>
         </Columns>
-
-        <PagerContent>
-            <MudDataGridPager RowsPerPageString="Показывать по:" ShowPageNumber="false" T="AccountsForSchedulesViewDto" />
-        </PagerContent>
     </MudDataGrid>
 }
 

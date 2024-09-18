@@ -5,6 +5,7 @@ using Common.JSProcessor;
 using Common.Repository;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web.Virtualization;
+using MudBlazor;
 
 namespace UI.Components.Shared.Dialogs.EventCardDialog
 {
@@ -13,6 +14,7 @@ namespace UI.Components.Shared.Dialogs.EventCardDialog
         [Parameter, EditorRequired] public SchedulesForEventsViewDto ScheduleForEventView { get; set; } = null!;
         [Inject] IRepository<GetDiscussionsForEventsRequestDto, GetDiscussionsForEventsResponseDto> _repoGetDiscussions { get; set; } = null!;
         [Inject] IJSProcessor _JSProcessor { get; set; } = null!;
+        //[Inject] IScrollManager ScrollManager { get; set; } = null!;
 
         List<DiscussionsForEventsViewDto> discussions = null!;
 
@@ -29,6 +31,7 @@ namespace UI.Components.Shared.Dialogs.EventCardDialog
         {
             if (!firstRender)
                 await _JSProcessor.ScrollDivToBottom("ChatMessageFrame");
+                //await ScrollManager.ScrollToBottomAsync("ChatMessageFrame", ScrollBehavior.Auto);
         }
 
 

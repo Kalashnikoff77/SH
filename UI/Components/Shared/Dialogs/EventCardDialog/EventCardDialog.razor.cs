@@ -30,7 +30,6 @@ namespace UI.Components.Shared.Dialogs.EventCardDialog
             }
         }
 
-
         async Task ScheduleChangedAsync(SchedulesForEventsDto schedule)
         {
             var eventResponse = await _repoGetEvent.HttpPostAsync(new GetEventOneRequestDto() { ScheduleId = schedule.Id });

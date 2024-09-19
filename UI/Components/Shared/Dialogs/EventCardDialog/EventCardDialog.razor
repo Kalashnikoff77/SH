@@ -33,11 +33,11 @@
                     <Tab_About ScheduleForEventView="@ScheduleForEventView" />
                 </MudTabPanel>
 
-                <MudTabPanel Text="Общение" BadgeData="@ScheduleForEventView.Id" BadgeColor="Color.Transparent">
+                <MudTabPanel Text="Обсуждение" BadgeData="@ScheduleForEventView.NumberOfDiscussions" BadgeColor="Color.Transparent">
                     <Tab_Messages ScheduleForEventView="@ScheduleForEventView" />
                 </MudTabPanel>
 
-                <MudTabPanel Text="Гости" Disabled="@(ScheduleForEventView.RegisteredAccounts == null)" BadgeData="@ScheduleForEventView.RegisteredAccounts?.Count()" BadgeColor="Color.Transparent">
+                <MudTabPanel Text="Участники" Disabled="@(ScheduleForEventView.RegisteredAccounts == null)" BadgeData="@ScheduleForEventView.RegisteredAccounts?.Count()" BadgeColor="Color.Transparent">
                     <Tab_Accounts ScheduleForEventView="@ScheduleForEventView" />
                 </MudTabPanel>
             </MudTabs>

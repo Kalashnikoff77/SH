@@ -38,7 +38,7 @@
     </MudItem>
 </MudGrid>
 
-<MudDataGrid @ref="dataGrid" Hover Striped T="SchedulesForEventsViewDto" ServerData="ServerReload" Style="min-width:300px; max-width:800px" HeaderClass="dataGridHideTHead" Filterable="false">
+<MudDataGrid @ref="dataGrid" Virtualize Hover Striped T="SchedulesForEventsViewDto" ServerData="ServerReload" Style="min-width:300px; max-width:800px" HeaderClass="dataGridHideTHead" Filterable="false">
     <Columns>
         <TemplateColumn>
             <CellTemplate>
@@ -59,10 +59,18 @@
                                     <MudIcon Icon="@Icons.Material.Outlined.LocationOn" Style="font-size:19px" />
                                     <MudText Typo="Typo.body2">@context.Item.Event.ToRegionString()</MudText>
                                 </MudStack>
-                                <MudStack Row AlignItems="AlignItems.Center" Spacing="0" Title="Дата и время начала">
-                                    <MudIcon Icon="@Icons.Material.Outlined.CalendarToday" Class="@context.Item.ToDateClass()" Style="font-size:18px" />
-                                    <MudText Typo="Typo.body2" Class="mt-1 ml-1">@context.Item.StartDate.ToMyString()</MudText>
+
+                                <MudStack Row Spacing="0" AlignItems="AlignItems.Center">
+                                    <MudStack Row AlignItems="AlignItems.Center" Spacing="0" Title="Дата и время начала">
+                                        <MudIcon Icon="@Icons.Material.Outlined.CalendarToday" Class="@context.Item.ToDateClass()" Style="font-size:18px" />
+                                        <MudText Typo="Typo.body2" Class="mt-1 ml-1">@context.Item.StartDate.ToMyString()</MudText>
+                                    </MudStack>
+                                    @if (context.Item.NumberOfDiscussions > 0)
+                                    {
+                                        <MudIcon Icon="@Icons.Material.Outlined.Chat" Color="Color.Info" title="@("Обсуждений: " + context.Item.NumberOfDiscussions.ToString())" Class="ml-3" Style="font-size:18px" />
+                                    }
                                 </MudStack>
+
                                 <MudStack Row Spacing="0">
                                     <MudStack Row Spacing="0" Style="margin-left:1px" Class="mr-2" title="Кол-во пар">
                                         <MudIcon Icon="@Icons.Material.Filled.PeopleAlt" Color="Color.Tertiary" Style="font-size:16px" Class="mr-1" />

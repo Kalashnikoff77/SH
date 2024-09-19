@@ -12,5 +12,8 @@ namespace DataContext.Entities.Views
         
         [Required]
         public string? RegisteredAccounts { get; set; }
+
+        [Required]
+        public int NumberOfDiscussions { get; set; }
     }
 }

@@ -33,9 +33,6 @@ namespace UI.Components.Pages
 
         protected override async Task OnInitializedAsync()
         {
-            var eventsResponse = await _repoGetEvents.HttpPostAsync(new GetEventsRequestDto() { IsPhotosIncluded = true });
-            EventsList = eventsResponse.Response.Events;
-
             var featuresResponse = await _repoGetFeatures.HttpPostAsync(new GetFeaturesForEventsRequestDto());
             FeaturesList = featuresResponse.Response.FeaturesForEvents;
 
@@ -46,7 +43,6 @@ namespace UI.Components.Pages
             AdminsList = adminsResponse.Response.AdminsForEvents;
         }
 
-
         async Task<GridData<SchedulesForEventsViewDto>> ServerReload(GridState<SchedulesForEventsViewDto> state)
         {
             var apiResponse = await _repoGetEvents.HttpPostAsync(request);
@@ -54,11 +50,24 @@ namespace UI.Components.Pages
 
             var items = new GridData<SchedulesForEventsViewDto>
             {
-                Items = EventsList.ToArray(),
+                Items = EventsList,
                 TotalItems = EventsList.Count
             };
+
             return items;
         }
+
+        Task ShowEventCardAsync(SchedulesForEventsViewDto schedule)
+        {
+            DialogOptions dialogOptions = new() { CloseOnEscapeKey = true, CloseButton = true };
+
+            var dialogParams = new DialogParameters<EventCardDialog>
+            {
+                { x => x.ScheduleForEventView, schedule }
+            };
+            return Dialog.ShowAsync<EventCardDialog>(schedule.Event?.Name, dialogParams, dialogOptions);
+        }
+
 
         Task OnSearch(string text)
         {
@@ -83,18 +92,5 @@ namespace UI.Components.Pages
             request.AdminsIds = selectedItems.Select(s => s.Id);
             return dataGrid.ReloadServerData();
         }
-
-
-        Task ShowEventCardAsync(SchedulesForEventsViewDto schedule)
-        {
-            DialogOptions dialogOptions = new() { CloseOnEscapeKey = true, CloseButton = true };
-
-            var dialogParams = new DialogParameters<EventCardDialog>
-            {
-                { x => x.ScheduleForEventView, schedule }
-            };
-            return Dialog.ShowAsync<EventCardDialog>(schedule.Event?.Name, dialogParams, dialogOptions);
-        }
-
     }
 }

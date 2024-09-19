@@ -3,7 +3,7 @@
     <MudStack Style="max-height: 250px; overflow: auto" id="ChatMessageFrame">
 
         <Virtualize Items="discussions" Context="discussion" ItemSize="150">
-            <MudStack Spacing="0">
+            <MudStack Spacing="0" Class="mr-2">
                 <ColorizedAccountName Account="discussion.Sender" Style="font-weight: 500" />
                 <MudText Typo="Typo.body2">@discussion.Text</MudText>
                 <MudText Style="text-align: right; font-size: 12px; color: gray">@discussion.CreateDate.ToMyPastShortString()</MudText>

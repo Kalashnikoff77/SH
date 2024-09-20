@@ -100,7 +100,7 @@ namespace WebAPI.Controllers
                     sql = $"SELECT TOP (@Take) * FROM DiscussionsForEventsView " +
                             $"WHERE {nameof(DiscussionsForEventsViewEntity.EventId)} = @{nameof(DiscussionsForEventsViewEntity.EventId)} " +
                             $"AND Id < {request.GetPreviousFromId} " +
-                            $"ORDER BY CreateDate DESC";
+                            $"ORDER BY Id DESC";
                     result = (await conn.QueryAsync<DiscussionsForEventsViewEntity>(sql, new { request.EventId, request.Take })).Reverse();
                 }
 
@@ -110,7 +110,7 @@ namespace WebAPI.Controllers
                     sql = $"SELECT TOP (@Take) * FROM DiscussionsForEventsView " +
                             $"WHERE {nameof(DiscussionsForEventsViewEntity.EventId)} = @{nameof(DiscussionsForEventsViewEntity.EventId)} " +
                             $"AND Id > {request.GetNextAfterId} " +
-                            $"ORDER BY CreateDate ASC";
+                            $"ORDER BY Id ASC";
                     result = await conn.QueryAsync<DiscussionsForEventsViewEntity>(sql, new { request.EventId, request.Take });
                 }
 
@@ -119,7 +119,7 @@ namespace WebAPI.Controllers
                 {
                     sql = $"SELECT TOP (@Take) * FROM DiscussionsForEventsView " +
                         $"WHERE {nameof(DiscussionsForEventsViewEntity.EventId)} = @{nameof(DiscussionsForEventsViewEntity.EventId)} " +
-                        $"ORDER BY CreateDate DESC";
+                        $"ORDER BY Id DESC";
                     result = (await conn.QueryAsync<DiscussionsForEventsViewEntity>(sql, new { request.EventId, request.Take })).Reverse();
                 }
             }

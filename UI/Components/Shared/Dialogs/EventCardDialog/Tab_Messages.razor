@@ -1,4 +1,4 @@
-﻿<MudStack Style="max-height: 250px; overflow: auto" id="ChatMessageFrame">
+﻿<MudStack Style="max-height: 250px; overflow: auto" id="DiscussionsFrame">
 
     @if (moreDiscussionsButton)
     {
@@ -7,10 +7,13 @@
 
     @foreach (var discussion in discussions)
     {
-        <MudStack Spacing="0" Class="mr-2" id="@("id_" + discussion.Id)">
-            <ColorizedAccountName Account="discussion.Sender" Style="font-weight: 500" />
-            <MudText Typo="Typo.body2">@discussion.Text</MudText>
-            <MudText Style="text-align: right; font-size: 12px; color: lightgray">@discussion.CreateDate.ToMyString()</MudText>
+        <MudStack Row>
+            <ImageAvatar Account="discussion.Sender" Size="EnumImageSize.s64x64" Class="avatar s40" />
+            <MudStack Spacing="0" Class="mr-2" id="@("id_" + discussion.Id)">
+                <ColorizedAccountName Account="discussion.Sender" Style="font-weight: 500" />
+                <MudText Typo="Typo.body2">@discussion.Text</MudText>
+                <MudText Style="text-align: left; font-size: 12px; color: lightgray">@discussion.CreateDate.ToMyString()</MudText>
+            </MudStack>
         </MudStack>
     }
     @* Метка конца списка обсужений *@
@@ -18,25 +21,12 @@
 
 </MudStack>
 
-
-
-@* @if (discussions != null)
+@if (CurrentState.Account != null)
 {
-    <MudStack Style="max-height: 250px; overflow: auto" id="ChatMessageFrame">
-
-        <Virtualize ItemsProvider="LoadDiscussions" Context="discussion" ItemSize="150">
-            <MudStack Spacing="0" Class="mr-2">
-                <ColorizedAccountName Account="discussion.Sender" Style="font-weight: 500" />
-                <MudText Typo="Typo.body2">@discussion.Text</MudText>
-                <MudText Style="text-align: right; font-size: 12px; color: gray">@discussion.CreateDate.ToMyPastShortString()</MudText>
-            </MudStack>
-        </Virtualize>
-
+    <MudStack Wrap="Wrap.Wrap" Row Spacing="1" Justify="Justify.FlexEnd" AlignItems="AlignItems.Center">
+        <ImageAvatar Account="CurrentState.Account" Size="EnumImageSize.s64x64" Class="avatar s50" />
+        <MudTextField @bind-Value="@_message" T="string" Label="Ваше сообщение" Variant="Variant.Outlined" Lines="1" MaxLines="5" MaxLength="1024" Clearable AutoGrow Class="mt-2" />
+        <MudFlexBreak />
+        <MudButton Disabled="@_sending" OnClick="OnMessageAdded" Variant="Variant.Filled" Color="Color.Info" StartIcon="@Icons.Material.Filled.Send" Size="Size.Small">Отправить</MudButton>
     </MudStack>
-} *@
-
-<MudStack Wrap="Wrap.Wrap" Row Spacing="0" Justify="Justify.FlexEnd">
-    <MudTextField @bind-Value="@_message" T="string" Label="Ваше сообщение" Variant="Variant.Outlined" Lines="1" MaxLines="5" MaxLength="1024" Clearable AutoGrow Class="mt-2" />
-    <MudFlexBreak />
-    <MudButton Disabled="@_sending" OnClick="OnMessageAdded" Variant="Variant.Filled" Color="Color.Info" StartIcon="@Icons.Material.Filled.Send" Size="Size.Small">Отправить</MudButton>
-</MudStack>
+}

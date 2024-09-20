@@ -20,7 +20,7 @@ namespace UI.Components.Shared.Dialogs.EventCardDialog
         List<DiscussionsForEventsViewDto> discussions = new List<DiscussionsForEventsViewDto>();
         string? _message { get; set; } = null!;
         bool _sending;
-        int _currentElement = 0;
+        int _currentElementId = 0;
         bool moreDiscussionsButton = false;
 
         protected override async Task OnInitializedAsync() =>
@@ -29,7 +29,7 @@ namespace UI.Components.Shared.Dialogs.EventCardDialog
         protected override async Task OnAfterRenderAsync(bool firstRender)
         {
             if (!firstRender)
-                await _JSProcessor.ScrollToElement("ChatMessageFrame", $"id_{_currentElement}");
+                await _JSProcessor.ScrollToElement("DiscussionsFrame", $"id_{_currentElementId}");
         }
 
         async Task GetDiscussionsAsync()
@@ -40,8 +40,9 @@ namespace UI.Components.Shared.Dialogs.EventCardDialog
                 GetPreviousFromId = discussions.Count > 0 ? discussions.Min(m => m.Id) : null,
                 Take = StaticData.EVENT_DISCUSSIONS_PER_BLOCK
             });
-            _currentElement = discussions.Any() ? discussions.Min(m => m.Id) : 0;
             discussions.InsertRange(0, response.Response.Discussions);
+
+            _currentElementId = response.Response.Discussions.Any() ? response.Response.Discussions.Max(m => m.Id) : 0;
 
             moreDiscussionsButton = discussions.Count < response.Response.NumOfDiscussions;
         }
@@ -52,15 +53,27 @@ namespace UI.Components.Shared.Dialogs.EventCardDialog
             if (!string.IsNullOrWhiteSpace(_message))
             {
                 _sending = true;
-                var response = await _repoAddDiscussion.HttpPostAsync(new AddDiscussionsForEventsRequestDto()
+
+                var responseAdd = await _repoAddDiscussion.HttpPostAsync(new AddDiscussionsForEventsRequestDto()
                 {
                     Token = CurrentState.Account?.Token,
                     EventId = ScheduleForEventView.EventId,
                     Text = _message
                 });
 
+                var response = await _repoGetDiscussions.HttpPostAsync(new GetDiscussionsForEventsRequestDto()
+                {
+                    EventId = ScheduleForEventView.EventId,
+                    GetNextAfterId = discussions.Count > 0 ? discussions.Max(m => m.Id) : null,
+                    Take = StaticData.EVENT_DISCUSSIONS_PER_BLOCK
+                });
+                discussions.AddRange(response.Response.Discussions);
+
+                moreDiscussionsButton = discussions.Count < response.Response.NumOfDiscussions;
+
+                _currentElementId = discussions.Any() ? discussions.Max(m => m.Id) : 0;
                 _message = null;
-                await GetDiscussionsAsync();
+
                 _sending = false;
             }
         }

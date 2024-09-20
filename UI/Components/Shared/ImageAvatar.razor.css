@@ -7,6 +7,11 @@
     height: 35px;
 }
 
+.s40 {
+    width: 40px;
+    height: 40px;
+}
+
 .s45 {
     width: 45px;
     height: 45px;
@@ -17,11 +22,16 @@
     height: 50px;
 }
 
+.s55 {
+    width: 55px;
+    height: 55px;
+}
+
 .s60 {
     width: 60px;
     height: 60px;
 }
 
 .img-online {
-    border: 3px solid #2bad0a;
+    border: 2px solid #2bad0a;
 }

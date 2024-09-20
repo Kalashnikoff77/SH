@@ -17,8 +17,11 @@ namespace Common.JSProcessor
         public async Task Redirect(string url) =>
             await RunJSAsync(nameof(Redirect), url);
 
-        public async Task ScrollDivToBottom(string tagId) =>
-            await RunJSAsync(nameof(ScrollDivToBottom), tagId);
+        public async Task ScrollDivToBottom(string divId) =>
+            await RunJSAsync(nameof(ScrollDivToBottom), divId);
+
+        public async Task ScrollToElement(string divId, string elementId) =>
+            await RunJSAsync(nameof(ScrollToElement), divId, elementId);
 
         public async Task UpdateOnlineAccountsClient(HashSet<string> ConnectedAccounts) =>
             await RunJSAsync(nameof(UpdateOnlineAccountsClient), ConnectedAccounts);

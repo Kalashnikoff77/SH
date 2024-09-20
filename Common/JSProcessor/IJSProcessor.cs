@@ -20,7 +20,8 @@
 
         Task Redirect(string url);
 
-        Task ScrollDivToBottom(string tagId);
+        Task ScrollDivToBottom(string divId);
+        Task ScrollToElement(string divId, string elementId);
 
         Task UpdateOnlineAccountsClient(HashSet<string> ConnectedAccounts);
     }

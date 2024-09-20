@@ -65,8 +65,14 @@ function ChangeNumberInButtonsFadeInOut(tagClass, number) {
 
 
 // Прокрутка div вниз
-function ScrollDivToBottom(tagId) {
-    $('#' + tagId).scrollTop($('#' + tagId)[0].scrollHeight);
+function ScrollDivToBottom(divId) {
+    $('#' + divId).scrollTop($('#' + divId)[0].scrollHeight);
 }
+
+function ScrollToElement(divId, elementId) {
+    var element = document.getElementById(elementId);
+    element.scrollIntoView();
+}
+
 
 function Redirect(uri) { window.location.replace(uri) }

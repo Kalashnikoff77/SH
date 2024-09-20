@@ -1,6 +1,28 @@
-﻿@* @if (discussions != null)
+﻿<MudStack Style="max-height: 250px; overflow: auto" id="ChatMessageFrame">
+
+    @if (moreDiscussionsButton)
+    {
+        <MudButton EndIcon="@Icons.Material.Outlined.ArrowUpward" Class="pa-3" Color="Color.Primary" OnClick="GetDiscussionsAsync">Ещё</MudButton>
+    }
+
+    @foreach (var discussion in discussions)
+    {
+        <MudStack Spacing="0" Class="mr-2" id="@("id_" + discussion.Id)">
+            <ColorizedAccountName Account="discussion.Sender" Style="font-weight: 500" />
+            <MudText Typo="Typo.body2">@discussion.Text</MudText>
+            <MudText Style="text-align: right; font-size: 12px; color: lightgray">@discussion.CreateDate.ToMyString()</MudText>
+        </MudStack>
+    }
+    @* Метка конца списка обсужений *@
+    <div id="id_0" />
+
+</MudStack>
+
+
+
+@* @if (discussions != null)
 {
- *@    <MudStack Style="max-height: 250px; overflow: auto" id="ChatMessageFrame">
+    <MudStack Style="max-height: 250px; overflow: auto" id="ChatMessageFrame">
 
         <Virtualize ItemsProvider="LoadDiscussions" Context="discussion" ItemSize="150">
             <MudStack Spacing="0" Class="mr-2">
@@ -11,7 +33,7 @@
         </Virtualize>
 
     </MudStack>
-@* } *@
+} *@
 
 <MudStack Wrap="Wrap.Wrap" Row Spacing="0" Justify="Justify.FlexEnd">
     <MudTextField @bind-Value="@_message" T="string" Label="Ваше сообщение" Variant="Variant.Outlined" Lines="1" MaxLines="5" MaxLength="1024" Clearable AutoGrow Class="mt-2" />

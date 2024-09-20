@@ -117,22 +117,14 @@ namespace WebAPI.Controllers
                 // Запрос на получение последних сообщений (по умолчанию)
                 else
                 {
-                    //int offset = response.NumOfDiscussions > StaticData.EVENT_DISCUSSIONS_PER_BLOCK ? response.NumOfDiscussions - StaticData.EVENT_DISCUSSIONS_PER_BLOCK : 0;
-                    //sql = $"SELECT * FROM DiscussionsForEventsView " +
-                    //    $"WHERE {nameof(DiscussionsForEventsViewEntity.EventId)} = @{nameof(DiscussionsForEventsViewEntity.EventId)} " +
-                    //    $"ORDER BY CreateDate ASC " +
-                    //    $"OFFSET {request.Skip} ROWS " +
-                    //    $"FETCH NEXT {request.Take} ROWS ONLY";
-
-                    sql = $"SELECT * FROM DiscussionsForEventsView " +
+                    sql = $"SELECT TOP (@Take) * FROM DiscussionsForEventsView " +
                         $"WHERE {nameof(DiscussionsForEventsViewEntity.EventId)} = @{nameof(DiscussionsForEventsViewEntity.EventId)} " +
-                        $"ORDER BY CreateDate ASC";
-                    result = await conn.QueryAsync<DiscussionsForEventsViewEntity>(sql, new { request.EventId, request.Take });
+                        $"ORDER BY CreateDate DESC";
+                    result = (await conn.QueryAsync<DiscussionsForEventsViewEntity>(sql, new { request.EventId, request.Take })).Reverse();
                 }
             }
 
             response.Discussions = _mapper.Map<List<DiscussionsForEventsViewDto>>(result);
-
             return response;
         }
 

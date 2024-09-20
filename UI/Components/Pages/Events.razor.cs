@@ -68,7 +68,6 @@ namespace UI.Components.Pages
             return Dialog.ShowAsync<EventCardDialog>(schedule.Event?.Name, dialogParams, dialogOptions);
         }
 
-
         Task OnSearch(string text)
         {
             request.FilterFreeText = text;

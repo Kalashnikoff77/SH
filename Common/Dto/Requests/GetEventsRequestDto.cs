@@ -5,6 +5,11 @@
         public override string Uri => "/Events/Get";
 
         /// <summary>
+        /// Получить одну запись с указанным ScheduleId
+        /// </summary>
+        public int ScheduleId { get; set; }
+
+        /// <summary>
         /// Встречи каких организаторов выводить
         /// </summary>
         public IEnumerable<int>? AdminsIds { get; set; }

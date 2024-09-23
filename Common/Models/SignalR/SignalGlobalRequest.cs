@@ -8,6 +8,6 @@
 
     public class OnEventDiscussionAdded
     {
-        public int EventId { get; set; }
+        public int ScheduleId { get; set; }
     }
 }

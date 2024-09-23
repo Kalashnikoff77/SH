@@ -50,9 +50,12 @@ namespace UI.Components.Pages
         {
             OnEventDiscussionAddedHandler = OnEventDiscussionAddedHandler.SignalRClient<OnEventDiscussionAddedResponse>(CurrentState, async (response) =>
             {
-                var sch = EventsList.First(s => s.Id == response.Id);
-                sch.NumberOfDiscussions = 44;
-                await InvokeAsync(StateHasChanged);
+                var schedule = EventsList.FirstOrDefault(s => s.Id == response.ScheduleForEventViewDto.Id);
+                if (schedule != null)
+                {
+                    EventsList[EventsList.IndexOf(schedule)] = response.ScheduleForEventViewDto;
+                    await InvokeAsync(StateHasChanged);
+                }
             });
         }
 
@@ -106,9 +109,7 @@ namespace UI.Components.Pages
             return dataGrid.ReloadServerData();
         }
 
-        public void Dispose()
-        {
+        public void Dispose() =>
             OnEventDiscussionAddedHandler?.Dispose();
-        }
     }
 }

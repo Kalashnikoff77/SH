@@ -2,8 +2,12 @@
 {
     public enum EnumSignalRHandlers
     {
+        /// <summary>
+        /// При добавлении обсуждения в мероприятие
+        /// </summary>
         OnEventDiscussionAddedClient,
 
+        // Требуется проверить, используются ли эти перечисления
         NewMessageAddedServer,
         NewMessageAddedClient,
 

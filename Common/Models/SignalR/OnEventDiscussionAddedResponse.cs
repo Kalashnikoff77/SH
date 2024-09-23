@@ -1,11 +1,12 @@
-﻿using Common.Enums;
+﻿using Common.Dto.Views;
+using Common.Enums;
 
 namespace Common.Models.SignalR
 {
     public class OnEventDiscussionAddedResponse : SignalRModelBase<OnEventDiscussionAddedResponse>
     {
-        public int Id { get; set; }
-
         public override EnumSignalRHandlers EnumSignalRHandlersClient => EnumSignalRHandlers.OnEventDiscussionAddedClient;
+
+        public SchedulesForEventsViewDto ScheduleForEventViewDto { get; set; } = null!;
     }
 }

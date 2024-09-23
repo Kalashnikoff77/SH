@@ -37,8 +37,11 @@ namespace UI.Components.Shared.Dialogs.EventCardDialog
         {
             OnEventDiscussionAddedHandler = OnEventDiscussionAddedHandler.SignalRClient<OnEventDiscussionAddedResponse>(CurrentState, async (response) =>
             {
-                ScheduleForEventView.NumberOfDiscussions = 55;
-                await InvokeAsync(StateHasChanged);
+                if (response.ScheduleForEventViewDto != null)
+                {
+                    ScheduleForEventView = response.ScheduleForEventViewDto;
+                    await InvokeAsync(StateHasChanged);
+                }
             });
         }
 

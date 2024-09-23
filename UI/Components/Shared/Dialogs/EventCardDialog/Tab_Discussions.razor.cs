@@ -81,7 +81,7 @@ namespace UI.Components.Shared.Dialogs.EventCardDialog
                 {
                     OnEventDiscussionAdded = new OnEventDiscussionAdded
                     {
-                        EventId = ScheduleForEventView.Id
+                        ScheduleId = ScheduleForEventView.Id
                     }
                 };
                 await CurrentState.SignalRServerAsync(request);

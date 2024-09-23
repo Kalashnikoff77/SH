@@ -1,14 +1,14 @@
 ﻿using Common.Dto.Requests;
 using Common.Dto.Responses;
-using Common.Models;
 using Common.Models.States;
+using Common.Models;
 using Common.Repository;
-using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
+using Microsoft.AspNetCore.Components;
 
-namespace UI.Components
+namespace UI.Components.Layout
 {
-    public partial class Routes : IAsyncDisposable
+    public partial class MainLayout : IAsyncDisposable
     {
         [Inject] ProtectedLocalStorage _protectedLocalStore { get; set; } = null!;
         [Inject] ProtectedSessionStorage _protectedSessionStore { get; set; } = null!;
@@ -16,8 +16,6 @@ namespace UI.Components
         [Inject] IConfiguration _configuration { get; set; } = null!;
 
         [Inject] IRepository<LoginRequestDto, LoginResponseDto> _repoLogin { get; set; } = null!;
-
-        protected override void OnInitialized() => CurrentState.OnChange += StateHasChanged;
 
         protected override async Task OnAfterRenderAsync(bool firstRender)
         {

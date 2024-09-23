@@ -36,8 +36,18 @@ namespace UI.Components.Shared.Dialogs.EventCardDialog
 
             OnCheduleChangedHandler = OnCheduleChangedHandler.SignalRClient<OnScheduleChangedResponse>(CurrentState, async (response) =>
             {
-                _text = null;
-                _sending = false;
+                var responseApi = await _repoGetDiscussions.HttpPostAsync(new GetDiscussionsForEventsRequestDto()
+                {
+                    EventId = ScheduleForEventView.EventId,
+                    GetNextAfterId = discussions.Count > 0 ? discussions.Max(m => m.Id) : null,
+                    Take = StaticData.EVENT_DISCUSSIONS_PER_BLOCK
+                });
+                discussions.AddRange(responseApi.Response.Discussions);
+
+                moreDiscussionsButton = discussions.Count < responseApi.Response.NumOfDiscussions;
+
+                _currentElementId = discussions.Any() ? discussions.Max(m => m.Id) : 0;
+
                 await InvokeAsync(StateHasChanged);
             });
         }
@@ -71,18 +81,6 @@ namespace UI.Components.Shared.Dialogs.EventCardDialog
                     Text = _text
                 });
 
-                var response = await _repoGetDiscussions.HttpPostAsync(new GetDiscussionsForEventsRequestDto()
-                {
-                    EventId = ScheduleForEventView.EventId,
-                    GetNextAfterId = discussions.Count > 0 ? discussions.Max(m => m.Id) : null,
-                    Take = StaticData.EVENT_DISCUSSIONS_PER_BLOCK
-                });
-                discussions.AddRange(response.Response.Discussions);
-
-                moreDiscussionsButton = discussions.Count < response.Response.NumOfDiscussions;
-
-                _currentElementId = discussions.Any() ? discussions.Max(m => m.Id) : 0;
-
                 var request = new SignalGlobalRequest
                 {
                     OnScheduleChanged = new OnScheduleChanged
@@ -91,6 +89,9 @@ namespace UI.Components.Shared.Dialogs.EventCardDialog
                     }
                 };
                 await CurrentState.SignalRServerAsync(request);
+
+                _text = null;
+                _sending = false;
             }
         }
 

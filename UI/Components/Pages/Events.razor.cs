@@ -2,6 +2,7 @@
 using Common.Dto.Requests;
 using Common.Dto.Responses;
 using Common.Dto.Views;
+using Common.Models.SignalR;
 using Common.Models.States;
 using Common.Repository;
 using Microsoft.AspNetCore.Components;
@@ -10,7 +11,7 @@ using UI.Components.Shared.Dialogs.EventCardDialog;
 
 namespace UI.Components.Pages
 {
-    public partial class Events
+    public partial class Events : IDisposable
     {
         [CascadingParameter] public CurrentState CurrentState { get; set; } = null!;
         [Inject] IRepository<GetEventsRequestDto, GetEventsResponseDto> _repoGetEvents { get; set; } = null!;
@@ -31,6 +32,8 @@ namespace UI.Components.Pages
 
         MudCarousel<PhotosForEventsDto> Carousel = null!;
 
+        IDisposable? OnEventDiscussionAddedHandler;
+
         protected override async Task OnInitializedAsync()
         {
             var featuresResponse = await _repoGetFeatures.HttpPostAsync(new GetFeaturesForEventsRequestDto());
@@ -42,6 +45,17 @@ namespace UI.Components.Pages
             var adminsResponse = await _repoGetAdmins.HttpPostAsync(new GetAdminsForEventsRequestDto());
             AdminsList = adminsResponse.Response.AdminsForEvents;
         }
+
+        protected override void OnAfterRender(bool firstRender)
+        {
+            OnEventDiscussionAddedHandler = OnEventDiscussionAddedHandler.SignalRClient<OnEventDiscussionAddedResponse>(CurrentState, async (response) =>
+            {
+                var sch = EventsList.First(s => s.Id == response.Id);
+                sch.NumberOfDiscussions = 44;
+                await InvokeAsync(StateHasChanged);
+            });
+        }
+
 
         async Task<GridData<SchedulesForEventsViewDto>> ServerReload(GridState<SchedulesForEventsViewDto> state)
         {
@@ -90,6 +104,11 @@ namespace UI.Components.Pages
         {
             request.AdminsIds = selectedItems.Select(s => s.Id);
             return dataGrid.ReloadServerData();
+        }
+
+        public void Dispose()
+        {
+            OnEventDiscussionAddedHandler?.Dispose();
         }
     }
 }

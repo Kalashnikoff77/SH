@@ -3,13 +3,14 @@ using Common.Dto.Responses;
 using Common.Dto.Views;
 using Common.JSProcessor;
 using Common.Models;
+using Common.Models.SignalR;
 using Common.Models.States;
 using Common.Repository;
 using Microsoft.AspNetCore.Components;
 
 namespace UI.Components.Shared.Dialogs.EventCardDialog
 {
-    public partial class Tab_Messages
+    public partial class Tab_Discussions
     {
         [Inject] CurrentState CurrentState { get; set; } = null!;
         [Parameter, EditorRequired] public SchedulesForEventsViewDto ScheduleForEventView { get; set; } = null!;
@@ -22,6 +23,8 @@ namespace UI.Components.Shared.Dialogs.EventCardDialog
         bool _sending;
         int _currentElementId = 0;
         bool moreDiscussionsButton = false;
+
+        IDisposable? OnEventDiscussionAddedHandler;
 
         protected override async Task OnInitializedAsync() =>
             await GetDiscussionsAsync();
@@ -48,7 +51,7 @@ namespace UI.Components.Shared.Dialogs.EventCardDialog
         }
 
 
-        async Task OnMessageAdded()
+        async Task OnDiscussionAdded()
         {
             if (!string.IsNullOrWhiteSpace(_message))
             {
@@ -73,6 +76,15 @@ namespace UI.Components.Shared.Dialogs.EventCardDialog
 
                 _currentElementId = discussions.Any() ? discussions.Max(m => m.Id) : 0;
                 _message = null;
+
+                var request = new SignalGlobalRequest
+                {
+                    OnEventDiscussionAdded = new OnEventDiscussionAdded
+                    {
+                        EventId = ScheduleForEventView.Id
+                    }
+                };
+                await CurrentState.SignalRServerAsync(request);
 
                 _sending = false;
             }

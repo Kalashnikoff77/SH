@@ -1,5 +1,4 @@
-﻿using Common.Enums;
-using Common.Models.SignalR;
+﻿using Common.Models.SignalR;
 using Microsoft.AspNetCore.SignalR.Client;
 
 namespace Common.Models.States
@@ -37,19 +36,12 @@ namespace Common.Models.States
         /// <summary>
         /// Отправка запроса на сервер SignalR
         /// </summary>
-        public static Task SignalRServerAsync(this CurrentState currentState, EnumSignalRHandlers enumSignalRHandlers, object? arg1 = null)
+        public static Task SignalRServerAsync(this CurrentState currentState, SignalGlobalRequest request)
         {
             if (currentState.SignalR != null)
-            {
-                if (arg1 == null)
-                    return currentState.SignalR.SendAsync(enumSignalRHandlers.ToString());
-                else
-                    return currentState.SignalR.SendAsync(enumSignalRHandlers.ToString(), arg1);
-            }
+                return currentState.SignalR.SendAsync("GlobalHandler", request);
             else
-            {
                 return Task.CompletedTask;
-            }
         }
     }
 }

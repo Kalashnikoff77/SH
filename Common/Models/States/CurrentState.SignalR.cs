@@ -29,11 +29,11 @@ namespace Common.Models.States
             // Пользователь подключился
             updateOnlineAccountsHandler = updateOnlineAccountsHandler.SignalRClient<UpdateOnlineAccountsModel>(this);
 
-            // Пользователь обновил аватар
-            avatarChangedTriggerHandler = avatarChangedTriggerHandler.SignalRClient<AvatarChangedModel>(this);
+            //// Пользователь обновил аватар
+            //avatarChangedTriggerHandler = avatarChangedTriggerHandler.SignalRClient<AvatarChangedModel>(this);
 
-            // Пользователь изменил взаимоотношения с другим (дружба, подписка, блокировка)
-            updateRelationsTriggerHandler = updateRelationsTriggerHandler.SignalRClient<GetRelationsModel>(this);
+            //// Пользователь изменил взаимоотношения с другим (дружба, подписка, блокировка)
+            //updateRelationsTriggerHandler = updateRelationsTriggerHandler.SignalRClient<GetRelationsModel>(this);
 
             await SignalR.StartAsync();
         }

@@ -1,7 +1,7 @@
 ﻿using Common.Dto;
 using Common.Enums;
 
-namespace Common.Models.SignalR
+namespace Common.Models.SignalR2
 {
     public class GetRelationsModel : SignalRModelBase<GetRelationsModel>
     {

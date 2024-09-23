@@ -70,36 +70,6 @@ namespace SignalR
         }
 
 
-        // Триггер всем пользователям из-за смены аватара
-        [Authorize]
-        public async Task AvatarChangedServer(AvatarChangedModel model)
-        {
-            var loggerScope = _logger.BeginScope("{@CurrentMethod}", nameof(AvatarChangedServer));
-            _logger.LogInformation("МЕТОД: {0}({@1})", nameof(AvatarChangedServer), model);
-
-            _logger.LogInformation("Clients.All.{0}(), {@1}", EnumSignalRHandlers.AvatarChangedClient, model);
-            await Clients.All
-                .SendAsync(nameof(EnumSignalRHandlers.AvatarChangedClient), model);
-        }
-
-
-
-        // Триггер пользователю обновить иконку кол-ва непрочитанных уведомлений
-        [Authorize]
-        public async Task UpdateNotificationsCountServer(int recipientId)
-        {
-            var loggerScope = _logger.BeginScope("{@CurrentMethod}", nameof(UpdateNotificationsCountServer));
-            _logger.LogInformation("МЕТОД: {0}({1})", nameof(UpdateNotificationsCountServer), recipientId);
-
-            _logger.LogInformation("Clients.User.{0}({1})", EnumSignalRHandlers.UpdateNotificationsCountClient, recipientId);
-
-            var model = new UpdateNotificationsCountModel();
-            await Clients
-                .User(recipientId.ToString())
-                .SendAsync(nameof(EnumSignalRHandlers.UpdateNotificationsCountClient), model);
-        }
-
-
         // Получить AccountDetails из строкового Id в контексте запроса
         private bool GetAccountDetails(out AccountDetails accountDetails, string? userIdentifier)
         {

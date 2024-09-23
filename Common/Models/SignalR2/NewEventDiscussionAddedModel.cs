@@ -1,6 +1,6 @@
 ﻿using Common.Enums;
 
-namespace Common.Models.SignalR
+namespace Common.Models.SignalR2
 {
     /// <summary>
     /// Клиент: NewEventDiscussionAddedClient

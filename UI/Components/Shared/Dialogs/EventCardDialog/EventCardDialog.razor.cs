@@ -2,6 +2,7 @@
 using Common.Dto.Requests;
 using Common.Dto.Responses;
 using Common.Dto.Views;
+using Common.Models.SignalR;
 using Common.Models.States;
 using Common.Repository;
 using Microsoft.AspNetCore.Components;
@@ -9,7 +10,7 @@ using MudBlazor;
 
 namespace UI.Components.Shared.Dialogs.EventCardDialog
 {
-    public partial class EventCardDialog
+    public partial class EventCardDialog : IDisposable
     {
         [CascadingParameter] CurrentState CurrentState { get; set; } = null!;
         [CascadingParameter] MudDialogInstance MudDialog { get; set; } = null!;
@@ -21,6 +22,8 @@ namespace UI.Components.Shared.Dialogs.EventCardDialog
         SchedulesForEventsDto selectedSchedule { get; set; } = null!;
         IEnumerable<SchedulesForEventsDto> schedules { get; set; } = null!;
 
+        IDisposable? OnEventDiscussionAddedHandler;
+
         protected override void OnInitialized()
         {
             if (ScheduleForEventView.Event?.Schedule != null)
@@ -30,11 +33,25 @@ namespace UI.Components.Shared.Dialogs.EventCardDialog
             }
         }
 
+        protected override void OnAfterRender(bool firstRender)
+        {
+            OnEventDiscussionAddedHandler = OnEventDiscussionAddedHandler.SignalRClient<OnEventDiscussionAddedResponse>(CurrentState, async (response) =>
+            {
+                ScheduleForEventView.NumberOfDiscussions = 55;
+                await InvokeAsync(StateHasChanged);
+            });
+        }
+
         async Task ScheduleChangedAsync(SchedulesForEventsDto schedule)
         {
             var eventResponse = await _repoGetEvent.HttpPostAsync(new GetEventOneRequestDto() { ScheduleId = schedule.Id });
             ScheduleForEventView = eventResponse.Response.Event;
             selectedSchedule = schedule;
+        }
+
+        public void Dispose()
+        {
+            OnEventDiscussionAddedHandler?.Dispose();
         }
     }
 }

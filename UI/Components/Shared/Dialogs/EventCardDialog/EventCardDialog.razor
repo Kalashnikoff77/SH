@@ -34,7 +34,7 @@
                 </MudTabPanel>
 
                 <MudTabPanel Text="Обсуждение" BadgeData="@ScheduleForEventView.NumberOfDiscussions" BadgeColor="Color.Transparent">
-                    <Tab_Messages ScheduleForEventView="@ScheduleForEventView" />
+                    <Tab_Discussions ScheduleForEventView="@ScheduleForEventView" />
                 </MudTabPanel>
 
                 <MudTabPanel Text="Участники" Disabled="@(ScheduleForEventView.RegisteredAccounts == null)" BadgeData="@ScheduleForEventView.RegisteredAccounts?.Count()" BadgeColor="Color.Transparent">

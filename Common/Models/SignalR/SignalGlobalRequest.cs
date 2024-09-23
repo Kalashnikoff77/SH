@@ -2,11 +2,11 @@
 {
     public class SignalGlobalRequest
     {
-        public OnEventDiscussionAdded? OnEventDiscussionAdded { get; set; }
+        public OnScheduleChanged? OnScheduleChanged { get; set; }
     }
 
 
-    public class OnEventDiscussionAdded
+    public class OnScheduleChanged
     {
         public int ScheduleId { get; set; }
         public string Message { get; set; } = null!;

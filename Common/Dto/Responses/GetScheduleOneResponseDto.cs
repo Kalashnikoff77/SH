@@ -2,7 +2,7 @@
 
 namespace Common.Dto.Responses
 {
-    public class GetEventOneResponseDto : ResponseDtoBase
+    public class GetScheduleOneResponseDto : ResponseDtoBase
     {
         public SchedulesForEventsViewDto Event { get; set; } = null!;
     }

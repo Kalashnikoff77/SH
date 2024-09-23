@@ -20,14 +20,12 @@ namespace SignalR
         ILogger<SignalRHub> _logger;
 
         [Inject] IRepository<VisitsForAccountsUpdateRequestDto, ResponseDtoBase> _repoUpdateVisits { get; set; } = null!;
-        [Inject] IRepository<GetEventOneRequestDto, GetEventOneResponseDto> _repoGetEvent { get; set; } = null!;
-        [Inject] IRepository<AddDiscussionsForEventsRequestDto, AddDiscussionsForEventsResponseDto> _repoAddDiscussion { get; set; } = null!;
+        [Inject] IRepository<GetScheduleOneRequestDto, GetScheduleOneResponseDto> _repoGetEvent { get; set; } = null!;
 
 
         public SignalRHub(
             IRepository<VisitsForAccountsUpdateRequestDto, ResponseDtoBase> repoUpdateVisits,
-            IRepository<GetEventOneRequestDto, GetEventOneResponseDto> repoGetEvent,
-            IRepository<AddDiscussionsForEventsRequestDto, AddDiscussionsForEventsResponseDto> _repoAddDiscussion,
+            IRepository<GetScheduleOneRequestDto, GetScheduleOneResponseDto> repoGetEvent,
             Accounts connectedAccounts, IConfiguration configuration, ILogger<SignalRHub> logger)
         {
             _repoGetEvent = repoGetEvent;
@@ -43,26 +41,22 @@ namespace SignalR
         [Authorize]
         public async Task GlobalHandler(SignalGlobalRequest request)
         {
-            if (request.OnEventDiscussionAdded != null)
-                await OnEventDiscussionAdded(request.OnEventDiscussionAdded);
+            if (request.OnScheduleChanged != null)
+                await OnEventDiscussionAdded(request.OnScheduleChanged);
         }
 
 
         /// <summary>
         /// Добавлено обсуждение в мероприятие
         /// </summary>
-        async Task OnEventDiscussionAdded(OnEventDiscussionAdded request)
+        async Task OnEventDiscussionAdded(OnScheduleChanged request)
         {
-            if (GetAccountDetails(out AccountDetails accountDetails, Context.UserIdentifier))
+            var apiResponse = await _repoGetEvent.HttpPostAsync(new GetScheduleOneRequestDto { ScheduleId = request.ScheduleId });
+            if (apiResponse.Response.Event != null)
             {
-                var apiResponse = await _repoGetEvent.HttpPostAsync(new GetEventOneRequestDto { ScheduleId = request.ScheduleId });
-                if (apiResponse.Response.Event != null)
-                {
-                    var response = new OnEventDiscussionAddedResponse { ScheduleForEventViewDto = apiResponse.Response.Event };
-                    await Clients.All.SendAsync(response.EnumSignalRHandlersClient.ToString(), response);
-                }
+                var response = new OnScheduleChangedResponse { ScheduleForEventViewDto = apiResponse.Response.Event };
+                await Clients.All.SendAsync(response.EnumSignalRHandlersClient.ToString(), response);
             }
         }
-
     }
 }

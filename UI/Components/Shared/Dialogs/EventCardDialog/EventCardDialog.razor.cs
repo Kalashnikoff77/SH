@@ -16,7 +16,7 @@ namespace UI.Components.Shared.Dialogs.EventCardDialog
         [CascadingParameter] MudDialogInstance MudDialog { get; set; } = null!;
         [Parameter, EditorRequired] public SchedulesForEventsViewDto ScheduleForEventView { get; set; } = null!;
 
-        [Inject] IRepository<GetEventOneRequestDto, GetEventOneResponseDto> _repoGetEvent { get; set; } = null!;
+        [Inject] IRepository<GetScheduleOneRequestDto, GetScheduleOneResponseDto> _repoGetEvent { get; set; } = null!;
 
         MudCarousel<PhotosForEventsDto> Carousel = null!;
         SchedulesForEventsDto selectedSchedule { get; set; } = null!;
@@ -35,7 +35,7 @@ namespace UI.Components.Shared.Dialogs.EventCardDialog
 
         protected override void OnAfterRender(bool firstRender)
         {
-            OnEventDiscussionAddedHandler = OnEventDiscussionAddedHandler.SignalRClient<OnEventDiscussionAddedResponse>(CurrentState, async (response) =>
+            OnEventDiscussionAddedHandler = OnEventDiscussionAddedHandler.SignalRClient<OnScheduleChangedResponse>(CurrentState, async (response) =>
             {
                 ScheduleForEventView = response.ScheduleForEventViewDto;
                 await InvokeAsync(StateHasChanged);
@@ -44,7 +44,7 @@ namespace UI.Components.Shared.Dialogs.EventCardDialog
 
         async Task ScheduleChangedAsync(SchedulesForEventsDto schedule)
         {
-            var eventResponse = await _repoGetEvent.HttpPostAsync(new GetEventOneRequestDto() { ScheduleId = schedule.Id });
+            var eventResponse = await _repoGetEvent.HttpPostAsync(new GetScheduleOneRequestDto() { ScheduleId = schedule.Id });
             ScheduleForEventView = eventResponse.Response.Event;
             selectedSchedule = schedule;
         }

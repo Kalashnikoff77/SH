@@ -14,7 +14,7 @@ namespace UI.Components.Pages
     public partial class Events : IDisposable
     {
         [CascadingParameter] public CurrentState CurrentState { get; set; } = null!;
-        [Inject] IRepository<GetEventsRequestDto, GetEventsResponseDto> _repoGetEvents { get; set; } = null!;
+        [Inject] IRepository<GetSchedulesRequestDto, GetSchedulesResponseDto> _repoGetEvents { get; set; } = null!;
         [Inject] IRepository<GetFeaturesForEventsRequestDto, GetFeaturesForEventsResponseDto> _repoGetFeatures { get; set; } = null!;
         [Inject] IRepository<GetRegionsForEventsRequestDto, GetRegionsForEventsResponseDto> _repoGetRegions { get; set; } = null!;
         [Inject] IRepository<GetAdminsForEventsRequestDto, GetAdminsForEventsResponseDto> _repoGetAdmins { get; set; } = null!;
@@ -22,7 +22,7 @@ namespace UI.Components.Pages
 
         MudDataGrid<SchedulesForEventsViewDto> dataGrid = null!;
 
-        GetEventsRequestDto request = new GetEventsRequestDto { IsPhotosIncluded = true };
+        GetSchedulesRequestDto request = new GetSchedulesRequestDto { IsPhotosIncluded = true };
 
         List<SchedulesForEventsViewDto> EventsList = new List<SchedulesForEventsViewDto>();
 
@@ -48,7 +48,7 @@ namespace UI.Components.Pages
 
         protected override void OnAfterRender(bool firstRender)
         {
-            OnEventDiscussionAddedHandler = OnEventDiscussionAddedHandler.SignalRClient<OnEventDiscussionAddedResponse>(CurrentState, async (response) =>
+            OnEventDiscussionAddedHandler = OnEventDiscussionAddedHandler.SignalRClient<OnScheduleChangedResponse>(CurrentState, async (response) =>
             {
                 var index = EventsList.FindIndex(s => s.Id == response.ScheduleForEventViewDto.Id);
                 if (index >= 0)

@@ -3,7 +3,6 @@ using Common.Dto;
 using Common.Dto.Requests;
 using Common.Dto.Responses;
 using Common.Dto.Views;
-using Common.Models;
 using Dapper;
 using DataContext.Entities;
 using DataContext.Entities.Views;
@@ -23,11 +22,11 @@ namespace WebAPI.Controllers
 
 
         [Route("GetOne"), HttpPost]
-        public async Task<GetEventOneResponseDto?> GetOneAsync(GetEventOneRequestDto request)
+        public async Task<GetScheduleOneResponseDto?> GetOneAsync(GetScheduleOneRequestDto request)
         {
             AuthenticateUser();
 
-            var response = new GetEventOneResponseDto();
+            var response = new GetScheduleOneResponseDto();
 
             var columns = GetRequiredColumns<SchedulesForEventsViewEntity>();
 
@@ -48,9 +47,9 @@ namespace WebAPI.Controllers
 
 
         [Route("Get"), HttpPost]
-        public async Task<GetEventsResponseDto?> GetAsync(GetEventsRequestDto request)
+        public async Task<GetSchedulesResponseDto?> GetAsync(GetSchedulesRequestDto request)
         {
-            var response = new GetEventsResponseDto();
+            var response = new GetSchedulesResponseDto();
 
             var columns = GetRequiredColumns<SchedulesForEventsViewEntity>();
 

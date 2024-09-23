@@ -1,6 +1,6 @@
 ﻿namespace Common.Dto.Requests
 {
-    public class GetEventOneRequestDto : RequestDtoBase
+    public class GetScheduleOneRequestDto : RequestDtoBase
     {
         public override string Uri => "/Events/GetOne";
 

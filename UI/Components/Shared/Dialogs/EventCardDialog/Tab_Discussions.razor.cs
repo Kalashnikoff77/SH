@@ -24,7 +24,7 @@ namespace UI.Components.Shared.Dialogs.EventCardDialog
         int _currentElementId = 0;
         bool moreDiscussionsButton = false;
 
-        IDisposable? OnEventDiscussionAddedHandler;
+        IDisposable? OnCheduleChangedHandler;
 
         protected override async Task OnInitializedAsync() =>
             await GetDiscussionsAsync();
@@ -34,8 +34,9 @@ namespace UI.Components.Shared.Dialogs.EventCardDialog
             if (!firstRender)
                 await _JSProcessor.ScrollToElement("DiscussionsFrame", $"id_{_currentElementId}");
 
-            OnEventDiscussionAddedHandler = OnEventDiscussionAddedHandler.SignalRClient<OnEventDiscussionAddedResponse>(CurrentState, async (response) =>
+            OnCheduleChangedHandler = OnCheduleChangedHandler.SignalRClient<OnScheduleChangedResponse>(CurrentState, async (response) =>
             {
+                _text = null;
                 _sending = false;
                 await InvokeAsync(StateHasChanged);
             });
@@ -81,11 +82,10 @@ namespace UI.Components.Shared.Dialogs.EventCardDialog
                 moreDiscussionsButton = discussions.Count < response.Response.NumOfDiscussions;
 
                 _currentElementId = discussions.Any() ? discussions.Max(m => m.Id) : 0;
-                _text = null;
 
                 var request = new SignalGlobalRequest
                 {
-                    OnEventDiscussionAdded = new OnEventDiscussionAdded
+                    OnScheduleChanged = new OnScheduleChanged
                     {
                         ScheduleId = ScheduleForEventView.Id
                     }
@@ -95,7 +95,7 @@ namespace UI.Components.Shared.Dialogs.EventCardDialog
         }
 
         public void Dispose() =>
-            OnEventDiscussionAddedHandler?.Dispose();
+            OnCheduleChangedHandler?.Dispose();
 
         //async ValueTask<ItemsProviderResult<DiscussionsForEventsViewDto>> LoadDiscussions(ItemsProviderRequest request)
         //{

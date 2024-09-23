@@ -20,7 +20,7 @@ namespace SignalR
         ILogger<SignalRHub> _logger;
 
         [Inject] IRepository<VisitsForAccountsUpdateRequestDto, ResponseDtoBase> _repoUpdateVisits { get; set; } = null!;
-        [Inject] IRepository<GetScheduleOneRequestDto, GetScheduleOneResponseDto> _repoGetEvent { get; set; } = null!;
+        [Inject] IRepository<GetScheduleOneRequestDto, GetScheduleOneResponseDto> _repoGetSchedule { get; set; } = null!;
 
 
         public SignalRHub(
@@ -28,7 +28,7 @@ namespace SignalR
             IRepository<GetScheduleOneRequestDto, GetScheduleOneResponseDto> repoGetEvent,
             Accounts connectedAccounts, IConfiguration configuration, ILogger<SignalRHub> logger)
         {
-            _repoGetEvent = repoGetEvent;
+            _repoGetSchedule = repoGetEvent;
             _repoUpdateVisits = repoUpdateVisits;
 
             _configuration = configuration;
@@ -51,7 +51,7 @@ namespace SignalR
         /// </summary>
         async Task OnEventDiscussionAdded(OnScheduleChanged request)
         {
-            var apiResponse = await _repoGetEvent.HttpPostAsync(new GetScheduleOneRequestDto { ScheduleId = request.ScheduleId });
+            var apiResponse = await _repoGetSchedule.HttpPostAsync(new GetScheduleOneRequestDto { ScheduleId = request.ScheduleId });
             if (apiResponse.Response.Event != null)
             {
                 var response = new OnScheduleChangedResponse { ScheduleForEventViewDto = apiResponse.Response.Event };

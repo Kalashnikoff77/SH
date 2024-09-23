@@ -37,11 +37,8 @@ namespace UI.Components.Shared.Dialogs.EventCardDialog
         {
             OnEventDiscussionAddedHandler = OnEventDiscussionAddedHandler.SignalRClient<OnEventDiscussionAddedResponse>(CurrentState, async (response) =>
             {
-                if (response.ScheduleForEventViewDto != null)
-                {
-                    ScheduleForEventView = response.ScheduleForEventViewDto;
-                    await InvokeAsync(StateHasChanged);
-                }
+                ScheduleForEventView = response.ScheduleForEventViewDto;
+                await InvokeAsync(StateHasChanged);
             });
         }
 
@@ -52,9 +49,7 @@ namespace UI.Components.Shared.Dialogs.EventCardDialog
             selectedSchedule = schedule;
         }
 
-        public void Dispose()
-        {
+        public void Dispose() =>
             OnEventDiscussionAddedHandler?.Dispose();
-        }
     }
 }

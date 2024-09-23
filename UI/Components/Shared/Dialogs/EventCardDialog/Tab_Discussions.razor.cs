@@ -10,7 +10,7 @@ using Microsoft.AspNetCore.Components;
 
 namespace UI.Components.Shared.Dialogs.EventCardDialog
 {
-    public partial class Tab_Discussions
+    public partial class Tab_Discussions : IDisposable
     {
         [Inject] CurrentState CurrentState { get; set; } = null!;
         [Parameter, EditorRequired] public SchedulesForEventsViewDto ScheduleForEventView { get; set; } = null!;
@@ -19,7 +19,7 @@ namespace UI.Components.Shared.Dialogs.EventCardDialog
         [Inject] IJSProcessor _JSProcessor { get; set; } = null!;
 
         List<DiscussionsForEventsViewDto> discussions = new List<DiscussionsForEventsViewDto>();
-        string? _message { get; set; } = null!;
+        string? _text { get; set; } = null!;
         bool _sending;
         int _currentElementId = 0;
         bool moreDiscussionsButton = false;
@@ -33,6 +33,12 @@ namespace UI.Components.Shared.Dialogs.EventCardDialog
         {
             if (!firstRender)
                 await _JSProcessor.ScrollToElement("DiscussionsFrame", $"id_{_currentElementId}");
+
+            OnEventDiscussionAddedHandler = OnEventDiscussionAddedHandler.SignalRClient<OnEventDiscussionAddedResponse>(CurrentState, async (response) =>
+            {
+                _sending = false;
+                await InvokeAsync(StateHasChanged);
+            });
         }
 
         async Task GetDiscussionsAsync()
@@ -53,15 +59,15 @@ namespace UI.Components.Shared.Dialogs.EventCardDialog
 
         async Task OnDiscussionAdded()
         {
-            if (!string.IsNullOrWhiteSpace(_message))
+            if (!string.IsNullOrWhiteSpace(_text))
             {
                 _sending = true;
 
                 var responseAdd = await _repoAddDiscussion.HttpPostAsync(new AddDiscussionsForEventsRequestDto()
                 {
-                    Token = CurrentState.Account?.Token,
+                    Token = CurrentState.Account!.Token,
                     EventId = ScheduleForEventView.EventId,
-                    Text = _message
+                    Text = _text
                 });
 
                 var response = await _repoGetDiscussions.HttpPostAsync(new GetDiscussionsForEventsRequestDto()
@@ -75,7 +81,7 @@ namespace UI.Components.Shared.Dialogs.EventCardDialog
                 moreDiscussionsButton = discussions.Count < response.Response.NumOfDiscussions;
 
                 _currentElementId = discussions.Any() ? discussions.Max(m => m.Id) : 0;
-                _message = null;
+                _text = null;
 
                 var request = new SignalGlobalRequest
                 {
@@ -85,10 +91,11 @@ namespace UI.Components.Shared.Dialogs.EventCardDialog
                     }
                 };
                 await CurrentState.SignalRServerAsync(request);
-
-                _sending = false;
             }
         }
+
+        public void Dispose() =>
+            OnEventDiscussionAddedHandler?.Dispose();
 
         //async ValueTask<ItemsProviderResult<DiscussionsForEventsViewDto>> LoadDiscussions(ItemsProviderRequest request)
         //{

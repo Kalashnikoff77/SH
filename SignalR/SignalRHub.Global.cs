@@ -21,11 +21,13 @@ namespace SignalR
 
         [Inject] IRepository<VisitsForAccountsUpdateRequestDto, ResponseDtoBase> _repoUpdateVisits { get; set; } = null!;
         [Inject] IRepository<GetEventOneRequestDto, GetEventOneResponseDto> _repoGetEvent { get; set; } = null!;
+        [Inject] IRepository<AddDiscussionsForEventsRequestDto, AddDiscussionsForEventsResponseDto> _repoAddDiscussion { get; set; } = null!;
 
 
         public SignalRHub(
             IRepository<VisitsForAccountsUpdateRequestDto, ResponseDtoBase> repoUpdateVisits,
             IRepository<GetEventOneRequestDto, GetEventOneResponseDto> repoGetEvent,
+            IRepository<AddDiscussionsForEventsRequestDto, AddDiscussionsForEventsResponseDto> _repoAddDiscussion,
             Accounts connectedAccounts, IConfiguration configuration, ILogger<SignalRHub> logger)
         {
             _repoGetEvent = repoGetEvent;
@@ -47,19 +49,18 @@ namespace SignalR
 
 
         /// <summary>
-        /// Добавлено обсуждение в мероприятии
+        /// Добавлено обсуждение в мероприятие
         /// </summary>
         async Task OnEventDiscussionAdded(OnEventDiscussionAdded request)
         {
-            var apiRequest = new GetEventOneRequestDto { ScheduleId = request.ScheduleId };
-            var apiResponse = await _repoGetEvent.HttpPostAsync(apiRequest);
-            var scheduleForEventViewDto = apiResponse.Response.Event;
-
-            if (scheduleForEventViewDto != null)
+            if (GetAccountDetails(out AccountDetails accountDetails, Context.UserIdentifier))
             {
-                scheduleForEventViewDto.NumberOfDiscussions = 77;
-                var response = new OnEventDiscussionAddedResponse { ScheduleForEventViewDto = scheduleForEventViewDto };
-                await Clients.All.SendAsync(response.EnumSignalRHandlersClient.ToString(), response);
+                var apiResponse = await _repoGetEvent.HttpPostAsync(new GetEventOneRequestDto { ScheduleId = request.ScheduleId });
+                if (apiResponse.Response.Event != null)
+                {
+                    var response = new OnEventDiscussionAddedResponse { ScheduleForEventViewDto = apiResponse.Response.Event };
+                    await Clients.All.SendAsync(response.EnumSignalRHandlersClient.ToString(), response);
+                }
             }
         }
 

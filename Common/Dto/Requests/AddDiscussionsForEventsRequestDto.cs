@@ -16,6 +16,9 @@
         /// </summary>
         public int? DiscussionId { get; set; }
 
+        /// <summary>
+        /// Текст сообщения
+        /// </summary>
         public string Text { get; set; } = null!;
     }
 }

@@ -50,10 +50,10 @@ namespace UI.Components.Pages
         {
             OnEventDiscussionAddedHandler = OnEventDiscussionAddedHandler.SignalRClient<OnEventDiscussionAddedResponse>(CurrentState, async (response) =>
             {
-                var schedule = EventsList.FirstOrDefault(s => s.Id == response.ScheduleForEventViewDto.Id);
-                if (schedule != null)
+                var index = EventsList.FindIndex(s => s.Id == response.ScheduleForEventViewDto.Id);
+                if (index >= 0)
                 {
-                    EventsList[EventsList.IndexOf(schedule)] = response.ScheduleForEventViewDto;
+                    EventsList[index] = response.ScheduleForEventViewDto;
                     await InvokeAsync(StateHasChanged);
                 }
             });

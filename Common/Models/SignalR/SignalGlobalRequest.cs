@@ -9,5 +9,6 @@
     public class OnEventDiscussionAdded
     {
         public int ScheduleId { get; set; }
+        public string Message { get; set; } = null!;
     }
 }

@@ -56,14 +56,14 @@
                                     </MudButton>
                                 </MudStack>
                                 <MudStack Row AlignItems="AlignItems.Center" Spacing="1">
-                                    <MudIcon Icon="@Icons.Material.Outlined.LocationOn" Style="font-size:19px" />
+                                    <MudIcon Icon="@Icons.Material.Outlined.LocationOn" Style="font-size:20px" />
                                     <MudText Typo="Typo.body2">@context.Item.Event.ToRegionString()</MudText>
                                 </MudStack>
 
                                 <MudStack Row Spacing="0" AlignItems="AlignItems.Center">
                                     <MudStack Row AlignItems="AlignItems.Center" Spacing="0" Title="Дата и время начала">
-                                        <MudIcon Icon="@Icons.Material.Outlined.CalendarToday" Class="@context.Item.ToDateClass()" Style="font-size:18px" />
-                                        <MudText Typo="Typo.body2" Class="mt-1 ml-1">@context.Item.StartDate.ToMyString()</MudText>
+                                        <MudIcon Icon="@Icons.Material.Outlined.CalendarToday" Class="@context.Item.ToDateClass()" Style="font-size:17px" />
+                                        <MudText Typo="Typo.body2" Class="ml-1">@context.Item.StartDate.ToMyString()</MudText>
                                     </MudStack>
                                     @if (context.Item.NumberOfDiscussions > 0)
                                     {
@@ -75,16 +75,16 @@
                                 </MudStack>
 
                                 <MudStack Row Spacing="0">
-                                    <MudStack Row Spacing="0" Style="margin-left:1px" Class="mr-2" title="Кол-во пар">
-                                        <MudIcon Icon="@Icons.Material.Filled.PeopleAlt" Color="Color.Tertiary" Style="font-size:16px" Class="mr-1" />
+                                    <MudStack Row Spacing="0" Style="margin-left:1px" AlignItems="AlignItems.Center" Class="mr-3" title="Кол-во пар">
+                                        <MudIcon Icon="@Icons.Material.Filled.PeopleAlt" Color="Color.Tertiary" Style="font-size:17px" Class="mr-1" />
                                         <MudText Typo="Typo.body2">@context.Item.NumberOfRegisteredPairs()</MudText>
                                     </MudStack>
-                                    <MudStack Row Spacing="0" Class="mr-2" title="Кол-во мужчин">
-                                        <MudIcon Icon="@Icons.Material.Outlined.Man" Color="Color.Primary" Style="font-size:16px" />
+                                    <MudStack Row Spacing="0" AlignItems="AlignItems.Center" Class="mr-3" title="Кол-во мужчин">
+                                        <MudIcon Icon="@Icons.Material.Outlined.Face5" Color="Color.Primary" Style="font-size:16px" Class="mr-1" />
                                         <MudText Typo="Typo.body2">@context.Item.NumberOfRegisteredMen()</MudText>
                                     </MudStack>
-                                    <MudStack Row Spacing="0" Class="mr-2" title="Кол-во женщин">
-                                        <MudIcon Icon="@Icons.Material.Outlined.Woman" Color="Color.Error" Style="font-size:16px" />
+                                    <MudStack Row Spacing="0" AlignItems="AlignItems.Center" Class="mr-3" title="Кол-во женщин">
+                                        <MudIcon Icon="@Icons.Material.Outlined.Face3" Color="Color.Error" Style="font-size:15px" Class="mr-1" />
                                         <MudText Typo="Typo.body2">@context.Item.NumberOfRegisteredWomen()</MudText>
                                     </MudStack>
                                     <MudStack Row Spacing="0">

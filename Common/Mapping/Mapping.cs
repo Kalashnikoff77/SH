@@ -2,7 +2,6 @@
 using Common.Dto.Requests;
 using Common.Dto.Views;
 using Common.Mapping.Converters;
-using Common.Models;
 
 namespace Common.Mapping
 {
@@ -10,6 +9,9 @@ namespace Common.Mapping
     {
         public Mapping()
         {
+            CreateMap<AccountsViewDto, AccountUpdateRequestDto>()
+                .ForMember(to => to.Informing, from => from.ConvertUsing<InformingConverter, string?>(from => from.Informing))
+                .ForMember(to => to.Password2, from => from.MapFrom(from => from.Password));
         }
     }
 }

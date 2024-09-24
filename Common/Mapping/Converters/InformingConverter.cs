@@ -11,8 +11,8 @@ namespace Common.Mapping.Converters
             if (string.IsNullOrWhiteSpace(source))
                 return new Informing();
             
-            var informing = JsonSerializer.Deserialize<Informing>(source);
-            return informing!;
+            var informing = JsonSerializer.Deserialize<Informing>(source) ?? new Informing();
+            return informing;
         }
     }
 }

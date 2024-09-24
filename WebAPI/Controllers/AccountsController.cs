@@ -1,6 +1,4 @@
 ﻿using AutoMapper;
-using Azure;
-using Common.Dto;
 using Common.Dto.Requests;
 using Common.Dto.Responses;
 using Common.Dto.Views;
@@ -206,6 +204,34 @@ namespace WebAPI.Controllers
                 {
                     var sql = $"SELECT TOP 1 Id FROM Accounts WHERE Email = @AccountEmail";
                     var result = await conn.QueryFirstOrDefaultAsync<int?>(sql, new { request.AccountEmail });
+                    response.AccountEmailExists = result == null ? false : true;
+                }
+            }
+            return response;
+        }
+
+
+        [Route("CheckUpdate"), HttpPost, Authorize]
+        public async Task<AccountCheckUpdateResponseDto> CheckUpdateAsync(AccountCheckUpdateRequestDto request)
+        {
+            AuthenticateUser();
+
+            var response = new AccountCheckUpdateResponseDto();
+            using (var conn = new SqlConnection(connectionString))
+            {
+                conn.Open();
+
+                if (request.AccountName != null)
+                {
+                    var sql = $"SELECT TOP 1 Id FROM Accounts WHERE Name = @AccountName AND Id <> @_accountId";
+                    var result = await conn.QueryFirstOrDefaultAsync<int?>(sql, new { request.AccountName, _accountId });
+                    response.AccountNameExists = result == null ? false : true;
+                }
+
+                if (request.AccountEmail != null)
+                {
+                    var sql = $"SELECT TOP 1 Id FROM Accounts WHERE Email = @AccountEmail AND Id <> @_accountId";
+                    var result = await conn.QueryFirstOrDefaultAsync<int?>(sql, new { request.AccountEmail, _accountId });
                     response.AccountEmailExists = result == null ? false : true;
                 }
             }

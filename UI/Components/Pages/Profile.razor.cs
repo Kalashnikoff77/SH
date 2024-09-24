@@ -1,4 +1,5 @@
-﻿using Common.Dto;
+﻿using AutoMapper;
+using Common.Dto;
 using Common.Dto.Requests;
 using Common.Dto.Responses;
 using Common.Dto.Views;
@@ -22,7 +23,7 @@ namespace UI.Components.Pages
     {
         [CascadingParameter] CurrentState CurrentState { get; set; } = null!;
         [Inject] IRepository<GetCountriesRequestDto, GetCountriesResponseDto> _repoGetCountries { get; set; } = null!;
-        [Inject] IRepository<AccountCheckRegisterRequestDto, AccountCheckRegisterResponseDto> _repoCheckRegister { get; set; } = null!;
+        [Inject] IRepository<AccountCheckUpdateRequestDto, AccountCheckUpdateResponseDto> _repoCheckUpdate { get; set; } = null!;
         [Inject] IRepository<AccountUpdateRequestDto, ResponseDtoBase> _repoUpdate { get; set; } = null!;
         [Inject] IRepository<LoginRequestDto, LoginResponseDto> _repoLogin { get; set; } = null!;
 
@@ -31,6 +32,8 @@ namespace UI.Components.Pages
         [Inject] IJSProcessor _JSProcessor { get; set; } = null!;
         [Inject] IDialogService DialogService { get; set; } = null!;
         [Inject] IConfiguration _config { get; set; } = null!;
+
+        [Inject] IMapper _mapper { get; set; } = null!;
 
         AccountUpdateRequestDto accountUpdateDto = null!;
         List<CountriesViewDto> countries { get; set; } = new List<CountriesViewDto>();
@@ -49,16 +52,22 @@ namespace UI.Components.Pages
                 { 1, new TabPanel {
                     Items = new Dictionary<string, TabPanelItem>
                         {
-                            { nameof(accountUpdateDto.Name), new TabPanelItem() },
-                            { nameof(accountUpdateDto.Email), new TabPanelItem() },
-                            { nameof(accountUpdateDto.Password), new TabPanelItem() },
-                            { nameof(accountUpdateDto.Password2), new TabPanelItem() },
-                            { nameof(accountUpdateDto.Country), new TabPanelItem() },
-                            { nameof(accountUpdateDto.Country.Region), new TabPanelItem() }
+                            { nameof(accountUpdateDto.Name), new TabPanelItem() { IsValid = true } },
+                            { nameof(accountUpdateDto.Email), new TabPanelItem() { IsValid = true } },
+                            { nameof(accountUpdateDto.Password), new TabPanelItem() { IsValid = true } },
+                            { nameof(accountUpdateDto.Password2), new TabPanelItem() { IsValid = true } },
+                            { nameof(accountUpdateDto.Country), new TabPanelItem() { IsValid = true } },
+                            { nameof(accountUpdateDto.Country.Region), new TabPanelItem() { IsValid = true } }
                         }
                     }
                 },
-                { 2, new TabPanel { Items = new Dictionary<string, TabPanelItem> { { nameof(accountUpdateDto.Users), new TabPanelItem() } } } }
+                { 2, new TabPanel { 
+                    Items = new Dictionary<string, TabPanelItem> 
+                        { 
+                            { nameof(accountUpdateDto.Users), new TabPanelItem() { IsValid = true } } 
+                        } 
+                    } 
+                }
             };
 
             var apiResponse = await _repoGetCountries.HttpPostAsync(new GetCountriesRequestDto());
@@ -69,9 +78,8 @@ namespace UI.Components.Pages
         {
             if (CurrentState.Account != null)
             {
-                accountUpdateDto = CurrentState.Account.DeepCopy<AccountUpdateRequestDto>()!;
+                accountUpdateDto = _mapper.Map<AccountUpdateRequestDto>(CurrentState.Account);
 
-                accountUpdateDto.Password2 = accountUpdateDto.Password;
                 countryText = accountUpdateDto.Country!.Name;
                 regionText = CurrentState.Account.Country!.Region.Name;
             }
@@ -123,7 +131,7 @@ namespace UI.Components.Pages
             if (string.IsNullOrWhiteSpace(name) || name.Length < StaticData.DB_ACCOUNTS_NAME_MIN)
                 errorMessage = $"Имя должно содержать {StaticData.DB_ACCOUNTS_NAME_MIN}-{StaticData.DB_ACCOUNTS_NAME_MAX} символов";
 
-            var apiResponse = await _repoCheckRegister.HttpPostAsync(new AccountCheckRegisterRequestDto { AccountName = name });
+            var apiResponse = await _repoCheckUpdate.HttpPostAsync(new AccountCheckUpdateRequestDto { AccountName = name, Token = CurrentState.Account!.Token });
             if (apiResponse.Response.AccountNameExists)
                 errorMessage = $"Это имя уже занято. Выберите другое.";
 
@@ -143,9 +151,9 @@ namespace UI.Components.Pages
             if (!Regex.IsMatch(email, @"^[a-z0-9_\.-]{1,32}@[a-z0-9\.-]{1,32}\.[a-z]{2,8}$"))
                 errorMessage = $"Проверьте корректность email";
 
-            var apiResponse = await _repoCheckRegister.HttpPostAsync(new AccountCheckRegisterRequestDto { AccountEmail = email });
+            var apiResponse = await _repoCheckUpdate.HttpPostAsync(new AccountCheckUpdateRequestDto { AccountEmail = email, Token = CurrentState.Account!.Token });
             if (apiResponse.Response.AccountEmailExists)
-                errorMessage = $"Этот email уже зарегистрирован. Забыли пароль?";
+                errorMessage = $"Этот email уже занят другим пользователем.";
 
             CheckPanel1Properties(errorMessage, nameof(accountUpdateDto.Email), ref EmailIconColor);
 

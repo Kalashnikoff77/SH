@@ -67,7 +67,10 @@
                                     </MudStack>
                                     @if (context.Item.NumberOfDiscussions > 0)
                                     {
-                                        <MudIcon Icon="@Icons.Material.Outlined.Chat" Color="Color.Info" title="@("Обсуждений: " + context.Item.NumberOfDiscussions.ToString())" Class="ml-3" Style="font-size:18px" />
+                                        <MudStack Row AlignItems="AlignItems.Center" Spacing="0" Title="@("Обсуждений: " + context.Item.NumberOfDiscussions.ToString())">
+                                            <MudIcon Icon="@Icons.Material.Outlined.Chat" Color="Color.Info" Class="ml-4 mr-1" Style="font-size:18px" />
+                                            <MudText Typo="Typo.body2">@context.Item.NumberOfDiscussions</MudText>
+                                        </MudStack>
                                     }
                                 </MudStack>
 

@@ -8,10 +8,26 @@
     <MudLayout>
         <MudAppBar Elevation="1">
             <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@((e) => DrawerToggle())" />
-            <MudText Typo="Typo.h5" Class="ml-3">Application</MudText>
+            <MudText Typo="Typo.h5" Class="ml-3">Сайт.Ru</MudText>
             <MudSpacer />
-            <MudIconButton Icon="@(DarkLightModeButtonIcon)" Color="Color.Inherit" OnClick="@DarkModeToggle" />
-            <MudIconButton Icon="@Icons.Material.Filled.MoreVert" Color="Color.Inherit" Edge="Edge.End" />
+            @* <MudIconButton Icon="@(DarkLightModeButtonIcon)" Color="Color.Inherit" OnClick="@DarkModeToggle" /> *@
+
+            @if (CurrentState.Account != null)
+            {
+                <ImageAvatar Account="CurrentState.Account" Class="avatar s45" />
+            }
+   
+            <MudMenu Icon="@Icons.Material.Filled.MoreVert" AnchorOrigin="Origin.BottomLeft" TransformOrigin="Origin.TopCenter">
+                @if (CurrentState.Account != null)
+                {
+                    <MudMenuItem Icon="@Icons.Material.Filled.Portrait">Профиль</MudMenuItem>
+                    <MudMenuItem Icon="@Icons.Material.Filled.Logout" OnClick="async() => { await CurrentState.LogOutAsync(); }">Выйти</MudMenuItem>
+                } else
+                {
+                    <MudMenuItem Href="/login" Icon="@Icons.Material.Filled.Login">Войти</MudMenuItem>
+                }
+            </MudMenu>
+        
         </MudAppBar>
         <MudDrawer @bind-Open="_drawerOpen" ClipMode="DrawerClipMode.Always" Elevation="2">
             <NavMenu />

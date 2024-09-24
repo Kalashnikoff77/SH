@@ -333,14 +333,14 @@ namespace UI.Components.Pages
 
         async void SubmitAsync()
         {
-            accountRegisterDto.ErrorRegisterMessage = null;
+            accountRegisterDto.ErrorMessage = null;
             processingAccount = true;
 
             var response = await _repoRegister.HttpPostAsync(accountRegisterDto);
 
             if (response.StatusCode != HttpStatusCode.OK)
             {
-                accountRegisterDto.ErrorRegisterMessage = response.Response.ErrorMessage;
+                accountRegisterDto.ErrorMessage = response.Response.ErrorMessage;
                 processingAccount = false;
                 StateHasChanged();
             }
@@ -369,7 +369,7 @@ namespace UI.Components.Pages
                 }
                 else
                 {
-                    accountRegisterDto.ErrorRegisterMessage = apiResponse.Response.ErrorMessage;
+                    accountRegisterDto.ErrorMessage = apiResponse.Response.ErrorMessage;
                     StateHasChanged();
                 }
             }

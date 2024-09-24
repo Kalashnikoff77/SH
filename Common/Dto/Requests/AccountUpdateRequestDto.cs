@@ -19,8 +19,7 @@
 
         public List<UsersDto> Users { get; set; } = null!;
 
-        public string? ErrorUpdateMessage { get; set; }
+        public string? ErrorMessage { get; set; }
         public bool Remember { get; set; }
-
     }
 }

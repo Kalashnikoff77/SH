@@ -75,8 +75,6 @@ namespace WebAPI.Controllers
         }
 
 
-
-
         [Route("GetWishList"), HttpPost]
         public async Task<GetWishListResponseDto> GetWishListAsync(GetWishListRequestDto request)
         {
@@ -211,34 +209,6 @@ namespace WebAPI.Controllers
         }
 
 
-        [Route("CheckUpdate"), HttpPost, Authorize]
-        public async Task<AccountCheckUpdateResponseDto> CheckUpdateAsync(AccountCheckUpdateRequestDto request)
-        {
-            AuthenticateUser();
-
-            var response = new AccountCheckUpdateResponseDto();
-            using (var conn = new SqlConnection(connectionString))
-            {
-                conn.Open();
-
-                if (request.AccountName != null)
-                {
-                    var sql = $"SELECT TOP 1 Id FROM Accounts WHERE Name = @AccountName AND Id <> @_accountId";
-                    var result = await conn.QueryFirstOrDefaultAsync<int?>(sql, new { request.AccountName, _accountId });
-                    response.AccountNameExists = result == null ? false : true;
-                }
-
-                if (request.AccountEmail != null)
-                {
-                    var sql = $"SELECT TOP 1 Id FROM Accounts WHERE Email = @AccountEmail AND Id <> @_accountId";
-                    var result = await conn.QueryFirstOrDefaultAsync<int?>(sql, new { request.AccountEmail, _accountId });
-                    response.AccountEmailExists = result == null ? false : true;
-                }
-            }
-            return response;
-        }
-
-
         [Route("Update"), HttpPost, Authorize]
         public async Task<AccountUpdateResponseDto> UpdateAsync(AccountUpdateRequestDto request)
         {
@@ -263,7 +233,7 @@ namespace WebAPI.Controllers
                 foreach (var user in request.Users)
                 {
                     // Добавление
-                    if (user.Id == 0)
+                    if (user.Id == -1)
                     {
                         sql = $"INSERT INTO Users ({nameof(UsersEntity.Name)}, {nameof(UsersEntity.Height)}, {nameof(UsersEntity.Weight)}, {nameof(UsersEntity.BirthDate)}, {nameof(UsersEntity.About)}, {nameof(UsersEntity.Gender)}, {nameof(UsersEntity.HairFace)}, {nameof(UsersEntity.HairHead)}, {nameof(UsersEntity.HairIntim)}, {nameof(UsersEntity.AccountId)}) " +
                             "VALUES " +
@@ -321,6 +291,34 @@ namespace WebAPI.Controllers
 
                 return response;
             }
+        }
+
+
+        [Route("CheckUpdate"), HttpPost, Authorize]
+        public async Task<AccountCheckUpdateResponseDto> CheckUpdateAsync(AccountCheckUpdateRequestDto request)
+        {
+            AuthenticateUser();
+
+            var response = new AccountCheckUpdateResponseDto();
+            using (var conn = new SqlConnection(connectionString))
+            {
+                conn.Open();
+
+                if (request.AccountName != null)
+                {
+                    var sql = $"SELECT TOP 1 Id FROM Accounts WHERE Name = @AccountName AND Id <> @_accountId";
+                    var result = await conn.QueryFirstOrDefaultAsync<int?>(sql, new { request.AccountName, _accountId });
+                    response.AccountNameExists = result == null ? false : true;
+                }
+
+                if (request.AccountEmail != null)
+                {
+                    var sql = $"SELECT TOP 1 Id FROM Accounts WHERE Email = @AccountEmail AND Id <> @_accountId";
+                    var result = await conn.QueryFirstOrDefaultAsync<int?>(sql, new { request.AccountEmail, _accountId });
+                    response.AccountEmailExists = result == null ? false : true;
+                }
+            }
+            return response;
         }
 
 

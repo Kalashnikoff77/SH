@@ -25,7 +25,7 @@
 
 
         public string? Avatar { get; set; }
-        public string? ErrorRegisterMessage { get; set; }
+        public string? ErrorMessage { get; set; }
         public bool Remember { get; set; }
     }
 }

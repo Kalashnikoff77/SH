@@ -74,7 +74,7 @@ namespace UI.Components.Pages
             countries.AddRange(apiResponse.Response.Countries);
         }
 
-        protected override void OnParametersSet()
+        protected override async Task OnParametersSetAsync()
         {
             if (CurrentState.Account != null)
             {
@@ -82,6 +82,10 @@ namespace UI.Components.Pages
 
                 countryText = accountUpdateDto.Country!.Name;
                 regionText = CurrentState.Account.Country!.Region.Name;
+
+                var storage = await _protectedLocalStore.GetAsync<LoginRequestDto>(nameof(LoginRequestDto));
+                if (storage.Success)
+                    accountUpdateDto.Remember = true;
             }
         }
 
@@ -254,8 +258,11 @@ namespace UI.Components.Pages
             var result = await resultDialog.Result;
             
             if (result != null && result.Canceled == false && accountUpdateDto.Users.Contains(user))
-                accountUpdateDto.Users.Remove(user);
-
+            {
+                var index = accountUpdateDto.Users.IndexOf(user);
+                if (index >= 0)
+                    accountUpdateDto.Users[index].IsDeleted = true;
+            }
             CheckPanel2Properties();
         }
 
@@ -288,22 +295,20 @@ namespace UI.Components.Pages
         }
 
         void CheckPanel2Properties() =>
-            TabPanels[2].Items[nameof(accountUpdateDto.Users)].IsValid = accountUpdateDto.Users.Count == 0 ? false : true;
+            TabPanels[2].Items[nameof(accountUpdateDto.Users)].IsValid = accountUpdateDto.Users.Where(w => !w.IsDeleted).Count() == 0 ? false : true;
         #endregion
 
 
         async void SubmitAsync()
         {
-            accountUpdateDto.ErrorUpdateMessage = null;
+            accountUpdateDto.ErrorMessage = null;
             processingAccount = true;
 
             var response = await _repoUpdate.HttpPostAsync(accountUpdateDto);
 
             if (response.StatusCode != HttpStatusCode.OK)
             {
-                accountUpdateDto.ErrorUpdateMessage = response.Response.ErrorMessage;
-                processingAccount = false;
-                StateHasChanged();
+                accountUpdateDto.ErrorMessage = response.Response.ErrorMessage;
             }
             else
             {
@@ -325,15 +330,15 @@ namespace UI.Components.Pages
                         await _protectedLocalStore.SetAsync(nameof(LoginRequestDto), loginRequestDto);
                     else
                         await _protectedSessionStore.SetAsync(nameof(LoginRequestDto), loginRequestDto);
-
-                    await _JSProcessor.Redirect("/");
                 }
                 else
                 {
-                    accountUpdateDto.ErrorUpdateMessage = apiResponse.Response.ErrorMessage;
-                    StateHasChanged();
+                    accountUpdateDto.ErrorMessage = apiResponse.Response.ErrorMessage;
                 }
             }
+
+            processingAccount = false;
+            StateHasChanged();
         }
 
         public void Dispose()

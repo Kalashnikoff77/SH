@@ -26,10 +26,10 @@ namespace WebAPI.Extensions
             if (request.Name.Length < StaticData.DB_ACCOUNTS_NAME_MIN || request.Name.Length > StaticData.DB_ACCOUNTS_NAME_MAX)
                 throw new BadRequestException($"Длина имени должна быть от {StaticData.DB_ACCOUNTS_NAME_MIN} до {StaticData.DB_ACCOUNTS_NAME_MAX} символов!");
 
-            if (request.Users == null || request.Users.Count == 0)
+            if (request.Users == null || request.Users.Where(u => u.IsDeleted == false).Count() == 0)
                 throw new BadRequestException("Вы не добавили ни одного партнёра в аккаунт!");
 
-            if (request.Users != null && request.Users.Count > 2)
+            if (request.Users != null && request.Users.Where(w => w.IsDeleted == false).Count() > 2)
                 throw new BadRequestException("Можно добавить не более 2-х партнёров!");
 
             if (!string.IsNullOrWhiteSpace(request.Password))

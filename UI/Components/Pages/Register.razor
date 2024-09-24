@@ -146,9 +146,9 @@
     </MudExpansionPanels>
 
     <MudStack AlignItems="AlignItems.Center" Class="mt-5" Row="false">
-        @if (!string.IsNullOrEmpty(accountRegisterDto.ErrorRegisterMessage))
+        @if (!string.IsNullOrEmpty(accountRegisterDto.ErrorMessage))
         {
-            <MudAlert Severity="Severity.Error">@accountRegisterDto.ErrorRegisterMessage</MudAlert>
+            <MudAlert Severity="Severity.Error">@accountRegisterDto.ErrorMessage</MudAlert>
         }
         <MudCheckBox @bind-Value="accountRegisterDto.Remember" Disabled="!(IsPanel1Valid && IsPanel2Valid && IsPanel3Valid)" Color="Color.Primary">
             <MudText Typo="Typo.body2">Запомнить меня</MudText>
@@ -165,6 +165,6 @@
                 <MudText>Зарегистрироваться</MudText>
             }
         </MudButton>
-
     </MudStack>
+
 </MudStack>

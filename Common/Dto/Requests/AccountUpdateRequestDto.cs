@@ -10,13 +10,18 @@
 
         public string Name { get; set; } = null!;
 
-        public string? NewPassword1 { get; set; } = null!;
-        public string? NewPassword2 { get; set; } = null!;
+        public string Password { get; set; } = null!;
+        public string Password2 { get; set; } = null!;
 
-        public Informing Informing { get; set; } = new Informing();
+        //public Informing Informing { get; set; } = new Informing();
+        public string Informing { get; set; } = null!;
 
         public CountriesDto Country { get; set; } = null!;
 
         public List<UsersDto> Users { get; set; } = null!;
+
+        public string? ErrorUpdateMessage { get; set; }
+        public bool Remember { get; set; }
+
     }
 }

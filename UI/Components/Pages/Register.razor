@@ -35,12 +35,12 @@
                 </MudGrid>
                 <MudGrid>
                     <MudItem sm="6" xs="12">
-                        <MudStack Spacing="0" Class="mx-2 mt-6">
+                        <MudStack Spacing="0" Class="mt-2">
                             <MudAutocomplete AdornmentIcon="@Icons.Material.Outlined.LocationOn" AdornmentColor="@CountryIconColor" Validation="@(new Func<string, string?>(CountryValidator))" T="string" Label="Страна" @bind-Value="countryText" SearchFunc="@SearchCountry" ResetValueOnEmptyText="true" CoerceText="true" CoerceValue="false" />
                         </MudStack>
                     </MudItem>
                     <MudItem sm="6" xs="12">
-                        <MudStack Spacing="0" Class="mx-2 mt-6">
+                        <MudStack Spacing="0" Class="mt-2">
                             <MudAutocomplete AdornmentIcon="@Icons.Material.Outlined.LocationOn" AdornmentColor="@RegionIconColor" Validation="@(new Func<string, string?>(RegionValidator))" T="string" Label="Регион" @bind-Value="regionText" SearchFunc="@SearchRegion" ResetValueOnEmptyText="true" CoerceText="true" CoerceValue="false" Disabled="countryText == null ? true : false" />
                         </MudStack>
                     </MudItem>

@@ -20,9 +20,11 @@
             <MudMenu Icon="@Icons.Material.Filled.MoreVert" AnchorOrigin="Origin.BottomLeft" TransformOrigin="Origin.TopCenter">
                 @if (CurrentState.Account != null)
                 {
-                    <MudMenuItem Icon="@Icons.Material.Filled.Portrait">Профиль</MudMenuItem>
+                    <MudMenuItem Href="/profile" Icon="@Icons.Material.Filled.Portrait">Профиль</MudMenuItem>
+                    <MudDivider />
                     <MudMenuItem Icon="@Icons.Material.Filled.Logout" OnClick="async() => { await CurrentState.LogOutAsync(); }">Выйти</MudMenuItem>
-                } else
+                } 
+                else
                 {
                     <MudMenuItem Href="/login" Icon="@Icons.Material.Filled.Login">Войти</MudMenuItem>
                 }

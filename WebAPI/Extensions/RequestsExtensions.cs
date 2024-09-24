@@ -32,9 +32,9 @@ namespace WebAPI.Extensions
             if (request.Users != null && request.Users.Count > 2)
                 throw new BadRequestException("Можно добавить не более 2-х партнёров!");
 
-            if (!string.IsNullOrWhiteSpace(request.NewPassword1))
+            if (!string.IsNullOrWhiteSpace(request.Password))
             {
-                if (request.NewPassword1 != request.NewPassword2)
+                if (request.Password != request.Password2)
                     throw new BadRequestException("Пароль и повтор пароля не совпадают!");
             }
 

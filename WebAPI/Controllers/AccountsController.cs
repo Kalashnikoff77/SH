@@ -281,17 +281,17 @@ namespace WebAPI.Controllers
                 await conn.ExecuteAsync(sql, new { request.Email, request.Name, informing = JsonSerializer.Serialize(request.Informing), RegionId = request.Country.Region.Id, _accountId }, transaction: transaction);
 
                 // Обновление пароля
-                if (!string.IsNullOrWhiteSpace(request.NewPassword1))
+                if (!string.IsNullOrWhiteSpace(request.Password))
                 {
                     sql = $"UPDATE Accounts SET {nameof(AccountsEntity.Password)} = @{nameof(AccountsEntity.Password)} WHERE {nameof(AccountsEntity.Id)} = @_accountId";
-                    await conn.ExecuteAsync(sql, new {Password = request.NewPassword1, _accountId}, transaction: transaction);
+                    await conn.ExecuteAsync(sql, new {Password = request.Password2, _accountId}, transaction: transaction);
                 }
 
                 transaction.Commit();
 
                 // Вернём для дальнейшего вызова AccountLogin, чтобы в UI Storage обновить данные пользователя
                 response.Email = request.Email;
-                response.Password = request.NewPassword1; // Вернёт null, если новый пароль не был указан в запросе
+                response.Password = request.Password; // Вернёт null, если новый пароль не был указан в запросе
 
                 return response;
             }

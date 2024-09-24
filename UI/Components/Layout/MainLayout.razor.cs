@@ -17,6 +17,7 @@ namespace UI.Components.Layout
 
         [Inject] IRepository<LoginRequestDto, LoginResponseDto> _repoLogin { get; set; } = null!;
 
+
         protected override async Task OnAfterRenderAsync(bool firstRender)
         {
             if (firstRender)

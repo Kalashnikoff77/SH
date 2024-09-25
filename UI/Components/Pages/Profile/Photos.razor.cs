@@ -16,10 +16,16 @@ namespace UI.Components.Pages.Profile
         [Inject] IRepository<UploadPhotosFromTempRequestDto, ResponseDtoBase> _repoUploadPhotos { get; set; } = null!;
 
         bool processingPhoto;
+        string? avatarBackground;
 
-        void SetAvatarClick(PhotosForAccountsDto photo)
+        void SetAvatar(PhotosForAccountsDto photo)
         {
             
+        }
+
+        void Delete(PhotosForAccountsDto photo)
+        {
+
         }
 
         async void UploadPhotos(IReadOnlyList<IBrowserFile> photos)

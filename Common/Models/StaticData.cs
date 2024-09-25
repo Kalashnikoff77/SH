@@ -30,6 +30,10 @@ namespace Common.Models
                 new ProcessImageSettings { Width=150, Height=150, OrientationMode = OrientationMode.Normalize, ResizeMode=CropScaleMode.Crop }
             },
             {
+                EnumImageSize.s250x250,
+                new ProcessImageSettings { Width=250, Height=250, OrientationMode = OrientationMode.Normalize, ResizeMode=CropScaleMode.Crop }
+            },
+            {
                 EnumImageSize.s450x600,
                 new ProcessImageSettings { Width=450, Height=600, ResizeMode=CropScaleMode.Pad, OrientationMode = OrientationMode.Normalize, MatteColor = System.Drawing.Color.Black }
             },

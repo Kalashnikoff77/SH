@@ -1,0 +1,30 @@
+﻿@page "/profile/photos"
+
+@if (CurrentState.Account != null)
+{
+    <PageTitle>Фотографии: @CurrentState.Account.Name</PageTitle>
+
+    <MudText Align="Align.Left" Typo="Typo.h6" Class="mb-3">Фотографии: @CurrentState.Account.Name</MudText>
+    <MudDivider DividerType="DividerType.FullWidth" Light="false" Class="mb-8" />
+
+    <MudStack Style="min-width:300px; max-width:750px" Class="ml-0">
+
+        @if (CurrentState.Account.Photos != null)
+        {
+            <MudStack Row Wrap="Wrap.Wrap" Spacing="0" Justify="Justify.SpaceEvenly">
+
+                @foreach (var photo in CurrentState.Account.Photos)
+                {
+                    int s = 250;
+
+                    <MudPaper class="pa-3 mb-8">
+                        <MudImage Width="@s" Height="@s" Src="@("/images/AccountsPhotos/" + CurrentState.Account.Id + "/" + photo.Guid + "/" + EnumImageSize.s150x150.ToString() + ".jpg")" />
+                        <MudText>@photo.Comment</MudText>
+                    </MudPaper>
+                }
+
+            </MudStack>
+        }
+
+    </MudStack>
+}

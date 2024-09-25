@@ -2,10 +2,10 @@
 
 <PageTitle>Вход</PageTitle>
 
-<MudText Align="Align.Left" Typo="Typo.h6" Class="mb-1 mb-md-3">Вход на сайт</MudText>
-<MudDivider DividerType="DividerType.FullWidth" Light="false" Class="mb-5 mb-md-8" />
+<MudText Align="Align.Left" Typo="Typo.h6" Class="mb-3">Вход на сайт</MudText>
+<MudDivider DividerType="DividerType.FullWidth" Light="false" Class="mb-8" />
 
-<MudPaper Class="pa-5 mt-10 ml-md-5" Style="min-width:300px; max-width:500px" Elevation="3">
+<MudPaper Class="pa-5 mt-10 ml-5" Style="min-width:300px; max-width:500px" Elevation="3">
 
     <MudStack Spacing="0">
         <MudTextField @bind-Value="loginRequestDto.Email" Validation="@(new Func<string, string?>(EmailValidator))" AdornmentIcon="@Icons.Material.Outlined.Mail" Adornment="Adornment.End" AdornmentColor="@EmailIconColor" Label="Email" Margin="Margin.Normal" Variant="Variant.Text" />

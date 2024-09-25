@@ -17,9 +17,9 @@ using System.Text.RegularExpressions;
 using UI.Components.Shared.Dialogs;
 using UI.Models;
 
-namespace UI.Components.Pages
+namespace UI.Components.Pages.Profile
 {
-    public partial class Profile : IDisposable
+    public partial class Settings
     {
         [CascadingParameter] CurrentState CurrentState { get; set; } = null!;
         [Inject] IRepository<GetCountriesRequestDto, GetCountriesResponseDto> _repoGetCountries { get; set; } = null!;
@@ -342,10 +342,6 @@ namespace UI.Components.Pages
 
             processingAccount = false;
             StateHasChanged();
-        }
-
-        public void Dispose()
-        {
         }
     }
 }

@@ -2,12 +2,12 @@
 
 @if (accountUpdateDto != null)
 {
-    <PageTitle>Профиль @accountUpdateDto.Name</PageTitle>
+    <PageTitle>Настройки профиля: @accountUpdateDto.Name</PageTitle>
 
-    <MudText Align="Align.Left" Typo="Typo.h6" Class="mb-1 mb-md-3">Профиль @accountUpdateDto.Name</MudText>
-    <MudDivider DividerType="DividerType.FullWidth" Light="false" Class="mb-5 mb-md-8" />
+    <MudText Align="Align.Left" Typo="Typo.h6" Class="mb-3">Настройки профиля: @accountUpdateDto.Name</MudText>
+    <MudDivider DividerType="DividerType.FullWidth" Light="false" Class="mb-8" />
 
-    <MudStack Style="min-width:300px; max-width:750px" Class="ml-md-5">
+    <MudStack Style="min-width:300px; max-width:750px" Class="ml-5">
         <MudExpansionPanels MultiExpansion Elevation="3">
 
             @* ОБЩИЕ *@

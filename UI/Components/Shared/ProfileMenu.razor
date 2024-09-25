@@ -2,7 +2,7 @@
     @if (CurrentState.Account != null)
     {
         <MudMenuItem Href="/profile" Icon="@Icons.Material.Filled.Settings">Настройки профиля</MudMenuItem>
-        <MudMenuItem Href="/account/photos" Icon="@Icons.Material.Filled.Portrait">@photoText</MudMenuItem>
+        <MudMenuItem Href="/profile/photos" Icon="@Icons.Material.Filled.Portrait">@photoText</MudMenuItem>
         <MudDivider />
         <MudMenuItem Icon="@Icons.Material.Filled.Logout" OnClick="async() => { await CurrentState.LogOutAsync(); }">Выйти</MudMenuItem>
     }

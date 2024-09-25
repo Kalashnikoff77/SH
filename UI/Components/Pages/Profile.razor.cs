@@ -41,6 +41,7 @@ namespace UI.Components.Pages
 
         Dictionary<short, TabPanel> TabPanels { get; set; } = null!;
         bool processingAccount = false;
+        bool isDataSaved = false;
 
         bool IsPanel1Valid => TabPanels[1].Items.All(x => x.Value.IsValid == true);
         bool IsPanel2Valid => TabPanels[2].Items.All(x => x.Value.IsValid == true);
@@ -330,6 +331,8 @@ namespace UI.Components.Pages
                         await _protectedLocalStore.SetAsync(nameof(LoginRequestDto), loginRequestDto);
                     else
                         await _protectedSessionStore.SetAsync(nameof(LoginRequestDto), loginRequestDto);
+
+                    isDataSaved = true;
                 }
                 else
                 {

@@ -110,10 +110,6 @@
                     </MudStack>
                 </ChildContent>
             </MudExpansionPanel>
-
-
-            @* ФОТО *@
-
         </MudExpansionPanels>
 
 
@@ -135,7 +131,14 @@
                 }
                 else
                 {
-                    <MudText>Сохранить изменения</MudText>
+                    if (isDataSaved)
+                    {
+                        <MudText>Изменения сохранены</MudText>
+                    }
+                    else
+                    {
+                        <MudText>Сохранить изменения</MudText>
+                    }
                 }
             </MudButton>
         </MudStack>

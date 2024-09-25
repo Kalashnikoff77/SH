@@ -13,7 +13,7 @@ namespace UI.Components.Pages.Profile
     {
         [CascadingParameter] CurrentState CurrentState { get; set; } = null!;
 
-        [Inject] IRepository<UploadPhotosFromTempRequestDto, ResponseDtoBase> _repoUploadPhotos { get; set; } = null!;
+        [Inject] IRepository<UploadPhotoFromTempRequestDto, UploadPhotoFromTempResponseDto> _repoUploadPhoto { get; set; } = null!;
 
         bool processingPhoto;
         string? avatarBackground;
@@ -32,11 +32,7 @@ namespace UI.Components.Pages.Profile
         {
             processingPhoto = true;
 
-            var request = new UploadPhotosFromTempRequestDto
-            {
-                PhotosTempFileNames = new List<string>(),
-                Token = CurrentState.Account!.Token
-            };
+            var request = new UploadPhotoFromTempRequestDto { Token = CurrentState.Account!.Token };
 
             List<string> files = new List<string>();
 
@@ -48,10 +44,13 @@ namespace UI.Components.Pages.Profile
                 await using (FileStream fs = new(StaticData.AccountsPhotosTempDir + originalFileName, FileMode.Create))
                     await photo.OpenReadStream(photo.Size).CopyToAsync(fs);
 
-                request.PhotosTempFileNames.Add(originalFileName);
-            }
+                request.PhotosTempFileNames = originalFileName;
 
-            var apiResponse = await _repoUploadPhotos.HttpPostAsync(request);
+                var apiResponse = await _repoUploadPhoto.HttpPostAsync(request);
+
+                CurrentState.Account.Photos!.Add(apiResponse.Response.NewPhoto);
+                StateHasChanged();
+            }
 
             await CurrentState.ReloadAccountAsync();
 

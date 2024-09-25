@@ -75,42 +75,45 @@ namespace WebAPI.Controllers
 
 
         [Route("UploadFromTemp"), HttpPost, Authorize]
-        public async Task<ResponseDtoBase> UploadFromTempAsync(UploadPhotosFromTempRequestDto request)
+        public async Task<UploadPhotoFromTempResponseDto> UploadFromTempAsync(UploadPhotoFromTempRequestDto request)
         {
             AuthenticateUser();
 
-            var response = new ResponseDtoBase();
+            var response = new UploadPhotoFromTempResponseDto();
 
             using (var conn = new SqlConnection(connectionString))
             {
-                foreach (var photoTempFileName in request.PhotosTempFileNames)
+                if (!string.IsNullOrWhiteSpace(request.PhotosTempFileNames))
                 {
-                    if (!string.IsNullOrWhiteSpace(photoTempFileName))
+                    var guid = Guid.NewGuid();
+                    Directory.CreateDirectory($"{StaticData.AccountsPhotosDir}/{_accountId}/{guid}");
+
+                    foreach (var image in StaticData.Images)
                     {
-                        var guid = Guid.NewGuid();
-                        Directory.CreateDirectory($"{StaticData.AccountsPhotosDir}/{_accountId}/{guid}");
+                        var fileName = $"{StaticData.AccountsPhotosDir}/{_accountId}/{guid}/{image.Key}.jpg";
 
-                        foreach (var image in StaticData.Images)
+                        using (MemoryStream output = new MemoryStream(500000))
                         {
-                            var fileName = $"{StaticData.AccountsPhotosDir}/{_accountId}/{guid}/{image.Key}.jpg";
-
-                            using (MemoryStream output = new MemoryStream(500000))
-                            {
-                                MagicImageProcessor.ProcessImage($"{StaticData.AccountsPhotosTempDir}/{photoTempFileName}", output, image.Value);
-                                await System.IO.File.WriteAllBytesAsync(fileName, output.ToArray());
-                            }
+                            MagicImageProcessor.ProcessImage($"{StaticData.AccountsPhotosTempDir}/{request.PhotosTempFileNames}", output, image.Value);
+                            await System.IO.File.WriteAllBytesAsync(fileName, output.ToArray());
                         }
-
-                        var sql = "INSERT INTO PhotosForAccounts " +
-                            $"({nameof(PhotosForAccountsEntity.Guid)}, {nameof(PhotosForAccountsEntity.AccountId)}) " +
-                            "VALUES " +
-                            $"(@{nameof(PhotosForAccountsEntity.Guid)}, @{nameof(PhotosForAccountsEntity.AccountId)})";
-                        await conn.ExecuteAsync(sql, new { Guid = guid, AccountId = _accountId });
                     }
+
+                    var sql = "INSERT INTO PhotosForAccounts " +
+                        $"({nameof(PhotosForAccountsEntity.Guid)}, {nameof(PhotosForAccountsEntity.AccountId)}) " +
+                        "VALUES " +
+                        $"(@{nameof(PhotosForAccountsEntity.Guid)}, @{nameof(PhotosForAccountsEntity.AccountId)});" +
+                        $"SELECT CAST(SCOPE_IDENTITY() AS INT)";
+                    var newId = await conn.QuerySingleAsync<int>(sql, new { Guid = guid, AccountId = _accountId });
+
+                    response.NewPhoto = new Common.Dto.PhotosForAccountsDto
+                    {
+                        Id = newId,
+                        Guid = guid
+                    };
                 }
 
-                foreach (var photoTempFileName in request.PhotosTempFileNames)
-                    System.IO.File.Delete($"{StaticData.AccountsPhotosTempDir}/{photoTempFileName}");
+                System.IO.File.Delete($"{StaticData.AccountsPhotosTempDir}/{request.PhotosTempFileNames}");
             }
             return response;
         }

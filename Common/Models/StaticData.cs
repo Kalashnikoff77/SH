@@ -64,7 +64,7 @@ namespace Common.Models
         /// <summary>
         /// Кол-во сообщений в чате
         /// </summary>
-        public const short MESSAGES_PER_BLOCK = 5;
+        public const short MESSAGES_PER_BLOCK = 10;
 
 
         // Константы полей БД
@@ -82,6 +82,10 @@ namespace Common.Models
         public const short DB_USERS_HEIGHT_MIN = 100;
         public const short DB_USERS_HEIGHT_MAX = 230;
 
+
+        public const string AccountsPhotosDir = "../UI/wwwroot/images/AccountsPhotos/";
+        public const string AccountsPhotosTempDir = "../UI/wwwroot/images/AccountsPhotos/temp/";
+        public const string EventsPhotosDir = "../UI/wwwroot/images/EventsPhotos/";
 
         /// <summary>
         /// Генерация токена JWT

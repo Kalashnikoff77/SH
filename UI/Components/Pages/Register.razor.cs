@@ -292,7 +292,6 @@ namespace UI.Components.Pages
 
 
         #region /// ШАГ 3: АВАТАР ///
-        const string dir = "../UI/wwwroot/images/AccountsPhotos/temp/";
         string? baseFileName;
         string? originalFileName;
         string? previewFileName;
@@ -302,22 +301,22 @@ namespace UI.Components.Pages
         {
             processingPhoto = true;
 
-            if (File.Exists(dir + originalFileName))
-                File.Delete(dir + originalFileName);
-            if (File.Exists(dir + previewFileName))
-                File.Delete(dir + previewFileName);
+            if (File.Exists(StaticData.AccountsPhotosDir + originalFileName))
+                File.Delete(StaticData.AccountsPhotosDir + originalFileName);
+            if (File.Exists(StaticData.AccountsPhotosDir + previewFileName))
+                File.Delete(StaticData.AccountsPhotosDir + previewFileName);
 
             baseFileName = DateTime.Now.ToString("yyyyMMdd") + "_" + Guid.NewGuid().ToString();
             originalFileName = baseFileName + Path.GetExtension(file.Name);
             previewFileName = baseFileName + "_" + EnumImageSize.s150x150 + ".jpg";
 
-            await using (FileStream fs = new(dir + originalFileName, FileMode.Create))
+            await using (FileStream fs = new(StaticData.AccountsPhotosDir + originalFileName, FileMode.Create))
                 await file.OpenReadStream(file.Size).CopyToAsync(fs);
 
             using (MemoryStream output = new MemoryStream(500000))
             {
-                MagicImageProcessor.ProcessImage(dir + originalFileName, output, StaticData.Images[EnumImageSize.s150x150]);
-                await File.WriteAllBytesAsync(dir + previewFileName, output.ToArray());
+                MagicImageProcessor.ProcessImage(StaticData.AccountsPhotosDir + originalFileName, output, StaticData.Images[EnumImageSize.s150x150]);
+                await File.WriteAllBytesAsync(StaticData.AccountsPhotosDir + previewFileName, output.ToArray());
             }
 
             urlPreviewImage = previewFileName;
@@ -377,10 +376,8 @@ namespace UI.Components.Pages
 
         public void Dispose()
         {
-            if (File.Exists(dir + originalFileName))
-                File.Delete(dir + originalFileName);
-            if (File.Exists(dir + previewFileName))
-                File.Delete(dir + previewFileName);
+            if (File.Exists(StaticData.AccountsPhotosDir + originalFileName)) File.Delete(StaticData.AccountsPhotosDir + originalFileName);
+            if (File.Exists(StaticData.AccountsPhotosDir + previewFileName)) File.Delete(StaticData.AccountsPhotosDir + previewFileName);
         }
     }
 }

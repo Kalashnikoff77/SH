@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Azure.Core;
 using Common.Dto.Requests;
 using Common.Dto.Responses;
 using Common.Dto.Views;
@@ -10,6 +11,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Identity.Client;
 using PhotoSauce.MagicScaler;
 using WebAPI.Exceptions;
 
@@ -72,8 +74,8 @@ namespace WebAPI.Controllers
         }
 
 
-        [Route("UploadAccount"), HttpPost, Authorize]
-        public async Task<ResponseDtoBase> UploadAccountAsync([FromForm(Name = "file")] IFormFile file)
+        [Route("UploadFromTemp"), HttpPost, Authorize]
+        public async Task<ResponseDtoBase> UploadFromTempAsync(UploadPhotosFromTempRequestDto request)
         {
             AuthenticateUser();
 
@@ -81,47 +83,36 @@ namespace WebAPI.Controllers
 
             using (var conn = new SqlConnection(connectionString))
             {
-                var guid = Guid.NewGuid();
-
-                await ProcessPhotoFile(file, _accountId, guid);
-
-                var sql = "INSERT INTO PhotosForAccounts " +
-                    $"({nameof(PhotosForAccountsEntity.Guid)}, {nameof(PhotosForAccountsEntity.AccountId)}) " +
-                    $"VALUES (@guid, @_accountId)";
-                await conn.ExecuteAsync(sql, new { guid, _accountId });
-
-                return response;
-            }
-        }
-
-
-        private async Task ProcessPhotoFile(IFormFile file, int accountId, Guid guid)
-        {
-            if (!string.IsNullOrWhiteSpace(file.FileName))
-            {
-                var dir = "../UI/wwwroot/images/AccountsPhotos";
-
-                if (!Directory.Exists($"{dir}/{accountId}"))
-                    Directory.CreateDirectory($"{dir}/{accountId}");
-                
-                Directory.CreateDirectory($"{dir}/{accountId}/{guid}");
-
-                using (var stream = new FileStream($"{dir}/temp/" + file.FileName, FileMode.Create))
-                    file.CopyTo(stream);
-
-                foreach (var image in StaticData.Images)
+                foreach (var photoTempFileName in request.PhotosTempFileNames)
                 {
-                    var fileName = $"{dir}/{accountId}/{guid}/{image.Key}.jpg";
-
-                    using (MemoryStream output = new MemoryStream(500000))
+                    if (!string.IsNullOrWhiteSpace(photoTempFileName))
                     {
-                        MagicImageProcessor.ProcessImage($"{dir}/temp/{file.FileName}", output, image.Value);
-                        await System.IO.File.WriteAllBytesAsync(fileName, output.ToArray());
+                        var guid = Guid.NewGuid();
+                        Directory.CreateDirectory($"{StaticData.AccountsPhotosDir}/{_accountId}/{guid}");
+
+                        foreach (var image in StaticData.Images)
+                        {
+                            var fileName = $"{StaticData.AccountsPhotosDir}/{_accountId}/{guid}/{image.Key}.jpg";
+
+                            using (MemoryStream output = new MemoryStream(500000))
+                            {
+                                MagicImageProcessor.ProcessImage($"{StaticData.AccountsPhotosTempDir}/{photoTempFileName}", output, image.Value);
+                                await System.IO.File.WriteAllBytesAsync(fileName, output.ToArray());
+                            }
+                        }
+
+                        var sql = "INSERT INTO PhotosForAccounts " +
+                            $"({nameof(PhotosForAccountsEntity.Guid)}, {nameof(PhotosForAccountsEntity.AccountId)}) " +
+                            "VALUES " +
+                            $"(@{nameof(PhotosForAccountsEntity.Guid)}, @{nameof(PhotosForAccountsEntity.AccountId)})";
+                        await conn.ExecuteAsync(sql, new { Guid = guid, AccountId = _accountId });
                     }
                 }
 
-                System.IO.File.Delete($"{dir}/temp/{file.FileName}");
+                foreach (var photoTempFileName in request.PhotosTempFileNames)
+                    System.IO.File.Delete($"{StaticData.AccountsPhotosTempDir}/{photoTempFileName}");
             }
+            return response;
         }
     }
 }

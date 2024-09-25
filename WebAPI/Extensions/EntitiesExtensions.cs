@@ -18,17 +18,16 @@ namespace WebAPI.Extensions
         {
             if (!string.IsNullOrWhiteSpace(request.OriginalPhoto))
             {
-                var dir = "../UI/wwwroot/images/AccountsPhotos";
                 var guid = Guid.NewGuid();
-                Directory.CreateDirectory($"{dir}/{accountsEntity.Id}/{guid}");
+                Directory.CreateDirectory($"{StaticData.AccountsPhotosDir}/{accountsEntity.Id}/{guid}");
 
                 foreach (var image in StaticData.Images)
                 {
-                    var fileName = $"{dir}/{accountsEntity.Id}/{guid}/{image.Key}.jpg";
+                    var fileName = $"{StaticData.AccountsPhotosDir}/{accountsEntity.Id}/{guid}/{image.Key}.jpg";
 
                     using (MemoryStream output = new MemoryStream(500000))
                     {
-                        MagicImageProcessor.ProcessImage($"{dir}/temp/{request.OriginalPhoto}", output, image.Value);
+                        MagicImageProcessor.ProcessImage($"{StaticData.AccountsPhotosTempDir}/{request.OriginalPhoto}", output, image.Value);
                         await File.WriteAllBytesAsync(fileName, output.ToArray());
                     }
                 }
@@ -39,7 +38,7 @@ namespace WebAPI.Extensions
                     $"(@{nameof(PhotosForAccountsEntity.Comment)}, @{nameof(PhotosForAccountsEntity.Guid)}, @{nameof(PhotosForAccountsEntity.IsAvatar)}, @{nameof(PhotosForAccountsEntity.AccountId)})";
                 await conn.ExecuteAsync(sql, new { Comment = accountsEntity.Name, Guid = guid, IsAvatar = true, AccountId = accountsEntity.Id});
 
-                File.Delete($"{dir}/temp/{request.OriginalPhoto}");
+                File.Delete($"{StaticData.AccountsPhotosTempDir}/{request.OriginalPhoto}");
             }
         }
 

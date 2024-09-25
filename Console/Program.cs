@@ -8,7 +8,7 @@
         {
             AccountsPhotos.Process(connectionString);
 
-            EventsPhotos.Process(connectionString);
+            //EventsPhotos.Process(connectionString);
 
             Console.WriteLine("Выполнено!");
             Console.ReadKey();

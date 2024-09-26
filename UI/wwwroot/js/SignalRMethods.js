@@ -1,12 +1,4 @@
-﻿// Обновление кол-ва подписавшихся или зарегистрированных на мероприятие
-function UpdateEventRegisterClient(updateEventRegisterModel) {
-    updateEventRegisterModel.events.forEach(evt => {
-        ChangeNumberFadeInOut('sw-event-registered-' + evt.id, evt.numOfRegisters, true);
-    })
-}
-
-
-// Пометить аватары онлайн пользователей
+﻿// Пометить аватары онлайн пользователей
 function UpdateOnlineAccountsClient(connectedAccounts) {
     $('img[data-avatar]').removeClass('img-online');
 
@@ -16,22 +8,34 @@ function UpdateOnlineAccountsClient(connectedAccounts) {
     })
 }
 
-
-// Затухание и появление нового аватара пользователя у других пользователей (когда он изменил свой аватар)
-function AvatarChangedClient(avatarChangedEventModel) {
-    if (avatarChangedEventModel.isAvatar)
-        var newPath = '/images/AccountsPhotos/' + avatarChangedEventModel.accountId + '/' + avatarChangedEventModel.guid;
-    else
+// Пользователь сменил аватар
+function OnAvatarChangedClient(onAvatarChangedResponse) {
+    // Если isAvatar = true, значит отменяется текущий аватар (пользователь остаётся без аватара)
+    if (onAvatarChangedResponse.newAvatar.isAvatar)
         var newPath = '/images/AccountsPhotos/no-avatar';
+    else
+        var newPath = '/images/AccountsPhotos/' + onAvatarChangedResponse.newAvatar.accountId + '/' + onAvatarChangedResponse.newAvatar.guid;
 
-    $('img[data-avatar=' + avatarChangedEventModel.accountId + ']')
+    $('img[data-avatar=' + onAvatarChangedResponse.newAvatar.accountId + ']')
         .each(function () {
             $(this).fadeOut(120, function () {
                 $(this).attr('src', newPath + '/s64x64.jpg').fadeIn(120);
                 $(this).attr('src', newPath + '/s150x150.jpg').fadeIn(120);
+                $(this).attr('src', newPath + '/s250x250.jpg').fadeIn(120);
             })
         });
 }
+
+
+
+// Обновление кол-ва подписавшихся или зарегистрированных на мероприятие
+function UpdateEventRegisterClient(updateEventRegisterModel) {
+    updateEventRegisterModel.events.forEach(evt => {
+        ChangeNumberFadeInOut('sw-event-registered-' + evt.id, evt.numOfRegisters, true);
+    })
+}
+
+
 
 
 // Обновление кнопок связей с пользователем (дружба, блокировка и т.п.)

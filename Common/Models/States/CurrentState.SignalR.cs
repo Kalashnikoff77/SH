@@ -12,9 +12,10 @@ namespace Common.Models.States
         public HashSet<string> ConnectedAccounts { get; set; } = new();
 
         IDisposable? updateOnlineAccountsHandler;
-        IDisposable? avatarChangedTriggerHandler;
-        IDisposable? updateRelationsTriggerHandler;
-        IDisposable? updateEventRegisterTriggerHandler;
+        IDisposable? onAvatarChangedHandler;
+
+        //IDisposable? updateRelationsTriggerHandler;
+        //IDisposable? updateEventRegisterTriggerHandler;
 
         public async Task SignalRConnect()
         {
@@ -29,8 +30,8 @@ namespace Common.Models.States
             // Пользователь подключился
             updateOnlineAccountsHandler = updateOnlineAccountsHandler.SignalRClient<UpdateOnlineAccountsModel>(this);
 
-            //// Пользователь обновил аватар
-            //avatarChangedTriggerHandler = avatarChangedTriggerHandler.SignalRClient<AvatarChangedModel>(this);
+            //// Пользователь сменил аватар
+            onAvatarChangedHandler = onAvatarChangedHandler.SignalRClient<OnAvatarChangedResponse>(this);
 
             //// Пользователь изменил взаимоотношения с другим (дружба, подписка, блокировка)
             //updateRelationsTriggerHandler = updateRelationsTriggerHandler.SignalRClient<GetRelationsModel>(this);
@@ -50,9 +51,10 @@ namespace Common.Models.States
         public void Dispose()
         {
             updateOnlineAccountsHandler?.Dispose();
-            avatarChangedTriggerHandler?.Dispose();
-            updateRelationsTriggerHandler?.Dispose();
-            updateEventRegisterTriggerHandler?.Dispose();
+            onAvatarChangedHandler?.Dispose();
+
+            //updateRelationsTriggerHandler?.Dispose();
+            //updateEventRegisterTriggerHandler?.Dispose();
         }
     }
 }

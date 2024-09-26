@@ -7,6 +7,13 @@
         /// </summary>
         OnScheduleChangedClient,
 
+        /// <summary>
+        /// Пользователь изменил свой аватар
+        /// </summary>
+        OnAvatarChangedClient,
+
+
+
         // Требуется проверить, используются ли эти перечисления
         NewMessageAddedServer,
         NewMessageAddedClient,

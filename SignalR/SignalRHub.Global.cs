@@ -41,15 +41,20 @@ namespace SignalR
         [Authorize]
         public async Task GlobalHandler(SignalGlobalRequest request)
         {
+            // Изменения в расписании мероприятия (пока только добавлено одно сообщение в обсуждение)
             if (request.OnScheduleChanged != null)
-                await OnEventDiscussionAdded(request.OnScheduleChanged);
+                await OnScheduleChanged(request.OnScheduleChanged);
+
+            // Пользователь изменил свой аватар
+            if (request.OnAvatarChanged != null)
+                await OnAvatarChanged(request.OnAvatarChanged);
         }
 
 
         /// <summary>
-        /// Добавлено обсуждение в мероприятие
+        /// Изменение в расписании мероприятия
         /// </summary>
-        async Task OnEventDiscussionAdded(OnScheduleChanged request)
+        async Task OnScheduleChanged(OnScheduleChanged request)
         {
             var apiResponse = await _repoGetSchedule.HttpPostAsync(new GetScheduleOneRequestDto { ScheduleId = request.ScheduleId });
             if (apiResponse.Response.Event != null)
@@ -57,6 +62,15 @@ namespace SignalR
                 var response = new OnScheduleChangedResponse { ScheduleForEventViewDto = apiResponse.Response.Event };
                 await Clients.All.SendAsync(response.EnumSignalRHandlersClient.ToString(), response);
             }
+        }
+
+        /// <summary>
+        /// Пользователь изменил свой аватар, уведомляем всех об этом
+        /// </summary>
+        async Task OnAvatarChanged(OnAvatarChanged request)
+        {
+            var response = new OnAvatarChangedResponse { NewAvatar = request.NewAvatar };
+            await Clients.All.SendAsync(response.EnumSignalRHandlersClient.ToString(), response);
         }
     }
 }

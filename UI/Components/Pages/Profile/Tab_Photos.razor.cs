@@ -6,6 +6,7 @@ using Common.Models;
 using Common.Repository;
 using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.AspNetCore.Components;
+using Common.Models.SignalR;
 
 namespace UI.Components.Pages.Profile
 {
@@ -46,6 +47,16 @@ namespace UI.Components.Pages.Profile
             }
 
             await _repoUpdatePhoto.HttpPostAsync(request);
+
+            // SignalR: Уведомим всех пользователей при смене аватара
+            if (type == UpdateType.AvatarChange)
+            {
+                var signalRequest = new SignalGlobalRequest
+                {
+                    OnAvatarChanged = new OnAvatarChanged { NewAvatar = photo }
+                };
+                await CurrentState.SignalRServerAsync(signalRequest);
+            }
 
             await CurrentState.ReloadAccountAsync();
             shouldRender = true;

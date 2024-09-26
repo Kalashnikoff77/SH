@@ -22,6 +22,8 @@ namespace UI.Components.Pages.Profile
     public partial class Tab_Settings
     {
         [CascadingParameter] CurrentState CurrentState { get; set; } = null!;
+        [Parameter, EditorRequired] public EventCallback UpdateProfileCallback { get; set; }
+
         [Inject] IRepository<GetCountriesRequestDto, GetCountriesResponseDto> _repoGetCountries { get; set; } = null!;
         [Inject] IRepository<AccountCheckUpdateRequestDto, AccountCheckUpdateResponseDto> _repoCheckUpdate { get; set; } = null!;
         [Inject] IRepository<AccountUpdateRequestDto, ResponseDtoBase> _repoUpdate { get; set; } = null!;
@@ -81,7 +83,7 @@ namespace UI.Components.Pages.Profile
             {
                 accountUpdateDto = _mapper.Map<AccountUpdateRequestDto>(CurrentState.Account);
 
-                countryText = accountUpdateDto.Country!.Name;
+                countryText = CurrentState.Account.Country!.Name;
                 regionText = CurrentState.Account.Country!.Region.Name;
 
                 var storage = await _protectedLocalStore.GetAsync<LoginRequestDto>(nameof(LoginRequestDto));
@@ -98,7 +100,7 @@ namespace UI.Components.Pages.Profile
             get => _countryText;
             set
             {
-                if (value != null)
+                if (value != null && countries.Any())
                 {
                     var country = countries.Where(c => c.Name == value)?.First();
                     if (country != null)
@@ -120,7 +122,7 @@ namespace UI.Components.Pages.Profile
             get => _regionText;
             set
             {
-                if (value != null && regions != null)
+                if (value != null && countries.Any() && regions != null)
                 {
                     var region = regions.Where(c => c.Name == value)?.First();
                     if (region != null)
@@ -342,7 +344,7 @@ namespace UI.Components.Pages.Profile
             }
 
             processingAccount = false;
-            StateHasChanged();
+            await UpdateProfileCallback.InvokeAsync();
         }
     }
 }

@@ -12,6 +12,8 @@ namespace UI.Components.Pages.Profile
     public partial class Tab_Photos
     {
         [CascadingParameter] public CurrentState CurrentState { get; set; } = null!;
+        [Parameter, EditorRequired] public EventCallback UpdateProfileCallback { get; set; }
+
         [Inject] IRepository<UpdatePhotoRequestDto, ResponseDtoBase> _repoUpdatePhoto { get; set; } = null!;
         [Inject] IRepository<UploadPhotoFromTempRequestDto, UploadPhotoFromTempResponseDto> _repoUploadPhoto { get; set; } = null!;
 
@@ -47,6 +49,7 @@ namespace UI.Components.Pages.Profile
 
             await CurrentState.ReloadAccountAsync();
             shouldRender = true;
+            await UpdateProfileCallback.InvokeAsync();
         }
 
 
@@ -70,14 +73,16 @@ namespace UI.Components.Pages.Profile
 
                 var apiResponse = await _repoUploadPhoto.HttpPostAsync(request);
 
+                if (CurrentState.Account.Photos == null)
+                    CurrentState.Account.Photos = new List<PhotosForAccountsDto>();
+
                 CurrentState.Account.Photos!.Add(apiResponse.Response.NewPhoto);
                 StateHasChanged();
             }
 
             await CurrentState.ReloadAccountAsync();
-
             processingPhoto = false;
-            StateHasChanged();
+            await UpdateProfileCallback.InvokeAsync();
         }
 
         protected override bool ShouldRender() => shouldRender;

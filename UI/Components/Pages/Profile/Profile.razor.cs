@@ -6,5 +6,7 @@ namespace UI.Components.Pages.Profile
     public partial class Profile
     {
         [CascadingParameter] CurrentState CurrentState { get; set; } = null!;
+
+        void UpdateProfile() => StateHasChanged();
     }
 }

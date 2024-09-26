@@ -36,7 +36,7 @@ namespace SignalR
             }
 
             // Отправим всем остальным пользователям актуальную информацию по залогиненным
-            var model = new UpdateOnlineAccountsModel { ConnectedAccounts = Accounts.ConnectedAccounts.Select(s => s.Key) };
+            var model = new OnAccountConnectedResponse { ConnectedAccounts = Accounts.ConnectedAccounts.Select(s => s.Key) };
             await Clients.All.SendAsync(nameof(EnumSignalRHandlers.UpdateOnlineAccountsClient), model);
 
             // TODO Тест. Убрать (OK)
@@ -63,7 +63,7 @@ namespace SignalR
             }
 
             // Отправим всем остальным пользователям актуальную информацию по залогиненным
-            var model = new UpdateOnlineAccountsModel { ConnectedAccounts = Accounts.ConnectedAccounts.Select(s => s.Key) };
+            var model = new OnAccountConnectedResponse { ConnectedAccounts = Accounts.ConnectedAccounts.Select(s => s.Key) };
             await Clients.All.SendAsync(nameof(EnumSignalRHandlers.UpdateOnlineAccountsClient), model);
 
             await base.OnDisconnectedAsync(exception);

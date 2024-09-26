@@ -1,15 +1,15 @@
 ﻿@if (ScheduleForEventView.RegisteredAccounts != null)
 {
-    <MudDataGrid Items="ScheduleForEventView.RegisteredAccounts" T="AccountsForSchedulesViewDto" Hover Striped HeaderClass="dataGridHideTHead" Filterable="false">
+    <MudDataGrid Items="ScheduleForEventView.RegisteredAccounts" T="AccountsForSchedulesViewDto" Elevation="0" Hover HeaderClass="dataGridHideTHead" Filterable="false">
         <Columns>
             <TemplateColumn>
                 <CellTemplate>
-                    <MudStack StretchItems="StretchItems.Start" Row AlignItems="AlignItems.Center">
+                    <MudStack StretchItems="StretchItems.Start" Spacing="0" Row AlignItems="AlignItems.Center">
                         <MudStack Row AlignItems="AlignItems.Center">
                             <ImageAvatar Account="context.Item.Account" Size="EnumImageSize.s64x64" Class="avatar s60" />
                             <MudStack Spacing="0">
                                 <MudText Typo="Typo.subtitle2">@context.Item.Account.Name</MudText>
-                                <MudText Typo="Typo.body2" Style="font-size:12px">
+                                <MudText Typo="Typo.body2">
                                     @context.Item.Account.ToGendersAgesString()<br />
                                     @context.Item.Account.ToRegionString()
                                 </MudText>

@@ -38,7 +38,7 @@
     </MudItem>
 </MudGrid>
 
-<MudDataGrid @ref="dataGrid" Virtualize Hover Striped T="SchedulesForEventsViewDto" ServerData="ServerReload" Loading="false" Style="min-width:300px; max-width:800px" HeaderClass="dataGridHideTHead" Filterable="false">
+<MudDataGrid @ref="dataGrid" Elevation="0" Virtualize Hover T="SchedulesForEventsViewDto" ServerData="ServerReload" Loading="false" Style="min-width:300px; max-width:800px" HeaderClass="dataGridHideTHead" Filterable="false">
     <Columns>
         <TemplateColumn>
             <CellTemplate>

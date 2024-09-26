@@ -28,7 +28,7 @@ namespace Common.Models.States
                 .Build();
 
             // Пользователь подключился
-            updateOnlineAccountsHandler = updateOnlineAccountsHandler.SignalRClient<UpdateOnlineAccountsModel>(this);
+            updateOnlineAccountsHandler = updateOnlineAccountsHandler.SignalRClient<OnAccountConnectedResponse>(this);
 
             //// Пользователь сменил аватар
             onAvatarChangedHandler = onAvatarChangedHandler.SignalRClient<OnAvatarChangedResponse>(this);

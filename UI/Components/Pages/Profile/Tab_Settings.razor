@@ -16,15 +16,15 @@
                         <MudTextField @bind-Value="accountUpdateDto.Name" Validation="@(new Func<string, Task<string?>>(NameValidator))" HelperText="Пример: Иван да Марья Мск" AdornmentIcon="@Icons.Material.Outlined.Person" AdornmentColor="@NameIconColor" Adornment="Adornment.End" Label="Имя учётной записи" Typo="Typo.body1" Margin="Margin.Normal" Variant="Variant.Text" MaxLength="StaticData.DB_ACCOUNTS_NAME_MAX" />
                     </MudItem>
                     <MudItem sm="6" xs="12">
-                        <MudTextField @bind-Value="accountUpdateDto.Email" Validation="@(new Func<string, Task<string?>>(EmailValidator))" HelperText="Пример: email@mail.ru" AdornmentIcon="@Icons.Material.Outlined.Mail" AdornmentColor="@EmailIconColor" Adornment="Adornment.End" Label="Email" Typo="Typo.body1" Margin="Margin.Normal" Variant="Variant.Text" MaxLength="StaticData.DB_ACCOUNTS_EMAIL_MAX" />
+                        <MudTextField @bind-Value="accountUpdateDto.Email" InputType="InputType.Email" Validation="@(new Func<string, Task<string?>>(EmailValidator))" HelperText="Пример: email@mail.ru" AdornmentIcon="@Icons.Material.Outlined.Mail" AdornmentColor="@EmailIconColor" Adornment="Adornment.End" Label="Email" Typo="Typo.body1" Margin="Margin.Normal" Variant="Variant.Text" MaxLength="StaticData.DB_ACCOUNTS_EMAIL_MAX" />
                     </MudItem>
                 </MudGrid>
                 <MudGrid>
                     <MudItem sm="6" xs="12">
-                        <MudTextField @bind-Value="accountUpdateDto.Password" Validation="@(new Func<string, string?>(PasswordValidator))" AdornmentColor="@PasswordIconColor" HelperText="Длина от 4 до 35 символов" Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Outlined.Lock" Label="Пароль" Typo="Typo.body1" Margin="Margin.Normal" Variant="Variant.Text" MaxLength="StaticData.DB_ACCOUNTS_PASSWORD_MAX" />
+                        <MudTextField @bind-Value="accountUpdateDto.Password" InputType="InputType.Password" Validation="@(new Func<string, string?>(PasswordValidator))" AdornmentColor="@PasswordIconColor" HelperText="Длина от 4 до 35 символов" Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Outlined.Lock" Label="Пароль" Typo="Typo.body1" Margin="Margin.Normal" Variant="Variant.Text" MaxLength="StaticData.DB_ACCOUNTS_PASSWORD_MAX" />
                     </MudItem>
                     <MudItem sm="6" xs="12">
-                        <MudTextField @bind-Value="accountUpdateDto.Password2" Validation="@(new Func<string, string?>(Password2Validator))" AdornmentColor="@Password2IconColor" HelperText="Повторите тот же пароль" Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Outlined.Lock" Label="Повтор пароля" Typo="Typo.body1" Margin="Margin.Normal" Variant="Variant.Text" MaxLength="StaticData.DB_ACCOUNTS_PASSWORD_MAX" />
+                        <MudTextField @bind-Value="accountUpdateDto.Password2" InputType="InputType.Password" Validation="@(new Func<string, string?>(Password2Validator))" AdornmentColor="@Password2IconColor" HelperText="Повторите тот же пароль" Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Outlined.Lock" Label="Повтор пароля" Typo="Typo.body1" Margin="Margin.Normal" Variant="Variant.Text" MaxLength="StaticData.DB_ACCOUNTS_PASSWORD_MAX" />
                     </MudItem>
                 </MudGrid>
                 <MudGrid>

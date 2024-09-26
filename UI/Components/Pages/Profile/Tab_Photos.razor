@@ -16,7 +16,7 @@
     </MudFileUpload>
 </MudStack>
 
-@if (CurrentState.Account.Photos != null)
+@if (CurrentState.Account?.Photos != null)
 {
     <MudStack Row Wrap="Wrap.Wrap" Spacing="0" Justify="Justify.SpaceEvenly">
         @foreach (var photo in CurrentState.Account.Photos)

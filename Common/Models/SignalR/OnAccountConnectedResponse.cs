@@ -4,13 +4,13 @@ using Microsoft.JSInterop;
 
 namespace Common.Models.SignalR
 {
-    public class UpdateOnlineAccountsModel : SignalRModelBase<UpdateOnlineAccountsModel>
+    public class OnAccountConnectedResponse : SignalRModelBase<OnAccountConnectedResponse>
     {
         public override EnumSignalRHandlers EnumSignalRHandlersClient => EnumSignalRHandlers.UpdateOnlineAccountsClient;
 
         public IEnumerable<string> ConnectedAccounts { get; set; } = null!;
 
-        public override Func<UpdateOnlineAccountsModel, Task> Func(CurrentState currentState)
+        public override Func<OnAccountConnectedResponse, Task> Func(CurrentState currentState)
         {
             return async (response) =>
             {

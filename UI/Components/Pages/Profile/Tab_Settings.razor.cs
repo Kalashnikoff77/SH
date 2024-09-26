@@ -1,25 +1,25 @@
 ﻿using AutoMapper;
-using Common.Dto;
 using Common.Dto.Requests;
 using Common.Dto.Responses;
 using Common.Dto.Views;
-using Common.Extensions;
+using Common.Dto;
 using Common.JSProcessor;
-using Common.Models;
 using Common.Models.States;
 using Common.Repository;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
-using Microsoft.AspNetCore.Components.Web;
 using MudBlazor;
+using UI.Models;
+using Common.Extensions;
+using Common.Models;
+using Microsoft.AspNetCore.Components.Web;
 using System.Net;
 using System.Text.RegularExpressions;
 using UI.Components.Shared.Dialogs;
-using UI.Models;
 
 namespace UI.Components.Pages.Profile
 {
-    public partial class Settings
+    public partial class Tab_Settings
     {
         [CascadingParameter] CurrentState CurrentState { get; set; } = null!;
         [Inject] IRepository<GetCountriesRequestDto, GetCountriesResponseDto> _repoGetCountries { get; set; } = null!;
@@ -39,10 +39,10 @@ namespace UI.Components.Pages.Profile
         List<CountriesViewDto> countries { get; set; } = new List<CountriesViewDto>();
         List<RegionsDto>? regions { get; set; } = new List<RegionsDto>();
 
-        Dictionary<short, TabPanel> TabPanels { get; set; } = null!;
         bool processingAccount = false;
         bool isDataSaved = false;
 
+        Dictionary<short, TabPanel> TabPanels { get; set; } = null!;
         bool IsPanel1Valid => TabPanels[1].Items.All(x => x.Value.IsValid == true);
         bool IsPanel2Valid => TabPanels[2].Items.All(x => x.Value.IsValid == true);
 
@@ -62,12 +62,12 @@ namespace UI.Components.Pages.Profile
                         }
                     }
                 },
-                { 2, new TabPanel { 
-                    Items = new Dictionary<string, TabPanelItem> 
-                        { 
-                            { nameof(accountUpdateDto.Users), new TabPanelItem() { IsValid = true } } 
-                        } 
-                    } 
+                { 2, new TabPanel {
+                    Items = new Dictionary<string, TabPanelItem>
+                        {
+                            { nameof(accountUpdateDto.Users), new TabPanelItem() { IsValid = true } }
+                        }
+                    }
                 }
             };
 
@@ -93,7 +93,8 @@ namespace UI.Components.Pages.Profile
 
         #region /// ШАГ 1: ОБЩЕЕ ///
         string? _countryText;
-        string? countryText { 
+        string? countryText
+        {
             get => _countryText;
             set
             {
@@ -180,7 +181,7 @@ namespace UI.Components.Pages.Profile
         string? Password2Validator(string password2)
         {
             string? errorMessage = null;
-            if (accountUpdateDto.Password != password2) 
+            if (accountUpdateDto.Password != password2)
                 errorMessage = $"Пароли не совпадают";
 
             CheckPanel1Properties(errorMessage, nameof(accountUpdateDto.Password2), ref Password2IconColor);
@@ -191,7 +192,7 @@ namespace UI.Components.Pages.Profile
         string? CountryValidator(string country)
         {
             string? errorMessage = null;
-            if (string.IsNullOrWhiteSpace(countryText)) 
+            if (string.IsNullOrWhiteSpace(countryText))
                 errorMessage = $"Выберите страну";
 
             CheckPanel1Properties(errorMessage, nameof(accountUpdateDto.Country), ref CountryIconColor);
@@ -257,7 +258,7 @@ namespace UI.Components.Pages.Profile
             var options = new DialogOptions() { CloseButton = true, MaxWidth = MaxWidth.ExtraSmall };
             var resultDialog = await DialogService.ShowAsync<ConfirmDialog>($"Удаление {user.Name}", parameters, options);
             var result = await resultDialog.Result;
-            
+
             if (result != null && result.Canceled == false && accountUpdateDto.Users.Contains(user))
             {
                 var index = accountUpdateDto.Users.IndexOf(user);

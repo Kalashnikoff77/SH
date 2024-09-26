@@ -2,7 +2,6 @@
     @if (CurrentState.Account != null)
     {
         <MudMenuItem Href="/profile" Icon="@Icons.Material.Filled.Settings">Настройки профиля</MudMenuItem>
-        <MudMenuItem Href="/profile/photos" Icon="@Icons.Material.Filled.Portrait">@photoText</MudMenuItem>
         <MudDivider />
         <MudMenuItem Icon="@Icons.Material.Filled.Logout" OnClick="async() => { await CurrentState.LogOutAsync(); }">Выйти</MudMenuItem>
     }
@@ -15,11 +14,8 @@
 @code {
     [CascadingParameter] CurrentState CurrentState { get; set; } = null!;
 
-    string photoText = null!;
 
     protected override void OnParametersSet()
     {
-        if (CurrentState.Account != null)
-            photoText = CurrentState.Account.Users!.Count > 1 ? "Наши фотографии" : "Мои фотографии";
     }
 }

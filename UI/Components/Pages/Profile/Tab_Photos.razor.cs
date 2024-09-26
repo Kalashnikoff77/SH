@@ -1,20 +1,19 @@
-﻿using Common.Dto;
-using Common.Dto.Requests;
+﻿using Common.Dto.Requests;
 using Common.Dto.Responses;
-using Common.Models;
+using Common.Dto;
 using Common.Models.States;
+using Common.Models;
 using Common.Repository;
-using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
+using Microsoft.AspNetCore.Components;
 
 namespace UI.Components.Pages.Profile
 {
-    public partial class Photos
+    public partial class Tab_Photos
     {
-        [CascadingParameter] CurrentState CurrentState { get; set; } = null!;
-
-        [Inject] IRepository<UploadPhotoFromTempRequestDto, UploadPhotoFromTempResponseDto> _repoUploadPhoto { get; set; } = null!;
+        [CascadingParameter] public CurrentState CurrentState { get; set; } = null!;
         [Inject] IRepository<UpdatePhotoRequestDto, ResponseDtoBase> _repoUpdatePhoto { get; set; } = null!;
+        [Inject] IRepository<UploadPhotoFromTempRequestDto, UploadPhotoFromTempResponseDto> _repoUploadPhoto { get; set; } = null!;
 
         bool processingPhoto;
         string? avatarBackground;
@@ -30,7 +29,7 @@ namespace UI.Components.Pages.Profile
                 Guid = photo.Guid,
             };
 
-            switch(type)
+            switch (type)
             {
                 case UpdateType.AvatarChange:
                     request.IsAvatarChanging = true;
@@ -90,5 +89,4 @@ namespace UI.Components.Pages.Profile
         CommentChange,
         Delete
     }
-
 }

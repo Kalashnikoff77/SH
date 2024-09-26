@@ -1,0 +1,27 @@
+﻿@page "/profile"
+
+@if (CurrentState.Account != null)
+{
+    <PageTitle>Настройки профиля: @CurrentState.Account!.Name</PageTitle>
+
+    <MudText Align="Align.Left" Typo="Typo.h6" Class="mb-3">Настройки профиля: @CurrentState.Account!.Name</MudText>
+    <MudDivider DividerType="DividerType.FullWidth" Light="false" Class="mb-8" />
+
+    <MudStack Style="min-width:300px; max-width:750px" Class="ml-5">
+
+        <MudTabs Outlined Centered Rounded ApplyEffectsToContainer PanelClass="pa-6">
+
+            @* ОБЩИЕ *@
+            <MudTabPanel Icon="@Icons.Material.Filled.Settings" Text="Общие">
+                <Tab_Settings />
+            </MudTabPanel>
+
+            @* ФОТО *@
+            <MudTabPanel Icon="@Icons.Material.Filled.Portrait" Text="Фото">
+                <Tab_Photos />
+            </MudTabPanel>
+
+        </MudTabs>
+
+    </MudStack>
+}

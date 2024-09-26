@@ -6,9 +6,11 @@
 
         public Guid Guid { get; set; }
 
-        public bool IsAvatar { get; set; }
+        public bool IsAvatarChanging { get; set; }
 
-        public bool IsDeleted { get; set; } = false;
+        public bool IsCommentChanging { get; set; }
+
+        public bool IsDeleting { get; set; }
 
         public string? Comment { get; set; }
     }

@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using Azure.Core;
 using Common.Dto.Requests;
 using Common.Dto.Responses;
 using Common.Dto.Views;
@@ -11,7 +10,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Identity.Client;
 using PhotoSauce.MagicScaler;
 using WebAPI.Exceptions;
 
@@ -58,16 +56,40 @@ namespace WebAPI.Controllers
 
             using (var conn = new SqlConnection(connectionString))
             {
-                var sql = "SELECT TOP 1 Id FROM PhotosForAccounts " +
-                    "WHERE AccountId = @_accountId AND Guid = @Guid";
-                var photoId = await conn.QueryFirstOrDefaultAsync<int?>(sql, new { _accountId, request.Guid }) ?? throw new NotFoundException("Соответствующее фото не найдено!");
+                var sql = "SELECT TOP 1 * FROM PhotosForAccounts WHERE AccountId = @_accountId AND Guid = @Guid";
+                var photo = await conn.QueryFirstOrDefaultAsync<PhotosForAccountsEntity>(sql, new { _accountId, request.Guid }) 
+                    ?? throw new NotFoundException("Соответствующее фото не найдено!");
 
-                sql = $"UPDATE PhotosForAccounts SET " +
-                    $"{nameof(PhotosForAccountsEntity.Comment)} = @Comment, " +
-                    $"{nameof(PhotosForAccountsEntity.IsAvatar)} = @IsAvatar, " +
-                    $"{nameof(PhotosForAccountsEntity.IsDeleted)} = @IsDeleted " +
-                    $"WHERE {nameof(PhotosForAccountsEntity.AccountId)} = @_accountId AND {nameof(PhotosForAccountsEntity.Guid)} = @Guid";
-                await conn.ExecuteAsync(sql, new { request.Comment, request.IsAvatar, request.IsDeleted, _accountId, request.Guid });
+                // Смена аватара
+                if (request.IsAvatarChanging)
+                {
+                    if (photo.IsAvatar)
+                    {
+                        sql = $"UPDATE PhotosForAccounts SET {nameof(PhotosForAccountsEntity.IsAvatar)} = 0 WHERE {nameof(PhotosForAccountsEntity.Id)} = @Id";
+                        await conn.ExecuteAsync(sql, new { photo.Id });
+                    }
+                    else
+                    {
+                        sql = $"UPDATE PhotosForAccounts SET {nameof(PhotosForAccountsEntity.IsAvatar)} = 0 WHERE {nameof(PhotosForAccountsEntity.AccountId)} = @_accountId";
+                        await conn.ExecuteAsync(sql, new { _accountId });
+                        sql = $"UPDATE PhotosForAccounts SET {nameof(PhotosForAccountsEntity.IsAvatar)} = 1 WHERE {nameof(PhotosForAccountsEntity.Id)} = @Id";
+                        await conn.ExecuteAsync(sql, new { photo.Id });
+                    }
+                }
+
+                // Смена комментария
+                if (request.IsCommentChanging)
+                {
+                    sql = $"UPDATE PhotosForAccounts SET {nameof(PhotosForAccountsEntity.Comment)} = @Comment WHERE {nameof(PhotosForAccountsEntity.Id)} = @Id";
+                    await conn.ExecuteAsync(sql, new { request.Comment, photo.Id });
+                }
+
+                // Удаление фото
+                if (request.IsDeleting)
+                {
+                    sql = $"UPDATE PhotosForAccounts SET {nameof(PhotosForAccountsEntity.IsDeleted)} = 1 WHERE {nameof(PhotosForAccountsEntity.Id)} = @Id";
+                    await conn.ExecuteAsync(sql, new { photo.Id });
+                }
 
                 return response;
             }

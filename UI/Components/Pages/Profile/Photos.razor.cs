@@ -14,19 +14,42 @@ namespace UI.Components.Pages.Profile
         [CascadingParameter] CurrentState CurrentState { get; set; } = null!;
 
         [Inject] IRepository<UploadPhotoFromTempRequestDto, UploadPhotoFromTempResponseDto> _repoUploadPhoto { get; set; } = null!;
+        [Inject] IRepository<UpdatePhotoRequestDto, ResponseDtoBase> _repoUpdatePhoto { get; set; } = null!;
 
         bool processingPhoto;
         string? avatarBackground;
+        bool shouldRender = true;
 
-        void SetAvatar(PhotosForAccountsDto photo)
+        async Task UpdateAsync(UpdateType type, PhotosForAccountsDto photo, string? newComment = null)
         {
-            
+            shouldRender = false;
+
+            var request = new UpdatePhotoRequestDto
+            {
+                Token = CurrentState.Account!.Token,
+                Guid = photo.Guid,
+            };
+
+            switch(type)
+            {
+                case UpdateType.AvatarChange:
+                    request.IsAvatarChanging = true;
+                    break;
+                case UpdateType.CommentChange:
+                    request.IsCommentChanging = true;
+                    request.Comment = newComment;
+                    break;
+                case UpdateType.Delete:
+                    request.IsDeleting = true;
+                    break;
+            }
+
+            await _repoUpdatePhoto.HttpPostAsync(request);
+
+            await CurrentState.ReloadAccountAsync();
+            shouldRender = true;
         }
 
-        void Delete(PhotosForAccountsDto photo)
-        {
-
-        }
 
         async void UploadPhotos(IReadOnlyList<IBrowserFile> photos)
         {
@@ -57,5 +80,15 @@ namespace UI.Components.Pages.Profile
             processingPhoto = false;
             StateHasChanged();
         }
+
+        protected override bool ShouldRender() => shouldRender;
     }
+
+    enum UpdateType
+    {
+        AvatarChange,
+        CommentChange,
+        Delete
+    }
+
 }

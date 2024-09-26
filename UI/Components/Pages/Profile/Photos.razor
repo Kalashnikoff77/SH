@@ -45,17 +45,17 @@
                             <MudImage Width="250" Height="250" Src="@("/images/AccountsPhotos/" + CurrentState.Account.Id + "/" + photo.Guid + "/" + EnumImageSize.s250x250.ToString() + ".jpg")" />
                             
                             <MudStack Row>
-                                <MudTextField @bind-Value="@photo.Comment" Label="Описание" Variant="Variant.Text" />
+                                <MudTextField T="string" Value="@photo.Comment" ValueChanged="@((c) => UpdateAsync(UpdateType.CommentChange, photo, c))" Label="Описание" Variant="Variant.Text" />
                                 <MudMenu Icon="@Icons.Material.Filled.MoreVert" Size="Size.Small" AnchorOrigin="Origin.BottomLeft" TransformOrigin="Origin.TopCenter" Dense>
                                     @if (photo.IsAvatar)
                                     {
-                                        <MudMenuItem OnClick="@(() => SetAvatar(photo))" Icon="@Icons.Material.Filled.Portrait">Отменить аватар</MudMenuItem>
+                                        <MudMenuItem OnClick="@(() => UpdateAsync(UpdateType.AvatarChange, photo))" Icon="@Icons.Material.Filled.Portrait">Отменить аватар</MudMenuItem>
                                     }
                                     else
                                     {
-                                        <MudMenuItem OnClick="@(() => SetAvatar(photo))" Icon="@Icons.Material.Filled.Portrait">Установить как аватар</MudMenuItem>
+                                        <MudMenuItem OnClick="@(() => UpdateAsync(UpdateType.AvatarChange, photo))" Icon="@Icons.Material.Filled.Portrait">Установить как аватар</MudMenuItem>
                                     }
-                                    <MudMenuItem OnClick="@(() => Delete(photo))" IconColor="Color.Error" Icon="@Icons.Material.Outlined.Delete">Удалить</MudMenuItem>
+                                    <MudMenuItem OnClick="@(() => UpdateAsync(UpdateType.Delete, photo))" IconColor="Color.Error" Icon="@Icons.Material.Outlined.Delete">Удалить</MudMenuItem>
                                 </MudMenu>
                             </MudStack>
                         

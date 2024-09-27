@@ -14,14 +14,13 @@ namespace UI.Components.Pages
     public partial class Events : IDisposable
     {
         [CascadingParameter] public CurrentState CurrentState { get; set; } = null!;
-        [Inject] IRepository<GetSchedulesRequestDto, GetSchedulesResponseDto> _repoGetEvents { get; set; } = null!;
+        [Inject] IRepository<GetSchedulesRequestDto, GetSchedulesResponseDto> _repoGetSchedules { get; set; } = null!;
         [Inject] IRepository<GetFeaturesForEventsRequestDto, GetFeaturesForEventsResponseDto> _repoGetFeatures { get; set; } = null!;
         [Inject] IRepository<GetRegionsForEventsRequestDto, GetRegionsForEventsResponseDto> _repoGetRegions { get; set; } = null!;
         [Inject] IRepository<GetAdminsForEventsRequestDto, GetAdminsForEventsResponseDto> _repoGetAdmins { get; set; } = null!;
         [Inject] IDialogService Dialog { get; set; } = null!;
 
         MudDataGrid<SchedulesForEventsViewDto> dataGrid = null!;
-
         GetSchedulesRequestDto request = new GetSchedulesRequestDto { IsPhotosIncluded = true };
 
         List<SchedulesForEventsViewDto> EventsList = new List<SchedulesForEventsViewDto>();
@@ -48,29 +47,39 @@ namespace UI.Components.Pages
 
         protected override void OnAfterRender(bool firstRender)
         {
-            OnEventDiscussionAddedHandler = OnEventDiscussionAddedHandler.SignalRClient<OnScheduleChangedResponse>(CurrentState, async (response) =>
+            OnEventDiscussionAddedHandler = OnEventDiscussionAddedHandler.SignalRClient(CurrentState, (Func<OnScheduleChangedResponse, Task>)(async (response) =>
             {
-                var index = EventsList.FindIndex(s => s.Id == response.ScheduleForEventViewDto.Id);
-                if (index >= 0)
+                var apiResponse = await _repoGetSchedules.HttpPostAsync(new GetSchedulesRequestDto { EventId = response.EventId });
+                if (apiResponse.Response.Schedules != null)
                 {
-                    EventsList[index] = response.ScheduleForEventViewDto;
+                    int index;
+                    foreach (var sch in apiResponse.Response.Schedules)
+                    {
+                        index = EventsList.FindIndex(s => s.Id == sch.Id);
+                        if (index >= 0) // Есть ли в области видимости браузера такое расписание?
+                            EventsList[index] = sch;
+                    }
                     await InvokeAsync(StateHasChanged);
                 }
-            });
+            }));
         }
 
 
         async Task<GridData<SchedulesForEventsViewDto>> ServerReload(GridState<SchedulesForEventsViewDto> state)
         {
-            var apiResponse = await _repoGetEvents.HttpPostAsync(request);
-            EventsList = apiResponse.Response.Events;
+            var items = new GridData<SchedulesForEventsViewDto>();
 
-            var items = new GridData<SchedulesForEventsViewDto>
+            var apiResponse = await _repoGetSchedules.HttpPostAsync(request);
+            if (apiResponse.Response.Schedules != null)
             {
-                Items = EventsList,
-                TotalItems = EventsList.Count
-            };
+                EventsList = apiResponse.Response.Schedules;
 
+                items = new GridData<SchedulesForEventsViewDto>
+                {
+                    Items = EventsList,
+                    TotalItems = EventsList.Count
+                };
+            }
             return items;
         }
 

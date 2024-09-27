@@ -20,15 +20,12 @@ namespace SignalR
         ILogger<SignalRHub> _logger;
 
         [Inject] IRepository<VisitsForAccountsUpdateRequestDto, ResponseDtoBase> _repoUpdateVisits { get; set; } = null!;
-        [Inject] IRepository<GetSchedulesRequestDto, GetSchedulesResponseDto> _repoGetSchedules { get; set; } = null!;
 
 
         public SignalRHub(
             IRepository<VisitsForAccountsUpdateRequestDto, ResponseDtoBase> repoUpdateVisits,
-            IRepository<GetSchedulesRequestDto, GetSchedulesResponseDto> repoGetSchedules,
             Accounts connectedAccounts, IConfiguration configuration, ILogger<SignalRHub> logger)
         {
-            _repoGetSchedules = repoGetSchedules;
             _repoUpdateVisits = repoUpdateVisits;
 
             _configuration = configuration;
@@ -56,12 +53,8 @@ namespace SignalR
         /// </summary>
         async Task OnScheduleChanged(OnScheduleChanged request)
         {
-            var apiResponse = await _repoGetSchedules.HttpPostAsync(new GetSchedulesRequestDto { ScheduleId = request.ScheduleId });
-            if (apiResponse.Response.Event != null)
-            {
-                var response = new OnScheduleChangedResponse { ScheduleForEventViewDto = apiResponse.Response.Event };
-                await Clients.All.SendAsync(response.EnumSignalRHandlersClient.ToString(), response);
-            }
+            var response = new OnScheduleChangedResponse { EventId = request.EventId, ScheduleId = request.ScheduleId };
+            await Clients.All.SendAsync(response.EnumSignalRHandlersClient.ToString(), response);
         }
 
         /// <summary>

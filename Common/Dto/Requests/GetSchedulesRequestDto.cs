@@ -5,22 +5,27 @@
         public override string Uri => "/Events/Get";
 
         /// <summary>
+        /// Получить все записи определённого мероприятия (используется при добавлении сообщения в обсуждение события)
+        /// </summary>
+        public int? EventId { get; set; }
+
+        /// <summary>
         /// Получить одну запись с указанным ScheduleId
         /// </summary>
         public int? ScheduleId { get; set; }
 
         /// <summary>
-        /// Встречи каких организаторов выводить
+        /// Мероприятия каких организаторов выводить
         /// </summary>
         public IEnumerable<int>? AdminsIds { get; set; }
 
         /// <summary>
-        /// Встречи из каких регионов выводить
+        /// Мероприятия из каких регионов выводить
         /// </summary>
         public IEnumerable<int>? RegionsIds { get; set; }
 
         /// <summary>
-        /// Встречи с какими тегами выводить
+        /// Мероприятия с какими тегами выводить
         /// </summary>
         public IEnumerable<int>? FeaturesIds { get; set; } = null;
 

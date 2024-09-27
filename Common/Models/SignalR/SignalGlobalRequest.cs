@@ -16,7 +16,8 @@ namespace Common.Models.SignalR
 
     public class OnScheduleChanged
     {
+        public int? EventId { get; set; }
+
         public int ScheduleId { get; set; }
-        public string Message { get; set; } = null!;
     }
 }

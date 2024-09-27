@@ -16,7 +16,7 @@ namespace UI.Components.Shared.Dialogs.EventCardDialog
         [CascadingParameter] MudDialogInstance MudDialog { get; set; } = null!;
         [Parameter, EditorRequired] public SchedulesForEventsViewDto ScheduleForEventView { get; set; } = null!;
 
-        [Inject] IRepository<GetSchedulesRequestDto, GetSchedulesResponseDto> _repoSchedulesEvent { get; set; } = null!;
+        [Inject] IRepository<GetSchedulesRequestDto, GetSchedulesResponseDto> _repoGetSchedules { get; set; } = null!;
 
         MudCarousel<PhotosForEventsDto> Carousel = null!;
         SchedulesForEventsDto selectedSchedule { get; set; } = null!;
@@ -37,17 +37,21 @@ namespace UI.Components.Shared.Dialogs.EventCardDialog
         {
             OnEventDiscussionAddedHandler = OnEventDiscussionAddedHandler.SignalRClient<OnScheduleChangedResponse>(CurrentState, async (response) =>
             {
-                ScheduleForEventView = response.ScheduleForEventViewDto;
-                await InvokeAsync(StateHasChanged);
+                var apiResponse = await _repoGetSchedules.HttpPostAsync(new GetSchedulesRequestDto { ScheduleId = response.ScheduleId });
+                if (apiResponse.Response.Schedule != null)
+                {
+                    ScheduleForEventView = apiResponse.Response.Schedule;
+                    await InvokeAsync(StateHasChanged);
+                }
             });
         }
 
         async Task ScheduleChangedAsync(SchedulesForEventsDto schedule)
         {
-            var eventResponse = await _repoSchedulesEvent.HttpPostAsync(new GetSchedulesRequestDto() { ScheduleId = schedule.Id });
-            if (eventResponse.Response.Event != null)
+            var eventResponse = await _repoGetSchedules.HttpPostAsync(new GetSchedulesRequestDto() { ScheduleId = schedule.Id });
+            if (eventResponse.Response.Schedule != null)
             {
-                ScheduleForEventView = eventResponse.Response.Event;
+                ScheduleForEventView = eventResponse.Response.Schedule;
                 selectedSchedule = schedule;
             }
         }

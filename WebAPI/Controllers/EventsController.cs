@@ -21,31 +21,6 @@ namespace WebAPI.Controllers
         public EventsController(IMapper mapper, IConfiguration configuration) : base(mapper, configuration) { }
 
 
-        //[Route("GetOne"), HttpPost]
-        //public async Task<GetScheduleOneResponseDto?> GetOneAsync(GetScheduleOneRequestDto request)
-        //{
-        //    AuthenticateUser();
-
-        //    var response = new GetScheduleOneResponseDto();
-
-        //    var columns = GetRequiredColumns<SchedulesForEventsViewEntity>();
-
-        //    using (var conn = new SqlConnection(connectionString))
-        //    {
-        //        SchedulesForEventsViewEntity result;
-
-        //        var sql = $"SELECT {columns.Aggregate((a, b) => a + ", " + b)} " +
-        //            $"FROM SchedulesForEventsView " +
-        //            $"WHERE Id = @ScheduleId";
-        //        result = await conn.QueryFirstOrDefaultAsync<SchedulesForEventsViewEntity>(sql, new { request.ScheduleId }) ?? throw new NotFoundException("Встреча не найдена!");
-
-        //        response.Event = _mapper.Map<SchedulesForEventsViewDto>(result);
-        //    }
-
-        //    return response;
-        //}
-
-
         [Route("Get"), HttpPost]
         public async Task<GetSchedulesResponseDto?> GetAsync(GetSchedulesRequestDto request)
         {
@@ -62,8 +37,19 @@ namespace WebAPI.Controllers
                         $"FROM SchedulesForEventsView " +
                         $"WHERE Id = @ScheduleId";
                     var result = await conn.QueryFirstOrDefaultAsync<SchedulesForEventsViewEntity>(sql, new { request.ScheduleId }) ?? throw new NotFoundException("Встреча не найдена!");
-                    response.Event = _mapper.Map<SchedulesForEventsViewDto>(result);
+                    response.Schedule = _mapper.Map<SchedulesForEventsViewDto>(result);
                 }
+
+                // Получить все расписания определённого мероприятия
+                else if (request.EventId.HasValue && request.EventId > 0)
+                {
+                    var sql = $"SELECT {columns.Aggregate((a, b) => a + ", " + b)} " +
+                        $"FROM SchedulesForEventsView " +
+                        $"WHERE EventId = @EventId";
+                    var result = await conn.QueryAsync<SchedulesForEventsViewEntity>(sql, new { request.EventId });
+                    response.Schedules = _mapper.Map<List<SchedulesForEventsViewDto>>(result);
+                }
+
                 // Получить несколько записей
                 else
                 {
@@ -81,7 +67,7 @@ namespace WebAPI.Controllers
                             $"ORDER BY {nameof(SchedulesForEventsViewDto.StartDate)} " +
                             $"OFFSET {request.Skip} ROWS FETCH NEXT {request.Take} ROWS ONLY";
                         var result = await conn.QueryAsync<SchedulesForEventsViewEntity>(sql);
-                        response.Events = _mapper.Map<List<SchedulesForEventsViewDto>>(result);
+                        response.Schedules = _mapper.Map<List<SchedulesForEventsViewDto>>(result);
                     }
                 }
             }

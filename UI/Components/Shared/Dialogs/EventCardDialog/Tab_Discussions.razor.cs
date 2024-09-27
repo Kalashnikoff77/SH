@@ -83,7 +83,7 @@ namespace UI.Components.Shared.Dialogs.EventCardDialog
 
                 var request = new SignalGlobalRequest
                 {
-                    OnScheduleChanged = new OnScheduleChanged { ScheduleId = ScheduleForEventView.Id }
+                    OnScheduleChanged = new OnScheduleChanged { EventId = ScheduleForEventView.EventId, ScheduleId = ScheduleForEventView.Id }
                 };
                 await CurrentState.SignalRServerAsync(request);
 

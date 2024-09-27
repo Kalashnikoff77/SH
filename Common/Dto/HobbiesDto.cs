@@ -1,6 +1,6 @@
 ﻿namespace Common.Dto
 {
-    public class HobbiesForAccountsDto : DtoBase
+    public class HobbiesDto : DtoBase
     {
         public string Name { get; set; } = null!;
 

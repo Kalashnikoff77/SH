@@ -15,8 +15,6 @@ namespace UI.Components.Shared.Dialogs
         Dictionary<short, TabPanel> TabPanels { get; set; } = null!;
         bool IsFormValid => TabPanels[1].Items.All(x => x.Value.IsValid == true);
 
-        List<int> test;
-
         UsersDto UserCopy { get; set; } = null!;
 
         string Title { get; set; } = null!;

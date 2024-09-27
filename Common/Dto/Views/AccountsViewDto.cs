@@ -12,7 +12,7 @@
 
         public List<EventsViewDto>? Events { get; set; }
 
-        public List<HobbiesForAccountsDto>? Hobbies { get; set; }
+        public List<HobbiesDto>? Hobbies { get; set; }
 
         public List<RelationsForAccountsDto>? Relations { get; set; }
     }

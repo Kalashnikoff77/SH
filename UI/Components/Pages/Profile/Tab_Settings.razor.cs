@@ -25,6 +25,7 @@ namespace UI.Components.Pages.Profile
         [Parameter, EditorRequired] public EventCallback UpdateProfileCallback { get; set; }
 
         [Inject] IRepository<GetCountriesRequestDto, GetCountriesResponseDto> _repoGetCountries { get; set; } = null!;
+        [Inject] IRepository<GetHobbiesRequestDto, GetHobbiesResponseDto> _repoGetHobbies { get; set; } = null!;
         [Inject] IRepository<AccountCheckUpdateRequestDto, AccountCheckUpdateResponseDto> _repoCheckUpdate { get; set; } = null!;
         [Inject] IRepository<AccountUpdateRequestDto, ResponseDtoBase> _repoUpdate { get; set; } = null!;
         [Inject] IRepository<LoginRequestDto, LoginResponseDto> _repoLogin { get; set; } = null!;
@@ -40,6 +41,7 @@ namespace UI.Components.Pages.Profile
         AccountUpdateRequestDto accountUpdateDto = null!;
         List<CountriesViewDto> countries { get; set; } = new List<CountriesViewDto>();
         List<RegionsDto>? regions { get; set; } = new List<RegionsDto>();
+        List<HobbiesDto>? hobbies { get; set; }
 
         bool processingAccount = false;
         bool isDataSaved = false;
@@ -73,8 +75,11 @@ namespace UI.Components.Pages.Profile
                 }
             };
 
-            var apiResponse = await _repoGetCountries.HttpPostAsync(new GetCountriesRequestDto());
-            countries.AddRange(apiResponse.Response.Countries);
+            var apiCountriesResponse = await _repoGetCountries.HttpPostAsync(new GetCountriesRequestDto());
+            countries.AddRange(apiCountriesResponse.Response.Countries);
+
+            var apiHobbiesResponse = await _repoGetHobbies.HttpPostAsync(new GetHobbiesRequestDto());
+            hobbies = apiHobbiesResponse.Response.Hobbies;
         }
 
         protected override async Task OnParametersSetAsync()
@@ -302,6 +307,27 @@ namespace UI.Components.Pages.Profile
             TabPanels[2].Items[nameof(accountUpdateDto.Users)].IsValid = accountUpdateDto.Users.Where(w => !w.IsDeleted).Count() == 0 ? false : true;
         #endregion
 
+
+        #region /// ШАГ 3: ХОББИ ///
+        void OnHobbyChanged(HobbiesDto hobby)
+        {
+            if (CurrentState.Account != null)
+            {
+                var hobbies = CurrentState.Account.Hobbies;
+                
+                if (hobbies != null)
+                {
+                    var index = hobbies.FindIndex(x => x.Id == hobby.Id);
+                    if (index >= 0)
+                        hobbies.RemoveAt(index);
+                    else
+                        hobbies.Add(hobby);
+                }
+                else
+                    CurrentState.Account.Hobbies = [hobby];
+            }
+        }
+        #endregion
 
         async void SubmitAsync()
         {

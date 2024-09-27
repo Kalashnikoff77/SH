@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Common.Dto;
 using Common.Dto.Requests;
 using Common.Dto.Responses;
 using Common.Dto.Views;
@@ -72,22 +73,6 @@ namespace WebAPI.Controllers
             }
 
             return response;
-        }
-
-
-        [Route("GetWishList"), HttpPost]
-        public async Task<GetWishListResponseDto> GetWishListAsync(GetWishListRequestDto request)
-        {
-            var response = new GetWishListResponseDto();
-
-            using (var conn = new SqlConnection(connectionString))
-            {
-                var result = await conn.QueryAsync<WishListViewEntity>("SELECT * FROM WishListView");
-
-                response.WishList = _mapper.Map<List<WishListViewDto>>(result);
-
-                return response;
-            }
         }
 
 
@@ -376,7 +361,21 @@ namespace WebAPI.Controllers
             return response;
         }
 
-        
+
+        [Route("GetHobbies"), HttpPost]
+        public async Task<GetHobbiesResponseDto> GetHobbiesAsync(GetHobbiesRequestDto request)
+        {
+            var response = new GetHobbiesResponseDto();
+
+            using (var conn = new SqlConnection(connectionString))
+            {
+                var result = await conn.QueryAsync<HobbiesEntity>("SELECT * FROM Hobbies ORDER BY Name ASC");
+                response.Hobbies = _mapper.Map<List<HobbiesDto>>(result);
+                return response;
+            }
+        }
+
+
         /// <summary>
         /// Получить список друзей, подписчиков и т.п. указанного пользователя
         /// </summary>
@@ -420,5 +419,20 @@ namespace WebAPI.Controllers
             return response;
         }
 
+
+        [Route("GetWishList"), HttpPost]
+        public async Task<GetWishListResponseDto> GetWishListAsync(GetWishListRequestDto request)
+        {
+            var response = new GetWishListResponseDto();
+
+            using (var conn = new SqlConnection(connectionString))
+            {
+                var result = await conn.QueryAsync<WishListViewEntity>("SELECT * FROM WishListView");
+
+                response.WishList = _mapper.Map<List<WishListViewDto>>(result);
+
+                return response;
+            }
+        }
     }
 }

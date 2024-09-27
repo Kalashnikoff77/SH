@@ -43,16 +43,29 @@ namespace Common.Models
             }
         };
 
+        /// <summary>
+        /// Пол
+        /// </summary>
+        public static Dictionary<int, Gender> Genders = new()
+        {
+            { 0, new Gender { ShortName = "М", Name = "Муж" } },
+            { 1, new Gender { ShortName = "Ж", Name = "Жен" } }
+        };
         public class Gender
         {
             public string ShortName { get; set; } = null!;
             public string Name { get; set; } = null!;
         }
 
-        public static Dictionary<int, Gender> Genders = new()
+
+        /// <summary>
+        /// Типы причёсок
+        /// </summary>
+        public static Dictionary<short?, string> Hair = new ()
         {
-            { 0, new Gender { ShortName = "М", Name = "Муж" } },
-            { 1, new Gender { ShortName = "Ж", Name = "Жен" } }
+            { 0, "Без волос" },
+            { 1, "Короткая" },
+            { 2, "Длинная" }
         };
 
 

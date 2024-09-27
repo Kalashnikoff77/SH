@@ -15,6 +15,8 @@ namespace UI.Components.Shared.Dialogs
         Dictionary<short, TabPanel> TabPanels { get; set; } = null!;
         bool IsFormValid => TabPanels[1].Items.All(x => x.Value.IsValid == true);
 
+        List<int> test;
+
         UsersDto UserCopy { get; set; } = null!;
 
         string Title { get; set; } = null!;
@@ -40,7 +42,7 @@ namespace UI.Components.Shared.Dialogs
             }
             else
             {
-                Title = $"Редактирование партнёра - {User.Name}";
+                Title = $"Редактирование партнёра - { User.Name }";
                 StartIcon = Icons.Material.Outlined.Check;
                 ButtonSubmitText = "Сохранить";
                 UserCopy = User.DeepCopy<UsersDto>()!;
@@ -61,6 +63,7 @@ namespace UI.Components.Shared.Dialogs
             };
         }
 
+        #region /// Валидаторы ///
         Color NameIconColor = Color.Default;
         string? NameValidator(string name)
         {
@@ -129,6 +132,7 @@ namespace UI.Components.Shared.Dialogs
             }
             StateHasChanged();
         }
+        #endregion
 
 
         void Submit() => MudDialog.Close(DialogResult.Ok(UserCopy));

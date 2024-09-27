@@ -96,6 +96,9 @@ namespace WebAPI.Controllers
         }
 
 
+        /// <summary>
+        /// Загрузка в базу и каталог фото, которые в Блейзоре были помещены в каталог temp
+        /// </summary>
         [Route("UploadFromTemp"), HttpPost, Authorize]
         public async Task<UploadPhotoFromTempResponseDto> UploadFromTempAsync(UploadPhotoFromTempRequestDto request)
         {

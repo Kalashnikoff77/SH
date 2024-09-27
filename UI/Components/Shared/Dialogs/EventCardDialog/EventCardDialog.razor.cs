@@ -16,7 +16,7 @@ namespace UI.Components.Shared.Dialogs.EventCardDialog
         [CascadingParameter] MudDialogInstance MudDialog { get; set; } = null!;
         [Parameter, EditorRequired] public SchedulesForEventsViewDto ScheduleForEventView { get; set; } = null!;
 
-        [Inject] IRepository<GetScheduleOneRequestDto, GetScheduleOneResponseDto> _repoGetEvent { get; set; } = null!;
+        [Inject] IRepository<GetSchedulesRequestDto, GetSchedulesResponseDto> _repoSchedulesEvent { get; set; } = null!;
 
         MudCarousel<PhotosForEventsDto> Carousel = null!;
         SchedulesForEventsDto selectedSchedule { get; set; } = null!;
@@ -44,9 +44,12 @@ namespace UI.Components.Shared.Dialogs.EventCardDialog
 
         async Task ScheduleChangedAsync(SchedulesForEventsDto schedule)
         {
-            var eventResponse = await _repoGetEvent.HttpPostAsync(new GetScheduleOneRequestDto() { ScheduleId = schedule.Id });
-            ScheduleForEventView = eventResponse.Response.Event;
-            selectedSchedule = schedule;
+            var eventResponse = await _repoSchedulesEvent.HttpPostAsync(new GetSchedulesRequestDto() { ScheduleId = schedule.Id });
+            if (eventResponse.Response.Event != null)
+            {
+                ScheduleForEventView = eventResponse.Response.Event;
+                selectedSchedule = schedule;
+            }
         }
 
         public void Dispose() =>

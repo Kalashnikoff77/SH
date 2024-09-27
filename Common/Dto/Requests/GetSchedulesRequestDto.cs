@@ -7,7 +7,7 @@
         /// <summary>
         /// Получить одну запись с указанным ScheduleId
         /// </summary>
-        public int ScheduleId { get; set; }
+        public int? ScheduleId { get; set; }
 
         /// <summary>
         /// Встречи каких организаторов выводить

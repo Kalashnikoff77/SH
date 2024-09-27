@@ -21,29 +21,29 @@ namespace WebAPI.Controllers
         public EventsController(IMapper mapper, IConfiguration configuration) : base(mapper, configuration) { }
 
 
-        [Route("GetOne"), HttpPost]
-        public async Task<GetScheduleOneResponseDto?> GetOneAsync(GetScheduleOneRequestDto request)
-        {
-            AuthenticateUser();
+        //[Route("GetOne"), HttpPost]
+        //public async Task<GetScheduleOneResponseDto?> GetOneAsync(GetScheduleOneRequestDto request)
+        //{
+        //    AuthenticateUser();
 
-            var response = new GetScheduleOneResponseDto();
+        //    var response = new GetScheduleOneResponseDto();
 
-            var columns = GetRequiredColumns<SchedulesForEventsViewEntity>();
+        //    var columns = GetRequiredColumns<SchedulesForEventsViewEntity>();
 
-            using (var conn = new SqlConnection(connectionString))
-            {
-                SchedulesForEventsViewEntity result;
+        //    using (var conn = new SqlConnection(connectionString))
+        //    {
+        //        SchedulesForEventsViewEntity result;
 
-                var sql = $"SELECT {columns.Aggregate((a, b) => a + ", " + b)} " +
-                    $"FROM SchedulesForEventsView " +
-                    $"WHERE Id = @ScheduleId";
-                result = await conn.QueryFirstOrDefaultAsync<SchedulesForEventsViewEntity>(sql, new { request.ScheduleId }) ?? throw new NotFoundException("Встреча не найдена!");
+        //        var sql = $"SELECT {columns.Aggregate((a, b) => a + ", " + b)} " +
+        //            $"FROM SchedulesForEventsView " +
+        //            $"WHERE Id = @ScheduleId";
+        //        result = await conn.QueryFirstOrDefaultAsync<SchedulesForEventsViewEntity>(sql, new { request.ScheduleId }) ?? throw new NotFoundException("Встреча не найдена!");
 
-                response.Event = _mapper.Map<SchedulesForEventsViewDto>(result);
-            }
+        //        response.Event = _mapper.Map<SchedulesForEventsViewDto>(result);
+        //    }
 
-            return response;
-        }
+        //    return response;
+        //}
 
 
         [Route("Get"), HttpPost]
@@ -55,21 +55,34 @@ namespace WebAPI.Controllers
 
             using (var conn = new SqlConnection(connectionString))
             {
-                var jsonRequest = JsonSerializer.Serialize(request);
-                // Сперва получим Id записей, которые нужно вытянуть + кол-во записей.
-                var p = new DynamicParameters();
-                p.Add("@GetEventsRequestDto", jsonRequest);
-                var ids = await conn.QueryAsync<int>("EventsFilter_sp", p, commandType: System.Data.CommandType.StoredProcedure);
-                response.Count = ids.Count();
-
-                if (response.Count > 0)
+                // Получить одну запись
+                if (request.ScheduleId.HasValue && request.ScheduleId > 0)
                 {
                     var sql = $"SELECT {columns.Aggregate((a, b) => a + ", " + b)} " +
-                        $"FROM SchedulesForEventsView WHERE Id IN ({string.Join(",", ids)}) " +
-                        $"ORDER BY {nameof(SchedulesForEventsViewDto.StartDate)} " +
-                        $"OFFSET {request.Skip} ROWS FETCH NEXT {request.Take} ROWS ONLY";
-                    var result = await conn.QueryAsync<SchedulesForEventsViewEntity>(sql);
-                    response.Events = _mapper.Map<List<SchedulesForEventsViewDto>>(result);
+                        $"FROM SchedulesForEventsView " +
+                        $"WHERE Id = @ScheduleId";
+                    var result = await conn.QueryFirstOrDefaultAsync<SchedulesForEventsViewEntity>(sql, new { request.ScheduleId }) ?? throw new NotFoundException("Встреча не найдена!");
+                    response.Event = _mapper.Map<SchedulesForEventsViewDto>(result);
+                }
+                // Получить несколько записей
+                else
+                {
+                    var jsonRequest = JsonSerializer.Serialize(request);
+                    // Сперва получим Id записей, которые нужно вытянуть + кол-во записей.
+                    var p = new DynamicParameters();
+                    p.Add("@GetEventsRequestDto", jsonRequest);
+                    var ids = await conn.QueryAsync<int>("EventsFilter_sp", p, commandType: System.Data.CommandType.StoredProcedure);
+                    response.Count = ids.Count();
+
+                    if (response.Count > 0)
+                    {
+                        var sql = $"SELECT {columns.Aggregate((a, b) => a + ", " + b)} " +
+                            $"FROM SchedulesForEventsView WHERE Id IN ({string.Join(",", ids)}) " +
+                            $"ORDER BY {nameof(SchedulesForEventsViewDto.StartDate)} " +
+                            $"OFFSET {request.Skip} ROWS FETCH NEXT {request.Take} ROWS ONLY";
+                        var result = await conn.QueryAsync<SchedulesForEventsViewEntity>(sql);
+                        response.Events = _mapper.Map<List<SchedulesForEventsViewDto>>(result);
+                    }
                 }
             }
             return response;

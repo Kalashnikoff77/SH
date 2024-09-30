@@ -15,8 +15,6 @@ namespace DataContext.Entities.Views
 
         public string? Photos { get; set; }
 
-        public string? Events { get; set; }
-
         public string? Hobbies { get; set; }
 
         public string? Relations { get; set; }

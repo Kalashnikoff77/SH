@@ -10,7 +10,7 @@ using DataContext.Entities.Views;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
-using System.Linq.Expressions;
+using System.Collections.Generic;
 using System.Text.Json;
 using WebAPI.Exceptions;
 using WebAPI.Extensions;
@@ -34,9 +34,6 @@ namespace WebAPI.Controllers
             if (request.IsRelationsIncluded)
                 columns.Add(nameof(AccountsViewEntity.Relations));
 
-            if (request.IsEventsIncluded)
-                columns.Add(nameof(AccountsViewEntity.Events));
-
             if (request.IsHobbiesIncluded)
                 columns.Add(nameof(AccountsViewEntity.Hobbies));
 
@@ -45,32 +42,37 @@ namespace WebAPI.Controllers
 
             string? where = null;
 
-            if (request.Id.HasValue)
-                where = $"WHERE {nameof(AccountsViewEntity.Id)} = {request.Id}";
-
-            if (request.Guid.HasValue)
-                where = $"WHERE {nameof(AccountsViewEntity.Guid)} = '{request.Guid}'";
-
-            string order = null!;
-
-            switch(request.Order)
-            {
-                case EnumOrders.IdDesc:
-                    order = "ORDER BY Id DESC"; break;
-            }
-
-            string? limit = $"OFFSET {request.Skip} ROWS FETCH NEXT {request.Take} ROWS ONLY";
-
             using (var conn = new SqlConnection(connectionString))
             {
-                var sql = "SELECT " +
-                    $"{columns.Aggregate((a, b) => a + ", " + b)} " +
-                    "FROM AccountsView " +
-                    $"{where} {order} {limit}";
+                // Получить одного пользователя
+                if (request.Id.HasValue || request.Guid.HasValue)
+                {
+                    if (request.Id.HasValue && request.Id > 0)
+                        where = $"WHERE {nameof(AccountsViewEntity.Id)} = {request.Id}";
+                    else if (request.Guid.HasValue)
+                        where = $"WHERE {nameof(AccountsViewEntity.Guid)} = '{request.Guid}'";
 
-                var result = await conn.QueryAsync<AccountsViewEntity>(sql);
+                    var sql = $"SELECT {columns.Aggregate((a, b) => a + ", " + b)} FROM AccountsView {where}";
+                    var result = await conn.QueryFirstOrDefaultAsync<AccountsViewEntity>(sql);
+                    response.Account = _mapper.Map<AccountsViewDto>(result);
+                }
+                // Получить несколько пользователей
+                else
+                {
+                    string order = null!;
 
-                response.Accounts = _mapper.Map<List<AccountsViewDto>>(result);
+                    switch (request.Order)
+                    {
+                        case EnumOrders.IdDesc:
+                            order = "ORDER BY Id DESC"; break;
+                    }
+
+                    string? limit = $"OFFSET {request.Skip} ROWS FETCH NEXT {request.Take} ROWS ONLY";
+
+                    var sql = $"SELECT {columns.Aggregate((a, b) => a + ", " + b)} FROM AccountsView {where} {order} {limit}";
+                    var result = await conn.QueryAsync<AccountsViewEntity>(sql);
+                    response.Accounts = _mapper.Map<List<AccountsViewDto>>(result);
+                }
             }
 
             return response;

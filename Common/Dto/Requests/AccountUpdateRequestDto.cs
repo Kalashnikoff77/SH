@@ -19,6 +19,8 @@
 
         public List<UsersDto> Users { get; set; } = null!;
 
+        public List<HobbiesDto>? Hobbies { get; set; }
+
         public string? ErrorMessage { get; set; }
         public bool Remember { get; set; }
     }

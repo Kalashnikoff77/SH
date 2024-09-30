@@ -313,18 +313,18 @@ namespace UI.Components.Pages.Profile
         {
             if (CurrentState.Account != null)
             {
-                var hobbies = CurrentState.Account.Hobbies;
-                
-                if (hobbies != null)
+                if (CurrentState.Account.Hobbies != null)
                 {
-                    var index = hobbies.FindIndex(x => x.Id == hobby.Id);
+                    var index = CurrentState.Account.Hobbies.FindIndex(x => x.Id == hobby.Id);
                     if (index >= 0)
-                        hobbies.RemoveAt(index);
+                        CurrentState.Account.Hobbies.RemoveAt(index);
                     else
-                        hobbies.Add(hobby);
+                        CurrentState.Account.Hobbies.Add(hobby);
                 }
                 else
                     CurrentState.Account.Hobbies = [hobby];
+                
+                accountUpdateDto.Hobbies = CurrentState.Account.Hobbies;
             }
         }
         #endregion

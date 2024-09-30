@@ -10,6 +10,7 @@ using DataContext.Entities.Views;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
+using System.Linq.Expressions;
 using System.Text.Json;
 using WebAPI.Exceptions;
 using WebAPI.Extensions;
@@ -250,6 +251,15 @@ namespace WebAPI.Controllers
                             await conn.ExecuteAsync(sql, new { user.Id, _accountId, user.BirthDate, user.Name, user.Gender, user.Height, user.Weight, user.HairFace, user.HairHead, user.HairIntim, user.About  }, transaction: transaction);
                         }
                     }
+                }
+
+                // Обновление HobbiesForAccounts
+                if (request.Hobbies != null)
+                {
+                    var p = new DynamicParameters();
+                    p.Add("@AccountId", _accountId);
+                    p.Add("@HobbiesIds", string.Join(",", request.Hobbies.Select(s => s.Id)));
+                    await conn.ExecuteAsync("UpdateHobbiesForAccounts_sp", p, commandType: System.Data.CommandType.StoredProcedure, transaction: transaction);
                 }
 
                 // Обновление Accounts

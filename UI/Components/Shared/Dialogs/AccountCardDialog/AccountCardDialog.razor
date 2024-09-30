@@ -1,0 +1,48 @@
+﻿@if (Account != null)
+{
+    <MudDialog Style="width:550px; min-width:360px">
+        <DialogContent>
+            <MudStack AlignItems="AlignItems.Center" Class="mb-3">
+                @if (Account.Photos != null)
+                {
+                    <MudCarousel @ref="Carousel" TData="PhotosForEventsDto" ShowArrows ShowBullets AutoCycle Style="width:300px; height:400px">
+                        @foreach (var photo in Account.Photos)
+                        {
+                            <MudCarouselItem Transition="Transition.Slide">
+                                <MudImage Src=@($"/images/AccountsPhotos/{photo.AccountId}/{photo.Guid}/{EnumImageSize.s450x600}.jpg") Fluid="true" Style="border-radius:2%" />
+                            </MudCarouselItem>
+                        }
+                    </MudCarousel>
+                }
+            </MudStack>
+
+            <MudStack Spacing="1" AlignItems="AlignItems.Center">
+                <MudStack AlignItems="AlignItems.Center" Row>
+                    <AccountGenderIcon Account="@Account" />
+                    <MudText Typo="Typo.h6">@Account.Name</MudText>
+                </MudStack>
+                <MudText Typo="Typo.body2">@Account.ToGendersAgesString()</MudText>
+                <MudStack Row AlignItems="AlignItems.Center" Spacing="1">
+                    <MudIcon Icon="@Icons.Material.Outlined.LocationOn" Style="font-size:20px" />
+                    <MudText Typo="Typo.body2">@Account.ToRegionString()</MudText>
+                </MudStack>
+            </MudStack>
+
+            @* Закладки *@
+            <MudTabs Centered ApplyEffectsToContainer class="mt-4 px-2">
+                <MudTabPanel Text="Общее">
+                    <Tab_About Account="@Account" />
+                </MudTabPanel>
+
+                <MudTabPanel Text="Комментарии">
+                    <Tab_Discussions Account="@Account" />
+                </MudTabPanel>
+            </MudTabs>
+
+        </DialogContent>
+
+        <DialogActions>
+            <MudButton Color="Color.Primary" OnClick="() => MudDialog.Close(DialogResult.Ok(true))">Закрыть</MudButton>
+        </DialogActions>
+    </MudDialog>
+}

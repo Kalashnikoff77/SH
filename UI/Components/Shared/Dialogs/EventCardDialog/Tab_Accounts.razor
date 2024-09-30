@@ -15,18 +15,7 @@
                                 </MudText>
                             </MudStack>
                         </MudStack>
-                        @switch (context.Item.UserGender)
-                        {
-                            case null:
-                                <MudIcon Icon="@Icons.Material.Outlined.PeopleAlt" Color="Color.Tertiary" />
-                                break;
-                            case 0:
-                                <MudIcon Icon="@Icons.Material.Outlined.Face5" Color="Color.Primary" />
-                                break;
-                            case 1:
-                                <MudIcon Icon="@Icons.Material.Outlined.Face3" Color="Color.Error" />
-                                break;
-                        }
+                        <AccountGenderIcon Account="@context.Item.Account" />
                     </MudStack>
                 </CellTemplate>
             </TemplateColumn>

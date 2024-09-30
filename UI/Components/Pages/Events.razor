@@ -104,8 +104,12 @@
                             </MudStack>
                         }
                         <MudStack AlignItems="AlignItems.Center" Spacing="2" Style="width:100px">
-                            <ImageAvatar Account="context.Item.Event?.Admin" Size="EnumImageSize.s64x64" Title="Организатор" class="s45" Style="border-radius:50%" />
-                            <ColorizedAccountName Account="@context.Item.Event?.Admin" Typo="Typo.body2" Style="font-size:12px; text-align:center" />
+                            <MudButton OnClick="() => ShowAccountCardAsync(context.Item.Event.Admin)">
+                                <MudStack AlignItems="AlignItems.Center">
+                                    <ImageAvatar Account="context.Item.Event?.Admin" Size="EnumImageSize.s64x64" Title="Организатор" class="s45" Style="border-radius:50%" />
+                                    <ColorizedAccountName Account="@context.Item.Event?.Admin" Typo="Typo.body2" Style="font-size:12px; text-align:center" />
+                                </MudStack>
+                            </MudButton>
                         </MudStack>
                     </MudStack>
                 </MudStack>

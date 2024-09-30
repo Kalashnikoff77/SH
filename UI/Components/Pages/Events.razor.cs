@@ -7,6 +7,7 @@ using Common.Models.States;
 using Common.Repository;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
+using UI.Components.Shared.Dialogs.AccountCardDialog;
 using UI.Components.Shared.Dialogs.EventCardDialog;
 
 namespace UI.Components.Pages
@@ -92,6 +93,17 @@ namespace UI.Components.Pages
                 { x => x.ScheduleForEventView, schedule }
             };
             return Dialog.ShowAsync<EventCardDialog>(schedule.Event?.Name, dialogParams, dialogOptions);
+        }
+
+        Task ShowAccountCardAsync(AccountsViewDto account)
+        {
+            DialogOptions dialogOptions = new() { CloseOnEscapeKey = true, CloseButton = true };
+
+            var dialogParams = new DialogParameters<AccountCardDialog>
+            {
+                { x => x.Account, account }
+            };
+            return Dialog.ShowAsync<AccountCardDialog>(account.Name, dialogParams, dialogOptions);
         }
 
         Task OnSearch(string text)

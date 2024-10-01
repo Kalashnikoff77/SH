@@ -45,36 +45,6 @@
             </MudItem>
 
             <MudItem xs="12">
-                <MudGrid>
-                    <MudItem sm="4" xs="12">
-                        <MudSelect @bind-Value="@UserCopy.HairHead" HelperText="Стрижка на голове" MultiSelection="false" Variant="Variant.Text" Dense Clearable>
-                            @foreach (var hair in StaticData.Hair)
-                            {
-                                <MudSelectItem Value="@hair.Key">@hair.Value</MudSelectItem>
-                            }
-                        </MudSelect>
-                    </MudItem>
-                    <MudItem sm="4" xs="12">
-                        <MudSelect @bind-Value="@UserCopy.HairFace" HelperText="Стрижка на лице" MultiSelection="false" Variant="Variant.Text" Dense Clearable>
-                            @foreach (var hair in StaticData.Hair)
-                            {
-                                <MudSelectItem Value="@hair.Key">@hair.Value</MudSelectItem>
-                            }
-                        </MudSelect>
-                    </MudItem>
-                    <MudItem sm="4" xs="12">
-                        <MudSelect @bind-Value="@UserCopy.HairIntim" HelperText="Стрижка интимная" MultiSelection="false" Variant="Variant.Text" Dense Clearable>
-                            @foreach (var hair in StaticData.Hair)
-                            {
-                                <MudSelectItem Value="@hair.Key">@hair.Value</MudSelectItem>
-                            }
-                        </MudSelect>
-                    </MudItem>
-                </MudGrid>
-
-            </MudItem>
-
-            <MudItem xs="12">
                 <MudTextField @bind-Value="UserCopy.About"
                               AdornmentIcon="@Icons.Material.Outlined.ShortText" AdornmentColor="Color.Default" Adornment="Adornment.End"
                               Label="О партнёре" HelperText="Например: профессия, место рождения, привычки и т.п." Typo="Typo.body1" Variant="Variant.Text"

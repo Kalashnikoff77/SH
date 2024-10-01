@@ -6,6 +6,7 @@ using Common.Repository;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
 using MudBlazor.Services;
 using UI.Components;
+using UI.Components.Shared.Dialogs;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -24,6 +25,9 @@ builder.Services.AddAutoMapper(typeof(Mapping));
 builder.Services.AddScoped<CurrentState>();
 builder.Services.AddScoped(typeof(IRepository<,>), typeof(Repository<,>));
 builder.Services.AddScoped<IJSProcessor, JSProcessor>();
+
+builder.Services.AddScoped<ShowDialogs>();
+
 
 // Максимальный размер загружаемых файлов = 35 Мб.
 builder.Services.Configure<KestrelServerOptions>(options =>

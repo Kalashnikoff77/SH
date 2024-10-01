@@ -28,16 +28,9 @@
                 </MudStack>
             </MudStack>
 
-            @* Закладки *@
-            <MudTabs Centered ApplyEffectsToContainer class="mt-4 px-2">
-                <MudTabPanel Text="Общее">
-                    <Tab_About Account="@Account" />
-                </MudTabPanel>
+            <MudDivider Class="mt-4" />
 
-                <MudTabPanel Text="Комментарии">
-                    <Tab_Discussions Account="@Account" />
-                </MudTabPanel>
-            </MudTabs>
+            <About Account="@Account" />
 
         </DialogContent>
 

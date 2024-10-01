@@ -15,10 +15,6 @@
 
         public string? About { get; set; }
 
-        public short? HairFace { get; set; }
-        public short? HairHead { get; set; }
-        public short? HairIntim { get; set; }
-
         public DateTime BirthDate { get; set; }
 
         public bool IsDeleted { get; set; }

@@ -223,10 +223,10 @@ namespace WebAPI.Controllers
                     // Добавление
                     if (user.Id == -1)
                     {
-                        sql = $"INSERT INTO Users ({nameof(UsersEntity.Name)}, {nameof(UsersEntity.Height)}, {nameof(UsersEntity.Weight)}, {nameof(UsersEntity.BirthDate)}, {nameof(UsersEntity.About)}, {nameof(UsersEntity.Gender)}, {nameof(UsersEntity.HairFace)}, {nameof(UsersEntity.HairHead)}, {nameof(UsersEntity.HairIntim)}, {nameof(UsersEntity.AccountId)}) " +
+                        sql = $"INSERT INTO Users ({nameof(UsersEntity.Name)}, {nameof(UsersEntity.Height)}, {nameof(UsersEntity.Weight)}, {nameof(UsersEntity.BirthDate)}, {nameof(UsersEntity.About)}, {nameof(UsersEntity.Gender)}, {nameof(UsersEntity.AccountId)}) " +
                             "VALUES " +
-                            $"(@{nameof(UsersEntity.Name)}, @{nameof(UsersEntity.Height)}, @{nameof(UsersEntity.Weight)}, @{nameof(UsersEntity.BirthDate)}, @{nameof(UsersEntity.About)}, @{nameof(UsersEntity.Gender)}, @{nameof(UsersEntity.HairFace)}, @{nameof(UsersEntity.HairHead)}, @{nameof(UsersEntity.HairIntim)}, @_accountId)";
-                        await conn.ExecuteAsync(sql, new { user.Name, user.Height, user.Weight, user.BirthDate, user.About, user.Gender, user.HairFace, user.HairHead, user.HairIntim, _accountId }, transaction: transaction);
+                            $"(@{nameof(UsersEntity.Name)}, @{nameof(UsersEntity.Height)}, @{nameof(UsersEntity.Weight)}, @{nameof(UsersEntity.BirthDate)}, @{nameof(UsersEntity.About)}, @{nameof(UsersEntity.Gender)}, @_accountId)";
+                        await conn.ExecuteAsync(sql, new { user.Name, user.Height, user.Weight, user.BirthDate, user.About, user.Gender, _accountId }, transaction: transaction);
                     } 
                     else
                     {
@@ -245,12 +245,9 @@ namespace WebAPI.Controllers
                                 $"{nameof(UsersEntity.Gender)} = @{nameof(user.Gender)}, " +
                                 $"{nameof(UsersEntity.Height)} = @{nameof(user.Height)}, " +
                                 $"{nameof(UsersEntity.Weight)} = @{nameof(user.Weight)}, " +
-                                $"{nameof(UsersEntity.HairFace)} = @{nameof(user.HairFace)}, " +
-                                $"{nameof(UsersEntity.HairHead)} = @{nameof(user.HairHead)}, " +
-                                $"{nameof(UsersEntity.HairIntim)} = @{nameof(user.HairIntim)}, " +
                                 $"{nameof(UsersEntity.About)} = @{nameof(user.About)} " +
                                 $"WHERE Id = @Id AND AccountId = @_accountId";
-                            await conn.ExecuteAsync(sql, new { user.Id, _accountId, user.BirthDate, user.Name, user.Gender, user.Height, user.Weight, user.HairFace, user.HairHead, user.HairIntim, user.About  }, transaction: transaction);
+                            await conn.ExecuteAsync(sql, new { user.Id, _accountId, user.BirthDate, user.Name, user.Gender, user.Height, user.Weight, user.About  }, transaction: transaction);
                         }
                     }
                 }

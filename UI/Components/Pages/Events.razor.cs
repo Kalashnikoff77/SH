@@ -7,8 +7,7 @@ using Common.Models.States;
 using Common.Repository;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
-using UI.Components.Shared.Dialogs.AccountCardDialog;
-using UI.Components.Shared.Dialogs.EventCardDialog;
+using UI.Components.Shared.Dialogs;
 
 namespace UI.Components.Pages
 {
@@ -19,7 +18,8 @@ namespace UI.Components.Pages
         [Inject] IRepository<GetFeaturesForEventsRequestDto, GetFeaturesForEventsResponseDto> _repoGetFeatures { get; set; } = null!;
         [Inject] IRepository<GetRegionsForEventsRequestDto, GetRegionsForEventsResponseDto> _repoGetRegions { get; set; } = null!;
         [Inject] IRepository<GetAdminsForEventsRequestDto, GetAdminsForEventsResponseDto> _repoGetAdmins { get; set; } = null!;
-        [Inject] IDialogService Dialog { get; set; } = null!;
+
+        [Inject] ShowDialogs ShowDialogs { get; set; } = null!;
 
         MudDataGrid<SchedulesForEventsViewDto> dataGrid = null!;
         GetSchedulesRequestDto request = new GetSchedulesRequestDto { IsPhotosIncluded = true };
@@ -82,28 +82,6 @@ namespace UI.Components.Pages
                 };
             }
             return items;
-        }
-
-        Task ShowEventCardAsync(SchedulesForEventsViewDto schedule)
-        {
-            DialogOptions dialogOptions = new() { CloseOnEscapeKey = true, CloseButton = true };
-
-            var dialogParams = new DialogParameters<EventCardDialog>
-            {
-                { x => x.ScheduleForEventView, schedule }
-            };
-            return Dialog.ShowAsync<EventCardDialog>(schedule.Event?.Name, dialogParams, dialogOptions);
-        }
-
-        Task ShowAccountCardAsync(AccountsViewDto account)
-        {
-            DialogOptions dialogOptions = new() { CloseOnEscapeKey = true, CloseButton = true };
-
-            var dialogParams = new DialogParameters<AccountCardDialog>
-            {
-                { x => x.Account, account }
-            };
-            return Dialog.ShowAsync<AccountCardDialog>(account.Name, dialogParams, dialogOptions);
         }
 
         Task OnSearch(string text)

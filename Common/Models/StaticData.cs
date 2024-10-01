@@ -59,17 +59,6 @@ namespace Common.Models
 
 
         /// <summary>
-        /// Типы причёсок
-        /// </summary>
-        public static Dictionary<short?, string> Hair = new ()
-        {
-            { 0, "Без волос" },
-            { 1, "Короткая" },
-            { 2, "Длинная" }
-        };
-
-
-        /// <summary>
         /// Кол-во сообщений в обсуждениях мероприятий в блоке
         /// </summary>
         public const short EVENT_DISCUSSIONS_PER_BLOCK = 10;

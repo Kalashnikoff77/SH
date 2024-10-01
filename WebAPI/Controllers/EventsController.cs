@@ -74,7 +74,6 @@ namespace WebAPI.Controllers
             return response;
         }
 
-        
 
         [Route("GetDiscussions"), HttpPost]
         public async Task<GetDiscussionsForEventsResponseDto?> GetDiscussions(GetDiscussionsForEventsRequestDto request)

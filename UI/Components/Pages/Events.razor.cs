@@ -32,7 +32,7 @@ namespace UI.Components.Pages
 
         MudCarousel<PhotosForEventsDto> Carousel = null!;
 
-        IDisposable? OnEventDiscussionAddedHandler;
+        IDisposable? OnScheduleChangedHandler;
 
         protected override async Task OnInitializedAsync()
         {
@@ -48,7 +48,7 @@ namespace UI.Components.Pages
 
         protected override void OnAfterRender(bool firstRender)
         {
-            OnEventDiscussionAddedHandler = OnEventDiscussionAddedHandler.SignalRClient(CurrentState, (Func<OnScheduleChangedResponse, Task>)(async (response) =>
+            OnScheduleChangedHandler = OnScheduleChangedHandler.SignalRClient(CurrentState, (Func<OnScheduleChangedResponse, Task>)(async (response) =>
             {
                 var apiResponse = await _repoGetSchedules.HttpPostAsync(new GetSchedulesRequestDto { EventId = response.EventId });
                 if (apiResponse.Response.Schedules != null)
@@ -109,6 +109,6 @@ namespace UI.Components.Pages
         }
 
         public void Dispose() =>
-            OnEventDiscussionAddedHandler?.Dispose();
+            OnScheduleChangedHandler?.Dispose();
     }
 }

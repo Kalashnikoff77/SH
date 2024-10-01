@@ -1,5 +1,23 @@
 ﻿<MudDialog Style="width:550px; min-width:360px">
     <DialogContent>
+
+        <MudSimpleTable>
+            <thead>
+                <tr>
+                    <th>Название</th>
+                    <th>Дата</th>
+                    <th>Стоимость</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><b>@ScheduleForEventView.Event!.Name</b></td>
+                    <td>@ScheduleForEventView.ToStartEndString()</td>
+                    <td><EventCost SchedulesForEventsViewDto="@ScheduleForEventView" /></td>
+                </tr>
+            </tbody>
+        </MudSimpleTable>
+
     </DialogContent>
 
     <DialogActions>

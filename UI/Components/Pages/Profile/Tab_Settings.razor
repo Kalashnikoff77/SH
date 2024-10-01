@@ -66,14 +66,7 @@
                         <TemplateColumn Title="Общее" Context="user">
                             <CellTemplate>
                                 <MudStack AlignItems="AlignItems.Center" Row>
-                                    @if (user.Item.Gender == 0)
-                                    {
-                                        <MudIcon Icon="@Icons.Material.Outlined.Face5" Color="Color.Primary" />
-                                    }
-                                    else
-                                    {
-                                        <MudIcon Icon="@Icons.Material.Outlined.Face3" Color="Color.Error" />
-                                    }
+                                    <UserGenderIcon User="@user.Item" />
                                     <MudText Typo="Typo.body2"><b>@user.Item.Name</b><br />@user.Item.ToGenderAgeString()</MudText>
                                 </MudStack>
                             </CellTemplate>

@@ -38,5 +38,21 @@ namespace UI.Components.Shared.Dialogs
         }
 
 
+        /// <summary>
+        /// Регистрация на мероприятие
+        /// </summary>
+        public async Task EventRegistrationDialogAsync(SchedulesForEventsViewDto schedule)
+        {
+            DialogOptions dialogOptions = new() { CloseOnEscapeKey = true, CloseButton = true };
+
+            var dialogParams = new DialogParameters<EventRegistrationDialog>
+            {
+                { x => x.ScheduleForEventView, schedule }
+            };
+            var resultDialog = await _dialog.ShowAsync<EventRegistrationDialog>(schedule.Event?.Name, dialogParams, dialogOptions);
+
+        }
+
+
     }
 }

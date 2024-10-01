@@ -17,6 +17,7 @@ namespace UI.Components.Shared.Dialogs.EventCardDialog
         [Parameter, EditorRequired] public SchedulesForEventsViewDto ScheduleForEventView { get; set; } = null!;
 
         [Inject] IRepository<GetSchedulesRequestDto, GetSchedulesResponseDto> _repoGetSchedules { get; set; } = null!;
+        [Inject] ShowDialogs ShowDialogs { get; set; } = null!;
 
         MudCarousel<PhotosForEventsDto> Carousel = null!;
         SchedulesForEventsDto selectedSchedule { get; set; } = null!;

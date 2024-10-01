@@ -21,7 +21,7 @@ namespace UI.Components.Shared.Dialogs
         {
             MudDialog.Close(DialogResult.Ok(true));
 
-            var apiResponse = await _repoGetSchedules.HttpPostAsync(new GetSchedulesRequestDto { EventId = response.EventId });
+            // var apiResponse = await _repoGetSchedules.HttpPostAsync(new GetSchedulesRequestDto { EventId = response.EventId });
 
 
             var request = new SignalGlobalRequest

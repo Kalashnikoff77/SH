@@ -18,7 +18,8 @@ namespace WebAPI.Mapping
                 .ForMember(to => to.Avatar, from => from.ConvertUsing<JsonToClassConverter<PhotosForAccountsDto>, string?>(from => from.Avatar))
                 .ForMember(to => to.Photos, from => from.ConvertUsing<JsonToClassConverter<List<PhotosForAccountsDto>>, string?>(from => from.Photos))
                 .ForMember(to => to.Hobbies, from => from.ConvertUsing<JsonToClassConverter<List<HobbiesDto>>, string?>(from => from.Hobbies))
-                .ForMember(to => to.Relations, from => from.ConvertUsing<JsonToClassConverter<List<RelationsForAccountsDto>>, string?>(from => from.Relations));
+                .ForMember(to => to.Relations, from => from.ConvertUsing<JsonToClassConverter<List<RelationsForAccountsDto>>, string?>(from => from.Relations))
+                .ForMember(to => to.Schedules, from => from.ConvertUsing<JsonToClassConverter<List<SchedulesForAccountsDto>>, string?>(from => from.Schedules));
 
             CreateMap<CountriesViewEntity, CountriesViewDto>()
                 .ForMember(to => to.Regions, from => from.ConvertUsing<JsonToClassConverter<List<RegionsDto>>, string?>(from => from.Regions));
@@ -36,7 +37,7 @@ namespace WebAPI.Mapping
 
             CreateMap<SchedulesForEventsViewEntity, SchedulesForEventsViewDto>()
                 .ForMember(to => to.Event, from => from.ConvertUsing<JsonToClassConverter<EventsViewDto>, string?>(from => from.Event))
-                .ForMember(to => to.RegisteredAccounts, from => from.ConvertUsing<JsonToClassConverter<List<AccountsForSchedulesViewDto>>, string?>(from => from.RegisteredAccounts))
+                .ForMember(to => to.RegisteredAccounts, from => from.ConvertUsing<JsonToClassConverter<List<SchedulesForAccountsViewDto>>, string?>(from => from.RegisteredAccounts))
                 .ForMember(to => to.Features, from => from.ConvertUsing<JsonToClassConverter<List<FeaturesDto>>, string?>(from => from.Features));
 
             CreateMap<DiscussionsForEventsViewEntity, DiscussionsForEventsViewDto>()

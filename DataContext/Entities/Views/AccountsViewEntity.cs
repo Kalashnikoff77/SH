@@ -19,6 +19,8 @@ namespace DataContext.Entities.Views
 
         public string? Relations { get; set; }
 
+        public string? Schedules { get; set; }
+
         [Required]
         public string? LastVisit { get; set; }
     }

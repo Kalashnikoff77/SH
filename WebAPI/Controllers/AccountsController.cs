@@ -40,6 +40,9 @@ namespace WebAPI.Controllers
             if (request.IsPhotosIncluded)
                 columns.Add(nameof(AccountsViewEntity.Photos));
 
+            if (request.IsSchedulesIncluded)
+                columns.Add(nameof(AccountsViewEntity.Schedules));
+
             string? where = null;
 
             using (var conn = new SqlConnection(connectionString))

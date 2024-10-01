@@ -2,7 +2,7 @@
 
 namespace Common.Dto
 {
-    public class AccountsForSchedulesDto : DtoBase
+    public class SchedulesForAccountsDto : DtoBase
     {
         public int ScheduleId { get; set; }
         public int AccountId { get; set; }

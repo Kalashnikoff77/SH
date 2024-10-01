@@ -15,5 +15,6 @@ namespace Common.Dto.Requests
         public bool IsPhotosIncluded { get; set; } = false;
         public bool IsRelationsIncluded { get; set; } = false;
         public bool IsHobbiesIncluded { get; set; } = false;
+        public bool IsSchedulesIncluded { get; set; } = false;
     }
 }

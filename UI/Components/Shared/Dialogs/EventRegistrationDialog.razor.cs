@@ -29,6 +29,8 @@ namespace UI.Components.Shared.Dialogs
                     ScheduleId = ScheduleForEventView.Id
                 });
 
+                await CurrentState.ReloadAccountAsync();
+
                 var request = new SignalGlobalRequest
                 {
                     OnScheduleChanged = new OnScheduleChanged { EventId = ScheduleForEventView.EventId, ScheduleId = ScheduleForEventView.Id }

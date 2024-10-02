@@ -22,13 +22,13 @@
 
                     @if (CurrentState.Account != null)
                     {
-                        @if (CurrentState.Account.Schedules.Any(a => a.ScheduleId == ScheduleForEventView.Id)) 
+                        @if (CurrentState.Account.Schedules != null && CurrentState.Account.Schedules.Any(a => a.ScheduleId == ScheduleForEventView.Id)) 
                         {
-                            <MudButton OnClick="() => ShowDialogs.EventRegistrationDialogAsync(ScheduleForEventView)" Style="height:39px; margin:2px 3px 0 0; padding: 0 20px" Color="Color.Primary" IconSize="Size.Large" Size="Size.Small" StartIcon="@Icons.Material.Outlined.HowToReg" Variant="Variant.Outlined">Зарегистрированы</MudButton>
+                            <MudButton OnClick="() => ShowDialogs.EventCancelRegistrationDialogAsync(ScheduleForEventView)" Style="height:39px; margin:2px 3px 0 0; padding: 0 20px" Color="Color.Primary" IconSize="Size.Large" Size="Size.Small" StartIcon="@Icons.Material.Outlined.HowToReg" Variant="Variant.Filled" title="Отменить регистрацию">Отменить</MudButton>
                         }
                         else
                         {
-                            <MudButton OnClick="() => ShowDialogs.EventRegistrationDialogAsync(ScheduleForEventView)" Style="height:39px; margin:2px 3px 0 0; padding: 0 20px" Color="Color.Primary" IconSize="Size.Large" Size="Size.Small" StartIcon="@Icons.Material.Outlined.HowToReg" Variant="Variant.Outlined">Регистрация</MudButton>
+                            <MudButton OnClick="() => ShowDialogs.EventRegistrationDialogAsync(ScheduleForEventView)" Style="height:39px; margin:2px 3px 0 0; padding: 0 20px" Color="Color.Primary" IconSize="Size.Large" Size="Size.Small" StartIcon="@Icons.Material.Outlined.HowToReg" Variant="Variant.Outlined" title="Зарегистрироваться на мероприятие">Регистрация</MudButton>
                         }
                     }
                 </MudStack>

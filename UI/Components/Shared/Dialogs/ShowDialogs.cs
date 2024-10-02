@@ -52,5 +52,19 @@ namespace UI.Components.Shared.Dialogs
             return _dialog.ShowAsync<EventRegistrationDialog>($"Подтверждение регистрации", dialogParams, dialogOptions);
         }
 
+        /// <summary>
+        /// Отмена регистрации на мероприятие
+        /// </summary>
+        public Task EventCancelRegistrationDialogAsync(SchedulesForEventsViewDto schedule)
+        {
+            DialogOptions dialogOptions = new() { CloseOnEscapeKey = true, CloseButton = true };
+
+            var dialogParams = new DialogParameters<EventRegistrationDialog>
+            {
+                { x => x.ScheduleForEventView, schedule }
+            };
+            return _dialog.ShowAsync<EventCancelRegistrationDialog>($"Отмена регистрации", dialogParams, dialogOptions);
+        }
+
     }
 }

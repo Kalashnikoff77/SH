@@ -46,7 +46,7 @@ namespace Common.Extensions
         {
             int count = 0;
             if (sch.RegisteredAccounts != null)
-                count = sch.RegisteredAccounts.Where(w => w.UserGender == 0).Count();
+                count = sch.RegisteredAccounts.Where(w => w.AccountGender == 0).Count();
             return count;
         }
 
@@ -54,7 +54,7 @@ namespace Common.Extensions
         {
             int count = 0;
             if (sch.RegisteredAccounts != null)
-                count = sch.RegisteredAccounts.Where(w => w.UserGender == 1).Count();
+                count = sch.RegisteredAccounts.Where(w => w.AccountGender == 1).Count();
             return count;
         }
 
@@ -62,7 +62,7 @@ namespace Common.Extensions
         {
             int count = 0;
             if (sch.RegisteredAccounts != null)
-                count = sch.RegisteredAccounts.Where(w => w.UserGender == null).Count();
+                count = sch.RegisteredAccounts.Where(w => w.AccountGender == null).Count();
             return count;
         }
 

@@ -4,7 +4,6 @@
     {
         public override string Uri => "/Events/UpdateRegistration";
 
-        public int EventId { get; set; }
-        public bool ToRegister { get; set; }
+        public int ScheduleId { get; set; }
     }
 }

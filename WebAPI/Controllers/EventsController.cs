@@ -172,11 +172,8 @@ namespace WebAPI.Controllers
 
                 var response = new UpdateEventRegistrationResponseDto 
                 {
-                    EventId = request.EventId,
+                    ScheduleId = request.ScheduleId,
                 };
-
-                if (request.ToRegister)
-                    response.IsRegistered = !response.IsRegistered;
 
                 // Доработать
                 //if (response.IsRegistered)

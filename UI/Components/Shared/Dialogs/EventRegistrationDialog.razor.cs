@@ -15,20 +15,26 @@ namespace UI.Components.Shared.Dialogs
         [CascadingParameter] CurrentState CurrentState { get; set; } = null!;
         [Parameter, EditorRequired] public SchedulesForEventsViewDto ScheduleForEventView { get; set; } = null!;
 
-        [Inject] IRepository<GetAdminsForEventsRequestDto, GetAdminsForEventsResponseDto> _repoGetAdmins { get; set; } = null!;
+        [Inject] IRepository<UpdateEventRegistrationRequestDto, UpdateEventRegistrationResponseDto> _repoUpdateRegistration { get; set; } = null!;
 
         async Task Submit()
         {
-            MudDialog.Close(DialogResult.Ok(true));
-
-            // var apiResponse = await _repoGetSchedules.HttpPostAsync(new GetSchedulesRequestDto { EventId = response.EventId });
-
-
-            var request = new SignalGlobalRequest
+            if (CurrentState.Account != null)
             {
-                OnScheduleChanged = new OnScheduleChanged { EventId = ScheduleForEventView.EventId, ScheduleId = ScheduleForEventView.Id }
-            };
-            await CurrentState.SignalRServerAsync(request);
+                MudDialog.Close(DialogResult.Ok(true));
+
+                var apiResponse = await _repoUpdateRegistration.HttpPostAsync(new UpdateEventRegistrationRequestDto
+                {
+                    Token = CurrentState.Account.Token,
+                    ScheduleId = ScheduleForEventView.Id
+                });
+
+                var request = new SignalGlobalRequest
+                {
+                    OnScheduleChanged = new OnScheduleChanged { EventId = ScheduleForEventView.EventId, ScheduleId = ScheduleForEventView.Id }
+                };
+                await CurrentState.SignalRServerAsync(request);
+            }
         }
 
         void Cancel() => MudDialog.Cancel();

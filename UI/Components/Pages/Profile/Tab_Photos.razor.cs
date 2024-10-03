@@ -24,76 +24,85 @@ namespace UI.Components.Pages.Profile
 
         async Task UpdateAsync(UpdateType type, PhotosForAccountsDto photo, string? newComment = null)
         {
-            shouldRender = false;
-
-            var request = new UpdatePhotoRequestDto
+            if (CurrentState.Account != null)
             {
-                Token = CurrentState.Account!.Token,
-                Guid = photo.Guid,
-            };
+                shouldRender = false;
 
-            switch (type)
-            {
-                case UpdateType.AvatarChange:
-                    request.IsAvatarChanging = true;
-                    break;
-                case UpdateType.CommentChange:
-                    request.IsCommentChanging = true;
-                    request.Comment = newComment;
-                    break;
-                case UpdateType.Delete:
-                    request.IsDeleting = true;
-                    break;
-            }
-
-            await _repoUpdatePhoto.HttpPostAsync(request);
-
-            // SignalR: Уведомим всех пользователей при смене аватара
-            if (type == UpdateType.AvatarChange)
-            {
-                var signalRequest = new SignalGlobalRequest
+                var request = new UpdatePhotoRequestDto
                 {
-                    OnAvatarChanged = new OnAvatarChanged { NewAvatar = photo }
+                    Token = CurrentState.Account.Token,
+                    Guid = photo.Guid,
                 };
-                await CurrentState.SignalRServerAsync(signalRequest);
-            }
 
-            await CurrentState.ReloadAccountAsync();
-            shouldRender = true;
-            await UpdateProfileCallback.InvokeAsync();
+                switch (type)
+                {
+                    case UpdateType.AvatarChange:
+                        request.IsAvatarChanging = true;
+                        break;
+                    case UpdateType.CommentChange:
+                        request.IsCommentChanging = true;
+                        request.Comment = newComment;
+                        break;
+                    case UpdateType.Delete:
+                        request.IsDeleting = true;
+                        break;
+                }
+
+                await _repoUpdatePhoto.HttpPostAsync(request);
+
+                // SignalR: Уведомим всех пользователей при смене аватара или удалении аватара
+                if (type == UpdateType.AvatarChange || (type == UpdateType.Delete && photo.IsAvatar))
+                {
+                    var signalRequest = new SignalGlobalRequest
+                    {
+                        OnAvatarChanged = new OnAvatarChanged { NewAvatar = photo }
+                    };
+                    await CurrentState.SignalRServerAsync(signalRequest);
+                }
+
+                await CurrentState.ReloadAccountAsync();
+                shouldRender = true;
+                await UpdateProfileCallback.InvokeAsync();
+            }
         }
 
 
         async void UploadPhotos(IReadOnlyList<IBrowserFile> photos)
         {
-            processingPhoto = true;
-
-            var request = new UploadPhotoFromTempRequestDto { Token = CurrentState.Account!.Token };
-
-            List<string> files = new List<string>();
-
-            foreach (var photo in photos)
+            if (photos.Count > 0 && CurrentState.Account != null)
             {
-                var baseFileName = DateTime.Now.ToString("yyyyMMddmmss") + "_" + Guid.NewGuid().ToString();
-                var originalFileName = baseFileName + Path.GetExtension(photo.Name);
+                processingPhoto = true;
+                StateHasChanged();
 
-                await using (FileStream fs = new(StaticData.AccountsPhotosTempDir + originalFileName, FileMode.Create))
-                    await photo.OpenReadStream(photo.Size).CopyToAsync(fs);
+                var request = new UploadPhotoFromTempRequestDto { Token = CurrentState.Account.Token };
 
-                request.PhotosTempFileNames = originalFileName;
-
-                var apiResponse = await _repoUploadPhoto.HttpPostAsync(request);
+                List<string> files = new List<string>();
 
                 if (CurrentState.Account.Photos == null)
                     CurrentState.Account.Photos = new List<PhotosForAccountsDto>();
 
-                CurrentState.Account.Photos!.Add(apiResponse.Response.NewPhoto);
-                StateHasChanged();
-            }
+                foreach (var photo in photos)
+                {
+                    var baseFileName = DateTime.Now.ToString("yyyyMMddmmss") + "_" + Guid.NewGuid().ToString();
+                    var originalFileName = baseFileName + Path.GetExtension(photo.Name);
 
-            await CurrentState.ReloadAccountAsync();
-            processingPhoto = false;
-            await UpdateProfileCallback.InvokeAsync();
+                    await using (FileStream fs = new(StaticData.AccountsPhotosTempDir + originalFileName, FileMode.Create))
+                        await photo.OpenReadStream(photo.Size).CopyToAsync(fs);
+
+                    request.PhotosTempFileNames = originalFileName;
+
+                    var apiResponse = await _repoUploadPhoto.HttpPostAsync(request);
+
+                    CurrentState.Account.Photos.Add(apiResponse.Response.NewPhoto);
+                    StateHasChanged();
+
+                    if (CurrentState.Account.Photos.Count >= 20) break;
+                }
+
+                await CurrentState.ReloadAccountAsync();
+                processingPhoto = false;
+                await UpdateProfileCallback.InvokeAsync();
+            }
         }
 
         protected override bool ShouldRender() => shouldRender;

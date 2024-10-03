@@ -159,9 +159,10 @@ namespace WebAPI.Controllers
             using (var conn = new SqlConnection(connectionString))
             {
                 // Получим тип учётки (пара, М или Ж)
-                var sql = $"SELECT TOP (2) {nameof(UsersEntity.Gender)} FROM Users WHERE {nameof(UsersEntity.AccountId)} = {_accountId}";
+                var sql = $"SELECT TOP (2) {nameof(UsersEntity.Gender)} FROM Users " +
+                    $"WHERE {nameof(UsersEntity.AccountId)} = {_accountId} AND {nameof(UsersEntity.IsDeleted)} = 0";
                 var users = (await conn.QueryAsync<int>(sql)).ToList();
-                if (users == null)
+                if (users.Count == 0)
                     throw new NotFoundException("Пользователь с указанным Id не найден!");
                 int? AccountGender = null;
                 if (users.Count() == 1)
@@ -179,7 +180,7 @@ namespace WebAPI.Controllers
                     _ => evt.CostPair!.Value
                 };
 
-                sql = $"SELECT TOP 1 Id FROM SchedulesForAccounts WHERE Id = @_accountId AND {nameof(SchedulesForAccountsEntity.ScheduleId)} = @ScheduleId AND IsDeleted = 0";
+                sql = $"SELECT TOP (1) Id FROM SchedulesForAccounts WHERE {nameof(SchedulesForAccountsEntity.AccountId)} = @_accountId AND {nameof(SchedulesForAccountsEntity.ScheduleId)} = @ScheduleId AND IsDeleted = 0";
                 var scheduleId = await conn.QueryFirstOrDefaultAsync<int?>(sql, new { _accountId, request.ScheduleId });
                 if (scheduleId == null)
                 {

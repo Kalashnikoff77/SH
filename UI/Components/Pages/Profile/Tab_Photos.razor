@@ -1,41 +1,52 @@
-﻿<MudStack Row Justify="Justify.Center" class="mb-5">
-    <MudFileUpload T="IReadOnlyList<IBrowserFile>" MaximumFileCount="50" Accept=".jpg,.jpeg,.png" FilesChanged="UploadPhotos">
-        <ActivatorContent>
-            <MudButton Disabled="processingPhoto" Size="Size.Small" Variant="Variant.Outlined" Color="Color.Primary" StartIcon="@Icons.Material.Sharp.Upload">
-                @if (processingPhoto)
-                {
-                    <MudProgressCircular Size="Size.Small" Indeterminate="true" />
-                    <MudText Class="ms-2">Обработка фото...</MudText>
-                } 
-                else
-                {
-                    <MudText>Добавить фотографии</MudText>
-                }
-            </MudButton>
-        </ActivatorContent>
-    </MudFileUpload>
-</MudStack>
-
-@if (CurrentState.Account?.Photos != null)
+﻿@if (CurrentState.Account != null)
 {
-    <MudStack Row Wrap="Wrap.Wrap" Spacing="0" Justify="Justify.SpaceEvenly">
-        @foreach (var photo in CurrentState.Account.Photos.OrderByDescending(o => o.IsAvatar).ThenByDescending(o => o.Id))
+    <MudStack Row Justify="Justify.Center" class="mb-5">
+        @if (CurrentState.Account.Photos?.Count >= 20)
         {
-            <MudPaper Outlined class="pa-3 mb-8" style="@("max-width:274px; " + (photo.IsAvatar ? "background-color:#EDFFEE" : null))">
-                <MudStack>
-                    <MudImage Width="250" Height="250" Src="@("/images/AccountsPhotos/" + CurrentState.Account.Id + "/" + photo.Guid + "/" + EnumImageSize.s250x250.ToString() + ".jpg")" />
-                            
-                    <MudStack Row>
-                        <MudTextField T="string" Value="@photo.Comment" ValueChanged="@((c) => UpdateAsync(UpdateType.CommentChange, photo, c))" Label="Описание" Variant="Variant.Text" />
-                        <MudMenu Icon="@Icons.Material.Filled.MoreVert" Size="Size.Small" AnchorOrigin="Origin.BottomLeft" TransformOrigin="Origin.TopCenter" Dense>
-                            <MudMenuItem OnClick="@(() => UpdateAsync(UpdateType.AvatarChange, photo))" Icon="@Icons.Material.Filled.Portrait">@(photo.IsAvatar ? "Отменить аватар" : "Установить как аватар")</MudMenuItem>
-                            <MudMenuItem OnClick="@(() => UpdateAsync(UpdateType.Delete, photo))" IconColor="Color.Error" Icon="@Icons.Material.Outlined.Delete">Удалить</MudMenuItem>
-                        </MudMenu>
-                    </MudStack>
-                        
-                </MudStack>
-            </MudPaper>
+            <MudButton Disabled Size="Size.Small" Variant="Variant.Outlined" Color="Color.Primary" StartIcon="@Icons.Material.Sharp.Upload">
+                <MudText>Загружено макс. кол-во фото (20 шт.)</MudText>
+            </MudButton>
+        }
+        else 
+        {
+        <MudFileUpload T="IReadOnlyList<IBrowserFile>" MaximumFileCount="100" Accept=".jpg,.jpeg,.png" FilesChanged="UploadPhotos">
+            <ActivatorContent>
+                <MudButton Disabled="processingPhoto" Size="Size.Small" Variant="Variant.Outlined" Color="Color.Primary" StartIcon="@Icons.Material.Sharp.Upload">
+                    @if (processingPhoto)
+                    {
+                        <MudProgressCircular Size="Size.Small" Indeterminate="true" />
+                        <MudText Class="ms-2">Обработка фото...</MudText>
+                    } 
+                    else
+                    {
+                        <MudText>Добавить фотографии (макс. 20 шт.)</MudText>
+                    }
+                </MudButton>
+            </ActivatorContent>
+        </MudFileUpload>
         }
     </MudStack>
-}
 
+    @if (CurrentState.Account.Photos != null)
+    {
+        <MudStack Row Wrap="Wrap.Wrap" Spacing="0" Justify="Justify.SpaceEvenly">
+            @foreach (var photo in CurrentState.Account.Photos.OrderByDescending(o => o.IsAvatar).ThenByDescending(o => o.Id))
+            {
+                <MudPaper Outlined class="pa-3 mb-8" style="@("max-width:274px; " + (photo.IsAvatar ? "background-color:#EDFFEE" : null))">
+                    <MudStack>
+                        <MudImage Width="250" Height="250" Src="@("/images/AccountsPhotos/" + CurrentState.Account.Id + "/" + photo.Guid + "/" + EnumImageSize.s250x250.ToString() + ".jpg")" />
+                            
+                        <MudStack Row>
+                            <MudTextField T="string" Value="@photo.Comment" ValueChanged="@((c) => UpdateAsync(UpdateType.CommentChange, photo, c))" Label="Описание" Variant="Variant.Text" />
+                            <MudMenu Icon="@Icons.Material.Filled.MoreVert" Size="Size.Small" AnchorOrigin="Origin.BottomLeft" TransformOrigin="Origin.TopCenter" Dense>
+                                <MudMenuItem OnClick="@(() => UpdateAsync(UpdateType.AvatarChange, photo))" Icon="@Icons.Material.Filled.Portrait">@(photo.IsAvatar ? "Отменить аватар" : "Установить как аватар")</MudMenuItem>
+                                <MudMenuItem OnClick="@(() => UpdateAsync(UpdateType.Delete, photo))" IconColor="Color.Error" Icon="@Icons.Material.Outlined.Delete">Удалить</MudMenuItem>
+                            </MudMenu>
+                        </MudStack>
+                        
+                    </MudStack>
+                </MudPaper>
+            }
+        </MudStack>
+    }
+}

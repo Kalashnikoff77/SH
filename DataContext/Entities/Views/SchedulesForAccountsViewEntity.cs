@@ -1,6 +1,6 @@
 ﻿namespace DataContext.Entities.Views
 {
-    public class AccountsForSchedulesViewEntity : AccountsForSchedulesEntity
+    public class SchedulesForAccountsViewEntity : SchedulesForAccountsEntity
     {
         public string? Account { get; set; }
     }

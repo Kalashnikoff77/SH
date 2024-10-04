@@ -1,12 +1,15 @@
 ﻿@if (ScheduleForEventView?.Event != null)
 {
     <MudStack>
-        <MudButton OnClick="() => ShowDialogs.AccountCardDialogAsync(ScheduleForEventView.Event.Admin!)" FullWidth Class="px-0">
-            <MudStack AlignItems="AlignItems.Center" Spacing="0" Row Style="width:100%">
-                <ImageAvatar Account="ScheduleForEventView.Event.Admin" Size="EnumImageSize.s64x64" Class="avatar s45 mr-3" Title="Организатор" />
-                <MudText Typo="Typo.body2" Align="Align.Left"><b>Организатор:</b><br />@ScheduleForEventView.Event.Admin?.Name (@ScheduleForEventView.Event.Admin?.ToGendersAgesString())</MudText>
-            </MudStack>
-        </MudButton>
+        @if (@ScheduleForEventView.Event.Admin != null)
+        {
+            <MudButton OnClick="() => ShowDialogs.AccountCardDialogAsync(ScheduleForEventView.Event.Admin)" FullWidth Class="px-1">
+                <MudStack AlignItems="AlignItems.Center" Spacing="0" Row Style="width:100%">
+                    <ImageAvatar Account="ScheduleForEventView.Event.Admin" Size="EnumImageSize.s64x64" Class="avatar s45 mr-3" Title="Организатор" />
+                    <MudText Typo="Typo.body2" Align="Align.Left"><b>Организатор:</b><br />@ScheduleForEventView.Event.Admin.Name (@ScheduleForEventView.Event.Admin.ToGendersAgesString())</MudText>
+                </MudStack>
+            </MudButton>
+        }
 
         <MudStack Row AlignItems="AlignItems.Center" Spacing="1">
             <MudIcon Icon="@Icons.Material.Outlined.LocationOn" Style="font-size:19px" />
@@ -25,36 +28,23 @@
         }
 
         <MudGrid Style="text-align:center">
-            @{
-                <MudItem xs="4" title="Зарегистрировано пар / Свободных мест для пар">
-                    <MudIcon Icon="@Icons.Material.Filled.PeopleAlt" Color="Color.Tertiary" /><br />
-                    @ScheduleForEventView.NumberOfRegisteredPairs()/@ScheduleForEventView.Event.MaxPairs
-                </MudItem>
-                <MudItem xs="4" title="Зарегистрировано мужчин / Свободных мест для мужчин">
-                    <MudIcon Icon="@Icons.Material.Outlined.Face5" Color="Color.Primary" /><br />
-                    @ScheduleForEventView.NumberOfRegisteredMen()/@ScheduleForEventView.Event.MaxMen
-                </MudItem>
-                <MudItem xs="4" title="Зарегистрировано женщин / Свободных мест для женщин">
-                    <MudIcon Icon="@Icons.Material.Outlined.Face3" Color="Color.Error" /><br />
-                    @ScheduleForEventView.NumberOfRegisteredWomen()/@ScheduleForEventView.Event.MaxWomen
-                </MudItem>
-            }
+            <MudItem xs="4" title="Зарегистрировано пар / Свободных мест для пар">
+                <MudIcon Icon="@Icons.Material.Filled.PeopleAlt" Color="Color.Tertiary" /><br />
+                @ScheduleForEventView.NumberOfRegisteredPairs()/@ScheduleForEventView.Event.MaxPairs
+            </MudItem>
+            <MudItem xs="4" title="Зарегистрировано мужчин / Свободных мест для мужчин">
+                <MudIcon Icon="@Icons.Material.Outlined.Face5" Color="Color.Primary" /><br />
+                @ScheduleForEventView.NumberOfRegisteredMen()/@ScheduleForEventView.Event.MaxMen
+            </MudItem>
+            <MudItem xs="4" title="Зарегистрировано женщин / Свободных мест для женщин">
+                <MudIcon Icon="@Icons.Material.Outlined.Face3" Color="Color.Error" /><br />
+                @ScheduleForEventView.NumberOfRegisteredWomen()/@ScheduleForEventView.Event.MaxWomen
+            </MudItem>
         </MudGrid>
         <MudGrid Style="text-align:center">
-            @{
-                var costPair = ScheduleForEventView.CostPair == 0 ? "Бесплатно" : ScheduleForEventView.CostPair.ToString() + " руб.";
-                <MudItem xs="4">
-                    @costPair
-                </MudItem>
-                var costMan = ScheduleForEventView.CostMan == 0 ? "Бесплатно" : ScheduleForEventView.CostMan.ToString() + " руб.";
-                <MudItem xs="4">
-                    @costMan
-                </MudItem>
-                var costWoman = ScheduleForEventView.CostWoman == 0 ? "Бесплатно" : ScheduleForEventView.CostWoman.ToString() + " руб.";
-                <MudItem xs="4">
-                    @costWoman
-                </MudItem>
-            }
+            <MudItem xs="4">@(ScheduleForEventView.CostPair == 0 ? "Бесплатно" : ScheduleForEventView.CostPair.ToString() + " руб.")</MudItem>
+            <MudItem xs="4">@(ScheduleForEventView.CostMan == 0 ? "Бесплатно" : ScheduleForEventView.CostMan.ToString() + " руб.")</MudItem>
+            <MudItem xs="4">@(ScheduleForEventView.CostWoman == 0 ? "Бесплатно" : ScheduleForEventView.CostWoman.ToString() + " руб.")</MudItem>
         </MudGrid>
 
         <MudDivider />

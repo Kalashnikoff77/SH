@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Components;
 using MudBlazor;
 using UI.Components.Shared.Dialogs;
 
-namespace UI.Components.Pages
+namespace UI.Components.Pages.Events
 {
     public partial class Events : IDisposable
     {

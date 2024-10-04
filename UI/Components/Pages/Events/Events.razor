@@ -2,8 +2,15 @@
 
 <PageTitle>Клубные встречи, мероприятия</PageTitle>
 
-<MudText Typo="Typo.h6" Class="mb-5">Клубные встречи, мероприятия</MudText>
-
+<MudStack Row Spacing="0" AlignItems="AlignItems.Center" Class="mb-5">
+    <MudText Typo="Typo.h6" Class="mr-2">Клубные встречи, мероприятия</MudText>
+    @if (CurrentState.Account != null) 
+    {
+        <MudMenu Icon="@Icons.Material.Filled.MoreVert" AnchorOrigin="Origin.BottomLeft" TransformOrigin="Origin.TopCenter">
+            <MudMenuItem Href="/events/add" Icon="@Icons.Material.Filled.Add">Добавить мероприятие</MudMenuItem>
+        </MudMenu>
+    }
+</MudStack>
 
 @* Фильтры запроса *@
 <MudGrid Style="min-width:300px; max-width:823px" Class="mb-4">
@@ -43,7 +50,7 @@
 @* Список мероприятий *@
 <MudDataGrid @ref="dataGrid" Elevation="0" Virtualize Hover T="SchedulesForEventsViewDto" ServerData="ServerReload" Loading="false" Style="min-width:300px; max-width:800px" HeaderClass="dataGridHideTHead" Filterable="false">
     <Columns>
-        <TemplateColumn>
+        <TemplateColumn CellClass="py-6">
             <CellTemplate>
                 @if (context.Item.Event != null)
                 {

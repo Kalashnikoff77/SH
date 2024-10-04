@@ -1,10 +1,12 @@
 ﻿@if (ScheduleForEventView?.Event != null)
 {
     <MudStack>
-        <MudStack Row AlignItems="AlignItems.Center">
-            <ImageAvatar Account="ScheduleForEventView.Event.Admin" Size="EnumImageSize.s64x64" Class="avatar s45" Title="Организатор" />
-            <MudText Typo="Typo.body2"><b>Организатор:</b><br />@ScheduleForEventView.Event.Admin?.Name (@ScheduleForEventView.Event.Admin?.ToGendersAgesString())</MudText>
-        </MudStack>
+        <MudButton OnClick="() => ShowDialogs.AccountCardDialogAsync(ScheduleForEventView.Event.Admin!)" FullWidth Class="px-0">
+            <MudStack AlignItems="AlignItems.Center" Spacing="0" Row Style="width:100%">
+                <ImageAvatar Account="ScheduleForEventView.Event.Admin" Size="EnumImageSize.s64x64" Class="avatar s45 mr-3" Title="Организатор" />
+                <MudText Typo="Typo.body2" Align="Align.Left"><b>Организатор:</b><br />@ScheduleForEventView.Event.Admin?.Name (@ScheduleForEventView.Event.Admin?.ToGendersAgesString())</MudText>
+            </MudStack>
+        </MudButton>
 
         <MudStack Row AlignItems="AlignItems.Center" Spacing="1">
             <MudIcon Icon="@Icons.Material.Outlined.LocationOn" Style="font-size:19px" />
@@ -63,4 +65,5 @@
 
 @code {
     [Parameter, EditorRequired] public SchedulesForEventsViewDto ScheduleForEventView { get; set; } = null!;
+    [Inject] ShowDialogs ShowDialogs { get; set; } = null!;
 }

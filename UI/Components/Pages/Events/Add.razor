@@ -19,11 +19,41 @@
             </TitleContent>
             <ChildContent>
                 <MudGrid>
-                    <MudItem sm="6" xs="12">
-                        <MudTextField @bind-Value="Event.Name" Validation="@(new Func<string, Task<string?>>(NameValidator))" HelperText="Пример: Иван да Марья Мск" AdornmentIcon="@Icons.Material.Outlined.Person" AdornmentColor="@NameIconColor" Adornment="Adornment.End" Label="Имя учётной записи" Typo="Typo.body1" Margin="Margin.Normal" Variant="Variant.Text" MaxLength="StaticData.DB_ACCOUNTS_NAME_MAX" />
+                    <MudItem sm="12" xs="12">
+                        <MudTextField @bind-Value="Event.Name" 
+                            Validation="@(new Func<string?, Task<string?>>(NameValidator))" 
+                            HelperText="Пример: Тематическая вечеринка FreeLove" 
+                            Label="Название мероприятия" 
+                            AdornmentIcon="@Icons.Material.Outlined.ShortText" AdornmentColor="@NameIconColor" Adornment="Adornment.End" 
+                            Typo="Typo.body1" Margin="Margin.Normal" Variant="Variant.Outlined" MaxLength="StaticData.DB_EVENT_NAME_MAX" />
+                        <MudTextField @bind-Value="Event.Description" 
+                            Validation="@(new Func<string?, string?>(DescriptionValidator))" 
+                            HelperText="Опишите общие характеристики проводимого мероприятия" 
+                            Label="Описание мероприятия" 
+                            Lines="3" MaxLines="5" 
+                            AdornmentIcon="@Icons.Material.Outlined.Info" AdornmentColor="@NameIconColor" Adornment="Adornment.End" 
+                            Typo="Typo.body1" Margin="Margin.Normal" Variant="Variant.Outlined" MaxLength="StaticData.DB_EVENT_DESCRIPTION_MAX" />
                     </MudItem>
-                    <MudItem sm="6" xs="12">
-                        <MudTextField @bind-Value="Event.Description" Validation="@(new Func<string, Task<string?>>(DescriptionValidator))" HelperText="Пример: email@mail.ru" AdornmentIcon="@Icons.Material.Outlined.Mail" AdornmentColor="@DescriptionIconColor" Adornment="Adornment.End" Label="Email" Typo="Typo.body1" Margin="Margin.Normal" Variant="Variant.Text" MaxLength="StaticData.DB_ACCOUNTS_EMAIL_MAX" />
+                    <MudItem sm="4" xs="4">
+                        <MudNumericField @bind-Value="Event.MaxPairs"
+                            Validation="@(new Func<short?, string?>(MaxPersonsValidator))" 
+                            HelperText="Максимальное кол-во пар" 
+                            AdornmentIcon="@Icons.Material.Filled.PeopleAlt" Adornment="Adornment.End" AdornmentColor="@NameIconColor" 
+                            Typo="Typo.body1" Margin="Margin.Dense" Variant="Variant.Outlined" />
+                    </MudItem>
+                    <MudItem sm="4" xs="4">
+                        <MudNumericField @bind-Value="Event.MaxMen"
+                            Validation="@(new Func<short?, string?>(MaxPersonsValidator))"
+                            HelperText="Максимальное кол-во мужчин" 
+                            AdornmentIcon="@Icons.Material.Filled.Face5" Adornment="Adornment.End" AdornmentColor="@NameIconColor"
+                            Typo="Typo.body1" Margin="Margin.Dense" Variant="Variant.Outlined" />
+                    </MudItem>
+                    <MudItem sm="4" xs="4">
+                        <MudNumericField @bind-Value="Event.MaxWomen"
+                            Validation="@(new Func<short?, string?>(MaxPersonsValidator))"
+                            HelperText="Максимальное кол-во женщин" 
+                            AdornmentIcon="@Icons.Material.Filled.Face3" Adornment="Adornment.End" AdornmentColor="@NameIconColor"
+                            Typo="Typo.body1" Margin="Margin.Dense" Variant="Variant.Outlined" />
                     </MudItem>
                 </MudGrid>
             </ChildContent>

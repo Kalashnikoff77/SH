@@ -33,15 +33,27 @@ namespace UI.Components.Pages.Events
         Color NameIconColor = Color.Default;
         Color DescriptionIconColor = Color.Default;
 
-        async Task<string?> NameValidator(string name)
+        async Task<string?> NameValidator(string? text)
         {
-            string? errorMessage = null;
-            return errorMessage;
+            if (string.IsNullOrWhiteSpace(text) || text.Length < StaticData.DB_EVENT_NAME_MIN)
+                return $"Минимальная длина названия {StaticData.DB_EVENT_NAME_MIN}";
+            return null;
         }
-        async Task<string?> DescriptionValidator(string name)
+        
+        string? DescriptionValidator(string? text)
         {
-            string? errorMessage = null;
-            return errorMessage;
+            if (string.IsNullOrWhiteSpace(text) || text.Length < StaticData.DB_EVENT_DESCRIPTION_MIN)
+                return $"Минимальная длина описания {StaticData.DB_EVENT_DESCRIPTION_MIN}";
+            return null;
+        }
+
+        string? MaxPersonsValidator(short? num)
+        {
+            if (!num.HasValue)
+                return "Укажите значение от 0 до 500";
+            if (num < 0 || num > 500)
+                return "Кол-во от 1 до 500";
+            return null;
         }
         #endregion
 

@@ -22,38 +22,96 @@ namespace UI.Components.Pages.Events
         {
             TabPanels = new Dictionary<short, TabPanel>
             {
-                { 1, new TabPanel { Items = new Dictionary<string, TabPanelItem> { { "Имя", new TabPanelItem() } } } },
+                { 1, new TabPanel { Items = new Dictionary<string, TabPanelItem> 
+                        {
+                            { nameof(Event.Name), new TabPanelItem() },
+                            { nameof(Event.Description), new TabPanelItem() },
+                            { nameof(Event.MaxPairs), new TabPanelItem() },
+                            { nameof(Event.MaxMen), new TabPanelItem() },
+                            { nameof(Event.MaxWomen), new TabPanelItem() }
+                        } } 
+                },
                 { 2, new TabPanel { Items = new Dictionary<string, TabPanelItem> { { "Users", new TabPanelItem() } } } },
                 { 3, new TabPanel { Items = new Dictionary<string, TabPanelItem> { { "Avatar", new TabPanelItem() } } } }
             };
         }
 
         #region /// 1. ОБЩЕЕ ///
-
         Color NameIconColor = Color.Default;
-        Color DescriptionIconColor = Color.Default;
-
         async Task<string?> NameValidator(string? text)
         {
+            string? errorMessage = null;
             if (string.IsNullOrWhiteSpace(text) || text.Length < StaticData.DB_EVENT_NAME_MIN)
-                return $"Минимальная длина названия {StaticData.DB_EVENT_NAME_MIN}";
-            return null;
-        }
-        
-        string? DescriptionValidator(string? text)
-        {
-            if (string.IsNullOrWhiteSpace(text) || text.Length < StaticData.DB_EVENT_DESCRIPTION_MIN)
-                return $"Минимальная длина описания {StaticData.DB_EVENT_DESCRIPTION_MIN}";
-            return null;
+                errorMessage = $"Введите не менее {StaticData.DB_EVENT_NAME_MIN} символов";
+            
+            CheckPanel1Properties(errorMessage, nameof(Event.Name), ref NameIconColor);
+            return errorMessage;
         }
 
-        string? MaxPersonsValidator(short? num)
+        Color DescriptionIconColor = Color.Default;
+        string? DescriptionValidator(string? text)
         {
+            string? errorMessage = null;
+            if (string.IsNullOrWhiteSpace(text) || text.Length < StaticData.DB_EVENT_DESCRIPTION_MIN)
+                errorMessage = $"Введите не менее {StaticData.DB_EVENT_DESCRIPTION_MIN} символов";
+
+            CheckPanel1Properties(errorMessage, nameof(Event.Description), ref DescriptionIconColor);
+            return errorMessage;
+        }
+
+        Color MaxPairsIconColor = Color.Default;
+        string? MaxPairsValidator(short? num)
+        {
+            string? errorMessage = null;
             if (!num.HasValue)
-                return "Укажите значение от 0 до 500";
+                errorMessage = "Укажите значение от 0 до 500";
             if (num < 0 || num > 500)
-                return "Кол-во от 1 до 500";
-            return null;
+                errorMessage = "Кол-во от 1 до 500";
+
+            CheckPanel1Properties(errorMessage, nameof(Event.MaxPairs), ref MaxPairsIconColor);
+            return errorMessage;
+        }
+
+        Color MaxMenIconColor = Color.Default;
+        string? MaxMenValidator(short? num)
+        {
+            string? errorMessage = null;
+            if (!num.HasValue)
+                errorMessage = "Укажите значение от 0 до 500";
+            if (num < 0 || num > 500)
+                errorMessage = "Кол-во от 1 до 500";
+
+            CheckPanel1Properties(errorMessage, nameof(Event.MaxMen), ref MaxMenIconColor);
+            return errorMessage;
+        }
+
+        Color MaxWomenIconColor = Color.Default;
+        string? MaxWomenValidator(short? num)
+        {
+            string? errorMessage = null;
+            if (!num.HasValue)
+                errorMessage = "Укажите значение от 0 до 500";
+            if (num < 0 || num > 500)
+                errorMessage = "Кол-во от 1 до 500";
+
+            CheckPanel1Properties(errorMessage, nameof(Event.MaxWomen), ref MaxWomenIconColor);
+            return errorMessage;
+        }
+
+
+        void CheckPanel1Properties(string? errorMessage, string property, ref Color iconColor)
+        {
+            if (errorMessage == null)
+            {
+                TabPanels[1].Items[property].IsValid = true;
+                iconColor = Color.Success;
+            }
+            else
+            {
+                TabPanels[1].Items[property].IsValid = false;
+                iconColor = Color.Error;
+            }
+            StateHasChanged();
         }
         #endregion
 

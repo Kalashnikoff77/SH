@@ -2,106 +2,110 @@
 
 <PageTitle>Добавление мероприятия</PageTitle>
 
-<MudStack Style="min-width:300px; max-width:750px" Class="ml-3">
+@if (CurrentState.Account != null) 
+{
+    <MudStack Style="min-width:300px; max-width:750px" Class="ml-3">
 
-    <MudText Typo="Typo.h6" Class="mb-3">Добавление мероприятия</MudText>
-    <MudDivider DividerType="DividerType.FullWidth" Light="false" Class="mb-5" />
+        <MudText Typo="Typo.h6" Class="mb-3">Добавление мероприятия</MudText>
+        <MudDivider DividerType="DividerType.FullWidth" Light="false" Class="mb-5" />
 
-    <MudExpansionPanels MultiExpansion="true" Elevation="3">
+        <MudExpansionPanels MultiExpansion="true" Elevation="3">
 
-        @* ОБЩИЕ *@
-        <MudExpansionPanel Expanded="true">
-            <TitleContent>
-                <div class="d-flex">
-                    <MudIcon Color="IsPanel1Valid ? Color.Success : Color.Default" Icon="@Icons.Material.Filled.Settings" class="mr-3" />
-                    <MudText Color="IsPanel1Valid ? Color.Success : Color.Default"><b>1. Общие данные</b></MudText>
-                </div>
-            </TitleContent>
-            <ChildContent>
-                <MudGrid>
-                    <MudItem sm="12" xs="12">
-                        <MudTextField @bind-Value="Event.Name" 
-                            Validation="@(new Func<string?, Task<string?>>(NameValidator))" 
-                            HelperText="Пример: Тематическая вечеринка FreeLove" 
-                            Label="Название мероприятия" 
-                            AdornmentIcon="@Icons.Material.Outlined.ShortText" AdornmentColor="@NameIconColor" Adornment="Adornment.End" 
-                            Typo="Typo.body1" Margin="Margin.Normal" Variant="Variant.Outlined" MaxLength="StaticData.DB_EVENT_NAME_MAX" />
-                        <MudTextField @bind-Value="Event.Description" 
-                            Validation="@(new Func<string?, string?>(DescriptionValidator))" 
-                            HelperText="Опишите общие характеристики проводимого мероприятия" 
-                            Label="Описание мероприятия" 
-                            Lines="3" MaxLines="5" 
-                            AdornmentIcon="@Icons.Material.Outlined.Info" AdornmentColor="@DescriptionIconColor" Adornment="Adornment.End" 
-                            Typo="Typo.body1" Margin="Margin.Normal" Variant="Variant.Outlined" MaxLength="StaticData.DB_EVENT_DESCRIPTION_MAX" />
-                    </MudItem>
-                    <MudItem sm="4" xs="4">
-                        <MudNumericField @bind-Value="Event.MaxPairs"
-                            Validation="@(new Func<short?, string?>(MaxPairsValidator))" 
-                            HelperText="Максимальное кол-во пар" 
-                            AdornmentIcon="@Icons.Material.Filled.PeopleAlt" Adornment="Adornment.End" AdornmentColor="@MaxPairsIconColor" 
-                            Typo="Typo.body1" Margin="Margin.Dense" Variant="Variant.Outlined" />
-                    </MudItem>
-                    <MudItem sm="4" xs="4">
-                        <MudNumericField @bind-Value="Event.MaxMen"
-                            Validation="@(new Func<short?, string?>(MaxMenValidator))"
-                            HelperText="Максимальное кол-во мужчин" 
-                            AdornmentIcon="@Icons.Material.Filled.Face5" Adornment="Adornment.End" AdornmentColor="@MaxMenIconColor"
-                            Typo="Typo.body1" Margin="Margin.Dense" Variant="Variant.Outlined" />
-                    </MudItem>
-                    <MudItem sm="4" xs="4">
-                        <MudNumericField @bind-Value="Event.MaxWomen"
-                            Validation="@(new Func<short?, string?>(MaxWomenValidator))"
-                            HelperText="Максимальное кол-во женщин" 
-                            AdornmentIcon="@Icons.Material.Filled.Face3" Adornment="Adornment.End" AdornmentColor="@MaxWomenIconColor"
-                            Typo="Typo.body1" Margin="Margin.Dense" Variant="Variant.Outlined" />
-                    </MudItem>
-                </MudGrid>
-            </ChildContent>
-        </MudExpansionPanel>
-
-
-        @* РАСПИСАНИЕ *@
-        <MudExpansionPanel Disabled="!IsPanel1Valid" Expanded="IsPanel1Valid">
-            <TitleContent>
-                <div class="d-flex">
-                    <MudIcon Color="IsPanel2Valid ? Color.Success : Color.Default" Icon="@Icons.Material.Filled.Group" class="mr-3" />
-                    <MudText Color="IsPanel2Valid ? Color.Success : Color.Default"><b>2. Расписание</b></MudText>
-                </div>
-            </TitleContent>
-            <ChildContent>
-
-            <MudStack AlignItems="AlignItems.End">
-            </MudStack>
-            </ChildContent>
-        </MudExpansionPanel>
+            @* ОБЩИЕ *@
+            <MudExpansionPanel Expanded="true">
+                <TitleContent>
+                    <div class="d-flex">
+                        <MudIcon Color="IsPanel1Valid ? Color.Success : Color.Default" Icon="@Icons.Material.Filled.Settings" class="mr-3" />
+                        <MudText Color="IsPanel1Valid ? Color.Success : Color.Default"><b>1. Общие данные</b></MudText>
+                    </div>
+                </TitleContent>
+                <ChildContent>
+                    <MudGrid>
+                        <MudItem sm="12" xs="12">
+                            <MudTextField @bind-Value="Event.Name"
+                                          Validation="@(new Func<string?, Task<string?>>(NameValidator))"
+                                          HelperText="Пример: Тематическая вечеринка FreeLove"
+                                          Label="Название мероприятия"
+                                          AdornmentIcon="@Icons.Material.Outlined.ShortText" AdornmentColor="@NameIconColor" Adornment="Adornment.End"
+                                          Typo="Typo.body1" Margin="Margin.Normal" Variant="Variant.Outlined" MaxLength="StaticData.DB_EVENT_NAME_MAX" />
+                            <MudTextField @bind-Value="Event.Description"
+                                          Validation="@(new Func<string?, string?>(DescriptionValidator))"
+                                          HelperText="Опишите общие характеристики проводимого мероприятия"
+                                          Label="Описание мероприятия"
+                                          Lines="3" MaxLines="5"
+                                          AdornmentIcon="@Icons.Material.Outlined.Info" AdornmentColor="@DescriptionIconColor" Adornment="Adornment.End"
+                                          Typo="Typo.body1" Margin="Margin.Normal" Variant="Variant.Outlined" MaxLength="StaticData.DB_EVENT_DESCRIPTION_MAX" />
+                        </MudItem>
+                        <MudItem sm="4" xs="4">
+                            <MudNumericField @bind-Value="Event.MaxPairs"
+                                             Validation="@(new Func<short?, string?>(MaxPairsValidator))"
+                                             HelperText="Максимальное кол-во пар"
+                                             AdornmentIcon="@Icons.Material.Filled.PeopleAlt" Adornment="Adornment.End" AdornmentColor="@MaxPairsIconColor"
+                                             Typo="Typo.body1" Margin="Margin.Dense" Variant="Variant.Outlined" />
+                        </MudItem>
+                        <MudItem sm="4" xs="4">
+                            <MudNumericField @bind-Value="Event.MaxMen"
+                                             Validation="@(new Func<short?, string?>(MaxMenValidator))"
+                                             HelperText="Максимальное кол-во мужчин"
+                                             AdornmentIcon="@Icons.Material.Filled.Face5" Adornment="Adornment.End" AdornmentColor="@MaxMenIconColor"
+                                             Typo="Typo.body1" Margin="Margin.Dense" Variant="Variant.Outlined" />
+                        </MudItem>
+                        <MudItem sm="4" xs="4">
+                            <MudNumericField @bind-Value="Event.MaxWomen"
+                                             Validation="@(new Func<short?, string?>(MaxWomenValidator))"
+                                             HelperText="Максимальное кол-во женщин"
+                                             AdornmentIcon="@Icons.Material.Filled.Face3" Adornment="Adornment.End" AdornmentColor="@MaxWomenIconColor"
+                                             Typo="Typo.body1" Margin="Margin.Dense" Variant="Variant.Outlined" />
+                        </MudItem>
+                    </MudGrid>
+                </ChildContent>
+            </MudExpansionPanel>
 
 
-        @* ФОТО *@
-        <MudExpansionPanel Disabled="!(IsPanel1Valid && IsPanel2Valid)" Expanded="(IsPanel1Valid && IsPanel2Valid)">
-            <TitleContent>
-                <div class="d-flex">
-                    <MudIcon Color="IsPanel3Valid ? Color.Success : Color.Default" Icon="@Icons.Material.Filled.Image" class="mr-3" />
-                    <MudText Color="IsPanel3Valid ? Color.Success : Color.Default"><b>3. Фотографии</b></MudText>
-                </div>
-            </TitleContent>
-            <ChildContent>
-            </ChildContent>
-        </MudExpansionPanel>
+            @* РАСПИСАНИЕ *@
+            <MudExpansionPanel Disabled="!IsPanel1Valid" Expanded="IsPanel1Valid">
+                <TitleContent>
+                    <div class="d-flex">
+                        <MudIcon Color="IsPanel2Valid ? Color.Success : Color.Default" Icon="@Icons.Material.Filled.Group" class="mr-3" />
+                        <MudText Color="IsPanel2Valid ? Color.Success : Color.Default"><b>2. Расписание</b></MudText>
+                    </div>
+                </TitleContent>
+                <ChildContent>
 
-    </MudExpansionPanels>
+                    <MudStack AlignItems="AlignItems.End">
+                    </MudStack>
+                </ChildContent>
+            </MudExpansionPanel>
 
-    <MudStack AlignItems="AlignItems.Center" Class="mt-5" Row="false">
-        <MudButton OnClick="SubmitAsync" StartIcon="@Icons.Material.Outlined.Check" Disabled="!(IsPanel1Valid && IsPanel2Valid && IsPanel3Valid && !processingEvent)" Variant="Variant.Filled" Size="Size.Large" Color="Color.Primary" Style="margin:auto">
-            @if (processingEvent)
-            {
-                <MudProgressCircular Size="Size.Small" Style="margin:auto" Indeterminate="true" />
-                <MudText Class="ms-2">Создаём...</MudText>
-            }
-            else
-            {
-                <MudText>Создать мероприятие</MudText>
-            }
-        </MudButton>
+
+            @* ФОТО *@
+            <MudExpansionPanel Disabled="!(IsPanel1Valid && IsPanel2Valid)" Expanded="(IsPanel1Valid && IsPanel2Valid)">
+                <TitleContent>
+                    <div class="d-flex">
+                        <MudIcon Color="IsPanel3Valid ? Color.Success : Color.Default" Icon="@Icons.Material.Filled.Image" class="mr-3" />
+                        <MudText Color="IsPanel3Valid ? Color.Success : Color.Default"><b>3. Фотографии</b></MudText>
+                    </div>
+                </TitleContent>
+                <ChildContent>
+                </ChildContent>
+            </MudExpansionPanel>
+
+        </MudExpansionPanels>
+
+        <MudStack AlignItems="AlignItems.Center" Class="mt-5" Row="false">
+            <MudButton OnClick="SubmitAsync" StartIcon="@Icons.Material.Outlined.Check" Disabled="!(IsPanel1Valid && IsPanel2Valid && IsPanel3Valid && !processingEvent)" Variant="Variant.Filled" Size="Size.Large" Color="Color.Primary" Style="margin:auto">
+                @if (processingEvent)
+                {
+                    <MudProgressCircular Size="Size.Small" Style="margin:auto" Indeterminate="true" />
+                    <MudText Class="ms-2">Создаём...</MudText>
+                }
+                else
+                {
+                    <MudText>Создать мероприятие</MudText>
+                }
+            </MudButton>
+        </MudStack>
+
     </MudStack>
+}
 
-</MudStack>

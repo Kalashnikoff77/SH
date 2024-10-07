@@ -128,11 +128,15 @@ namespace UI.Components.Pages
         {
             string? errorMessage = null;
             if (string.IsNullOrWhiteSpace(name) || name.Length < StaticData.DB_ACCOUNTS_NAME_MIN)
+            {
                 errorMessage = $"Имя должно содержать {StaticData.DB_ACCOUNTS_NAME_MIN}-{StaticData.DB_ACCOUNTS_NAME_MAX} символов";
-
-            var apiResponse = await _repoCheckRegister.HttpPostAsync(new AccountCheckRegisterRequestDto { AccountName = name });
-            if (apiResponse.Response.AccountNameExists)
-                errorMessage = $"Это имя уже занято. Выберите другое.";
+            }
+            else
+            {
+                var apiResponse = await _repoCheckRegister.HttpPostAsync(new AccountCheckRegisterRequestDto { AccountName = name });
+                if (apiResponse.Response.AccountNameExists)
+                    errorMessage = $"Это имя уже занято. Выберите другое.";
+            }
 
             CheckPanel1Properties(errorMessage, nameof(accountRegisterDto.Name), ref NameIconColor);
 
@@ -145,14 +149,19 @@ namespace UI.Components.Pages
             string? errorMessage = null;
 
             if (string.IsNullOrWhiteSpace(email) || email.Length < StaticData.DB_ACCOUNTS_EMAIL_MIN)
+            {
                 errorMessage = $"Email может содержать {StaticData.DB_ACCOUNTS_EMAIL_MIN}-{StaticData.DB_ACCOUNTS_EMAIL_MAX} символов";
-
-            if (!Regex.IsMatch(email, @"^[a-z0-9_\.-]{1,32}@[a-z0-9\.-]{1,32}\.[a-z]{2,8}$"))
+            }
+            else if (!Regex.IsMatch(email, @"^[a-z0-9_\.-]{1,32}@[a-z0-9\.-]{1,32}\.[a-z]{2,8}$"))
+            {
                 errorMessage = $"Проверьте корректность email";
-
-            var apiResponse = await _repoCheckRegister.HttpPostAsync(new AccountCheckRegisterRequestDto { AccountEmail = email });
-            if (apiResponse.Response.AccountEmailExists)
-                errorMessage = $"Этот email уже зарегистрирован. Забыли пароль?";
+            }
+            else
+            {
+                var apiResponse = await _repoCheckRegister.HttpPostAsync(new AccountCheckRegisterRequestDto { AccountEmail = email });
+                if (apiResponse.Response.AccountEmailExists)
+                    errorMessage = $"Этот email уже зарегистрирован. Забыли пароль?";
+            }
 
             CheckPanel1Properties(errorMessage, nameof(accountRegisterDto.Email), ref EmailIconColor);
 

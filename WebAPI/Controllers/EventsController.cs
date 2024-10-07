@@ -151,6 +151,27 @@ namespace WebAPI.Controllers
         }
 
 
+        [Route("CheckAdding"), HttpPost, Authorize]
+        public async Task<EventCheckAddingResponseDto> CheckAddintAsync(EventCheckAddingRequestDto request)
+        {
+            var response = new EventCheckAddingResponseDto();
+
+            using (var conn = new SqlConnection(connectionString))
+            {
+                conn.Open();
+
+                if (request.EventName != null)
+                {
+                    var sql = $"SELECT TOP 1 Id FROM Events WHERE Name = @EventName";
+                    var result = await conn.QueryFirstOrDefaultAsync<int?>(sql, new { request.EventName });
+                    response.EventNameExists = result == null ? false : true;
+                }
+            }
+            return response;
+        }
+
+
+
         [Route("UpdateRegistration"), HttpPost, Authorize]
         public async Task<UpdateEventRegistrationResponseDto> UpdateRegistrationAsync(UpdateEventRegistrationRequestDto request)
         {

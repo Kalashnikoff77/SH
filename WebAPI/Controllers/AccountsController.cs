@@ -10,7 +10,6 @@ using DataContext.Entities.Views;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
-using System.Collections.Generic;
 using System.Text.Json;
 using WebAPI.Exceptions;
 using WebAPI.Extensions;

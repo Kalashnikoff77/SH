@@ -12,11 +12,12 @@ using UI.Models;
 
 namespace UI.Components.Pages.Events
 {
-    public partial class Add
+    public partial class AddEdit
     {
         [CascadingParameter] public CurrentState CurrentState { get; set; } = null!;
         [Inject] IRepository<EventCheckAddingRequestDto, EventCheckAddingResponseDto> _repoCheckAdding { get; set; } = null!;
         [Inject] IRepository<GetSchedulesRequestDto, GetSchedulesResponseDto> _repoGetSchedules { get; set; } = null!;
+        [Parameter] public int? EventId { get; set; }
 
         EventsDto evt = new EventsDto() 
         {
@@ -27,39 +28,35 @@ namespace UI.Components.Pages.Events
             MaxWomen = 15
         };
 
-        bool IsPanel1Valid;
-        bool IsPanel2Valid;
-        bool IsPanel3Valid;
-
         Dictionary<short, TabPanel> TabPanels { get; set; } = null!;
         bool processingPhoto = false;
         bool processingEvent = false;
+
+        bool IsPanel1Valid => TabPanels[1].Items.All(x => x.Value.IsValid == true);
+        bool IsPanel2Valid => TabPanels[2].Items.All(x => x.Value.IsValid == true);
+        bool IsPanel3Valid => TabPanels[3].Items.All(x => x.Value.IsValid == true);
 
         List<SchedulesForEventsViewDto> schedules = new();
 
         protected async override Task OnInitializedAsync()
         {
-            var apiResponse = await _repoGetSchedules.HttpPostAsync(new GetSchedulesRequestDto { EventId = 3 });
-            schedules = apiResponse.Response.Schedules;
-
             TabPanels = new Dictionary<short, TabPanel>
             {
-                { 1, new TabPanel { Items = new Dictionary<string, TabPanelItem> 
+                { 1, new TabPanel { Items = new Dictionary<string, TabPanelItem>
                     {
                         { nameof(evt.Name), new TabPanelItem() },
                         { nameof(evt.Description), new TabPanelItem() },
                         { nameof(evt.MaxPairs), new TabPanelItem() },
                         { nameof(evt.MaxMen), new TabPanelItem() },
                         { nameof(evt.MaxWomen), new TabPanelItem() }
-                    } } 
+                    } }
                 },
                 { 2, new TabPanel { Items = new Dictionary<string, TabPanelItem> { { "Schedule", new TabPanelItem() } } } },
                 { 3, new TabPanel { Items = new Dictionary<string, TabPanelItem> { { "Photo", new TabPanelItem() } } } }
             };
 
-            IsPanel1Valid = TabPanels[1].Items.All(x => x.Value.IsValid == true);
-            IsPanel2Valid = TabPanels[2].Items.All(x => x.Value.IsValid == true);
-            IsPanel3Valid = TabPanels[3].Items.All(x => x.Value.IsValid == true);
+            var apiResponse = await _repoGetSchedules.HttpPostAsync(new GetSchedulesRequestDto { EventId = 3 });
+            schedules = apiResponse.Response.Schedules;
         }
 
         #region /// 1. ОБЩЕЕ ///

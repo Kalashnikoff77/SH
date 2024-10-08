@@ -61,9 +61,13 @@
                         <MudStack Row Justify="Justify.SpaceBetween" AlignItems="AlignItems.Center">
                             <MudStack Spacing="1">
                                 <MudStack Row>
-                                        <MudButton OnClick="() => ShowDialogs.ClubCardDialogAsync(context.Item)" Size="Size.Medium" Color="Color.Primary" Variant="Variant.Text" Class="px-1 py-1">
+                                    <MudButton OnClick="() => ShowDialogs.ClubCardDialogAsync(context.Item)" Size="Size.Medium" Color="Color.Primary" Variant="Variant.Text" Class="px-1 py-1">
                                         <MudText Typo="Typo.body1"><b>@context.Item.Event.Name</b></MudText>
                                     </MudButton>
+                                    @if (CurrentState.Account?.Id == context.Item.Event.Admin?.Id) 
+                                    {
+                                        <MudIconButton Href="@($"/clubs/edit/{context.Item.Id}")" Icon="@Icons.Material.Outlined.Edit" title="Редактировать" Color="Color.Primary" Size="Size.Small" />
+                                    }
                                 </MudStack>
                                 <MudStack Row AlignItems="AlignItems.Center" Spacing="1">
                                     <MudIcon Icon="@Icons.Material.Outlined.LocationOn" Style="font-size:20px" />
@@ -110,7 +114,6 @@
                                         }
                                     </MudStack>
                                 }
-
                             </MudStack>
 
                             <MudStack AlignItems="AlignItems.Center" Spacing="2" Style="width:100px">

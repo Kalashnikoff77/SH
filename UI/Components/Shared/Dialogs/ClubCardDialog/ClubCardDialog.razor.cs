@@ -8,9 +8,9 @@ using Common.Repository;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
 
-namespace UI.Components.Shared.Dialogs.EventCardDialog
+namespace UI.Components.Shared.Dialogs.ClubCardDialog
 {
-    public partial class EventCardDialog : IDisposable
+    public partial class ClubCardDialog : IDisposable
     {
         [CascadingParameter] CurrentState CurrentState { get; set; } = null!;
         [CascadingParameter] MudDialogInstance MudDialog { get; set; } = null!;

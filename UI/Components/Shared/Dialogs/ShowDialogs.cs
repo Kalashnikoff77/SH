@@ -26,15 +26,15 @@ namespace UI.Components.Shared.Dialogs
         /// <summary>
         /// Карточка мероприятия
         /// </summary>
-        public Task EventCardDialogAsync(SchedulesForEventsViewDto schedule)
+        public Task ClubCardDialogAsync(SchedulesForEventsViewDto schedule)
         {
             DialogOptions dialogOptions = new() { CloseOnEscapeKey = true, CloseButton = true };
 
-            var dialogParams = new DialogParameters<EventCardDialog.EventCardDialog>
+            var dialogParams = new DialogParameters<ClubCardDialog.ClubCardDialog>
             {
                 { x => x.ScheduleForEventView, schedule }
             };
-            return _dialog.ShowAsync<EventCardDialog.EventCardDialog>(schedule.Event?.Name, dialogParams, dialogOptions);
+            return _dialog.ShowAsync<ClubCardDialog.ClubCardDialog>(schedule.Event?.Name, dialogParams, dialogOptions);
         }
 
 

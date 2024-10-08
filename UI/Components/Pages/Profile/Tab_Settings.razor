@@ -53,16 +53,8 @@
             </TitleContent>
             <ChildContent>
                 
-                <MudDataGrid T="UsersDto" Items="@accountUpdateDto.Users.Where(w => w.IsDeleted == false)" Striped ReadOnly EditMode="DataGridEditMode.Form" Bordered>
+                <MudDataGrid T="UsersDto" Items="@accountUpdateDto.Users.Where(w => w.IsDeleted == false)" Striped Hover ReadOnly EditMode="DataGridEditMode.Form" Bordered>
                     <Columns>
-                        <PropertyColumn Property="x => x.Name" Title="Имя" Hidden Editable />
-                        <PropertyColumn Property="x => x.Height" Title="Рост" Hidden Editable />
-                        <PropertyColumn Property="x => x.Weight" Title="Вес" Hidden Editable />
-                        <PropertyColumn Property="x => x.BirthDate" Title="Дата рождения" Hidden Editable>
-                            <EditTemplate>
-                                <MudDatePicker Date="context.Item.BirthDate" Label="Дата рождения" DateFormat="dd.MM.yyyy" Editable />
-                            </EditTemplate>
-                        </PropertyColumn>
                         <TemplateColumn Title="Общее" Context="user">
                             <CellTemplate>
                                 <MudStack AlignItems="AlignItems.Center" Row>

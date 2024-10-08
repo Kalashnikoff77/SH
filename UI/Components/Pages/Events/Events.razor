@@ -1,14 +1,14 @@
-﻿@page "/events"
+﻿@page "/clubs"
 
-<PageTitle>Клубные мероприятия</PageTitle>
+<PageTitle>Клубы и мероприятия</PageTitle>
 
 <MudStack Style="min-width:300px; max-width:750px" Class="ml-3">
     
-    <MudStack Row Spacing="0" AlignItems="AlignItems.Center" Class="mb-5">
-        <MudText Typo="Typo.h6" Class="mr-2">Клубные мероприятия</MudText>
+    <MudStack Row Spacing="0" AlignItems="AlignItems.Center" Justify="Justify.SpaceBetween" Class="mb-5">
+        <MudText Typo="Typo.h6" Class="mr-2">Клубы и мероприятия</MudText>
         @if (CurrentState.Account != null) 
         {
-            <MudIconButton Href="/events/add" Icon="@Icons.Material.Filled.Add" Variant="Variant.Outlined" Size="Size.Small" title="Создать мероприятие" />
+            <MudIconButton Href="/clubs/add" Icon="@Icons.Material.Filled.Add" Variant="Variant.Outlined" Color="Color.Primary" Size="Size.Small" title="Создать мероприятие" />
         }
     </MudStack>
 
@@ -61,7 +61,7 @@
                         <MudStack Row Justify="Justify.SpaceBetween" AlignItems="AlignItems.Center">
                             <MudStack Spacing="1">
                                 <MudStack Row>
-                                        <MudButton OnClick="() => ShowDialogs.EventCardDialogAsync(context.Item)" Size="Size.Medium" Color="Color.Primary" Variant="Variant.Text" Class="px-1 py-1">
+                                        <MudButton OnClick="() => ShowDialogs.ClubCardDialogAsync(context.Item)" Size="Size.Medium" Color="Color.Primary" Variant="Variant.Text" Class="px-1 py-1">
                                         <MudText Typo="Typo.body1"><b>@context.Item.Event.Name</b></MudText>
                                     </MudButton>
                                 </MudStack>

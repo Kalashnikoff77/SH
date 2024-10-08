@@ -27,13 +27,13 @@ namespace UI.Components.Pages.Events
             MaxWomen = 15
         };
 
+        bool IsPanel1Valid;
+        bool IsPanel2Valid;
+        bool IsPanel3Valid;
+
         Dictionary<short, TabPanel> TabPanels { get; set; } = null!;
         bool processingPhoto = false;
         bool processingEvent = false;
-
-        bool IsPanel1Valid => TabPanels[1].Items.All(x => x.Value.IsValid == true);
-        bool IsPanel2Valid => TabPanels[2].Items.All(x => x.Value.IsValid == true);
-        bool IsPanel3Valid => TabPanels[3].Items.All(x => x.Value.IsValid == true);
 
         List<SchedulesForEventsViewDto> schedules = new();
 
@@ -56,6 +56,10 @@ namespace UI.Components.Pages.Events
                 { 2, new TabPanel { Items = new Dictionary<string, TabPanelItem> { { "Schedule", new TabPanelItem() } } } },
                 { 3, new TabPanel { Items = new Dictionary<string, TabPanelItem> { { "Photo", new TabPanelItem() } } } }
             };
+
+            IsPanel1Valid = TabPanels[1].Items.All(x => x.Value.IsValid == true);
+            IsPanel2Valid = TabPanels[2].Items.All(x => x.Value.IsValid == true);
+            IsPanel3Valid = TabPanels[3].Items.All(x => x.Value.IsValid == true);
         }
 
         #region /// 1. ОБЩЕЕ ///

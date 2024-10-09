@@ -26,44 +26,44 @@ namespace UI.Components.Shared.Dialogs
         /// <summary>
         /// Карточка мероприятия
         /// </summary>
-        public Task ClubCardDialogAsync(SchedulesForEventsViewDto schedule)
+        public Task PublicCardDialogAsync(SchedulesForEventsViewDto schedule)
         {
             DialogOptions dialogOptions = new() { CloseOnEscapeKey = true, CloseButton = true };
 
-            var dialogParams = new DialogParameters<ClubCardDialog.ClubCardDialog>
+            var dialogParams = new DialogParameters<PublicCardDialog.PublicCardDialog>
             {
                 { x => x.ScheduleForEventView, schedule }
             };
-            return _dialog.ShowAsync<ClubCardDialog.ClubCardDialog>(schedule.Event?.Name, dialogParams, dialogOptions);
+            return _dialog.ShowAsync<PublicCardDialog.PublicCardDialog>(schedule.Event?.Name, dialogParams, dialogOptions);
         }
 
 
         /// <summary>
         /// Регистрация на мероприятие
         /// </summary>
-        public Task EventRegistrationDialogAsync(SchedulesForEventsViewDto schedule)
+        public Task PublicRegistrationDialogAsync(SchedulesForEventsViewDto schedule)
         {
             DialogOptions dialogOptions = new() { CloseOnEscapeKey = true, CloseButton = true };
 
-            var dialogParams = new DialogParameters<EventRegistrationDialog>
+            var dialogParams = new DialogParameters<PublicRegistrationDialog>
             {
                 { x => x.ScheduleForEventView, schedule }
             };
-            return _dialog.ShowAsync<EventRegistrationDialog>($"Подтверждение регистрации", dialogParams, dialogOptions);
+            return _dialog.ShowAsync<PublicRegistrationDialog>($"Подтверждение регистрации", dialogParams, dialogOptions);
         }
 
         /// <summary>
         /// Отмена регистрации на мероприятие
         /// </summary>
-        public Task EventCancelRegistrationDialogAsync(SchedulesForEventsViewDto schedule)
+        public Task PublicCancelRegistrationDialogAsync(SchedulesForEventsViewDto schedule)
         {
             DialogOptions dialogOptions = new() { CloseOnEscapeKey = true, CloseButton = true };
 
-            var dialogParams = new DialogParameters<EventRegistrationDialog>
+            var dialogParams = new DialogParameters<PublicRegistrationDialog>
             {
                 { x => x.ScheduleForEventView, schedule }
             };
-            return _dialog.ShowAsync<EventCancelRegistrationDialog>($"Отмена регистрации", dialogParams, dialogOptions);
+            return _dialog.ShowAsync<PublicCancelRegistrationDialog>($"Отмена регистрации", dialogParams, dialogOptions);
         }
 
     }

@@ -1,5 +1,5 @@
-﻿@page "/clubs/add"
-@page "/clubs/edit/{EventId:int}"
+﻿@page "/public/add"
+@page "/public/edit/{EventId:int}"
 
 <PageTitle>Добавление клуба или мероприятия</PageTitle>
 
@@ -84,7 +84,7 @@
                     </MudDataGrid>
 
                     <MudStack AlignItems="AlignItems.End">
-                        <MudButton StartIcon="@Icons.Material.Outlined.Add" ButtonType="ButtonType.Button" Color="Color.Primary" Size="Size.Small" Variant="Variant.Filled" OnClick="AddClubScheduleDialogAsync" Class="mt-5">Добавить</MudButton>
+                        <MudButton StartIcon="@Icons.Material.Outlined.Add" ButtonType="ButtonType.Button" Color="Color.Primary" Size="Size.Small" Variant="Variant.Filled" OnClick="AddPublicScheduleDialogAsync" Class="mt-5">Добавить</MudButton>
                     </MudStack>
 
 

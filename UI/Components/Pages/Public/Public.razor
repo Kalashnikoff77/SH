@@ -1,4 +1,4 @@
-﻿@page "/clubs"
+﻿@page "/public"
 
 <PageTitle>Клубы и мероприятия</PageTitle>
 
@@ -8,7 +8,7 @@
         <MudText Typo="Typo.h6" Class="mr-2">Клубы и мероприятия</MudText>
         @if (CurrentState.Account != null) 
         {
-            <MudIconButton Href="/clubs/add" Icon="@Icons.Material.Filled.Add" Variant="Variant.Outlined" Color="Color.Primary" Size="Size.Small" title="Создать мероприятие" />
+            <MudIconButton Href="/public/add" Icon="@Icons.Material.Filled.Add" Variant="Variant.Outlined" Color="Color.Primary" Size="Size.Small" title="Создать мероприятие" />
         }
     </MudStack>
 
@@ -61,12 +61,12 @@
                         <MudStack Row Justify="Justify.SpaceBetween" AlignItems="AlignItems.Center">
                             <MudStack Spacing="1">
                                 <MudStack Row>
-                                    <MudButton OnClick="() => ShowDialogs.ClubCardDialogAsync(context.Item)" Size="Size.Medium" Color="Color.Primary" Variant="Variant.Text" Class="px-1 py-1">
+                                    <MudButton OnClick="() => ShowDialogs.PublicCardDialogAsync(context.Item)" Size="Size.Medium" Color="Color.Primary" Variant="Variant.Text" Class="px-1 py-1">
                                         <MudText Typo="Typo.body1"><b>@context.Item.Event.Name</b></MudText>
                                     </MudButton>
                                     @if (CurrentState.Account?.Id == context.Item.Event.Admin?.Id) 
                                     {
-                                        <MudIconButton Href="@($"/clubs/edit/{context.Item.Id}")" Icon="@Icons.Material.Outlined.Edit" title="Редактировать" Color="Color.Primary" Size="Size.Small" />
+                                        <MudIconButton Href="@($"/public/edit/{context.Item.Id}")" Icon="@Icons.Material.Outlined.Edit" title="Редактировать" Color="Color.Primary" Size="Size.Small" />
                                     }
                                 </MudStack>
                                 <MudStack Row AlignItems="AlignItems.Center" Spacing="1">

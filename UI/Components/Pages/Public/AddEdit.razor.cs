@@ -10,7 +10,7 @@ using Microsoft.AspNetCore.Components.Web;
 using MudBlazor;
 using UI.Models;
 
-namespace UI.Components.Pages.Clubs
+namespace UI.Components.Pages.Public
 {
     public partial class AddEdit
     {
@@ -144,7 +144,7 @@ namespace UI.Components.Pages.Clubs
             StateHasChanged();
         }
 
-        async Task AddClubScheduleDialogAsync(MouseEventArgs args)
+        async Task AddPublicScheduleDialogAsync(MouseEventArgs args)
         {
 
         }

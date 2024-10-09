@@ -13,7 +13,7 @@ namespace UI.Components.Shared.Dialogs
         [Parameter] public UsersDto User { get; set; } = null!;
 
         Dictionary<short, TabPanel> TabPanels { get; set; } = null!;
-        bool IsFormValid => TabPanels[1].Items.All(x => x.Value.IsValid == true);
+        bool IsFormValid => TabPanels[1].Items.All(x => x.Value == true);
 
         UsersDto UserCopy { get; set; } = null!;
 
@@ -49,12 +49,12 @@ namespace UI.Components.Shared.Dialogs
 
             TabPanels = new Dictionary<short, TabPanel>
             {
-                { 1, new TabPanel { Items = new Dictionary<string, TabPanelItem>
+                { 1, new TabPanel { Items = new Dictionary<string, bool>
                         {
-                            { nameof(UserCopy.Name), new TabPanelItem { IsValid = IsValid } },
-                            { nameof(UserCopy.BirthDate), new TabPanelItem { IsValid = IsValid } },
-                            { nameof(UserCopy.Height), new TabPanelItem { IsValid = IsValid } },
-                            { nameof(UserCopy.Weight), new TabPanelItem { IsValid = IsValid } }
+                            { nameof(UserCopy.Name), IsValid },
+                            { nameof(UserCopy.BirthDate), IsValid },
+                            { nameof(UserCopy.Height), IsValid },
+                            { nameof(UserCopy.Weight), IsValid }
                         }
                     }
                 }
@@ -120,12 +120,12 @@ namespace UI.Components.Shared.Dialogs
         {
             if (errorMessage == null)
             {
-                TabPanels[1].Items[property].IsValid = true;
+                TabPanels[1].Items[property] = true;
                 iconColor = Color.Success;
             }
             else
             {
-                TabPanels[1].Items[property].IsValid = false;
+                TabPanels[1].Items[property] = false;
                 iconColor = Color.Error;
             }
             StateHasChanged();

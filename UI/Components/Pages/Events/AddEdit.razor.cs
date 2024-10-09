@@ -12,11 +12,6 @@ using UI.Models;
 
 namespace UI.Components.Pages.Events
 {
-    public class TabPanel
-    {
-        public Dictionary<string, bool> Items { get; set; } = null!;
-    }
-
     public partial class AddEdit
     {
         [CascadingParameter] public CurrentState CurrentState { get; set; } = null!;
@@ -34,43 +29,43 @@ namespace UI.Components.Pages.Events
         };
 
         Dictionary<short, TabPanel> TabPanels { get; set; } = null!;
-        bool processingPhoto = false;
-        bool processingEvent = false;
-
-        bool IsPanel1Valid => TabPanels[1].Items.All(x => x.Value == true);
-        bool IsPanel2Valid => TabPanels[2].Items.All(x => x.Value == true);
-        bool IsPanel3Valid => TabPanels[3].Items.All(x => x.Value == true);
-
-        protected override void OnInitialized()
-        {
-            TabPanels = new Dictionary<short, TabPanel>
-            {
-                { 1, new TabPanel { Items = new Dictionary<string, bool>
-                    {
-                        { nameof(Event.Name), false },
-                        { nameof(Event.Description), false },
-                        { nameof(Event.MaxPairs), false },
-                        { nameof(Event.MaxMen), false },
-                        { nameof(Event.MaxWomen), false }
-                    } }
-                },
-                { 2, new TabPanel { Items = new Dictionary<string, bool> { { "Schedule", false } } } },
-                { 3, new TabPanel { Items = new Dictionary<string, bool> { { "Photo", false } } } }
-            };
-        }
+        bool processingPhoto, processingEvent = false;
+        bool IsPanel1Valid, IsPanel2Valid, IsPanel3Valid;
 
         protected async override Task OnParametersSetAsync()
         {
+            bool isValid = false;
+
             if (EventId != null)
             {
                 var apiResponse = await _repoGetEvent.HttpPostAsync(new GetEventsRequestDto { EventId = EventId });
                 if (apiResponse.StatusCode == HttpStatusCode.OK && apiResponse.Response.Event != null)
                 {
                     Event = apiResponse.Response.Event;
+                    isValid = true;
                 }
                 else
                     EventId = null;
             }
+
+            TabPanels = new Dictionary<short, TabPanel>
+            {
+                { 1, new TabPanel { Items = new Dictionary<string, bool>
+                    {
+                        { nameof(Event.Name), isValid },
+                        { nameof(Event.Description), isValid },
+                        { nameof(Event.MaxPairs), isValid },
+                        { nameof(Event.MaxMen), isValid },
+                        { nameof(Event.MaxWomen), isValid}
+                    } }
+                },
+                { 2, new TabPanel { Items = new Dictionary<string, bool> { { "Schedule", isValid } } } },
+                { 3, new TabPanel { Items = new Dictionary<string, bool> { { "Photo", isValid } } } }
+            };
+
+            IsPanel1Valid = TabPanels[1].Items.All(x => x.Value == true);
+            IsPanel2Valid = TabPanels[2].Items.All(x => x.Value == true);
+            IsPanel3Valid = TabPanels[3].Items.All(x => x.Value == true);
         }
 
 
@@ -148,12 +143,12 @@ namespace UI.Components.Pages.Events
         {
             if (errorMessage == null)
             {
-                TabPanels[1].Items[property].IsValid = true;
+                TabPanels[1].Items[property] = true;
                 iconColor = Color.Success;
             }
             else
             {
-                TabPanels[1].Items[property].IsValid = false;
+                TabPanels[1].Items[property] = false;
                 iconColor = Color.Error;
             }
             StateHasChanged();

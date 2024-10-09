@@ -50,27 +50,27 @@ namespace UI.Components.Pages
         bool processingPhoto = false;
         bool processingAccount = false;
 
-        bool IsPanel1Valid => TabPanels[1].Items.All(x => x.Value.IsValid == true);
-        bool IsPanel2Valid => TabPanels[2].Items.All(x => x.Value.IsValid == true);
-        bool IsPanel3Valid => TabPanels[3].Items.All(x => x.Value.IsValid == true);
+        bool IsPanel1Valid => TabPanels[1].Items.All(x => x.Value == true);
+        bool IsPanel2Valid => TabPanels[2].Items.All(x => x.Value == true);
+        bool IsPanel3Valid => TabPanels[3].Items.All(x => x.Value == true);
 
         protected override async Task OnInitializedAsync()
         {
             TabPanels = new Dictionary<short, TabPanel>
             {
-                { 1, new TabPanel { Items = new Dictionary<string, TabPanelItem>
+                { 1, new TabPanel { Items = new Dictionary<string, bool>
                         {
-                            { nameof(accountRegisterDto.Name), new TabPanelItem() },
-                            { nameof(accountRegisterDto.Email), new TabPanelItem() },
-                            { nameof(accountRegisterDto.Password), new TabPanelItem() },
-                            { nameof(accountRegisterDto.Password2), new TabPanelItem() },
-                            { nameof(accountRegisterDto.Country), new TabPanelItem() },
-                            { nameof(accountRegisterDto.Country.Region), new TabPanelItem() }
+                            { nameof(accountRegisterDto.Name), false },
+                            { nameof(accountRegisterDto.Email), false },
+                            { nameof(accountRegisterDto.Password), false },
+                            { nameof(accountRegisterDto.Password2), false },
+                            { nameof(accountRegisterDto.Country), false },
+                            { nameof(accountRegisterDto.Country.Region), false }
                         }
                     }
                 },
-                { 2, new TabPanel { Items = new Dictionary<string, TabPanelItem> { { nameof(accountRegisterDto.Users), new TabPanelItem() } } } },
-                { 3, new TabPanel { Items = new Dictionary<string, TabPanelItem> { { nameof(accountRegisterDto.Avatar), new TabPanelItem() } } } }
+                { 2, new TabPanel { Items = new Dictionary<string, bool> { { nameof(accountRegisterDto.Users), false } } } },
+                { 3, new TabPanel { Items = new Dictionary<string, bool> { { nameof(accountRegisterDto.Avatar), false } } } }
             };
 
             var apiResponse = await _repoGetCountries.HttpPostAsync(new GetCountriesRequestDto());
@@ -216,12 +216,12 @@ namespace UI.Components.Pages
         {
             if (errorMessage == null)
             {
-                TabPanels[1].Items[property].IsValid = true;
+                TabPanels[1].Items[property] = true;
                 iconColor = Color.Success;
             }
             else
             {
-                TabPanels[1].Items[property].IsValid = false;
+                TabPanels[1].Items[property] = false;
                 iconColor = Color.Error;
             }
             StateHasChanged();
@@ -296,7 +296,7 @@ namespace UI.Components.Pages
         }
 
         void CheckPanel2Properties() =>
-            TabPanels[2].Items[nameof(accountRegisterDto.Users)].IsValid = accountRegisterDto.Users.Count == 0 ? false : true;
+            TabPanels[2].Items[nameof(accountRegisterDto.Users)] = accountRegisterDto.Users.Count == 0 ? false : true;
         #endregion
 
 
@@ -331,7 +331,7 @@ namespace UI.Components.Pages
             urlPreviewImage = previewFileName;
             accountRegisterDto.OriginalPhoto = originalFileName;
 
-            TabPanels[3].Items[nameof(accountRegisterDto.Avatar)].IsValid = true;
+            TabPanels[3].Items[nameof(accountRegisterDto.Avatar)] = true;
 
             processingPhoto = false;
             StateHasChanged();

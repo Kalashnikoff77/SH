@@ -47,29 +47,29 @@ namespace UI.Components.Pages.Profile
         bool isDataSaved = false;
 
         Dictionary<short, TabPanel> TabPanels { get; set; } = null!;
-        bool IsPanel1Valid => TabPanels[1].Items.All(x => x.Value.IsValid == true);
-        bool IsPanel2Valid => TabPanels[2].Items.All(x => x.Value.IsValid == true);
+        bool IsPanel1Valid => TabPanels[1].Items.All(x => x.Value == true);
+        bool IsPanel2Valid => TabPanels[2].Items.All(x => x.Value == true);
 
         protected override async Task OnInitializedAsync()
         {
             TabPanels = new Dictionary<short, TabPanel>
             {
                 { 1, new TabPanel {
-                    Items = new Dictionary<string, TabPanelItem>
+                    Items = new Dictionary<string, bool>
                         {
-                            { nameof(accountUpdateDto.Name), new TabPanelItem() { IsValid = true } },
-                            { nameof(accountUpdateDto.Email), new TabPanelItem() { IsValid = true } },
-                            { nameof(accountUpdateDto.Password), new TabPanelItem() { IsValid = true } },
-                            { nameof(accountUpdateDto.Password2), new TabPanelItem() { IsValid = true } },
-                            { nameof(accountUpdateDto.Country), new TabPanelItem() { IsValid = true } },
-                            { nameof(accountUpdateDto.Country.Region), new TabPanelItem() { IsValid = true } }
+                            { nameof(accountUpdateDto.Name), true },
+                            { nameof(accountUpdateDto.Email), true },
+                            { nameof(accountUpdateDto.Password), true },
+                            { nameof(accountUpdateDto.Password2), true },
+                            { nameof(accountUpdateDto.Country), true },
+                            { nameof(accountUpdateDto.Country.Region), true }
                         }
                     }
                 },
                 { 2, new TabPanel {
-                    Items = new Dictionary<string, TabPanelItem>
+                    Items = new Dictionary<string, bool>
                         {
-                            { nameof(accountUpdateDto.Users), new TabPanelItem() { IsValid = true } }
+                            { nameof(accountUpdateDto.Users), true }
                         }
                     }
                 }
@@ -221,12 +221,12 @@ namespace UI.Components.Pages.Profile
         {
             if (errorMessage == null)
             {
-                TabPanels[1].Items[property].IsValid = true;
+                TabPanels[1].Items[property] = true;
                 iconColor = Color.Success;
             }
             else
             {
-                TabPanels[1].Items[property].IsValid = false;
+                TabPanels[1].Items[property] = false;
                 iconColor = Color.Error;
             }
             StateHasChanged();
@@ -304,7 +304,7 @@ namespace UI.Components.Pages.Profile
         }
 
         void CheckPanel2Properties() =>
-            TabPanels[2].Items[nameof(accountUpdateDto.Users)].IsValid = accountUpdateDto.Users.Where(w => !w.IsDeleted).Count() == 0 ? false : true;
+            TabPanels[2].Items[nameof(accountUpdateDto.Users)] = accountUpdateDto.Users.Where(w => !w.IsDeleted).Count() == 0 ? false : true;
         #endregion
 
 

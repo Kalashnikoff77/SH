@@ -22,7 +22,32 @@ namespace WebAPI.Controllers
 
 
         [Route("Get"), HttpPost]
-        public async Task<GetSchedulesResponseDto?> GetAsync(GetSchedulesRequestDto request)
+        public async Task<GetEventsResponseDto?> GetEventsAsync(GetEventsRequestDto request)
+        {
+            var response = new GetEventsResponseDto();
+
+            var columns = GetRequiredColumns<EventsViewEntity>();
+
+            if (request.IsPhotosIncluded)
+                columns.Add(nameof(EventsViewEntity.Photos));
+
+            using (var conn = new SqlConnection(connectionString))
+            {
+                if (request.EventId != null)
+                {
+                    var sql = $"SELECT {columns.Aggregate((a, b) => a + ", " + b)} " +
+                        $"FROM EventsView " +
+                        $"WHERE Id = @EventId";
+                    var result = await conn.QueryFirstOrDefaultAsync<EventsViewEntity>(sql, new { request.EventId }) ?? throw new NotFoundException("Встреча не найдена!");
+                    response.Event = _mapper.Map<EventsViewDto>(result);
+                }
+            }
+            return response;
+        }
+
+
+        [Route("GetSchedules"), HttpPost]
+        public async Task<GetSchedulesResponseDto?> GetSchedulesAsync(GetSchedulesRequestDto request)
         {
             var response = new GetSchedulesResponseDto();
 

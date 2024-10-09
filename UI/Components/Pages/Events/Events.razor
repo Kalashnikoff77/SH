@@ -66,7 +66,7 @@
                                     </MudButton>
                                     @if (CurrentState.Account?.Id == context.Item.Event.Admin?.Id) 
                                     {
-                                        <MudIconButton Href="@($"/events/edit/{context.Item.Id}")" Style="opacity:.4" Icon="@Icons.Material.Outlined.Edit" title="Редактировать" Color="Color.Primary" Size="Size.Small" />
+                                        <MudIconButton Href="@($"/events/edit/{context.Item.EventId}")" Style="opacity:.4" Icon="@Icons.Material.Outlined.Edit" title="Редактировать" Color="Color.Primary" Size="Size.Small" />
                                     }
                                 </MudStack>
                                 <MudStack Row AlignItems="AlignItems.Center" Spacing="1">

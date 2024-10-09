@@ -1,5 +1,4 @@
-﻿using Common.Dto;
-using Common.Dto.Requests;
+﻿using Common.Dto.Requests;
 using Common.Dto.Responses;
 using Common.Dto.Views;
 using Common.Models;
@@ -8,18 +7,24 @@ using Common.Repository;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 using MudBlazor;
+using System.Net;
 using UI.Models;
 
 namespace UI.Components.Pages.Events
 {
+    public class TabPanel
+    {
+        public Dictionary<string, bool> Items { get; set; } = null!;
+    }
+
     public partial class AddEdit
     {
         [CascadingParameter] public CurrentState CurrentState { get; set; } = null!;
         [Inject] IRepository<EventCheckAddingRequestDto, EventCheckAddingResponseDto> _repoCheckAdding { get; set; } = null!;
-        [Inject] IRepository<GetSchedulesRequestDto, GetSchedulesResponseDto> _repoGetSchedules { get; set; } = null!;
+        [Inject] IRepository<GetEventsRequestDto, GetEventsResponseDto> _repoGetEvent { get; set; } = null!;
         [Parameter] public int? EventId { get; set; }
 
-        EventsDto evt = new EventsDto() 
+        EventsViewDto Event = new EventsViewDto() 
         {
             Name = "Название мероприятия в клубе",
             Description = "Длинное описание, которое должно быть более пятидесяти символов в длину, иначе не прокатит",
@@ -32,32 +37,42 @@ namespace UI.Components.Pages.Events
         bool processingPhoto = false;
         bool processingEvent = false;
 
-        bool IsPanel1Valid => TabPanels[1].Items.All(x => x.Value.IsValid == true);
-        bool IsPanel2Valid => TabPanels[2].Items.All(x => x.Value.IsValid == true);
-        bool IsPanel3Valid => TabPanels[3].Items.All(x => x.Value.IsValid == true);
+        bool IsPanel1Valid => TabPanels[1].Items.All(x => x.Value == true);
+        bool IsPanel2Valid => TabPanels[2].Items.All(x => x.Value == true);
+        bool IsPanel3Valid => TabPanels[3].Items.All(x => x.Value == true);
 
-        List<SchedulesForEventsViewDto> schedules = new();
-
-        protected async override Task OnInitializedAsync()
+        protected override void OnInitialized()
         {
             TabPanels = new Dictionary<short, TabPanel>
             {
-                { 1, new TabPanel { Items = new Dictionary<string, TabPanelItem>
+                { 1, new TabPanel { Items = new Dictionary<string, bool>
                     {
-                        { nameof(evt.Name), new TabPanelItem() },
-                        { nameof(evt.Description), new TabPanelItem() },
-                        { nameof(evt.MaxPairs), new TabPanelItem() },
-                        { nameof(evt.MaxMen), new TabPanelItem() },
-                        { nameof(evt.MaxWomen), new TabPanelItem() }
+                        { nameof(Event.Name), false },
+                        { nameof(Event.Description), false },
+                        { nameof(Event.MaxPairs), false },
+                        { nameof(Event.MaxMen), false },
+                        { nameof(Event.MaxWomen), false }
                     } }
                 },
-                { 2, new TabPanel { Items = new Dictionary<string, TabPanelItem> { { "Schedule", new TabPanelItem() } } } },
-                { 3, new TabPanel { Items = new Dictionary<string, TabPanelItem> { { "Photo", new TabPanelItem() } } } }
+                { 2, new TabPanel { Items = new Dictionary<string, bool> { { "Schedule", false } } } },
+                { 3, new TabPanel { Items = new Dictionary<string, bool> { { "Photo", false } } } }
             };
-
-            var apiResponse = await _repoGetSchedules.HttpPostAsync(new GetSchedulesRequestDto { EventId = 3 });
-            schedules = apiResponse.Response.Schedules;
         }
+
+        protected async override Task OnParametersSetAsync()
+        {
+            if (EventId != null)
+            {
+                var apiResponse = await _repoGetEvent.HttpPostAsync(new GetEventsRequestDto { EventId = EventId });
+                if (apiResponse.StatusCode == HttpStatusCode.OK && apiResponse.Response.Event != null)
+                {
+                    Event = apiResponse.Response.Event;
+                }
+                else
+                    EventId = null;
+            }
+        }
+
 
         #region /// 1. ОБЩЕЕ ///
         Color NameIconColor = Color.Default;
@@ -75,7 +90,7 @@ namespace UI.Components.Pages.Events
                     errorMessage = $"Это имя уже занято. Выберите другое.";
             }
 
-            CheckPanel1Properties(errorMessage, nameof(evt.Name), ref NameIconColor);
+            CheckPanel1Properties(errorMessage, nameof(Event.Name), ref NameIconColor);
             return errorMessage;
         }
 
@@ -86,7 +101,7 @@ namespace UI.Components.Pages.Events
             if (string.IsNullOrWhiteSpace(text) || text.Length < StaticData.DB_EVENT_DESCRIPTION_MIN)
                 errorMessage = $"Введите не менее {StaticData.DB_EVENT_DESCRIPTION_MIN} символов";
 
-            CheckPanel1Properties(errorMessage, nameof(evt.Description), ref DescriptionIconColor);
+            CheckPanel1Properties(errorMessage, nameof(Event.Description), ref DescriptionIconColor);
             return errorMessage;
         }
 
@@ -99,7 +114,7 @@ namespace UI.Components.Pages.Events
             if (num < 0 || num > 500)
                 errorMessage = "Кол-во от 1 до 500";
 
-            CheckPanel1Properties(errorMessage, nameof(evt.MaxPairs), ref MaxPairsIconColor);
+            CheckPanel1Properties(errorMessage, nameof(Event.MaxPairs), ref MaxPairsIconColor);
             return errorMessage;
         }
 
@@ -112,7 +127,7 @@ namespace UI.Components.Pages.Events
             if (num < 0 || num > 500)
                 errorMessage = "Кол-во от 1 до 500";
 
-            CheckPanel1Properties(errorMessage, nameof(evt.MaxMen), ref MaxMenIconColor);
+            CheckPanel1Properties(errorMessage, nameof(Event.MaxMen), ref MaxMenIconColor);
             return errorMessage;
         }
 
@@ -125,7 +140,7 @@ namespace UI.Components.Pages.Events
             if (num < 0 || num > 500)
                 errorMessage = "Кол-во от 1 до 500";
 
-            CheckPanel1Properties(errorMessage, nameof(evt.MaxWomen), ref MaxWomenIconColor);
+            CheckPanel1Properties(errorMessage, nameof(Event.MaxWomen), ref MaxWomenIconColor);
             return errorMessage;
         }
 

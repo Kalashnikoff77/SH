@@ -2,7 +2,7 @@
 {
     public class GetSchedulesRequestDto : RequestDtoBase
     {
-        public override string Uri => "/Events/Get";
+        public override string Uri => "/Events/GetSchedules";
 
         /// <summary>
         /// Получить все записи определённого мероприятия (используется при добавлении сообщения в обсуждение события)

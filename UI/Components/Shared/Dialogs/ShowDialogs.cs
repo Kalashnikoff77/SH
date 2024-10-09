@@ -26,7 +26,7 @@ namespace UI.Components.Shared.Dialogs
         /// <summary>
         /// Карточка мероприятия
         /// </summary>
-        public Task PublicCardDialogAsync(SchedulesForEventsViewDto schedule)
+        public Task EventCardDialogAsync(SchedulesForEventsViewDto schedule)
         {
             DialogOptions dialogOptions = new() { CloseOnEscapeKey = true, CloseButton = true };
 
@@ -41,7 +41,7 @@ namespace UI.Components.Shared.Dialogs
         /// <summary>
         /// Регистрация на мероприятие
         /// </summary>
-        public Task PublicRegistrationDialogAsync(SchedulesForEventsViewDto schedule)
+        public Task EventRegistrationDialogAsync(SchedulesForEventsViewDto schedule)
         {
             DialogOptions dialogOptions = new() { CloseOnEscapeKey = true, CloseButton = true };
 

@@ -9,9 +9,9 @@ using Microsoft.AspNetCore.Components;
 using MudBlazor;
 using UI.Components.Shared.Dialogs;
 
-namespace UI.Components.Pages.Public
+namespace UI.Components.Pages.Events
 {
-    public partial class Public : IDisposable
+    public partial class Events : IDisposable
     {
         [CascadingParameter] public CurrentState CurrentState { get; set; } = null!;
         [Inject] IRepository<GetSchedulesRequestDto, GetSchedulesResponseDto> _repoGetSchedules { get; set; } = null!;

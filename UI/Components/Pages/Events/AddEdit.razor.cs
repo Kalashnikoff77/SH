@@ -10,7 +10,7 @@ using Microsoft.AspNetCore.Components.Web;
 using MudBlazor;
 using UI.Models;
 
-namespace UI.Components.Pages.Public
+namespace UI.Components.Pages.Events
 {
     public partial class AddEdit
     {

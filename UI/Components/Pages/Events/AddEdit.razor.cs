@@ -1,4 +1,5 @@
-﻿using Common.Dto.Requests;
+﻿using Common.Dto;
+using Common.Dto.Requests;
 using Common.Dto.Responses;
 using Common.Dto.Views;
 using Common.Models;
@@ -8,6 +9,7 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 using MudBlazor;
 using System.Net;
+using UI.Components.Shared.Dialogs;
 using UI.Models;
 
 namespace UI.Components.Pages.Events
@@ -17,6 +19,7 @@ namespace UI.Components.Pages.Events
         [CascadingParameter] public CurrentState CurrentState { get; set; } = null!;
         [Inject] IRepository<EventCheckAddingRequestDto, EventCheckAddingResponseDto> _repoCheckAdding { get; set; } = null!;
         [Inject] IRepository<GetEventsRequestDto, GetEventsResponseDto> _repoGetEvent { get; set; } = null!;
+        [Inject] IDialogService DialogService { get; set; } = null!;
         [Parameter] public int? EventId { get; set; }
 
         EventsViewDto Event = new EventsViewDto() 
@@ -160,6 +163,28 @@ namespace UI.Components.Pages.Events
         }
         #endregion
 
+
+        #region /// 2. РАСПИСАНИЕ ///
+        async Task DeleteScheduleDialogAsync(SchedulesForEventsDto schedule)
+        {
+            var parameters = new DialogParameters<ConfirmDialog>
+            {
+                { x => x.ContentText, $"Удалить расписание?" },
+                { x => x.ButtonText, "Удалить" },
+                { x => x.Color, Color.Error }
+            };
+            var options = new DialogOptions() { CloseButton = true, MaxWidth = MaxWidth.ExtraSmall };
+            var resultDialog = await DialogService.ShowAsync<ConfirmDialog>($"Удаление", parameters, options);
+            var result = await resultDialog.Result;
+
+            if (result != null && result.Canceled == false)
+            {
+                //var index = accountUpdateDto.Users.IndexOf(user);
+                //if (index >= 0)
+                //    accountUpdateDto.Users[index].IsDeleted = true;
+            }
+        }
+        #endregion
 
         async void SubmitAsync()
         {

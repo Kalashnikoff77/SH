@@ -32,7 +32,6 @@ namespace UI.Components.Pages.Profile
 
         [Inject] ProtectedLocalStorage _protectedLocalStore { get; set; } = null!;
         [Inject] ProtectedSessionStorage _protectedSessionStore { get; set; } = null!;
-        [Inject] IJSProcessor _JSProcessor { get; set; } = null!;
         [Inject] IDialogService DialogService { get; set; } = null!;
         [Inject] IConfiguration _config { get; set; } = null!;
 
@@ -275,20 +274,7 @@ namespace UI.Components.Pages.Profile
             CheckPanel2Properties();
         }
 
-        async Task AddUserAsync(MouseEventArgs args)
-        {
-            var parameters = new DialogParameters<EditUserDialog> { { x => x.User, null } };
-            var options = new DialogOptions { CloseOnEscapeKey = true };
-
-            var resultDialog = await DialogService.ShowAsync<EditUserDialog>("Добавление партнёра", parameters, options);
-            var result = await resultDialog.Result;
-            if (result != null && result.Canceled == false && result.Data != null)
-                accountUpdateDto.Users.Add((UsersDto)result.Data);
-
-            CheckPanel2Properties();
-        }
-
-        async Task UpdateUserAsync(UsersDto user)
+        async Task UpdateUserDialogAsync(UsersDto user)
         {
             var parameters = new DialogParameters<EditUserDialog> { { x => x.User, user } };
             var options = new DialogOptions { CloseOnEscapeKey = true };
@@ -301,6 +287,19 @@ namespace UI.Components.Pages.Profile
                 accountUpdateDto.Users.RemoveAt(position);
                 accountUpdateDto.Users.Insert(position, result.Data.DeepCopy<UsersDto>()!);
             }
+        }
+
+        async Task AddUserAsync(MouseEventArgs args)
+        {
+            var parameters = new DialogParameters<EditUserDialog> { { x => x.User, null } };
+            var options = new DialogOptions { CloseOnEscapeKey = true };
+
+            var resultDialog = await DialogService.ShowAsync<EditUserDialog>("Добавление партнёра", parameters, options);
+            var result = await resultDialog.Result;
+            if (result != null && result.Canceled == false && result.Data != null)
+                accountUpdateDto.Users.Add((UsersDto)result.Data);
+
+            CheckPanel2Properties();
         }
 
         void CheckPanel2Properties() =>

@@ -30,11 +30,11 @@ namespace UI.Components.Shared.Dialogs
         {
             DialogOptions dialogOptions = new() { CloseOnEscapeKey = true, CloseButton = true };
 
-            var dialogParams = new DialogParameters<PublicCardDialog.PublicCardDialog>
+            var dialogParams = new DialogParameters<EventCardDialog.EventCardDialog>
             {
                 { x => x.ScheduleForEventView, schedule }
             };
-            return _dialog.ShowAsync<PublicCardDialog.PublicCardDialog>(schedule.Event?.Name, dialogParams, dialogOptions);
+            return _dialog.ShowAsync<EventCardDialog.EventCardDialog>(schedule.Event?.Name, dialogParams, dialogOptions);
         }
 
 
@@ -45,25 +45,25 @@ namespace UI.Components.Shared.Dialogs
         {
             DialogOptions dialogOptions = new() { CloseOnEscapeKey = true, CloseButton = true };
 
-            var dialogParams = new DialogParameters<PublicRegistrationDialog>
+            var dialogParams = new DialogParameters<EventRegistrationDialog>
             {
                 { x => x.ScheduleForEventView, schedule }
             };
-            return _dialog.ShowAsync<PublicRegistrationDialog>($"Подтверждение регистрации", dialogParams, dialogOptions);
+            return _dialog.ShowAsync<EventRegistrationDialog>($"Подтверждение регистрации", dialogParams, dialogOptions);
         }
 
         /// <summary>
         /// Отмена регистрации на мероприятие
         /// </summary>
-        public Task PublicCancelRegistrationDialogAsync(SchedulesForEventsViewDto schedule)
+        public Task EventCancelRegistrationDialogAsync(SchedulesForEventsViewDto schedule)
         {
             DialogOptions dialogOptions = new() { CloseOnEscapeKey = true, CloseButton = true };
 
-            var dialogParams = new DialogParameters<PublicRegistrationDialog>
+            var dialogParams = new DialogParameters<EventRegistrationDialog>
             {
                 { x => x.ScheduleForEventView, schedule }
             };
-            return _dialog.ShowAsync<PublicCancelRegistrationDialog>($"Отмена регистрации", dialogParams, dialogOptions);
+            return _dialog.ShowAsync<EventCancelRegistrationDialog>($"Отмена регистрации", dialogParams, dialogOptions);
         }
 
     }

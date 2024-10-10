@@ -7,42 +7,20 @@
         /// </summary>
         public static string ToMyString(this DateTime dateTime)
         {
-            //dateTime = DateTime.Parse("31.08.2024 18:00");
-
             var time = dateTime.ToString("HH:mm");
             var now = DateTime.Now;
             var yesterday = now.AddDays(-1);
             var tomorrow = now.AddDays(1);
             var aftetomorrow = now.AddDays(2);
 
-            if (dateTime.Date > now.Date)
-            {
-                if (dateTime < now.AddMinutes(1))
-                    return "прямо сейчас";
-
-                if (dateTime.Date <= now.AddDays(2).Date)
-                {
-                    if (dateTime.Date == now.Date)
-                        return $"сегодня {time}";
-                    if (dateTime.Date == tomorrow.Date)
-                        return $"завтра {time}";
-                    if (dateTime.Date == aftetomorrow.Date)
-                        return $"послезавтра {time}";
-                }
-            }
-            else
-            {
-                if (dateTime > now.AddMinutes(-1))
-                    return "только что";
-
-                if (dateTime.Date > now.AddDays(-2).Date)
-                {
-                    if (dateTime.Date == now.Date)
-                        return $"сегодня {time}";
-                    if (dateTime.Date == yesterday.Date)
-                        return $"вчера {time}";
-                }
-            }
+            if (dateTime.Date == yesterday.Date)
+                return $"вчера {time}";
+            if (dateTime.Date == now.Date)
+                return $"сегодня {time}";
+            if (dateTime.Date == tomorrow.Date)
+                return $"завтра {time}";
+            if (dateTime.Date == aftetomorrow.Date)
+                return $"послезавтра {time}";
 
             if (dateTime.Year == DateTime.Now.Year)
                 return dateTime.ToString("ddd, dd MMM HH:mm");

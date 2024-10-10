@@ -76,7 +76,7 @@
 
                                 <MudStack Row Spacing="0" AlignItems="AlignItems.Center">
                                     <MudStack Row AlignItems="AlignItems.Center" Spacing="0" Title="Дата и время начала">
-                                        <MudIcon Icon="@Icons.Material.Outlined.CalendarToday" Class="@context.Item.ToDateClass()" Style="font-size:17px" />
+                                        <MudIcon Icon="@Icons.Material.Outlined.CalendarToday" Class="@context.Item.ToDateClass()" Style="font-size:17px;margin-left:1px" />
                                         <MudText Typo="Typo.body2" Class="ml-1" Style="margin-top:2px">@context.Item.StartDate.ToMyString()</MudText>
                                     </MudStack>
                                     @if (context.Item.NumberOfDiscussions > 0)

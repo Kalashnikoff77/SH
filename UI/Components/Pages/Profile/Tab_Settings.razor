@@ -53,7 +53,7 @@
             </TitleContent>
             <ChildContent>
                 
-                <MudDataGrid T="UsersDto" Items="@accountUpdateDto.Users.Where(w => w.IsDeleted == false)" Striped Hover ReadOnly EditMode="DataGridEditMode.Form" Bordered>
+                <MudDataGrid T="UsersDto" Items="@accountUpdateDto.Users.Where(w => w.IsDeleted == false)" Striped Hover ReadOnly Bordered>
                     <Columns>
                         <TemplateColumn Title="Общее" Context="user">
                             <CellTemplate>

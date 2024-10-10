@@ -12,6 +12,7 @@ namespace Common.Dto
         public int CostMan { get; set; }
         public int CostWoman { get; set; }
         public int CostPair { get; set; }
+        public bool IsDeleted { get; set; }
 
         /// <summary>
         /// Используется в Tab_About.razor для корректного вывода даты и времени

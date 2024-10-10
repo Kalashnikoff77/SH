@@ -81,18 +81,22 @@
                 </TitleContent>
                 <ChildContent>
 
-                    <MudDataGrid T="SchedulesForEventsDto" Items="@Event.Schedule" HeaderClass="dataGridHideTHead" Elevation="0" Striped>
+                    <MudDataGrid T="SchedulesForEventsDto" Items="@Event.Schedule?.Where(x => x.IsDeleted == false)" HeaderClass="dataGridHideTHead" Elevation="0" Striped Hover Bordered>
                         <Columns>
                             <TemplateColumn CellClass="pa-0">
                                 <CellTemplate>
-                                    <MudStack StretchItems="StretchItems.Start" AlignItems="AlignItems.Center" Spacing="0" Row Style="width:100%">
+                                    <MudStack StretchItems="StretchItems.Start" AlignItems="AlignItems.Center" Spacing="0" Row Class="pa-2">
                                         <MudStack Spacing="0">
                                             <MudStack Row AlignItems="AlignItems.Center" Spacing="2">
                                                 <MudIcon Icon="@Icons.Material.Outlined.CalendarToday" Class="@context.Item.ToDateClass()" Style="font-size:17px" />
                                                 <MudText Typo="Typo.subtitle1" Align="Align.Left"><b>@context.Item.ToStartEndString()</b></MudText>
                                             </MudStack>
-                                            <MudText Typo="Typo.body2" Align="Align.Left">@context.Item.Description</MudText>
-                                            <MudText Typo="Typo.body2" Align="Align.Left">П: @context.Item.CostPair р, М: @context.Item.CostMan р, Ж: @context.Item.CostWoman р</MudText>
+                                            <MudText Align="Align.Left" Style="font-size:13px">@context.Item.Description</MudText>
+                                            <MudStack Row AlignItems="AlignItems.Center" Spacing="1" Style="font-size:13px">
+                                                <MudIcon Icon="@Icons.Material.Filled.PeopleAlt" Color="Color.Tertiary" Style="font-size:17px" />@(context.Item.CostPair == 0 ? "Бесплатно" : context.Item.CostPair.ToString() + " руб.")
+                                                <MudIcon Icon="@Icons.Material.Filled.Face5" Color="Color.Primary" Style="font-size:16px" Class="ml-2" />@(context.Item.CostMan == 0 ? "Бесплатно" : context.Item.CostMan.ToString() + " руб.")
+                                                <MudIcon Icon="@Icons.Material.Filled.Face3" Color="Color.Error" Style="font-size:15px" Class="ml-2" />@(context.Item.CostWoman == 0 ? "Бесплатно" : context.Item.CostWoman.ToString() + " руб.")
+                                            </MudStack>
                                         </MudStack>
                                     </MudStack>
                                 </CellTemplate>
@@ -109,7 +113,7 @@
                     </MudDataGrid>
 
                     <MudStack AlignItems="AlignItems.End">
-                        <MudButton StartIcon="@Icons.Material.Outlined.Add" ButtonType="ButtonType.Button" Color="Color.Primary" Size="Size.Small" Variant="Variant.Filled" OnClick="AddPublicScheduleDialogAsync" Class="mt-5">Добавить</MudButton>
+                        <MudButton StartIcon="@Icons.Material.Outlined.Add" ButtonType="ButtonType.Button" Color="Color.Primary" Size="Size.Small" Variant="Variant.Filled" OnClick="AddEventScheduleDialogAsync" Class="mt-5">Добавить</MudButton>
                     </MudStack>
 
                 </ChildContent>

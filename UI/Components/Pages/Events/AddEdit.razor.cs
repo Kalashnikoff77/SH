@@ -157,7 +157,7 @@ namespace UI.Components.Pages.Events
             StateHasChanged();
         }
 
-        async Task AddPublicScheduleDialogAsync(MouseEventArgs args)
+        async Task AddEventScheduleDialogAsync(MouseEventArgs args)
         {
 
         }
@@ -179,9 +179,7 @@ namespace UI.Components.Pages.Events
 
             if (result != null && result.Canceled == false)
             {
-                //var index = accountUpdateDto.Users.IndexOf(user);
-                //if (index >= 0)
-                //    accountUpdateDto.Users[index].IsDeleted = true;
+                schedule.IsDeleted = true;
             }
         }
         #endregion

@@ -3,8 +3,43 @@
 
     <DialogContent>
         <MudGrid Spacing="3">
-            <MudItem xs="12">
+            <MudItem sm="6" xs="12">
+                <MudDatePicker Label="Дата начала"
+                        Date="StartDate"
+                        DateChanged="(startDate) => StartDate = startDate"
+                        Mask="@(new DateMask("dd.MM.yyyy"))" DateFormat="dd.MM.yyyy"
+                        AdornmentIcon="@Icons.Material.Filled.CalendarMonth" AdornmentColor="@StartDateIconColor" Adornment="Adornment.End"
+                        Validation="@(new Func<DateTime?, string?>(StartDateValidator))"
+                        OpenTo="OpenTo.Date"
+                        MinDate="DateTime.Now"
+                        MaxDate="DateTime.Now.AddDays(maxStartDateDays)"
+                        HelperText="@($"Не позднее {DateTime.Now.AddDays(maxStartDateDays).ToString("dd.MM.yyyy")}")" ShowToolbar="false" />
             </MudItem>
+            <MudItem sm="6" xs="12">
+                <MudTimePicker Label="Время начала" Editable="false" @bind-Time="StartTime" MinuteSelectionStep="5"
+                        AdornmentIcon="@Icons.Material.Filled.AccessTime" AdornmentColor="@StartTimeIconColor" Adornment="Adornment.End"
+                        HelperText="Пример: 19:00" />
+            </MudItem>
+
+            <MudItem sm="6" xs="12">
+                <MudDatePicker Label="Дата окончания"
+                        Date="EndDate"
+                        DateChanged="(endDate) => EndDate = endDate"
+                        Mask="@(new DateMask("dd.MM.yyyy"))" DateFormat="dd.MM.yyyy"
+                        AdornmentIcon="@Icons.Material.Filled.CalendarMonth" AdornmentColor="@EndDateIconColor" Adornment="Adornment.End"
+                        Validation="@(new Func<DateTime?, string?>(EndDateValidator))"
+                        OpenTo="OpenTo.Date"
+                        StartMonth="StartDate"
+                        MinDate="Schedule.StartDate == DateTime.MinValue ? DateTime.Now : Schedule.StartDate"
+                        MaxDate="Schedule.StartDate == DateTime.MinValue ? DateTime.Now : Schedule.StartDate.AddDays(maxEndDateDays)"
+                        HelperText="@(StartDate.HasValue ? $"Не позднее {StartDate!.Value.AddDays(maxEndDateDays).ToString("dd.MM.yyyy")}" : "Выберите начальную дату")" ShowToolbar="false" />
+            </MudItem>
+            <MudItem sm="6" xs="12">
+                <MudTimePicker Label="Время окончания" Editable="false" @bind-Time="EndTime" MinuteSelectionStep="5"
+                        AdornmentIcon="@Icons.Material.Filled.AccessTime" AdornmentColor="@EndTimeIconColor" Adornment="Adornment.End"
+                        HelperText="Пример: 23:30" />
+            </MudItem>
+
         </MudGrid>
     </DialogContent>
 

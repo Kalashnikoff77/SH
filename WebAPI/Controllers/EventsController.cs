@@ -176,10 +176,11 @@ namespace WebAPI.Controllers
         }
 
 
-        [Route("CheckAdding"), HttpPost, Authorize]
-        public async Task<EventCheckAddingResponseDto> CheckAddintAsync(EventCheckAddingRequestDto request)
+        [Route("Check"), HttpPost, Authorize]
+        public async Task<EventCheckResponseDto> CheckAsync(EventCheckRequestDto request)
         {
-            var response = new EventCheckAddingResponseDto();
+            var response = new EventCheckResponseDto();
+            string sql;
 
             using (var conn = new SqlConnection(connectionString))
             {
@@ -187,64 +188,15 @@ namespace WebAPI.Controllers
 
                 if (request.EventName != null)
                 {
-                    var sql = $"SELECT TOP 1 Id FROM Events WHERE Name = @EventName";
-                    var result = await conn.QueryFirstOrDefaultAsync<int?>(sql, new { request.EventName });
+                    if (request.EventId.HasValue)
+                        sql = $"SELECT TOP 1 Id FROM Events WHERE Name = @EventName AND Id <> @EventId";
+                    else
+                        sql = $"SELECT TOP 1 Id FROM Events WHERE Name = @EventName";
+                    var result = await conn.QueryFirstOrDefaultAsync<int?>(sql, new { request.EventId, request.EventName });
                     response.EventNameExists = result == null ? false : true;
                 }
             }
             return response;
-        }
-
-
-
-        [Route("UpdateRegistration"), HttpPost, Authorize]
-        public async Task<UpdateEventRegistrationResponseDto> UpdateRegistrationAsync(UpdateEventRegistrationRequestDto request)
-        {
-            AuthenticateUser();
-
-            using (var conn = new SqlConnection(connectionString))
-            {
-                // Получим тип учётки (пара, М или Ж)
-                var sql = $"SELECT TOP (2) {nameof(UsersEntity.Gender)} FROM Users " +
-                    $"WHERE {nameof(UsersEntity.AccountId)} = {_accountId} AND {nameof(UsersEntity.IsDeleted)} = 0";
-                var users = (await conn.QueryAsync<int>(sql)).ToList();
-                if (users.Count == 0)
-                    throw new NotFoundException("Пользователь с указанным Id не найден!");
-                int? AccountGender = null;
-                if (users.Count() == 1)
-                    AccountGender = users[0];
-
-                // Получим данные о расписании
-                sql = $"SELECT * FROM SchedulesForEvents WHERE Id = {request.ScheduleId}";
-                var evt = await conn.QueryFirstOrDefaultAsync<SchedulesForEventsEntity>(sql) ?? throw new NotFoundException("Указанное расписание события не найдено!");
-
-                // Получим стоимость для учётки
-                int TicketCost = AccountGender switch
-                {
-                    0 => evt.CostMan!.Value,
-                    1 => evt.CostWoman!.Value,
-                    _ => evt.CostPair!.Value
-                };
-
-                sql = $"SELECT TOP (1) Id FROM SchedulesForAccounts WHERE {nameof(SchedulesForAccountsEntity.AccountId)} = @_accountId AND {nameof(SchedulesForAccountsEntity.ScheduleId)} = @ScheduleId AND IsDeleted = 0";
-                var scheduleId = await conn.QueryFirstOrDefaultAsync<int?>(sql, new { _accountId, request.ScheduleId });
-                if (scheduleId == null)
-                {
-                    sql = $"INSERT INTO SchedulesForAccounts " +
-                        $"({nameof(SchedulesForAccountsEntity.ScheduleId)}, {nameof(SchedulesForAccountsEntity.AccountId)}, {nameof(SchedulesForAccountsEntity.AccountGender)}, {nameof(SchedulesForAccountsEntity.TicketCost)}) " +
-                        $"VALUES (@{nameof(SchedulesForAccountsEntity.ScheduleId)}, @_accountId, @{nameof(SchedulesForAccountsEntity.AccountGender)}, @{nameof(SchedulesForAccountsEntity.TicketCost)})";
-                    await conn.ExecuteAsync(sql, new { request.ScheduleId, _accountId, AccountGender, TicketCost });
-                }
-                else
-                {
-                    sql = $"UPDATE SchedulesForAccounts SET {nameof(SchedulesForAccountsEntity.IsDeleted)} = 1 " +
-                        $"WHERE {nameof(SchedulesForAccountsEntity.AccountId)} = @_accountId AND {nameof(SchedulesForAccountsEntity.ScheduleId)} = @ScheduleId";
-                    await conn.ExecuteAsync(sql, new { request.ScheduleId, _accountId });
-                }
-
-                var response = new UpdateEventRegistrationResponseDto { ScheduleId = request.ScheduleId };
-                return response;
-            }
         }
 
 

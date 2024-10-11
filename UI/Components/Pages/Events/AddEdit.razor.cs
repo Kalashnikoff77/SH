@@ -6,7 +6,6 @@ using Common.Models;
 using Common.Models.States;
 using Common.Repository;
 using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Web;
 using MudBlazor;
 using System.Net;
 using UI.Components.Shared.Dialogs;
@@ -17,7 +16,7 @@ namespace UI.Components.Pages.Events
     public partial class AddEdit
     {
         [CascadingParameter] public CurrentState CurrentState { get; set; } = null!;
-        [Inject] IRepository<EventCheckAddingRequestDto, EventCheckAddingResponseDto> _repoCheckAdding { get; set; } = null!;
+        [Inject] IRepository<EventCheckRequestDto, EventCheckResponseDto> _repoCheckAdding { get; set; } = null!;
         [Inject] IRepository<GetEventsRequestDto, GetEventsResponseDto> _repoGetEvent { get; set; } = null!;
         [Inject] IDialogService DialogService { get; set; } = null!;
         [Parameter] public int? EventId { get; set; }
@@ -83,7 +82,7 @@ namespace UI.Components.Pages.Events
             }
             else
             {
-                var apiResponse = await _repoCheckAdding.HttpPostAsync(new EventCheckAddingRequestDto { EventName = text, Token = CurrentState.Account!.Token });
+                var apiResponse = await _repoCheckAdding.HttpPostAsync(new EventCheckRequestDto { EventId = EventId, EventName = text, Token = CurrentState.Account!.Token });
                 if (apiResponse.Response.EventNameExists)
                     errorMessage = $"Это имя уже занято. Выберите другое.";
             }
@@ -156,15 +155,24 @@ namespace UI.Components.Pages.Events
             }
             StateHasChanged();
         }
-
-        async Task AddEventScheduleDialogAsync(MouseEventArgs args)
-        {
-
-        }
         #endregion
 
 
         #region /// 2. РАСПИСАНИЕ ///
+        async Task AddEventScheduleDialogAsync()
+        {
+            var parameters = new DialogParameters<AddEventScheduleDialog>();
+            var options = new DialogOptions { CloseOnEscapeKey = true };
+
+            var resultDialog = await DialogService.ShowAsync<AddEventScheduleDialog>("Добавление расписания", parameters, options);
+            var result = await resultDialog.Result;
+
+            //if (result != null && result.Canceled == false && result.Data != null)
+            //    accountRegisterDto.Users.Add((UsersDto)result.Data);
+
+            //CheckPanel2Properties();
+        }
+
         async Task DeleteScheduleDialogAsync(SchedulesForEventsDto schedule)
         {
             var parameters = new DialogParameters<ConfirmDialog>

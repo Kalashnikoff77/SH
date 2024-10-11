@@ -373,6 +373,60 @@ namespace WebAPI.Controllers
         }
 
 
+        /// <summary>
+        /// Регистрация пользователя на мероприятие (или отмена регистрации)
+        /// </summary>
+        [Route("EventRegistration"), HttpPost, Authorize]
+        public async Task<EventRegistrationResponseDto> EventRegistrationAsync(EventRegistrationRequestDto request)
+        {
+            AuthenticateUser();
+
+            using (var conn = new SqlConnection(connectionString))
+            {
+                // Получим тип учётки (пара, М или Ж)
+                var sql = $"SELECT TOP (2) {nameof(UsersEntity.Gender)} FROM Users " +
+                    $"WHERE {nameof(UsersEntity.AccountId)} = {_accountId} AND {nameof(UsersEntity.IsDeleted)} = 0";
+                var users = (await conn.QueryAsync<int>(sql)).ToList();
+                if (users.Count == 0)
+                    throw new NotFoundException("Пользователь с указанным Id не найден!");
+                int? AccountGender = null;
+                if (users.Count() == 1)
+                    AccountGender = users[0];
+
+                // Получим данные о расписании
+                sql = $"SELECT * FROM SchedulesForEvents WHERE Id = {request.ScheduleId}";
+                var evt = await conn.QueryFirstOrDefaultAsync<SchedulesForEventsEntity>(sql) ?? throw new NotFoundException("Указанное расписание события не найдено!");
+
+                // Получим стоимость для учётки
+                int TicketCost = AccountGender switch
+                {
+                    0 => evt.CostMan!.Value,
+                    1 => evt.CostWoman!.Value,
+                    _ => evt.CostPair!.Value
+                };
+
+                sql = $"SELECT TOP (1) Id FROM SchedulesForAccounts WHERE {nameof(SchedulesForAccountsEntity.AccountId)} = @_accountId AND {nameof(SchedulesForAccountsEntity.ScheduleId)} = @ScheduleId AND IsDeleted = 0";
+                var scheduleId = await conn.QueryFirstOrDefaultAsync<int?>(sql, new { _accountId, request.ScheduleId });
+                if (scheduleId == null)
+                {
+                    sql = $"INSERT INTO SchedulesForAccounts " +
+                        $"({nameof(SchedulesForAccountsEntity.ScheduleId)}, {nameof(SchedulesForAccountsEntity.AccountId)}, {nameof(SchedulesForAccountsEntity.AccountGender)}, {nameof(SchedulesForAccountsEntity.TicketCost)}) " +
+                        $"VALUES (@{nameof(SchedulesForAccountsEntity.ScheduleId)}, @_accountId, @{nameof(SchedulesForAccountsEntity.AccountGender)}, @{nameof(SchedulesForAccountsEntity.TicketCost)})";
+                    await conn.ExecuteAsync(sql, new { request.ScheduleId, _accountId, AccountGender, TicketCost });
+                }
+                else
+                {
+                    sql = $"UPDATE SchedulesForAccounts SET {nameof(SchedulesForAccountsEntity.IsDeleted)} = 1 " +
+                        $"WHERE {nameof(SchedulesForAccountsEntity.AccountId)} = @_accountId AND {nameof(SchedulesForAccountsEntity.ScheduleId)} = @ScheduleId";
+                    await conn.ExecuteAsync(sql, new { request.ScheduleId, _accountId });
+                }
+
+                var response = new EventRegistrationResponseDto { ScheduleId = request.ScheduleId };
+                return response;
+            }
+        }
+
+
         [Route("GetHobbies"), HttpPost]
         public async Task<GetHobbiesResponseDto> GetHobbiesAsync(GetHobbiesRequestDto request)
         {

@@ -83,9 +83,9 @@
 
                     <MudDataGrid T="SchedulesForEventsDto" Items="@Event.Schedule?.Where(x => x.IsDeleted == false)" HeaderClass="dataGridHideTHead" Elevation="0" Striped Hover Bordered>
                         <Columns>
-                            <TemplateColumn CellClass="pa-0">
+                            <TemplateColumn CellClass="py-3">
                                 <CellTemplate>
-                                    <MudStack StretchItems="StretchItems.Start" AlignItems="AlignItems.Center" Spacing="0" Row Class="pa-2">
+                                    <MudStack StretchItems="StretchItems.Start" AlignItems="AlignItems.Center" Spacing="0" Row >
                                         <MudStack Spacing="0">
                                             <MudStack Row AlignItems="AlignItems.Center" Spacing="2">
                                                 <MudIcon Icon="@Icons.Material.Outlined.CalendarToday" Class="@context.Item.ToDateClass()" Style="font-size:17px" />
@@ -102,9 +102,9 @@
                                 </CellTemplate>
                             </TemplateColumn>
 
-                            <TemplateColumn HeaderStyle="width:90px">
+                            <TemplateColumn CellStyle="width:58px">
                                 <CellTemplate>
-                                    <MudStack Row Spacing="2">
+                                    <MudStack Row Spacing="2" title="Удалить расписание">
                                         <MudIconButton Size="@Size.Small" Icon="@Icons.Material.Outlined.Delete" Color="Color.Error" OnClick="async () => await DeleteScheduleDialogAsync(context.Item)" />
                                     </MudStack>
                                 </CellTemplate>

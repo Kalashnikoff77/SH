@@ -1,0 +1,15 @@
+﻿<MudDialog>
+    <TitleContent>Добавление расписания</TitleContent>
+
+    <DialogContent>
+        <MudGrid Spacing="3">
+            <MudItem xs="12">
+            </MudItem>
+        </MudGrid>
+    </DialogContent>
+
+    <DialogActions>
+        <MudButton Color="Color.Error" StartIcon="@Icons.Material.Outlined.Close" OnClick="Cancel">Отмена</MudButton>
+        <MudButton Color="Color.Primary" Disabled="!IsFormValid" Variant="Variant.Filled" StartIcon="@Icons.Material.Outlined.Add" Size="Size.Small" OnClick="Submit">Добавить</MudButton>
+    </DialogActions>
+</MudDialog>

@@ -63,7 +63,7 @@ namespace UI.Components.Shared.Dialogs
             {
                 { x => x.ScheduleForEventView, schedule }
             };
-            return _dialog.ShowAsync<EventCancelRegistrationDialog>($"Отмена регистрации", dialogParams, dialogOptions);
+            return _dialog.ShowAsync<EventCancelSubscriptionDialog>($"Отмена регистрации", dialogParams, dialogOptions);
         }
 
     }

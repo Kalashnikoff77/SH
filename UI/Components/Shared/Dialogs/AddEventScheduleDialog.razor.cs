@@ -13,7 +13,10 @@ namespace UI.Components.Shared.Dialogs
         const int maxStartDateDays = 30 * 3;
         const int maxEndDateDays = 30;
         bool IsFormValid = false;
+        public bool EventType { get; set; } = true;
 
+        // Дни недели
+        public List<bool> DaysOfWeek { get; set; } = new List<bool> { false, false, false, false, false, false, false };
 
         #region /// StartDate ///
         string? StartDateValidator(DateTime? startDate)

@@ -21,31 +21,31 @@ namespace UI.Components.Pages.Events
             if (IsOneTimeEvent) 
             {
                 if (StartDate.HasValue)
+                {
                     result.Append($"Начало {StartDate.Value.ToString("dd.MM.yyyy")}");
-                if (StartTime.HasValue)
-                    result.Append($" в {string.Format("{0:D2}:{1:D2}", StartTime.Value.Hours, StartTime.Value.Minutes)}");
+                    if (StartTime.HasValue)
+                        result.Append($" в {string.Format("{0:D2}:{1:D2}", StartTime.Value.Hours, StartTime.Value.Minutes)}");
+                }
+
                 if (EndDate.HasValue)
+                {
                     result.Append($", завершение {EndDate.Value.ToString("dd.MM.yyyy")}");
-                if (EndTime.HasValue)
-                    result.Append($" в {string.Format("{0:D2}:{1:D2}", EndTime.Value.Hours, EndTime.Value.Minutes)}");
+                    if (EndTime.HasValue)
+                        result.Append($" в {string.Format("{0:D2}:{1:D2}", EndTime.Value.Hours, EndTime.Value.Minutes)}");
+                }
             } 
             else
             {
                 if (StartDate.HasValue)
                     result.Append($"Период с {StartDate.Value.ToString("dd.MM.yyyy")}");
+
                 if (EndDate.HasValue)
                     result.Append($" по {EndDate.Value.ToString("dd.MM.yyyy")}");
 
-                if (StartTime.HasValue)
-                    result.Append($", с {string.Format("{0:D2}:{1:D2}", StartTime.Value.Hours, StartTime.Value.Minutes)}");
-
-                if (EndTime.HasValue)
-                    result.Append($" до {string.Format("{0:D2}:{1:D2}", EndTime.Value.Hours, EndTime.Value.Minutes)}");
-
-                if (DaysOfWeek != null && DaysOfWeek.Any(a => a == true)) 
+                if (DaysOfWeek != null && DaysOfWeek.Any(a => a == true))
                 {
-                    result.Append(", по ");
-                    
+                    result.Append(" по ");
+
                     if (DaysOfWeek[0]) result.Append("Пн, ");
                     if (DaysOfWeek[1]) result.Append("Вт, ");
                     if (DaysOfWeek[2]) result.Append("Ср, ");
@@ -56,6 +56,12 @@ namespace UI.Components.Pages.Events
 
                     result.Remove(result.Length - 2, 2);
                 }
+
+                if (StartTime.HasValue)
+                    result.Append($" с {string.Format("{0:D2}:{1:D2}", StartTime.Value.Hours, StartTime.Value.Minutes)}");
+
+                if (EndTime.HasValue)
+                    result.Append($" до {string.Format("{0:D2}:{1:D2}", EndTime.Value.Hours, EndTime.Value.Minutes)}");
             }
 
         }

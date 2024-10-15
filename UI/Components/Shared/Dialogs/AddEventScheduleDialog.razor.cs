@@ -13,26 +13,23 @@ namespace UI.Components.Shared.Dialogs
         const int maxStartDateDays = 30 * 3;
         const int maxEndDateDays = 30;
         bool isFormValid = false;
+        string? errorMessage;
         public bool isOneTimeEvent { get; set; } = true;
 
         // Дни недели
         public List<bool> daysOfWeek { get; set; } = new List<bool> { false, false, false, false, false, false, false };
 
-        #region /// StartDate ///
-        string? StartDateValidator(DateTime? startDate)
+        string? DateValidator(DateTime? startDate)
         {
-            string? errorMessage = null;
-            if (startDate == null)
-                errorMessage = $"Укажите дату начала мероприятия";
-
-            if (startDate.HasValue && (startDate < DateTime.Now || startDate > DateTime.Now.AddDays(maxStartDateDays)))
-                errorMessage = $"Максимальная дата {DateTime.Now.AddDays(maxStartDateDays).ToString("dd.MM.yyyy")}";
-
-            return errorMessage;
+            CheckProperties();
+            return null;
         }
 
-        Color startDateIconColor = Color.Default;
-        Color startTimeIconColor = Color.Default;
+        string? TimeValidator(TimeSpan? startTime)
+        {
+            CheckProperties();
+            return null;
+        }
 
         DateTime? startDate
         {
@@ -40,23 +37,7 @@ namespace UI.Components.Shared.Dialogs
             set { if (value != null) { schedule.StartDate = value.Value; } }
         }
         TimeSpan? startTime { get; set; }
-        #endregion
 
-
-        #region /// EndDate ///
-        Color endDateIconColor = Color.Default;
-        Color endTimeIconColor = Color.Default;
-        string? EndDateValidator(DateTime? endDate)
-        {
-            string? errorMessage = null;
-            if (endDate == null)
-                errorMessage = $"Укажите дату окончания мероприятия";
-
-            if (endDate.HasValue && (endDate < startDate || endDate > startDate!.Value.AddDays(maxEndDateDays)))
-                errorMessage = $"Максимальная дата {startDate.Value.AddDays(maxEndDateDays).ToString("dd.MM.yyyy")}";
-
-            return errorMessage;
-        }
 
         DateTime? endDate
         {
@@ -65,7 +46,36 @@ namespace UI.Components.Shared.Dialogs
         }
 
         TimeSpan? endTime { get; set; }
-        #endregion
+
+
+        void CheckProperties()
+        {
+            isFormValid = false;
+            errorMessage = null;
+
+            if (startDate.HasValue && startTime.HasValue && endDate.HasValue && endTime.HasValue)
+            {
+                if (startDate.Value + startTime.Value >= endDate.Value + endTime.Value)
+                {
+                    errorMessage = "Дата начала мероприятия должна быть меньше даты его окончания";
+                }
+                else
+                {
+                    if (isOneTimeEvent)
+                    {
+                        isFormValid = true;
+                    }
+                    else
+                    {
+                        if (daysOfWeek != null && daysOfWeek.Any(a => a == true))
+                        {
+                            isFormValid = true;
+                        }
+                    }
+                }
+            }
+            StateHasChanged();
+        }
 
 
         void Submit() => MudDialog.Close(DialogResult.Ok(schedule));

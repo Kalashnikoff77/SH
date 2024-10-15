@@ -12,8 +12,8 @@ namespace UI.Components.Shared.Dialogs
         [CascadingParameter] MudDialogInstance MudDialog { get; set; } = null!;
         [Parameter] public UsersDto User { get; set; } = null!;
 
-        Dictionary<short, TabPanel> TabPanels { get; set; } = null!;
-        bool IsFormValid => TabPanels[1].Items.All(x => x.Value == true);
+        Dictionary<short, DialogProperty> dialogProperties { get; set; } = null!;
+        bool isFormValid => dialogProperties[1].Items.All(x => x.Value == true);
 
         UsersDto UserCopy { get; set; } = null!;
 
@@ -47,9 +47,9 @@ namespace UI.Components.Shared.Dialogs
                 IsValid = true;
             }
 
-            TabPanels = new Dictionary<short, TabPanel>
+            dialogProperties = new Dictionary<short, DialogProperty>
             {
-                { 1, new TabPanel { Items = new Dictionary<string, bool>
+                { 1, new DialogProperty { Items = new Dictionary<string, bool>
                         {
                             { nameof(UserCopy.Name), IsValid },
                             { nameof(UserCopy.BirthDate), IsValid },
@@ -72,7 +72,7 @@ namespace UI.Components.Shared.Dialogs
             if (string.IsNullOrWhiteSpace(name) || name.Length < StaticData.DB_USERS_NAME_MIN)
                 errorMessage = $"Имя должно содержать {StaticData.DB_USERS_NAME_MIN}-{StaticData.DB_USERS_NAME_MAX} символов";
 
-            CheckFormProperties(errorMessage, nameof(UserCopy.Name), ref NameIconColor);
+            CheckProperties(errorMessage, nameof(UserCopy.Name), ref NameIconColor);
             return errorMessage;
         }
 
@@ -86,7 +86,7 @@ namespace UI.Components.Shared.Dialogs
             if (birthDate.HasValue && (birthDate < DateTime.Now.AddYears(-75) || birthDate > DateTime.Now.AddYears(-20)))
                 errorMessage = $"Возраст от 20 до 75 лет";
 
-            CheckFormProperties(errorMessage, nameof(UserCopy.BirthDate), ref BirthDateIconColor);
+            CheckProperties(errorMessage, nameof(UserCopy.BirthDate), ref BirthDateIconColor);
             return errorMessage;
         }
 
@@ -100,7 +100,7 @@ namespace UI.Components.Shared.Dialogs
             if (height < StaticData.DB_USERS_HEIGHT_MIN || height > StaticData.DB_USERS_HEIGHT_MAX)
                 errorMessage = $"Рост в пределах {StaticData.DB_USERS_HEIGHT_MIN}-{StaticData.DB_USERS_HEIGHT_MAX} см";
 
-            CheckFormProperties(errorMessage, nameof(UserCopy.Height), ref HeightIconColor);
+            CheckProperties(errorMessage, nameof(UserCopy.Height), ref HeightIconColor);
             return errorMessage;
         }
 
@@ -112,20 +112,20 @@ namespace UI.Components.Shared.Dialogs
             if (height < StaticData.DB_USERS_WEIGHT_MIN || height > StaticData.DB_USERS_WEIGHT_MAX)
                 errorMessage = $"Вес в пределах {StaticData.DB_USERS_WEIGHT_MIN}-{StaticData.DB_USERS_WEIGHT_MAX} кг";
 
-            CheckFormProperties(errorMessage, nameof(UserCopy.Weight), ref WeightIconColor);
+            CheckProperties(errorMessage, nameof(UserCopy.Weight), ref WeightIconColor);
             return errorMessage;
         }
 
-        void CheckFormProperties(string? errorMessage, string property, ref Color iconColor)
+        void CheckProperties(string? errorMessage, string property, ref Color iconColor)
         {
             if (errorMessage == null)
             {
-                TabPanels[1].Items[property] = true;
+                dialogProperties[1].Items[property] = true;
                 iconColor = Color.Success;
             }
             else
             {
-                TabPanels[1].Items[property] = false;
+                dialogProperties[1].Items[property] = false;
                 iconColor = Color.Error;
             }
             StateHasChanged();

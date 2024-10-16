@@ -1,6 +1,7 @@
 ﻿using Common.Dto;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
+using System;
 
 namespace UI.Components.Shared.Dialogs
 {
@@ -14,38 +15,46 @@ namespace UI.Components.Shared.Dialogs
         const int maxEndDateDays = 30;
         bool isFormValid = false;
         string? errorMessage;
-        public bool isOneTimeEvent { get; set; } = true;
+
+        bool _isOneTimeEvent = true;
+        bool isOneTimeEvent
+        { 
+            get => _isOneTimeEvent;
+            set { _isOneTimeEvent = value; daysOfWeek = daysOfWeek.Select(f => f = false).ToArray(); CheckProperties(); }
+        }
 
         // Дни недели
-        public List<bool> daysOfWeek { get; set; } = new List<bool> { false, false, false, false, false, false, false };
-
-        string? DateValidator(DateTime? startDate)
-        {
-            CheckProperties();
-            return null;
-        }
-
-        string? TimeValidator(TimeSpan? startTime)
-        {
-            CheckProperties();
-            return null;
-        }
+        bool[] daysOfWeek = { false, false, false, false, false, false, false };
 
         DateTime? startDate
         {
             get => schedule.StartDate == DateTime.MinValue ? null : schedule.StartDate;
-            set { if (value != null) { schedule.StartDate = value.Value; } }
+            set { if (value != null) { schedule.StartDate = value.Value; CheckProperties(); } }
         }
-        TimeSpan? startTime { get; set; }
-
+        TimeSpan? _startTime;
+        TimeSpan? startTime
+        {
+            get => _startTime;
+            set { _startTime = value!.Value; CheckProperties(); }
+        }
 
         DateTime? endDate
         {
             get => schedule.EndDate == DateTime.MinValue ? null : schedule.EndDate;
-            set { if (value != null) { schedule.EndDate = value.Value; } }
+            set { if (value != null) { schedule.EndDate = value.Value; CheckProperties(); } }
+        }
+        TimeSpan? _endTime;
+        TimeSpan? endTime
+        {
+            get => _endTime;
+            set { _endTime = value!.Value; CheckProperties(); }
         }
 
-        TimeSpan? endTime { get; set; }
+        void OnWeekChanged(int weekDay, bool isChecked)
+        {
+            daysOfWeek[weekDay] = isChecked;
+            CheckProperties();
+        }
 
 
         void CheckProperties()
@@ -67,7 +76,7 @@ namespace UI.Components.Shared.Dialogs
                     }
                     else
                     {
-                        if (daysOfWeek != null && daysOfWeek.Any(a => a == true))
+                        if (daysOfWeek.Any(a => a == true))
                         {
                             isFormValid = true;
                         }

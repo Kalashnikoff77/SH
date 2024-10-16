@@ -20,7 +20,6 @@
                                    DateChanged="(_startDate) => startDate = _startDate"
                                    Mask="@(new DateMask("dd.MM.yyyy"))" DateFormat="dd.MM.yyyy"
                                    AdornmentIcon="@Icons.Material.Filled.CalendarMonth" AdornmentColor="Color.Default" Adornment="Adornment.End"
-                                   Validation="@(new Func<DateTime?, string?>(DateValidator))"
                                    OpenTo="OpenTo.Date"
                                    MinDate="DateTime.Now"
                                    MaxDate="DateTime.Now.AddDays(maxStartDateDays)"
@@ -29,7 +28,6 @@
                 <MudItem sm="6" xs="12">
                     <MudTimePicker Label="Время начала" 
                                    Editable="false" @bind-Time="startTime" MinuteSelectionStep="5"
-                                   Validation="@(new Func<TimeSpan?, string?>(TimeValidator))"
                                    AdornmentIcon="@Icons.Material.Filled.AccessTime" AdornmentColor="Color.Default" Adornment="Adornment.End"
                                    HelperText="Пример: 19:00" />
                 </MudItem>
@@ -40,7 +38,6 @@
                                    DateChanged="(_endDate) => endDate = _endDate"
                                    Mask="@(new DateMask("dd.MM.yyyy"))" DateFormat="dd.MM.yyyy"
                                    AdornmentIcon="@Icons.Material.Filled.CalendarMonth" AdornmentColor="Color.Default" Adornment="Adornment.End"
-                                   Validation="@(new Func<DateTime?, string?>(DateValidator))"
                                    OpenTo="OpenTo.Date"
                                    StartMonth="startDate"
                                    MinDate="schedule.StartDate == DateTime.MinValue ? DateTime.Now : schedule.StartDate"
@@ -50,7 +47,6 @@
                 <MudItem sm="6" xs="12">
                     <MudTimePicker Label="Время окончания" 
                                    Editable="false" @bind-Time="endTime" MinuteSelectionStep="5"
-                                   Validation="@(new Func<TimeSpan?, string?>(TimeValidator))"
                                    AdornmentIcon="@Icons.Material.Filled.AccessTime" AdornmentColor="Color.Default" Adornment="Adornment.End"
                                    HelperText="Пример: 23:30" />
                 </MudItem>
@@ -68,7 +64,6 @@
                                    DateChanged="(_startDate) => startDate = _startDate"
                                    Mask="@(new DateMask("dd.MM.yyyy"))" DateFormat="dd.MM.yyyy"
                                    AdornmentIcon="@Icons.Material.Filled.CalendarMonth" AdornmentColor="Color.Default" Adornment="Adornment.End"
-                                   Validation="@(new Func<DateTime?, string?>(DateValidator))"
                                    OpenTo="OpenTo.Date"
                                    MinDate="DateTime.Now"
                                    MaxDate="DateTime.Now.AddDays(maxStartDateDays)"
@@ -80,7 +75,6 @@
                                    DateChanged="(_endDate) => endDate = _endDate"
                                    Mask="@(new DateMask("dd.MM.yyyy"))" DateFormat="dd.MM.yyyy"
                                    AdornmentIcon="@Icons.Material.Filled.CalendarMonth" AdornmentColor="Color.Default" Adornment="Adornment.End"
-                                   Validation="@(new Func<DateTime?, string?>(DateValidator))"
                                    OpenTo="OpenTo.Date"
                                    StartMonth="startDate"
                                    MinDate="schedule.StartDate == DateTime.MinValue ? DateTime.Now : schedule.StartDate"
@@ -102,13 +96,13 @@
                 <MudItem xs="12">
                     <MudText Align="Align.Center" Typo="Typo.subtitle1" Style="font-weight:500">Повторять в указанные дни недели:</MudText>
                     <MudStack Row Wrap="Wrap.Wrap" Spacing="6" Justify="Justify.Center">
-                        <MudCheckBox @bind-Value="daysOfWeek[0]" Label="Пн" Dense Color="Color.Primary"></MudCheckBox>
-                        <MudCheckBox @bind-Value="daysOfWeek[1]" Label="Вт" Dense Color="Color.Primary"></MudCheckBox>
-                        <MudCheckBox @bind-Value="daysOfWeek[2]" Label="Ср" Dense Color="Color.Primary"></MudCheckBox>
-                        <MudCheckBox @bind-Value="daysOfWeek[3]" Label="Чт" Dense Color="Color.Primary"></MudCheckBox>
-                        <MudCheckBox @bind-Value="daysOfWeek[4]" Label="Пт" Dense Color="Color.Primary"></MudCheckBox>
-                        <MudCheckBox @bind-Value="daysOfWeek[5]" Label="Сб" Dense Color="Color.Secondary"></MudCheckBox>
-                        <MudCheckBox @bind-Value="daysOfWeek[6]" Label="Вс" Dense Color="Color.Secondary"></MudCheckBox>
+                        <MudCheckBox Label="Пн" T="bool" ValueChanged="(isChecked) => OnWeekChanged(0, isChecked)" Dense Color="Color.Primary"></MudCheckBox>
+                        <MudCheckBox Label="Вт" T="bool" ValueChanged="(isChecked) => OnWeekChanged(1, isChecked)" Dense Color="Color.Primary"></MudCheckBox>
+                        <MudCheckBox Label="Ср" T="bool" ValueChanged="(isChecked) => OnWeekChanged(2, isChecked)" Dense Color="Color.Primary"></MudCheckBox>
+                        <MudCheckBox Label="Чт" T="bool" ValueChanged="(isChecked) => OnWeekChanged(3, isChecked)" Dense Color="Color.Primary"></MudCheckBox>
+                        <MudCheckBox Label="Пт" T="bool" ValueChanged="(isChecked) => OnWeekChanged(4, isChecked)" Dense Color="Color.Primary"></MudCheckBox>
+                        <MudCheckBox Label="Сб" T="bool" ValueChanged="(isChecked) => OnWeekChanged(5, isChecked)" Dense Color="Color.Secondary"></MudCheckBox>
+                        <MudCheckBox Label="Вс" T="bool" ValueChanged="(isChecked) => OnWeekChanged(6, isChecked)" Dense Color="Color.Secondary"></MudCheckBox>
                     </MudStack>
                 </MudItem>
             </MudGrid>

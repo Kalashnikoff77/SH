@@ -10,7 +10,7 @@ namespace UI.Components.Pages.Events
         [Parameter, EditorRequired] public DateTime? EndDate { get; set; }
         [Parameter, EditorRequired] public TimeSpan? StartTime { get; set; }
         [Parameter, EditorRequired] public TimeSpan? EndTime { get; set; }
-        [Parameter] public List<bool> DaysOfWeek { get; set; } = null!;
+        [Parameter] public bool[] DaysOfWeek { get; set; } = null!;
 
         StringBuilder result { get; set; } = new StringBuilder(100);
 

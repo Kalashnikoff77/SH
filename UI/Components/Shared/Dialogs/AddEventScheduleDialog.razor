@@ -52,17 +52,17 @@
                 </MudItem>
 
                 <MudItem sm="4" xs="12">
-                    <MudNumericField @bind-Value="costPair" Label="Цена для пары" Variant="Variant.Text" Min="0" Max="500000" />
+                    <MudNumericField @bind-Value="schedule.CostPair" Label="Цена для пары" Variant="Variant.Text" Min="0" Max="500000" />
                 </MudItem>
                 <MudItem sm="4" xs="12">
-                    <MudNumericField @bind-Value="costMan" Label="Цена для мужчины" Variant="Variant.Text" Min="0" Max="500000" />
+                    <MudNumericField @bind-Value="schedule.CostMan" Label="Цена для мужчины" Variant="Variant.Text" Min="0" Max="500000" />
                 </MudItem>
                 <MudItem sm="4" xs="12">
-                    <MudNumericField @bind-Value="costWoman" Label="Цена для женщины" Variant="Variant.Text" Min="0" Max="500000" />
+                    <MudNumericField @bind-Value="schedule.CostWoman" Label="Цена для женщины" Variant="Variant.Text" Min="0" Max="500000" />
                 </MudItem>
 
                 <MudItem xs="12">
-                    <MudTextField T="string" Label="Описание" Variant="Variant.Text" @bind-Value="@description" Lines="2" />
+                    <MudTextField T="string" Label="Описание" Variant="Variant.Text" @bind-Value="@schedule.Description" Lines="2" />
                 </MudItem>
 
             </MudGrid>
@@ -130,17 +130,17 @@
                 </MudItem>
 
                 <MudItem sm="4" xs="12">
-                    <MudNumericField @bind-Value="costPair" Label="Цена для пары" Variant="Variant.Text" Min="0" Max="500000" />
+                    <MudNumericField @bind-Value="schedule.CostPair" Label="Цена для пары" Variant="Variant.Text" Min="0" Max="500000" />
                 </MudItem>
                 <MudItem sm="4" xs="12">
-                    <MudNumericField @bind-Value="costMan" Label="Цена для мужчины" Variant="Variant.Text" Min="0" Max="500000" />
+                    <MudNumericField @bind-Value="schedule.CostMan" Label="Цена для мужчины" Variant="Variant.Text" Min="0" Max="500000" />
                 </MudItem>
                 <MudItem sm="4" xs="12">
-                    <MudNumericField @bind-Value="costWoman" Label="Цена для женщины" Variant="Variant.Text" Min="0" Max="500000" />
+                    <MudNumericField @bind-Value="schedule.CostWoman" Label="Цена для женщины" Variant="Variant.Text" Min="0" Max="500000" />
                 </MudItem>
 
                 <MudItem xs="12">
-                    <MudTextField T="string" Label="Описание" Variant="Variant.Text" @bind-Value="description" Lines="2" />
+                    <MudTextField T="string" Label="Описание" Variant="Variant.Text" @bind-Value="schedule.Description" Lines="2" />
                 </MudItem>
 
             </MudGrid>

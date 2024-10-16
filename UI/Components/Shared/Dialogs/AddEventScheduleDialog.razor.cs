@@ -29,11 +29,10 @@ namespace UI.Components.Shared.Dialogs
         // Дни недели
         HashSet<short> daysOfWeek = new HashSet<short>(7);
 
-        DateTime? _startDate;
         DateTime? startDate
         {
-            get => _startDate == DateTime.MinValue ? null : _startDate;
-            set { if (value != null) { _startDate = value.Value; CheckProperties(); } }
+            get => schedule.StartDate == DateTime.MinValue ? null : schedule.StartDate;
+            set { schedule.StartDate = value!.Value; CheckProperties(); }
         }
         TimeSpan? _startTime;
         TimeSpan? startTime
@@ -42,11 +41,10 @@ namespace UI.Components.Shared.Dialogs
             set { _startTime = value!.Value; CheckProperties(); }
         }
 
-        DateTime? _endDate;
         DateTime? endDate
         {
-            get => _endDate == DateTime.MinValue ? null : _endDate; 
-            set { if (value != null) { _endDate = value.Value; CheckProperties(); } }
+            get => schedule.EndDate == DateTime.MinValue ? null : schedule.EndDate; 
+            set { schedule.EndDate = value!.Value; CheckProperties(); }
         }
         TimeSpan? _endTime;
         TimeSpan? endTime
@@ -54,12 +52,6 @@ namespace UI.Components.Shared.Dialogs
             get => _endTime;
             set { _endTime = value!.Value; CheckProperties(); }
         }
-
-        string? description { get; set; }
-        int? costPair { get; set; }
-        int? costMan { get; set; }
-        int? costWoman { get; set; }
-
 
         void OnWeekChanged(short weekDay, bool isChecked)
         {
@@ -86,14 +78,25 @@ namespace UI.Components.Shared.Dialogs
                 {
                     if (isOneTimeEvent)
                     {
+                        schedules.Clear();
+                        schedules.Add(new SchedulesForEventsDto
+                        {
+                            EventId = Event.Id,
+                            Description = schedule.Description,
+                            StartDate = startDate.Value + startTime.Value,
+                            EndDate = endDate.Value + endTime.Value,
+                            CostMan = schedule.CostMan,
+                            CostWoman = schedule.CostWoman,
+                            CostPair = schedule.CostPair
+                        });
                         isFormValid = true;
                     }
                     else
                     {
                         if (daysOfWeek.Count > 0)
                         {
-                            var listOfSchedulesResult = GetListOfSchedules(startDate.Value, startTime.Value, endDate.Value, endTime.Value, daysOfWeek);
-                            if (listOfSchedulesResult.Count > 0)
+                            var numOfSchedules = GetListOfSchedules(startDate.Value, startTime.Value, endDate.Value, endTime.Value, daysOfWeek);
+                            if (numOfSchedules.Count > 0)
                                 isFormValid = true;
                             else
                                 errorMessage = $"В период с {startDate.Value.ToString("dd.MM.yyyy")} по {endDate.Value.ToString("dd.MM.yyyy")} ни одно мероприятие не попадает.";
@@ -105,32 +108,35 @@ namespace UI.Components.Shared.Dialogs
         }
 
 
-        void Submit() => MudDialog.Close(DialogResult.Ok(schedules));
+        void Submit()
+        {
+            CheckProperties();
+            MudDialog.Close(DialogResult.Ok(schedules));
+        }
         void Cancel() => MudDialog.Cancel();
 
 
         List<SchedulesForEventsDto> GetListOfSchedules(DateTime startDate, TimeSpan startTime, DateTime endDate, TimeSpan endTime, HashSet<short> daysOfWeek)
         {
-            var result = new List<SchedulesForEventsDto>();
+            schedules.Clear();
 
             for (DateTime curDate = startDate; curDate <= endDate; curDate = curDate.AddDays(1))
             {
                 if (daysOfWeek.Contains((short)curDate.DayOfWeek))
                 {
-                    result.Add(new SchedulesForEventsDto
+                    schedules.Add(new SchedulesForEventsDto
                     {
                         EventId = Event.Id,
-                        Description = "Description",
+                        Description = schedule.Description,
                         StartDate = curDate + startTime,
                         EndDate = curDate + endTime,
-                        CostMan = 0,
-                        CostWoman = 0,
-                        CostPair = 0
+                        CostMan = schedule.CostMan,
+                        CostWoman = schedule.CostWoman,
+                        CostPair = schedule.CostPair
                     });
                 }
             }
-
-            return result;
+            return schedules;
         }
     }
 }

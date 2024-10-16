@@ -9,7 +9,7 @@ using MudBlazor;
 
 namespace UI.Components.Shared.Dialogs
 {
-    public partial class EventCancelSubscriptionDialog
+    public partial class CancelEventSubscriptionDialog
     {
         [CascadingParameter] MudDialogInstance MudDialog { get; set; } = null!;
         [CascadingParameter] CurrentState CurrentState { get; set; } = null!;

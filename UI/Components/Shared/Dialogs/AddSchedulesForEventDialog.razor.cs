@@ -5,7 +5,7 @@ using MudBlazor;
 
 namespace UI.Components.Shared.Dialogs
 {
-    public partial class AddEventScheduleDialog
+    public partial class AddSchedulesForEventDialog
     {
         [CascadingParameter] MudDialogInstance MudDialog { get; set; } = null!;
         [Parameter, EditorRequired] public EventsViewDto Event { get; set; } = null!;
@@ -110,8 +110,10 @@ namespace UI.Components.Shared.Dialogs
 
         void Submit()
         {
+            // Финальная проверка перед закрытием окна
             CheckProperties();
-            MudDialog.Close(DialogResult.Ok(schedules));
+            if (isFormValid)
+                MudDialog.Close(DialogResult.Ok(schedules));
         }
         void Cancel() => MudDialog.Cancel();
 

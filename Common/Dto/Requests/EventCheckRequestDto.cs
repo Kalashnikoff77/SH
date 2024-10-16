@@ -4,7 +4,7 @@
     {
         public override string Uri => "/Events/Check";
 
-        // Если передан EventId, значит, обновление этого мероприятия, иначе добавление
+        // Если передан EventId, значит, проводится проверка при обновлении этого мероприятия, иначе при добавлении
         public int? EventId { get; set; }
 
         public string? EventName { get; set; }

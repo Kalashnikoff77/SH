@@ -176,6 +176,11 @@ namespace WebAPI.Controllers
         }
 
 
+        /// <summary>
+        /// Проверка при добавлении или обновлении мероприятия
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
         [Route("Check"), HttpPost, Authorize]
         public async Task<EventCheckResponseDto> CheckAsync(EventCheckRequestDto request)
         {
@@ -218,6 +223,10 @@ namespace WebAPI.Controllers
         }
 
 
+        /// <summary>
+        /// Получить список всех features мероприятий
+        /// </summary>
+        /// <param name="request"></param>
         [Route("GetFeatures"), HttpPost]
         public async Task<GetFeaturesResponseDto> GetFeaturesAsync(GetFeaturesRequestDto request)
         {
@@ -234,6 +243,9 @@ namespace WebAPI.Controllers
         }
 
 
+        /// <summary>
+        /// Получить список всех features, которые фигурируют в мероприятиях плюс кол-во мероприятий, в которых они фигурируют
+        /// </summary>
         [Route("GetFeaturesForEvents"), HttpPost]
         public async Task<GetFeaturesForEventsResponseDto> GetFeaturesForEventsAsync(GetFeaturesForEventsRequestDto request)
         {
@@ -248,5 +260,26 @@ namespace WebAPI.Controllers
             }
             return response;
         }
+
+
+        /// <summary>
+        /// Добавление расписания к мероприятию
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        [Route("AddSchedulesForEvent"), HttpPost]
+        public async Task<AddSchedulesForEventResponseDto> AddScheduleForEventAsync(AddSchedulesForEventRequestDto request)
+        {
+            var response = new AddSchedulesForEventResponseDto();
+
+            using (var conn = new SqlConnection(connectionString))
+            {
+                var sql = $"SELECT * FROM FeaturesForEventsView ORDER BY Name";
+                var result = await conn.QueryAsync<FeaturesForEventsViewEntity>(sql);
+            }
+
+            return response;
+        }
+
     }
 }

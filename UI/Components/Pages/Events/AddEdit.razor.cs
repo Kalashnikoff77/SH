@@ -7,6 +7,7 @@ using Common.Models.States;
 using Common.Repository;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
+using System.Collections.Generic;
 using System.Net;
 using UI.Components.Shared.Dialogs;
 using UI.Models;
@@ -18,6 +19,8 @@ namespace UI.Components.Pages.Events
         [CascadingParameter] public CurrentState CurrentState { get; set; } = null!;
         [Inject] IRepository<EventCheckRequestDto, EventCheckResponseDto> _repoCheckAdding { get; set; } = null!;
         [Inject] IRepository<GetEventsRequestDto, GetEventsResponseDto> _repoGetEvent { get; set; } = null!;
+        [Inject] IRepository<AddSchedulesForEventRequestDto, AddSchedulesForEventResponseDto> _repoAddSchedules { get; set; } = null!;
+
         [Inject] IDialogService DialogService { get; set; } = null!;
         [Parameter] public int? EventId { get; set; }
 
@@ -159,19 +162,21 @@ namespace UI.Components.Pages.Events
 
 
         #region /// 2. РАСПИСАНИЕ ///
-        async Task AddEventScheduleDialogAsync()
+        async Task AddScheduleForEventDialogAsync()
         {
-            var parameters = new DialogParameters<AddEventScheduleDialog> 
+            var parameters = new DialogParameters<AddSchedulesForEventDialog> 
             {
                 { x => x.Event, Event }
             };
             var options = new DialogOptions { CloseOnEscapeKey = true };
 
-            var resultDialog = await DialogService.ShowAsync<AddEventScheduleDialog>("Добавление расписания", parameters, options);
+            var resultDialog = await DialogService.ShowAsync<AddSchedulesForEventDialog>("Добавление расписания", parameters, options);
             var result = await resultDialog.Result;
 
-            //if (result != null && result.Canceled == false && result.Data != null)
-            //    accountRegisterDto.Users.Add((UsersDto)result.Data);
+            if (result != null && result.Canceled == false && result.Data != null)
+            {
+                Event.Schedule.AddRange((List<SchedulesForEventsDto>)result.Data);
+            }
 
             //CheckPanel2Properties();
         }

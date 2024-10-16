@@ -51,6 +51,20 @@
                                    HelperText="Пример: 23:30" />
                 </MudItem>
 
+                <MudItem sm="4" xs="12">
+                    <MudNumericField @bind-Value="costPair" Label="Цена для пары" Variant="Variant.Text" Min="0" Max="500000" />
+                </MudItem>
+                <MudItem sm="4" xs="12">
+                    <MudNumericField @bind-Value="costMan" Label="Цена для мужчины" Variant="Variant.Text" Min="0" Max="500000" />
+                </MudItem>
+                <MudItem sm="4" xs="12">
+                    <MudNumericField @bind-Value="costWoman" Label="Цена для женщины" Variant="Variant.Text" Min="0" Max="500000" />
+                </MudItem>
+
+                <MudItem xs="12">
+                    <MudTextField T="string" Label="Описание" Variant="Variant.Text" @bind-Value="@description" Lines="2" />
+                </MudItem>
+
             </MudGrid>
         }
 
@@ -87,6 +101,7 @@
                                    AdornmentIcon="@Icons.Material.Filled.AccessTime" AdornmentColor="Color.Default" Adornment="Adornment.End"
                                    HelperText="Пример: 19:00" />
                 </MudItem>
+                
                 <MudItem sm="6" xs="12">
                     <MudTimePicker Label="Время окончания" Editable="false" @bind-Time="endTime" MinuteSelectionStep="5"
                                    AdornmentIcon="@Icons.Material.Filled.AccessTime" AdornmentColor="Color.Default" Adornment="Adornment.End"
@@ -95,7 +110,7 @@
 
                 <MudItem xs="12">
                     <MudText Align="Align.Center" Typo="Typo.subtitle1" Style="font-weight:500">Повторять в указанные дни недели:</MudText>
-                    <MudStack Row Wrap="Wrap.Wrap" Spacing="6" Justify="Justify.Center">
+                    <MudStack Row Wrap="Wrap.Wrap" Spacing="4" Justify="Justify.Center">
                         <MudCheckBox Label="Пн" T="bool" ValueChanged="(isChecked) => OnWeekChanged(1, isChecked)" Dense Color="Color.Primary"></MudCheckBox>
                         <MudCheckBox Label="Вт" T="bool" ValueChanged="(isChecked) => OnWeekChanged(2, isChecked)" Dense Color="Color.Primary"></MudCheckBox>
                         <MudCheckBox Label="Ср" T="bool" ValueChanged="(isChecked) => OnWeekChanged(3, isChecked)" Dense Color="Color.Primary"></MudCheckBox>
@@ -105,12 +120,31 @@
                         <MudCheckBox Label="Вс" T="bool" ValueChanged="(isChecked) => OnWeekChanged(0, isChecked)" Dense Color="Color.Secondary"></MudCheckBox>
                     </MudStack>
                 </MudItem>
+
+                <MudItem xs="12">
+                    <ScheduleToText IsOneTimeEvent="isOneTimeEvent" StartDate="startDate" EndDate="endDate" StartTime="startTime" EndTime="endTime" DaysOfWeek="daysOfWeek" />
+                </MudItem>
+
+                <MudItem xs="12">
+                    <MudText Align="Align.Center" Typo="Typo.body2" Color="Color.Error">@errorMessage</MudText>
+                </MudItem>
+
+                <MudItem sm="4" xs="12">
+                    <MudNumericField @bind-Value="costPair" Label="Цена для пары" Variant="Variant.Text" Min="0" Max="500000" />
+                </MudItem>
+                <MudItem sm="4" xs="12">
+                    <MudNumericField @bind-Value="costMan" Label="Цена для мужчины" Variant="Variant.Text" Min="0" Max="500000" />
+                </MudItem>
+                <MudItem sm="4" xs="12">
+                    <MudNumericField @bind-Value="costWoman" Label="Цена для женщины" Variant="Variant.Text" Min="0" Max="500000" />
+                </MudItem>
+
+                <MudItem xs="12">
+                    <MudTextField T="string" Label="Описание" Variant="Variant.Text" @bind-Value="description" Lines="2" />
+                </MudItem>
+
             </MudGrid>
         }
-
-        <ScheduleToText IsOneTimeEvent="isOneTimeEvent" StartDate="startDate" EndDate="endDate" StartTime="startTime" EndTime="endTime" DaysOfWeek="daysOfWeek" />
-
-        <MudText Align="Align.Center" Typo="Typo.body2" Color="Color.Error">@errorMessage</MudText>
     </DialogContent>
 
     <DialogActions>

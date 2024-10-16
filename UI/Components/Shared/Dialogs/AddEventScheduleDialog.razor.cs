@@ -10,6 +10,8 @@ namespace UI.Components.Shared.Dialogs
         [CascadingParameter] MudDialogInstance MudDialog { get; set; } = null!;
         [Parameter, EditorRequired] public EventsViewDto Event { get; set; } = null!;
 
+        SchedulesForEventsDto schedule { get; set; } = new SchedulesForEventsDto();
+
         List<SchedulesForEventsDto> schedules { get; set; } = new List<SchedulesForEventsDto>();
 
         const int maxStartDateDays = 30 * 3;
@@ -53,6 +55,12 @@ namespace UI.Components.Shared.Dialogs
             set { _endTime = value!.Value; CheckProperties(); }
         }
 
+        string? description { get; set; }
+        int? costPair { get; set; }
+        int? costMan { get; set; }
+        int? costWoman { get; set; }
+
+
         void OnWeekChanged(short weekDay, bool isChecked)
         {
             if (isChecked)
@@ -88,7 +96,7 @@ namespace UI.Components.Shared.Dialogs
                             if (listOfSchedulesResult.Count > 0)
                                 isFormValid = true;
                             else
-                                errorMessage = "В указанный период ни одно мероприятие не попадает.";
+                                errorMessage = $"В период с {startDate.Value.ToString("dd.MM.yyyy")} по {endDate.Value.ToString("dd.MM.yyyy")} ни одно мероприятие не попадает.";
                         }
                     }
                 }

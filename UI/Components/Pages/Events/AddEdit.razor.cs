@@ -162,7 +162,7 @@ namespace UI.Components.Pages.Events
 
 
         #region /// 2. РАСПИСАНИЕ ///
-        async Task AddScheduleForEventDialogAsync()
+        async Task AddScheduleDialogAsync()
         {
             var parameters = new DialogParameters<AddSchedulesForEventDialog> 
             {
@@ -177,9 +177,13 @@ namespace UI.Components.Pages.Events
             {
                 Event.Schedule.AddRange((List<SchedulesForEventsDto>)result.Data);
             }
-
             //CheckPanel2Properties();
         }
+
+        async Task EditScheduleDialogAsync(SchedulesForEventsDto schedule)
+        {
+        }
+
 
         async Task DeleteScheduleDialogAsync(SchedulesForEventsDto schedule)
         {

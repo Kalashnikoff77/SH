@@ -161,7 +161,10 @@ namespace UI.Components.Pages.Events
         #region /// 2. РАСПИСАНИЕ ///
         async Task AddEventScheduleDialogAsync()
         {
-            var parameters = new DialogParameters<AddEventScheduleDialog>();
+            var parameters = new DialogParameters<AddEventScheduleDialog> 
+            {
+                { x => x.Event, Event }
+            };
             var options = new DialogOptions { CloseOnEscapeKey = true };
 
             var resultDialog = await DialogService.ShowAsync<AddEventScheduleDialog>("Добавление расписания", parameters, options);

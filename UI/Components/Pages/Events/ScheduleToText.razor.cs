@@ -10,7 +10,7 @@ namespace UI.Components.Pages.Events
         [Parameter, EditorRequired] public DateTime? EndDate { get; set; }
         [Parameter, EditorRequired] public TimeSpan? StartTime { get; set; }
         [Parameter, EditorRequired] public TimeSpan? EndTime { get; set; }
-        [Parameter] public bool[] DaysOfWeek { get; set; } = null!;
+        [Parameter] public HashSet<short> DaysOfWeek { get; set; } = null!;
 
         StringBuilder result { get; set; } = new StringBuilder(100);
 
@@ -42,17 +42,17 @@ namespace UI.Components.Pages.Events
                 if (EndDate.HasValue)
                     result.Append($" по {EndDate.Value.ToString("dd.MM.yyyy")}");
 
-                if (DaysOfWeek != null && DaysOfWeek.Any(a => a == true))
+                if (DaysOfWeek != null && DaysOfWeek.Count > 0)
                 {
                     result.Append(" по ");
 
-                    if (DaysOfWeek[1]) result.Append("Пн, ");
-                    if (DaysOfWeek[2]) result.Append("Вт, ");
-                    if (DaysOfWeek[3]) result.Append("Ср, ");
-                    if (DaysOfWeek[4]) result.Append("Чт, ");
-                    if (DaysOfWeek[5]) result.Append("Пт, ");
-                    if (DaysOfWeek[6]) result.Append("Сб, ");
-                    if (DaysOfWeek[0]) result.Append("Вс, ");
+                    if (DaysOfWeek.Contains(1)) result.Append("Пн, ");
+                    if (DaysOfWeek.Contains(2)) result.Append("Вт, ");
+                    if (DaysOfWeek.Contains(3)) result.Append("Ср, ");
+                    if (DaysOfWeek.Contains(4)) result.Append("Чт, ");
+                    if (DaysOfWeek.Contains(5)) result.Append("Пт, ");
+                    if (DaysOfWeek.Contains(6)) result.Append("Сб, ");
+                    if (DaysOfWeek.Contains(0)) result.Append("Вс, ");
 
                     result.Remove(result.Length - 2, 2);
                 }

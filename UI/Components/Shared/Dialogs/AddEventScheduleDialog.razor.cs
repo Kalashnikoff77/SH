@@ -1,4 +1,5 @@
 ﻿using Common.Dto;
+using Common.Dto.Views;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
 
@@ -7,8 +8,9 @@ namespace UI.Components.Shared.Dialogs
     public partial class AddEventScheduleDialog
     {
         [CascadingParameter] MudDialogInstance MudDialog { get; set; } = null!;
+        [Parameter, EditorRequired] public EventsViewDto Event { get; set; } = null!;
 
-        SchedulesForEventsDto schedule { get; set; } = new SchedulesForEventsDto();
+        List<SchedulesForEventsDto> schedules { get; set; } = new List<SchedulesForEventsDto>();
 
         const int maxStartDateDays = 30 * 3;
         const int maxEndDateDays = 30;
@@ -19,28 +21,30 @@ namespace UI.Components.Shared.Dialogs
         bool isOneTimeEvent
         { 
             get => _isOneTimeEvent;
-            set { _isOneTimeEvent = value; daysOfWeek = daysOfWeek.Select(f => f = false).ToArray(); CheckProperties(); }
+            set { _isOneTimeEvent = value; daysOfWeek.Clear(); CheckProperties(); }
         }
 
         // Дни недели
-        bool[] daysOfWeek = { false, false, false, false, false, false, false };
+        HashSet<short> daysOfWeek = new HashSet<short>(7);
 
+        DateTime? _startDate;
         DateTime? startDate
         {
-            get => schedule.StartDate == DateTime.MinValue ? null : schedule.StartDate;
-            set { if (value != null) { schedule.StartDate = value.Value; CheckProperties(); } }
+            get => _startDate == DateTime.MinValue ? null : _startDate;
+            set { if (value != null) { _startDate = value.Value; CheckProperties(); } }
         }
         TimeSpan? _startTime;
         TimeSpan? startTime
         {
-            get => _startTime;
+            get => _startTime; 
             set { _startTime = value!.Value; CheckProperties(); }
         }
 
+        DateTime? _endDate;
         DateTime? endDate
         {
-            get => schedule.EndDate == DateTime.MinValue ? null : schedule.EndDate;
-            set { if (value != null) { schedule.EndDate = value.Value; CheckProperties(); } }
+            get => _endDate == DateTime.MinValue ? null : _endDate; 
+            set { if (value != null) { _endDate = value.Value; CheckProperties(); } }
         }
         TimeSpan? _endTime;
         TimeSpan? endTime
@@ -49,9 +53,12 @@ namespace UI.Components.Shared.Dialogs
             set { _endTime = value!.Value; CheckProperties(); }
         }
 
-        void OnWeekChanged(int weekDay, bool isChecked)
+        void OnWeekChanged(short weekDay, bool isChecked)
         {
-            daysOfWeek[weekDay] = isChecked;
+            if (isChecked)
+                daysOfWeek.Add(weekDay);
+            else
+                daysOfWeek.Remove(weekDay);
             CheckProperties();
         }
 
@@ -75,13 +82,13 @@ namespace UI.Components.Shared.Dialogs
                     }
                     else
                     {
-                        if (daysOfWeek.Any(a => a == true))
+                        if (daysOfWeek.Count > 0)
                         {
                             var listOfSchedulesResult = GetListOfSchedules(startDate.Value, startTime.Value, endDate.Value, endTime.Value, daysOfWeek);
-                            if (listOfSchedulesResult.Item1)
-                            {
+                            if (listOfSchedulesResult.Count > 0)
                                 isFormValid = true;
-                            }
+                            else
+                                errorMessage = "В указанный период ни одно мероприятие не попадает.";
                         }
                     }
                 }
@@ -90,24 +97,32 @@ namespace UI.Components.Shared.Dialogs
         }
 
 
-        void Submit() => MudDialog.Close(DialogResult.Ok(schedule));
-
+        void Submit() => MudDialog.Close(DialogResult.Ok(schedules));
         void Cancel() => MudDialog.Cancel();
 
 
-        Tuple<bool, List<SchedulesForEventsDto>> GetListOfSchedules(DateTime startDate, TimeSpan startTime, DateTime endDate, TimeSpan endTime, bool[] daysOfWeek)
+        List<SchedulesForEventsDto> GetListOfSchedules(DateTime startDate, TimeSpan startTime, DateTime endDate, TimeSpan endTime, HashSet<short> daysOfWeek)
         {
-            var result = new Tuple<bool, List<SchedulesForEventsDto>>(false, new List<SchedulesForEventsDto>());
+            var result = new List<SchedulesForEventsDto>();
 
-            var fullStartDate = startDate + startTime;
-            var fullEndDate = endDate + endTime;
-
-            for (DateTime curDate = fullStartDate; curDate <= fullEndDate; curDate = curDate.AddMinutes(5))
+            for (DateTime curDate = startDate; curDate <= endDate; curDate = curDate.AddDays(1))
             {
-                var test = (int)curDate.DayOfWeek;
+                if (daysOfWeek.Contains((short)curDate.DayOfWeek))
+                {
+                    result.Add(new SchedulesForEventsDto
+                    {
+                        EventId = Event.Id,
+                        Description = "Description",
+                        StartDate = curDate + startTime,
+                        EndDate = curDate + endTime,
+                        CostMan = 0,
+                        CostWoman = 0,
+                        CostPair = 0
+                    });
+                }
             }
 
-            return result!;
+            return result;
         }
     }
 }

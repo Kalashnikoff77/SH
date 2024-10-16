@@ -40,8 +40,8 @@
                                    AdornmentIcon="@Icons.Material.Filled.CalendarMonth" AdornmentColor="Color.Default" Adornment="Adornment.End"
                                    OpenTo="OpenTo.Date"
                                    StartMonth="startDate"
-                                   MinDate="schedule.StartDate == DateTime.MinValue ? DateTime.Now : schedule.StartDate"
-                                   MaxDate="schedule.StartDate == DateTime.MinValue ? DateTime.Now : schedule.StartDate.AddDays(maxEndDateDays)"
+                                   MinDate="startDate == DateTime.MinValue ? DateTime.Now : startDate"
+                                   MaxDate="startDate == null ? DateTime.Now : startDate.Value.AddDays(maxEndDateDays)"
                                    HelperText="@(startDate.HasValue ? $"Не позднее {startDate!.Value.AddDays(maxEndDateDays).ToString("dd.MM.yyyy")}" : "Выберите начальную дату")" ShowToolbar="false" />
                 </MudItem>
                 <MudItem sm="6" xs="12">
@@ -77,8 +77,8 @@
                                    AdornmentIcon="@Icons.Material.Filled.CalendarMonth" AdornmentColor="Color.Default" Adornment="Adornment.End"
                                    OpenTo="OpenTo.Date"
                                    StartMonth="startDate"
-                                   MinDate="schedule.StartDate == DateTime.MinValue ? DateTime.Now : schedule.StartDate"
-                                   MaxDate="schedule.StartDate == DateTime.MinValue ? DateTime.Now : schedule.StartDate.AddDays(maxEndDateDays)"
+                                   MinDate="startDate == DateTime.MinValue ? DateTime.Now : startDate"
+                                   MaxDate="startDate == null ? DateTime.Now : startDate.Value.AddDays(maxEndDateDays)"
                                    HelperText="@(startDate.HasValue ? $"Не позднее {startDate!.Value.AddDays(maxEndDateDays).ToString("dd.MM.yyyy")}" : "Выберите начальную дату")" ShowToolbar="false" />
                 </MudItem>
 

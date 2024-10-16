@@ -46,13 +46,13 @@ namespace UI.Components.Pages.Events
                 {
                     result.Append(" по ");
 
-                    if (DaysOfWeek[0]) result.Append("Пн, ");
-                    if (DaysOfWeek[1]) result.Append("Вт, ");
-                    if (DaysOfWeek[2]) result.Append("Ср, ");
-                    if (DaysOfWeek[3]) result.Append("Чт, ");
-                    if (DaysOfWeek[4]) result.Append("Пт, ");
-                    if (DaysOfWeek[5]) result.Append("Сб, ");
-                    if (DaysOfWeek[6]) result.Append("Вс, ");
+                    if (DaysOfWeek[1]) result.Append("Пн, ");
+                    if (DaysOfWeek[2]) result.Append("Вт, ");
+                    if (DaysOfWeek[3]) result.Append("Ср, ");
+                    if (DaysOfWeek[4]) result.Append("Чт, ");
+                    if (DaysOfWeek[5]) result.Append("Пт, ");
+                    if (DaysOfWeek[6]) result.Append("Сб, ");
+                    if (DaysOfWeek[0]) result.Append("Вс, ");
 
                     result.Remove(result.Length - 2, 2);
                 }

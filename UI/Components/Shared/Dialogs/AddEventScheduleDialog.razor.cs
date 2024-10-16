@@ -1,7 +1,6 @@
 ﻿using Common.Dto;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
-using System;
 
 namespace UI.Components.Shared.Dialogs
 {
@@ -78,7 +77,11 @@ namespace UI.Components.Shared.Dialogs
                     {
                         if (daysOfWeek.Any(a => a == true))
                         {
-                            isFormValid = true;
+                            var listOfSchedulesResult = GetListOfSchedules(startDate.Value, startTime.Value, endDate.Value, endTime.Value, daysOfWeek);
+                            if (listOfSchedulesResult.Item1)
+                            {
+                                isFormValid = true;
+                            }
                         }
                     }
                 }
@@ -90,5 +93,21 @@ namespace UI.Components.Shared.Dialogs
         void Submit() => MudDialog.Close(DialogResult.Ok(schedule));
 
         void Cancel() => MudDialog.Cancel();
+
+
+        Tuple<bool, List<SchedulesForEventsDto>> GetListOfSchedules(DateTime startDate, TimeSpan startTime, DateTime endDate, TimeSpan endTime, bool[] daysOfWeek)
+        {
+            var result = new Tuple<bool, List<SchedulesForEventsDto>>(false, new List<SchedulesForEventsDto>());
+
+            var fullStartDate = startDate + startTime;
+            var fullEndDate = endDate + endTime;
+
+            for (DateTime curDate = fullStartDate; curDate <= fullEndDate; curDate = curDate.AddMinutes(5))
+            {
+                var test = (int)curDate.DayOfWeek;
+            }
+
+            return result!;
+        }
     }
 }

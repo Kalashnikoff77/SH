@@ -96,13 +96,13 @@
                 <MudItem xs="12">
                     <MudText Align="Align.Center" Typo="Typo.subtitle1" Style="font-weight:500">Повторять в указанные дни недели:</MudText>
                     <MudStack Row Wrap="Wrap.Wrap" Spacing="6" Justify="Justify.Center">
-                        <MudCheckBox Label="Пн" T="bool" ValueChanged="(isChecked) => OnWeekChanged(0, isChecked)" Dense Color="Color.Primary"></MudCheckBox>
-                        <MudCheckBox Label="Вт" T="bool" ValueChanged="(isChecked) => OnWeekChanged(1, isChecked)" Dense Color="Color.Primary"></MudCheckBox>
-                        <MudCheckBox Label="Ср" T="bool" ValueChanged="(isChecked) => OnWeekChanged(2, isChecked)" Dense Color="Color.Primary"></MudCheckBox>
-                        <MudCheckBox Label="Чт" T="bool" ValueChanged="(isChecked) => OnWeekChanged(3, isChecked)" Dense Color="Color.Primary"></MudCheckBox>
-                        <MudCheckBox Label="Пт" T="bool" ValueChanged="(isChecked) => OnWeekChanged(4, isChecked)" Dense Color="Color.Primary"></MudCheckBox>
-                        <MudCheckBox Label="Сб" T="bool" ValueChanged="(isChecked) => OnWeekChanged(5, isChecked)" Dense Color="Color.Secondary"></MudCheckBox>
-                        <MudCheckBox Label="Вс" T="bool" ValueChanged="(isChecked) => OnWeekChanged(6, isChecked)" Dense Color="Color.Secondary"></MudCheckBox>
+                        <MudCheckBox Label="Пн" T="bool" ValueChanged="(isChecked) => OnWeekChanged(1, isChecked)" Dense Color="Color.Primary"></MudCheckBox>
+                        <MudCheckBox Label="Вт" T="bool" ValueChanged="(isChecked) => OnWeekChanged(2, isChecked)" Dense Color="Color.Primary"></MudCheckBox>
+                        <MudCheckBox Label="Ср" T="bool" ValueChanged="(isChecked) => OnWeekChanged(3, isChecked)" Dense Color="Color.Primary"></MudCheckBox>
+                        <MudCheckBox Label="Чт" T="bool" ValueChanged="(isChecked) => OnWeekChanged(4, isChecked)" Dense Color="Color.Primary"></MudCheckBox>
+                        <MudCheckBox Label="Пт" T="bool" ValueChanged="(isChecked) => OnWeekChanged(5, isChecked)" Dense Color="Color.Primary"></MudCheckBox>
+                        <MudCheckBox Label="Сб" T="bool" ValueChanged="(isChecked) => OnWeekChanged(6, isChecked)" Dense Color="Color.Secondary"></MudCheckBox>
+                        <MudCheckBox Label="Вс" T="bool" ValueChanged="(isChecked) => OnWeekChanged(0, isChecked)" Dense Color="Color.Secondary"></MudCheckBox>
                     </MudStack>
                 </MudItem>
             </MudGrid>
@@ -111,7 +111,6 @@
         <ScheduleToText IsOneTimeEvent="isOneTimeEvent" StartDate="startDate" EndDate="endDate" StartTime="startTime" EndTime="endTime" DaysOfWeek="daysOfWeek" />
 
         <MudText Align="Align.Center" Typo="Typo.body2" Color="Color.Error">@errorMessage</MudText>
-
     </DialogContent>
 
     <DialogActions>

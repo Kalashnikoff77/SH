@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Components;
 using MudBlazor;
 using UI.Models;
 
-namespace UI.Components.Shared.Dialogs
+namespace UI.Components.Dialogs
 {
     public partial class EditUserDialog
     {

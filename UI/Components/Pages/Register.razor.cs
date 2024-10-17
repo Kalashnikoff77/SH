@@ -16,7 +16,7 @@ using MudBlazor;
 using PhotoSauce.MagicScaler;
 using System.Net;
 using System.Text.RegularExpressions;
-using UI.Components.Shared.Dialogs;
+using UI.Components.Dialogs;
 using UI.Models;
 
 namespace UI.Components.Pages

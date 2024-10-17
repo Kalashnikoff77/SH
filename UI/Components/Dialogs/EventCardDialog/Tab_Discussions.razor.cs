@@ -8,7 +8,7 @@ using Common.Models.States;
 using Common.Repository;
 using Microsoft.AspNetCore.Components;
 
-namespace UI.Components.Shared.Dialogs.EventCardDialog
+namespace UI.Components.Dialogs.EventCardDialog
 {
     public partial class Tab_Discussions : IDisposable
     {

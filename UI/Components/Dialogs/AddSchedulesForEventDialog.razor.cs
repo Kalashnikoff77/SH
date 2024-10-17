@@ -3,7 +3,7 @@ using Common.Dto.Views;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
 
-namespace UI.Components.Shared.Dialogs
+namespace UI.Components.Dialogs
 {
     public partial class AddSchedulesForEventDialog
     {

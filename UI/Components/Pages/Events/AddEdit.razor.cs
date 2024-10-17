@@ -7,9 +7,8 @@ using Common.Models.States;
 using Common.Repository;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
-using System.Collections.Generic;
 using System.Net;
-using UI.Components.Shared.Dialogs;
+using UI.Components.Dialogs;
 using UI.Models;
 
 namespace UI.Components.Pages.Events

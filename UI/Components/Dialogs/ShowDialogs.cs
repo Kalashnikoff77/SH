@@ -1,7 +1,7 @@
 ﻿using Common.Dto.Views;
 using MudBlazor;
 
-namespace UI.Components.Shared.Dialogs
+namespace UI.Components.Dialogs
 {
     public class ShowDialogs
     {

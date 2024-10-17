@@ -7,7 +7,7 @@ using Common.Models.States;
 using Common.Repository;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
-using UI.Components.Shared.Dialogs;
+using UI.Components.Dialogs;
 
 namespace UI.Components.Pages.Events
 {

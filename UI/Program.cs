@@ -6,7 +6,7 @@ using Common.Repository;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
 using MudBlazor.Services;
 using UI.Components;
-using UI.Components.Shared.Dialogs;
+using UI.Components.Dialogs;
 
 var builder = WebApplication.CreateBuilder(args);
 

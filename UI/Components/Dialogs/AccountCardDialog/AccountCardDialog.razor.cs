@@ -8,7 +8,7 @@ using Common.Repository;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
 
-namespace UI.Components.Shared.Dialogs.AccountCardDialog
+namespace UI.Components.Dialogs.AccountCardDialog
 {
     public partial class AccountCardDialog : IDisposable
     {

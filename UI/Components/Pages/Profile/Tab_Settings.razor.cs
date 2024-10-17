@@ -15,7 +15,7 @@ using Common.Models;
 using Microsoft.AspNetCore.Components.Web;
 using System.Net;
 using System.Text.RegularExpressions;
-using UI.Components.Shared.Dialogs;
+using UI.Components.Dialogs;
 
 namespace UI.Components.Pages.Profile
 {

@@ -8,7 +8,7 @@ using Common.Repository;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
 
-namespace UI.Components.Shared.Dialogs.EventCardDialog
+namespace UI.Components.Dialogs.EventCardDialog
 {
     public partial class EventCardDialog : IDisposable
     {

@@ -33,14 +33,13 @@ namespace UI.Components.Pages.Events
             MaxWomen = 15
         };
 
-        Dictionary<short, TabPanel> TabPanels { get; set; } = null!;
         bool processingPhoto, processingEvent = false;
-        bool IsPanel1Valid, IsPanel2Valid, IsPanel3Valid;
 
-        protected async override Task OnParametersSetAsync()
+        Dictionary<short, TabPanel> TabPanels { get; set; } = null!;
+        bool IsPanel1Valid, IsPanel2Valid, IsPanel3Valid, isValid;
+
+        protected override async Task OnInitializedAsync()
         {
-            bool isValid = false;
-
             if (EventId != null)
             {
                 var apiResponse = await _repoGetEvent.HttpPostAsync(new GetEventsRequestDto { EventId = EventId });
@@ -50,7 +49,10 @@ namespace UI.Components.Pages.Events
                     isValid = true;
                 }
                 else
+                {
                     EventId = null;
+                    isValid = false;
+                }
             }
 
             TabPanels = new Dictionary<short, TabPanel>
@@ -68,9 +70,7 @@ namespace UI.Components.Pages.Events
                 { 3, new TabPanel { Items = new Dictionary<string, bool> { { "Photo", isValid } } } }
             };
 
-            IsPanel1Valid = TabPanels[1].Items.All(x => x.Value == true);
-            IsPanel2Valid = TabPanels[2].Items.All(x => x.Value == true);
-            IsPanel3Valid = TabPanels[3].Items.All(x => x.Value == true);
+            CheckPanelsVisibility();
         }
 
 
@@ -156,7 +156,8 @@ namespace UI.Components.Pages.Events
                 TabPanels[1].Items[property] = false;
                 iconColor = Color.Error;
             }
-            StateHasChanged();
+
+            CheckPanelsVisibility();
         }
         #endregion
 
@@ -175,15 +176,18 @@ namespace UI.Components.Pages.Events
 
             if (result != null && result.Canceled == false && result.Data != null)
             {
+                if (Event.Schedule == null)
+                    Event.Schedule = new List<SchedulesForEventsDto>();
+
                 Event.Schedule.AddRange((List<SchedulesForEventsDto>)result.Data);
             }
-            //CheckPanel2Properties();
+
+            CheckPanel2Properties();
         }
 
         async Task EditScheduleDialogAsync(SchedulesForEventsDto schedule)
         {
         }
-
 
         async Task DeleteScheduleDialogAsync(SchedulesForEventsDto schedule)
         {
@@ -198,9 +202,20 @@ namespace UI.Components.Pages.Events
             var result = await resultDialog.Result;
 
             if (result != null && result.Canceled == false)
-            {
                 schedule.IsDeleted = true;
-            }
+
+            CheckPanel2Properties();
+        }
+
+        void CheckPanel2Properties()
+        {
+            // Есть ли хоть одно расписание активное (неудалённое)
+            if (Event.Schedule?.Any(a => a.IsDeleted == false) == true)
+                TabPanels[2].Items["Schedule"] = true;
+            else
+                TabPanels[2].Items["Schedule"] = false;
+
+            CheckPanelsVisibility();
         }
         #endregion
 
@@ -210,6 +225,14 @@ namespace UI.Components.Pages.Events
             StateHasChanged();
 
             processingEvent = false;
+            StateHasChanged();
+        }
+
+        void CheckPanelsVisibility()
+        {
+            IsPanel1Valid = TabPanels[1].Items.All(x => x.Value == true);
+            IsPanel2Valid = TabPanels[2].Items.All(x => x.Value == true);
+            IsPanel3Valid = TabPanels[3].Items.All(x => x.Value == true);
             StateHasChanged();
         }
 

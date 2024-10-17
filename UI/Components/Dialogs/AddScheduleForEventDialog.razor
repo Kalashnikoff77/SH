@@ -5,9 +5,26 @@
         <MudStack AlignItems="AlignItems.Center" Class="mb-2">
             <MudText Typo="Typo.h6">Выберите тип мероприятия</MudText>
             <MudRadioGroup @bind-Value="isOneTimeEvent">
-                <MudRadio Value="true" Color="Color.Primary" Dense><span style="font-weight:500">Разовое</span></MudRadio>
+                <MudRadio Class="ml-3" Value="true" Color="Color.Primary" Dense><span style="font-weight:500">Разовое</span></MudRadio>
                 <MudRadio Value="false" Color="Color.Secondary" Dense><span style="font-weight:500">Повторяющееся</span></MudRadio>
             </MudRadioGroup>
+
+            <MudText Typo="Typo.body2" Align="Align.Center"><i>
+                @if (isOneTimeEvent) 
+                {
+                        <span>Разовое мероприятие, проводимое в указанные дату и время.</span>
+                }
+                else
+                {
+                        <span>
+                            Ряд однотипных мероприятий в рамках выбираемых дат,
+                            систематически проводимых в фиксированное время по указанным дням недели.<br/>
+                            Например: С 01.06.24 по 30.06.24 по Пт и Сб с 23:00 до 06:00.
+                        </span>
+                }
+                </i>
+            </MudText>
+
         </MudStack>
 
         @* РАЗОВОЕ *@

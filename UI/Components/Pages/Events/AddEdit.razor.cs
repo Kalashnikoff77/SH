@@ -164,13 +164,13 @@ namespace UI.Components.Pages.Events
         #region /// 2. РАСПИСАНИЕ ///
         async Task AddScheduleDialogAsync()
         {
-            var parameters = new DialogParameters<AddSchedulesForEventDialog> 
+            var parameters = new DialogParameters<AddScheduleForEventDialog> 
             {
                 { x => x.Event, Event }
             };
             var options = new DialogOptions { CloseOnEscapeKey = true };
 
-            var resultDialog = await DialogService.ShowAsync<AddSchedulesForEventDialog>("Добавление расписания", parameters, options);
+            var resultDialog = await DialogService.ShowAsync<AddScheduleForEventDialog>("Добавление расписания", parameters, options);
             var result = await resultDialog.Result;
 
             if (result != null && result.Canceled == false && result.Data != null)
@@ -184,8 +184,26 @@ namespace UI.Components.Pages.Events
             CheckPanel2Properties();
         }
 
-        async Task EditScheduleDialogAsync(SchedulesForEventsDto schedule)
+        async Task EditScheduleDialogAsync(SchedulesForEventsDto Schedule)
         {
+            var parameters = new DialogParameters<EditScheduleForEventDialog>
+            {
+                { x => x.Schedule, Schedule }
+            };
+            var options = new DialogOptions { CloseOnEscapeKey = true };
+
+            var resultDialog = await DialogService.ShowAsync<EditScheduleForEventDialog>("Редактирование расписания", parameters, options);
+            var result = await resultDialog.Result;
+
+            if (result != null && result.Canceled == false && result.Data != null)
+            {
+                Schedule = (SchedulesForEventsDto)result.Data;
+
+                //if (Event.Schedule == null)
+                //    Event.Schedule = new List<SchedulesForEventsDto>();
+
+                //Event.Schedule.AddRange((List<SchedulesForEventsDto>)result.Data);
+            }
         }
 
         async Task DeleteScheduleDialogAsync(SchedulesForEventsDto schedule)

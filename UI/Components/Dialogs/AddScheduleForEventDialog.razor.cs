@@ -5,7 +5,7 @@ using MudBlazor;
 
 namespace UI.Components.Dialogs
 {
-    public partial class AddSchedulesForEventDialog
+    public partial class AddScheduleForEventDialog
     {
         [CascadingParameter] MudDialogInstance MudDialog { get; set; } = null!;
         [Parameter, EditorRequired] public EventsViewDto Event { get; set; } = null!;

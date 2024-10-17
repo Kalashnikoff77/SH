@@ -9,7 +9,7 @@ using MudBlazor;
 
 namespace UI.Components.Dialogs
 {
-    public partial class EventRegistrationDialog
+    public partial class RegistrationForEventDialog
     {
         [CascadingParameter] MudDialogInstance MudDialog { get; set; } = null!;
         [CascadingParameter] CurrentState CurrentState { get; set; } = null!;

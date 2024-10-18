@@ -18,7 +18,7 @@ namespace UI.Components.Pages.Events
         [CascadingParameter] public CurrentState CurrentState { get; set; } = null!;
         [Inject] IRepository<EventCheckRequestDto, EventCheckResponseDto> _repoCheckAdding { get; set; } = null!;
         [Inject] IRepository<GetEventsRequestDto, GetEventsResponseDto> _repoGetEvent { get; set; } = null!;
-        [Inject] IRepository<AddSchedulesForEventRequestDto, AddSchedulesForEventResponseDto> _repoAddSchedules { get; set; } = null!;
+        [Inject] IRepository<UpdateEventRequestDto, UpdateEventResponseDto> _repoAddSchedules { get; set; } = null!;
 
         [Inject] IDialogService DialogService { get; set; } = null!;
         [Parameter] public int? EventId { get; set; }
@@ -236,7 +236,9 @@ namespace UI.Components.Pages.Events
         }
         #endregion
 
-        async void SubmitAsync()
+
+        #region /// ДОБАВЛЕНИЕ / УДАЛЕНИЕ ///
+        async void AddAsync()
         {
             processingEvent = true;
             StateHasChanged();
@@ -244,6 +246,17 @@ namespace UI.Components.Pages.Events
             processingEvent = false;
             StateHasChanged();
         }
+
+        async void UpdateAsync()
+        {
+            processingEvent = true;
+            StateHasChanged();
+
+            processingEvent = false;
+            StateHasChanged();
+        }
+        #endregion
+
 
         void CheckPanelsVisibility()
         {

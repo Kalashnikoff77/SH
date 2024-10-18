@@ -125,7 +125,7 @@
             <MudText Typo="Typo.body2">Запомнить меня</MudText>
         </MudCheckBox>
 
-        <MudButton OnClick="SubmitAsync" StartIcon="@Icons.Material.Outlined.Check" Disabled="!(IsPanel1Valid && IsPanel2Valid && !processingAccount)" Variant="Variant.Filled" Size="Size.Large" Color="Color.Primary" Style="margin:auto">
+        <MudButton OnClick="SubmitAsync" StartIcon="@Icons.Material.Outlined.Save" Disabled="!(IsPanel1Valid && IsPanel2Valid && !processingAccount)" Variant="Variant.Filled" Size="Size.Large" Color="Color.Primary" Style="margin:auto">
             @if (processingAccount)
             {
                 <MudProgressCircular Size="Size.Small" Style="margin:auto" Indeterminate="true" />

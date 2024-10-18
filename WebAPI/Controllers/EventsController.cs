@@ -263,14 +263,12 @@ namespace WebAPI.Controllers
 
 
         /// <summary>
-        /// Добавление расписания к мероприятию
+        /// Добавление мероприятия
         /// </summary>
-        /// <param name="request"></param>
-        /// <returns></returns>
-        [Route("AddSchedulesForEvent"), HttpPost]
-        public async Task<AddSchedulesForEventResponseDto> AddScheduleForEventAsync(AddSchedulesForEventRequestDto request)
+        [Route("Update"), HttpPost]
+        public async Task<UpdateEventResponseDto> UpdateAsync(UpdateEventRequestDto request)
         {
-            var response = new AddSchedulesForEventResponseDto();
+            var response = new UpdateEventResponseDto();
 
             using (var conn = new SqlConnection(connectionString))
             {

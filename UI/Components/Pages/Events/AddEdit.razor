@@ -138,7 +138,7 @@
         <MudStack AlignItems="AlignItems.Center" Class="mt-5" Row="false">
             @if (EventId == null)
             {
-                <MudButton OnClick="SubmitAsync" StartIcon="@Icons.Material.Outlined.Check" Disabled="!(IsPanel1Valid && IsPanel2Valid && IsPanel3Valid && !processingEvent)" Variant="Variant.Filled" Size="Size.Large" Color="Color.Primary" Style="margin:auto">
+                <MudButton OnClick="AddAsync" StartIcon="@Icons.Material.Outlined.Add" Disabled="!(IsPanel1Valid && IsPanel2Valid && IsPanel3Valid && !processingEvent)" Variant="Variant.Filled" Size="Size.Large" Color="Color.Primary" Style="margin:auto">
                     @if (processingEvent)
                     {
                         <MudProgressCircular Size="Size.Small" Style="margin:auto" Indeterminate="true" />
@@ -152,7 +152,7 @@
             }
             else
             {
-                <MudButton OnClick="SubmitAsync" StartIcon="@Icons.Material.Outlined.Save" Disabled="!(IsPanel1Valid && IsPanel2Valid && IsPanel3Valid && !processingEvent)" Variant="Variant.Filled" Size="Size.Large" Color="Color.Primary" Style="margin:auto">
+                <MudButton OnClick="UpdateAsync" StartIcon="@Icons.Material.Outlined.Save" Disabled="!(IsPanel1Valid && IsPanel2Valid && IsPanel3Valid && !processingEvent)" Variant="Variant.Filled" Size="Size.Large" Color="Color.Primary" Style="margin:auto">
                     @if (processingEvent)
                     {
                         <MudProgressCircular Size="Size.Small" Style="margin:auto" Indeterminate="true" />

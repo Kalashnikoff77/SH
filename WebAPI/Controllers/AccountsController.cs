@@ -229,28 +229,20 @@ namespace WebAPI.Controllers
                             "VALUES " +
                             $"(@{nameof(UsersEntity.Name)}, @{nameof(UsersEntity.Height)}, @{nameof(UsersEntity.Weight)}, @{nameof(UsersEntity.BirthDate)}, @{nameof(UsersEntity.About)}, @{nameof(UsersEntity.Gender)}, @_accountId)";
                         await conn.ExecuteAsync(sql, new { user.Name, user.Height, user.Weight, user.BirthDate, user.About, user.Gender, _accountId }, transaction: transaction);
-                    } 
+                    }
+                    // Обновление / Удаление
                     else
                     {
-                        // Удаление
-                        if (user.IsDeleted)
-                        {
-                            sql = $"UPDATE Users SET {nameof(UsersEntity.IsDeleted)} = 1 WHERE Id = @Id AND AccountId = @_accountId";
-                            await conn.ExecuteAsync(sql, new { user.Id, _accountId }, transaction: transaction);
-                        }
-                        // Обновление
-                        else
-                        {
-                            sql = $"UPDATE Users SET " +
-                                $"{nameof(UsersEntity.BirthDate)} = @{nameof(user.BirthDate)}, " +
-                                $"{nameof(UsersEntity.Name)} = @{nameof(user.Name)}, " +
-                                $"{nameof(UsersEntity.Gender)} = @{nameof(user.Gender)}, " +
-                                $"{nameof(UsersEntity.Height)} = @{nameof(user.Height)}, " +
-                                $"{nameof(UsersEntity.Weight)} = @{nameof(user.Weight)}, " +
-                                $"{nameof(UsersEntity.About)} = @{nameof(user.About)} " +
-                                $"WHERE Id = @Id AND AccountId = @_accountId";
-                            await conn.ExecuteAsync(sql, new { user.Id, _accountId, user.BirthDate, user.Name, user.Gender, user.Height, user.Weight, user.About  }, transaction: transaction);
-                        }
+                        sql = $"UPDATE Users SET " +
+                            $"{nameof(UsersEntity.BirthDate)} = @{nameof(user.BirthDate)}, " +
+                            $"{nameof(UsersEntity.Name)} = @{nameof(user.Name)}, " +
+                            $"{nameof(UsersEntity.Gender)} = @{nameof(user.Gender)}, " +
+                            $"{nameof(UsersEntity.Height)} = @{nameof(user.Height)}, " +
+                            $"{nameof(UsersEntity.Weight)} = @{nameof(user.Weight)}, " +
+                            $"{nameof(UsersEntity.About)} = @{nameof(user.About)}, " +
+                            $"{nameof(UsersEntity.IsDeleted)} = @{nameof(user.IsDeleted)} " +
+                            $"WHERE Id = @Id AND AccountId = @_accountId";
+                        await conn.ExecuteAsync(sql, new { user.Id, _accountId, user.BirthDate, user.Name, user.Gender, user.Height, user.Weight, user.About, user.IsDeleted }, transaction: transaction);
                     }
                 }
 

@@ -18,7 +18,7 @@ namespace UI.Components.Pages.Events
         [CascadingParameter] public CurrentState CurrentState { get; set; } = null!;
         [Inject] IRepository<EventCheckRequestDto, EventCheckResponseDto> _repoCheckAdding { get; set; } = null!;
         [Inject] IRepository<GetEventsRequestDto, GetEventsResponseDto> _repoGetEvent { get; set; } = null!;
-        [Inject] IRepository<UpdateEventRequestDto, UpdateEventResponseDto> _repoAddSchedules { get; set; } = null!;
+        [Inject] IRepository<UpdateEventRequestDto, UpdateEventResponseDto> _repoUpdateEvent { get; set; } = null!;
 
         [Inject] IDialogService DialogService { get; set; } = null!;
         [Parameter] public int? EventId { get; set; }
@@ -251,6 +251,9 @@ namespace UI.Components.Pages.Events
         {
             processingEvent = true;
             StateHasChanged();
+
+            var request = new UpdateEventRequestDto { Event = Event, Token = CurrentState.Account?.Token };
+            var response = await _repoUpdateEvent.HttpPostAsync(request);
 
             processingEvent = false;
             StateHasChanged();

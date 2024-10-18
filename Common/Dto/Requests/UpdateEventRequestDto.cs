@@ -1,10 +1,11 @@
-﻿namespace Common.Dto.Requests
+﻿using Common.Dto.Views;
+
+namespace Common.Dto.Requests
 {
     public class UpdateEventRequestDto : RequestDtoBase
     {
         public override string Uri => "/Events/Update";
 
-        public EventsDto Event { get; set; } = null!;
-        public List<SchedulesForEventsDto> Schedules { get; set; } = null!;
+        public EventsViewDto Event { get; set; } = null!;
     }
 }

@@ -263,17 +263,30 @@ namespace WebAPI.Controllers
 
 
         /// <summary>
-        /// Добавление мероприятия
+        /// Обновление мероприятия
         /// </summary>
-        [Route("Update"), HttpPost]
+        [Route("Update"), HttpPost, Authorize]
         public async Task<UpdateEventResponseDto> UpdateAsync(UpdateEventRequestDto request)
         {
+            AuthenticateUser();
+
             var response = new UpdateEventResponseDto();
 
             using (var conn = new SqlConnection(connectionString))
             {
-                var sql = $"SELECT * FROM FeaturesForEventsView ORDER BY Name";
-                var result = await conn.QueryAsync<FeaturesForEventsViewEntity>(sql);
+                conn.Open();
+                using var transaction = conn.BeginTransaction();
+
+                var sql = $"UPDATE Events SET " +
+                    $"{nameof(EventsEntity.Name)} = @{nameof(EventsEntity.Name)}, " +
+                    $"{nameof(EventsEntity.Description)} = @{nameof(EventsEntity.Description)}, " +
+                    $"{nameof(EventsEntity.MaxMen)} = @{nameof(EventsEntity.MaxMen)}, " +
+                    $"{nameof(EventsEntity.MaxWomen)} = @{nameof(EventsEntity.MaxWomen)}, " +
+                    $"{nameof(EventsEntity.MaxPairs)} = @{nameof(EventsEntity.MaxPairs)} " +
+                    $"WHERE Id = @Id AND {nameof(EventsEntity.AdminId)} = @_accountId";
+                var result = await conn.ExecuteAsync(sql, new { request.Event.Id, request.Event.Name, request.Event.Description, request.Event.MaxMen, request.Event.MaxWomen, request.Event.MaxPairs, _accountId }, transaction: transaction);
+
+                transaction.Commit();
             }
 
             return response;

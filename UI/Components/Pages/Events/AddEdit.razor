@@ -1,7 +1,14 @@
 ﻿@page "/events/add"
 @page "/events/edit/{EventId:int}"
 
-<PageTitle>Добавление клуба или мероприятия</PageTitle>
+@if (EventId != null)
+{
+    <PageTitle>Редактирование "@Event.Name"</PageTitle>
+}
+else
+{
+    <PageTitle>Добавление мероприятия</PageTitle>
+}
 
 @if (CurrentState.Account != null) 
 {

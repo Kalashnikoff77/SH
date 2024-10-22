@@ -9,6 +9,7 @@ using DataContext.Entities.Views;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
+using System.Text;
 using System.Text.Json;
 using WebAPI.Exceptions;
 
@@ -285,6 +286,34 @@ namespace WebAPI.Controllers
                     $"{nameof(EventsEntity.MaxPairs)} = @{nameof(EventsEntity.MaxPairs)} " +
                     $"WHERE Id = @Id AND {nameof(EventsEntity.AdminId)} = @_accountId";
                 var result = await conn.ExecuteAsync(sql, new { request.Event.Id, request.Event.Name, request.Event.Description, request.Event.MaxMen, request.Event.MaxWomen, request.Event.MaxPairs, _accountId }, transaction: transaction);
+
+                // Расписание
+                if (request.Event.Schedule != null)
+                {
+                    foreach (var schedule in request.Event.Schedule)
+                    {
+                        if (schedule.Id == 0)
+                        {
+                            sql = $"INSERT INTO SchedulesForEvents (" +
+                                $"{nameof(SchedulesForEventsEntity.EventId)}, " +
+                                $"{nameof(SchedulesForEventsEntity.Description)}, " +
+                                $"{nameof(SchedulesForEventsEntity.StartDate)}, " +
+                                $"{nameof(SchedulesForEventsEntity.EndDate)}, " +
+                                $"{nameof(SchedulesForEventsEntity.CostMan)}, " +
+                                $"{nameof(SchedulesForEventsEntity.CostWoman)}, " +
+                                $"{nameof(SchedulesForEventsEntity.CostPair)}" +
+                                $") VALUES (" +
+                                $"@{nameof(SchedulesForEventsEntity.EventId)}, " +
+                                $"@{nameof(SchedulesForEventsEntity.Description)}, " +
+                                $"@{nameof(SchedulesForEventsEntity.StartDate)}, " +
+                                $"@{nameof(SchedulesForEventsEntity.EndDate)}, " +
+                                $"@{nameof(SchedulesForEventsEntity.CostMan)}, " +
+                                $"@{nameof(SchedulesForEventsEntity.CostWoman)}, " +
+                                $"@{nameof(SchedulesForEventsEntity.CostPair)})";
+                            result = await conn.ExecuteAsync(sql, new { EventId = request.Event.Id, schedule.Description, schedule.StartDate, schedule.EndDate, schedule.CostMan, schedule.CostWoman, schedule.CostPair}, transaction: transaction);
+                        }
+                    }
+                }
 
                 transaction.Commit();
             }

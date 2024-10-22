@@ -131,7 +131,7 @@ namespace UI.Components.Dialogs
                         EventId = Event.Id,
                         Description = schedule.Description,
                         StartDate = curDate + startTime,
-                        EndDate = curDate + endTime,
+                        EndDate = startTime > endTime ? curDate.AddDays(1) + endTime : curDate + endTime,
                         CostMan = schedule.CostMan,
                         CostWoman = schedule.CostWoman,
                         CostPair = schedule.CostPair

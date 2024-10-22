@@ -217,7 +217,12 @@ namespace UI.Components.Pages.Events
             var result = await resultDialog.Result;
 
             if (result != null && result.Canceled == false)
-                schedule.IsDeleted = true;
+            {
+                if (schedule.Id == 0)
+                    Event.Schedule?.Remove(schedule);
+                else
+                    schedule.IsDeleted = true;
+            }
 
             CheckPanel2Properties();
         }

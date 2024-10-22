@@ -312,6 +312,19 @@ namespace WebAPI.Controllers
                                 $"@{nameof(SchedulesForEventsEntity.CostPair)})";
                             result = await conn.ExecuteAsync(sql, new { EventId = request.Event.Id, schedule.Description, schedule.StartDate, schedule.EndDate, schedule.CostMan, schedule.CostWoman, schedule.CostPair}, transaction: transaction);
                         }
+                        else
+                        {
+                            sql = $"UPDATE SchedulesForEvents SET " +
+                                $"{nameof(SchedulesForEventsEntity.Description)} = @{nameof(SchedulesForEventsEntity.Description)}, " +
+                                $"{nameof(SchedulesForEventsEntity.StartDate)} = @{nameof(SchedulesForEventsEntity.StartDate)}, " +
+                                $"{nameof(SchedulesForEventsEntity.EndDate)} = @{nameof(SchedulesForEventsEntity.EndDate)}, " +
+                                $"{nameof(SchedulesForEventsEntity.CostMan)} = @{nameof(SchedulesForEventsEntity.CostMan)}, " +
+                                $"{nameof(SchedulesForEventsEntity.CostWoman)} = @{nameof(SchedulesForEventsEntity.CostWoman)}, " +
+                                $"{nameof(SchedulesForEventsEntity.CostPair)} = @{nameof(SchedulesForEventsEntity.CostPair)}, " +
+                                $"{nameof(SchedulesForEventsEntity.IsDeleted)} = @{nameof(SchedulesForEventsEntity.IsDeleted)} " +
+                                $"WHERE Id = @Id AND EventId = @{nameof(SchedulesForEventsEntity.EventId)}";
+                            result = await conn.ExecuteAsync(sql, new { schedule.Id, EventId = request.Event.Id, schedule.Description, schedule.StartDate, schedule.EndDate, schedule.CostMan, schedule.CostWoman, schedule.CostPair, schedule.IsDeleted }, transaction: transaction);
+                        }
                     }
                 }
 

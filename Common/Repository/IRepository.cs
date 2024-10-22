@@ -1,6 +1,5 @@
 ﻿using Common.Dto.Requests;
 using Common.Dto.Responses;
-using Common.Models;
 
 namespace Common.Repository
 {

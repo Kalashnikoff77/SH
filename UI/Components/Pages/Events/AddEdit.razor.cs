@@ -192,17 +192,15 @@ namespace UI.Components.Pages.Events
             };
             var options = new DialogOptions { CloseOnEscapeKey = true };
 
-            var resultDialog = await DialogService.ShowAsync<EditScheduleForEventDialog>("Редактирование расписания", parameters, options);
-            var result = await resultDialog.Result;
-
+            var result = await (await DialogService.ShowAsync<EditScheduleForEventDialog>("Редактирование расписания", parameters, options)).Result;
             if (result != null && result.Canceled == false && result.Data != null)
             {
-                Schedule = (SchedulesForEventsDto)result.Data;
+                var resultData = (SchedulesForEventsDto)result.Data;
+                var index = Event.Schedule!.FindIndex(i => i.Id == resultData.Id);
+                if (index > -1)
+                    Event.Schedule[index] = resultData;
 
-                //if (Event.Schedule == null)
-                //    Event.Schedule = new List<SchedulesForEventsDto>();
-
-                //Event.Schedule.AddRange((List<SchedulesForEventsDto>)result.Data);
+                CheckPanel2Properties();
             }
         }
 

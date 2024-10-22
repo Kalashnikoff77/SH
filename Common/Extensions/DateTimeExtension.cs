@@ -11,7 +11,7 @@
             var now = DateTime.Now;
             var yesterday = now.AddDays(-1);
             var tomorrow = now.AddDays(1);
-            var aftetomorrow = now.AddDays(2);
+            var aftertomorrow = now.AddDays(2);
 
             if (dateTime.Date == yesterday.Date)
                 return $"вчера {time}";
@@ -19,7 +19,7 @@
                 return $"сегодня {time}";
             if (dateTime.Date == tomorrow.Date)
                 return $"завтра {time}";
-            if (dateTime.Date == aftetomorrow.Date)
+            if (dateTime.Date == aftertomorrow.Date)
                 return $"послезавтра {time}";
 
             if (dateTime.Year == DateTime.Now.Year)

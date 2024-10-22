@@ -9,7 +9,7 @@ namespace UI.Components.Dialogs
         [CascadingParameter] MudDialogInstance MudDialog { get; set; } = null!;
         [Parameter, EditorRequired] public SchedulesForEventsDto Schedule { get; set; } = new SchedulesForEventsDto();
 
-        List<SchedulesForEventsDto> schedules { get; set; } = new List<SchedulesForEventsDto>();
+        SchedulesForEventsDto updatedSchedule { get; set; } = new SchedulesForEventsDto();
 
         const int maxStartDateDays = 30 * 3;
         const int maxEndDateDays = 30;
@@ -53,23 +53,23 @@ namespace UI.Components.Dialogs
 
             if (startDate.HasValue && startTime.HasValue && endDate.HasValue && endTime.HasValue)
             {
-                if (startDate.Value + startTime.Value >= endDate.Value + endTime.Value)
+                if (startDate.Value.Date + startTime.Value >= endDate.Value.Date + endTime.Value)
                 {
                     errorMessage = "Дата начала мероприятия должна быть меньше даты его окончания";
                 }
                 else
                 {
-                    schedules.Clear();
-                    schedules.Add(new SchedulesForEventsDto
+                    updatedSchedule = new SchedulesForEventsDto
                     {
+                        Id = Schedule.Id,
                         EventId = Schedule.EventId,
                         Description = Schedule.Description,
-                        StartDate = startDate.Value + startTime.Value,
-                        EndDate = endDate.Value + endTime.Value,
+                        StartDate = startDate.Value.Date + startTime.Value,
+                        EndDate = endDate.Value.Date + endTime.Value,
                         CostMan = Schedule.CostMan,
                         CostWoman = Schedule.CostWoman,
                         CostPair = Schedule.CostPair
-                    });
+                    };
                     isFormValid = true;
                 }
             }
@@ -82,7 +82,7 @@ namespace UI.Components.Dialogs
             // Финальная проверка перед закрытием окна
             CheckProperties();
             if (isFormValid)
-                MudDialog.Close(DialogResult.Ok(schedules));
+                MudDialog.Close(DialogResult.Ok(updatedSchedule));
         }
         void Cancel() => MudDialog.Cancel();
     }

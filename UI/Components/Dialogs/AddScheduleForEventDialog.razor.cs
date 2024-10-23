@@ -1,5 +1,6 @@
 ﻿using Common.Dto;
 using Common.Dto.Views;
+using Common.Models.States;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
 
@@ -9,10 +10,11 @@ namespace UI.Components.Dialogs
     {
         [CascadingParameter] MudDialogInstance MudDialog { get; set; } = null!;
         [Parameter, EditorRequired] public EventsViewDto Event { get; set; } = null!;
+        [Parameter, EditorRequired] public List<FeaturesDto> AllFeatures { get; set; } = null!;
 
         SchedulesForEventsDto schedule { get; set; } = new SchedulesForEventsDto();
-
         List<SchedulesForEventsDto> schedules { get; set; } = new List<SchedulesForEventsDto>();
+        List<FeaturesDto> featuresForSchedule { get; set; } = new List<FeaturesDto>();
 
         const int maxStartDateDays = 30 * 3;
         const int maxEndDateDays = 30;
@@ -63,10 +65,25 @@ namespace UI.Components.Dialogs
         }
 
 
+        void OnFeatureChanged(FeaturesDto feature)
+        {
+            var index = featuresForSchedule.FindIndex(x => x.Id == feature.Id);
+            if (index >= 0)
+                featuresForSchedule.RemoveAt(index);
+            else
+                featuresForSchedule.Add(feature);
+
+            CheckProperties();
+        }
+
+
         void CheckProperties()
         {
             isFormValid = false;
             errorMessage = null;
+
+            if (featuresForSchedule.Count == 0)
+                return;
 
             if (startDate.HasValue && startTime.HasValue && endDate.HasValue && endTime.HasValue)
             {

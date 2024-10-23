@@ -1,4 +1,5 @@
-﻿using Common.Dto;
+﻿using AutoMapper.Features;
+using Common.Dto;
 using Common.Dto.Requests;
 using Common.Dto.Responses;
 using Common.Dto.Views;
@@ -19,6 +20,7 @@ namespace UI.Components.Pages.Events
         [Inject] IRepository<EventCheckRequestDto, EventCheckResponseDto> _repoCheckAdding { get; set; } = null!;
         [Inject] IRepository<GetEventsRequestDto, GetEventsResponseDto> _repoGetEvent { get; set; } = null!;
         [Inject] IRepository<UpdateEventRequestDto, UpdateEventResponseDto> _repoUpdateEvent { get; set; } = null!;
+        [Inject] IRepository<GetFeaturesRequestDto, GetFeaturesResponseDto> _repoGetFeatures { get; set;} = null!;
 
         [Inject] IDialogService DialogService { get; set; } = null!;
         [Parameter] public int? EventId { get; set; }
@@ -164,9 +166,13 @@ namespace UI.Components.Pages.Events
         #region /// 2. РАСПИСАНИЕ ///
         async Task AddScheduleDialogAsync()
         {
+            var featuresResponse = await _repoGetFeatures.HttpPostAsync(new GetFeaturesRequestDto());
+            var features = featuresResponse.Response.Features;
+
             var parameters = new DialogParameters<AddScheduleForEventDialog> 
             {
-                { x => x.Event, Event }
+                { x => x.Event, Event },
+                { x => x.AllFeatures, features }
             };
             var options = new DialogOptions { CloseOnEscapeKey = true };
 

@@ -1,6 +1,5 @@
 ﻿using Common.Dto;
 using Common.Dto.Views;
-using Common.Models.States;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
 
@@ -12,9 +11,11 @@ namespace UI.Components.Dialogs
         [Parameter, EditorRequired] public EventsViewDto Event { get; set; } = null!;
         [Parameter, EditorRequired] public List<FeaturesDto> AllFeatures { get; set; } = null!;
 
-        SchedulesForEventsDto schedule { get; set; } = new SchedulesForEventsDto();
-        List<SchedulesForEventsDto> schedules { get; set; } = new List<SchedulesForEventsDto>();
-        List<FeaturesDto> featuresForSchedule { get; set; } = new List<FeaturesDto>();
+        SchedulesForEventsViewDto schedule { get; set; } = new SchedulesForEventsViewDto
+        {
+            Features = new List<FeaturesDto>()
+        };
+        List<SchedulesForEventsViewDto> schedules { get; set; } = new List<SchedulesForEventsViewDto>();
 
         const int maxStartDateDays = 30 * 3;
         const int maxEndDateDays = 30;
@@ -67,11 +68,11 @@ namespace UI.Components.Dialogs
 
         void OnFeatureChanged(FeaturesDto feature)
         {
-            var index = featuresForSchedule.FindIndex(x => x.Id == feature.Id);
+            var index = schedule.Features!.FindIndex(x => x.Id == feature.Id);
             if (index >= 0)
-                featuresForSchedule.RemoveAt(index);
+                schedule.Features.RemoveAt(index);
             else
-                featuresForSchedule.Add(feature);
+                schedule.Features.Add(feature);
 
             CheckProperties();
         }
@@ -82,7 +83,7 @@ namespace UI.Components.Dialogs
             isFormValid = false;
             errorMessage = null;
 
-            if (featuresForSchedule.Count == 0)
+            if (schedule.Features!.Count == 0)
                 return;
 
             if (startDate.HasValue && startTime.HasValue && endDate.HasValue && endTime.HasValue)
@@ -96,7 +97,7 @@ namespace UI.Components.Dialogs
                     if (isOneTimeEvent)
                     {
                         schedules.Clear();
-                        schedules.Add(new SchedulesForEventsDto
+                        schedules.Add(new SchedulesForEventsViewDto
                         {
                             EventId = Event.Id,
                             Description = schedule.Description,
@@ -104,7 +105,8 @@ namespace UI.Components.Dialogs
                             EndDate = endDate.Value + endTime.Value,
                             CostMan = schedule.CostMan,
                             CostWoman = schedule.CostWoman,
-                            CostPair = schedule.CostPair
+                            CostPair = schedule.CostPair,
+                            Features = schedule.Features
                         });
                         isFormValid = true;
                     }
@@ -135,7 +137,7 @@ namespace UI.Components.Dialogs
         void Cancel() => MudDialog.Cancel();
 
 
-        List<SchedulesForEventsDto> GetListOfSchedules(DateTime startDate, TimeSpan startTime, DateTime endDate, TimeSpan endTime, HashSet<short> daysOfWeek)
+        List<SchedulesForEventsViewDto> GetListOfSchedules(DateTime startDate, TimeSpan startTime, DateTime endDate, TimeSpan endTime, HashSet<short> daysOfWeek)
         {
             schedules.Clear();
 
@@ -143,7 +145,7 @@ namespace UI.Components.Dialogs
             {
                 if (daysOfWeek.Contains((short)curDate.DayOfWeek))
                 {
-                    schedules.Add(new SchedulesForEventsDto
+                    schedules.Add(new SchedulesForEventsViewDto
                     {
                         EventId = Event.Id,
                         Description = schedule.Description,
@@ -151,7 +153,8 @@ namespace UI.Components.Dialogs
                         EndDate = startTime > endTime ? curDate.AddDays(1) + endTime : curDate + endTime,
                         CostMan = schedule.CostMan,
                         CostWoman = schedule.CostWoman,
-                        CostPair = schedule.CostPair
+                        CostPair = schedule.CostPair,
+                        Features = schedule.Features
                     });
                 }
             }

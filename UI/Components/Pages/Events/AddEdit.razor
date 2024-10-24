@@ -88,7 +88,7 @@ else
                 </TitleContent>
 
                 <ChildContent>
-                    <MudDataGrid T="SchedulesForEventsDto" Items="@Event.Schedule?.Where(x => x.IsDeleted == false)" HeaderClass="dataGridHideTHead" Elevation="0" Striped Hover Bordered>
+                    <MudDataGrid T="SchedulesForEventsViewDto" Items="@Event.Schedule?.Where(x => x.IsDeleted == false)" HeaderClass="dataGridHideTHead" Elevation="0" Striped Hover Bordered>
                         <Columns>
                             <TemplateColumn CellClass="py-3">
                                 <CellTemplate>
@@ -104,6 +104,15 @@ else
                                                 <MudIcon Icon="@Icons.Material.Filled.Face5" Color="Color.Primary" Style="font-size:16px" Class="ml-2" />@(context.Item.CostMan == 0 ? "Бесплатно" : context.Item.CostMan.ToString() + " руб.")
                                                 <MudIcon Icon="@Icons.Material.Filled.Face3" Color="Color.Error" Style="font-size:15px" Class="ml-2" />@(context.Item.CostWoman == 0 ? "Бесплатно" : context.Item.CostWoman.ToString() + " руб.")
                                             </MudStack>
+                                            @if (context.Item.Features != null)
+                                            {
+                                                <MudStack Row Wrap="Wrap.Wrap" Spacing="2" Class="mt-1">
+                                                    @foreach (var feature in context.Item.Features)
+                                                    {
+                                                        <MudButton Variant="Variant.Outlined" Size="Size.Small" Color="Color.Primary" Style="padding: 0 5px 0 5px; font-size:12px; text-transform:none; font-weight:500; opacity:0.6">@feature.Name</MudButton>
+                                                    }
+                                                </MudStack>
+                                            }
                                         </MudStack>
                                     </MudStack>
                                 </CellTemplate>

@@ -1,5 +1,4 @@
-﻿using AutoMapper.Features;
-using Common.Dto;
+﻿using Common.Dto;
 using Common.Dto.Requests;
 using Common.Dto.Responses;
 using Common.Dto.Views;
@@ -182,9 +181,9 @@ namespace UI.Components.Pages.Events
             if (result != null && result.Canceled == false && result.Data != null)
             {
                 if (Event.Schedule == null)
-                    Event.Schedule = new List<SchedulesForEventsDto>();
+                    Event.Schedule = new List<SchedulesForEventsViewDto>();
 
-                Event.Schedule.AddRange((List<SchedulesForEventsDto>)result.Data);
+                Event.Schedule.AddRange((List<SchedulesForEventsViewDto>)result.Data);
             }
 
             CheckPanel2Properties();
@@ -201,7 +200,7 @@ namespace UI.Components.Pages.Events
             var result = await (await DialogService.ShowAsync<EditScheduleForEventDialog>("Редактирование расписания", parameters, options)).Result;
             if (result != null && result.Canceled == false && result.Data != null)
             {
-                var resultData = (SchedulesForEventsDto)result.Data;
+                var resultData = (SchedulesForEventsViewDto)result.Data;
                 var index = Event.Schedule!.FindIndex(i => i.Id == resultData.Id);
                 if (index > -1)
                     Event.Schedule[index] = resultData;
@@ -210,7 +209,7 @@ namespace UI.Components.Pages.Events
             }
         }
 
-        async Task DeleteScheduleDialogAsync(SchedulesForEventsDto schedule)
+        async Task DeleteScheduleDialogAsync(SchedulesForEventsViewDto schedule)
         {
             var parameters = new DialogParameters<ConfirmDialog>
             {

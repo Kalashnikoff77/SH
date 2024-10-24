@@ -2,7 +2,7 @@
 {
     public class EventsViewDto : EventsDto
     {
-        public List<SchedulesForEventsDto>? Schedule { get; set; }
+        public List<SchedulesForEventsViewDto>? Schedule { get; set; }
 
         public AccountsViewDto? Admin { get; set; }
 

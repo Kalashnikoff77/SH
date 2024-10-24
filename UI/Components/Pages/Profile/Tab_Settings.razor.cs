@@ -277,7 +277,7 @@ namespace UI.Components.Pages.Profile
         async Task UpdateUserDialogAsync(UsersDto user)
         {
             var parameters = new DialogParameters<EditUserDialog> { { x => x.User, user } };
-            var options = new DialogOptions { CloseOnEscapeKey = true };
+            var options = new DialogOptions { CloseOnEscapeKey = true, CloseButton = true };
 
             var resultDialog = await DialogService.ShowAsync<EditUserDialog>("Редактирование партнёра", parameters, options);
             var result = await resultDialog.Result;
@@ -292,7 +292,7 @@ namespace UI.Components.Pages.Profile
         async Task AddUserAsync(MouseEventArgs args)
         {
             var parameters = new DialogParameters<EditUserDialog> { { x => x.User, null } };
-            var options = new DialogOptions { CloseOnEscapeKey = true };
+            var options = new DialogOptions { CloseOnEscapeKey = true, CloseButton = true };
 
             var resultDialog = await DialogService.ShowAsync<EditUserDialog>("Добавление партнёра", parameters, options);
             var result = await resultDialog.Result;

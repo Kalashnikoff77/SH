@@ -173,7 +173,7 @@ namespace UI.Components.Pages.Events
                 { x => x.Event, Event },
                 { x => x.AllFeatures, features }
             };
-            var options = new DialogOptions { CloseOnEscapeKey = true };
+            var options = new DialogOptions { CloseOnEscapeKey = true, CloseButton = true };
 
             var resultDialog = await DialogService.ShowAsync<AddScheduleForEventDialog>("Добавление расписания", parameters, options);
             var result = await resultDialog.Result;
@@ -195,7 +195,7 @@ namespace UI.Components.Pages.Events
             {
                 { x => x.Schedule, Schedule }
             };
-            var options = new DialogOptions { CloseOnEscapeKey = true };
+            var options = new DialogOptions { CloseOnEscapeKey = true, CloseButton = true };
 
             var result = await (await DialogService.ShowAsync<EditScheduleForEventDialog>("Редактирование расписания", parameters, options)).Result;
             if (result != null && result.Canceled == false && result.Data != null)

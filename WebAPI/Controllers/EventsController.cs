@@ -309,8 +309,23 @@ namespace WebAPI.Controllers
                                 $"@{nameof(SchedulesForEventsEntity.EndDate)}, " +
                                 $"@{nameof(SchedulesForEventsEntity.CostMan)}, " +
                                 $"@{nameof(SchedulesForEventsEntity.CostWoman)}, " +
-                                $"@{nameof(SchedulesForEventsEntity.CostPair)})";
-                            result = await conn.ExecuteAsync(sql, new { EventId = request.Event.Id, schedule.Description, schedule.StartDate, schedule.EndDate, schedule.CostMan, schedule.CostWoman, schedule.CostPair}, transaction: transaction);
+                                $"@{nameof(SchedulesForEventsEntity.CostPair)});" +
+                                $"SELECT CAST(SCOPE_IDENTITY() AS INT)";
+                            var insertedScheduleId = await conn.QuerySingleAsync<int>(sql, new { EventId = request.Event.Id, schedule.Description, schedule.StartDate, schedule.EndDate, schedule.CostMan, schedule.CostWoman, schedule.CostPair}, transaction: transaction);
+
+                            if (schedule.Features != null)
+                            {
+                                foreach (var feature in schedule.Features)
+                                {
+                                    sql = $"INSERT INTO FeaturesForSchedules (" +
+                                        $"{nameof(FeaturesForSchedulesEntity.ScheduleId)}, " +
+                                        $"{nameof(FeaturesForSchedulesEntity.FeatureId)}" +
+                                        $") VALUES (" +
+                                        $"@{nameof(FeaturesForSchedulesEntity.ScheduleId)}, " +
+                                        $"@{nameof(FeaturesForSchedulesEntity.FeatureId)})";
+                                    result = await conn.ExecuteAsync(sql, new { ScheduleId = insertedScheduleId, FeatureId = feature.Id }, transaction: transaction);
+                                }
+                            }
                         }
                         else
                         {

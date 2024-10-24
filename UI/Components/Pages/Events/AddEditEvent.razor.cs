@@ -13,7 +13,7 @@ using UI.Models;
 
 namespace UI.Components.Pages.Events
 {
-    public partial class AddEdit
+    public partial class AddEditEvent
     {
         [CascadingParameter] public CurrentState CurrentState { get; set; } = null!;
         [Inject] IRepository<EventCheckRequestDto, EventCheckResponseDto> _repoCheckAdding { get; set; } = null!;
@@ -189,7 +189,7 @@ namespace UI.Components.Pages.Events
             CheckPanel2Properties();
         }
 
-        async Task EditScheduleDialogAsync(SchedulesForEventsDto Schedule)
+        async Task EditScheduleDialogAsync(SchedulesForEventsViewDto Schedule)
         {
             var parameters = new DialogParameters<EditScheduleForEventDialog>
             {

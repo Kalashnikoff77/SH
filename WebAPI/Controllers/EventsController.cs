@@ -12,6 +12,7 @@ using Microsoft.Data.SqlClient;
 using System.Text;
 using System.Text.Json;
 using WebAPI.Exceptions;
+using WebAPI.Extensions;
 
 namespace WebAPI.Controllers
 {
@@ -278,76 +279,44 @@ namespace WebAPI.Controllers
                 conn.Open();
                 using var transaction = conn.BeginTransaction();
 
-                var sql = $"UPDATE Events SET " +
-                    $"{nameof(EventsEntity.Name)} = @{nameof(EventsEntity.Name)}, " +
-                    $"{nameof(EventsEntity.Description)} = @{nameof(EventsEntity.Description)}, " +
-                    $"{nameof(EventsEntity.MaxMen)} = @{nameof(EventsEntity.MaxMen)}, " +
-                    $"{nameof(EventsEntity.MaxWomen)} = @{nameof(EventsEntity.MaxWomen)}, " +
-                    $"{nameof(EventsEntity.MaxPairs)} = @{nameof(EventsEntity.MaxPairs)} " +
-                    $"WHERE Id = @Id AND {nameof(EventsEntity.AdminId)} = @_accountId";
-                var result = await conn.ExecuteAsync(sql, new { request.Event.Id, request.Event.Name, request.Event.Description, request.Event.MaxMen, request.Event.MaxWomen, request.Event.MaxPairs, _accountId }, transaction: transaction);
+                // МЕРОПРИЯТИЕ
+                var result = await conn.ExecuteAsync(request.UpdateEventSql(), 
+                    new { request.Event.Id, request.Event.Name, request.Event.Description, request.Event.MaxMen, request.Event.MaxWomen, request.Event.MaxPairs, _accountId },
+                    transaction: transaction);
 
-                // Расписание
+                // РАСПИСАНИЯ
                 if (request.Event.Schedule != null)
                 {
                     foreach (var schedule in request.Event.Schedule)
                     {
                         if (schedule.Id == 0)
                         {
-                            sql = $"INSERT INTO SchedulesForEvents (" +
-                                $"{nameof(SchedulesForEventsEntity.EventId)}, " +
-                                $"{nameof(SchedulesForEventsEntity.Description)}, " +
-                                $"{nameof(SchedulesForEventsEntity.StartDate)}, " +
-                                $"{nameof(SchedulesForEventsEntity.EndDate)}, " +
-                                $"{nameof(SchedulesForEventsEntity.CostMan)}, " +
-                                $"{nameof(SchedulesForEventsEntity.CostWoman)}, " +
-                                $"{nameof(SchedulesForEventsEntity.CostPair)}" +
-                                $") VALUES (" +
-                                $"@{nameof(SchedulesForEventsEntity.EventId)}, " +
-                                $"@{nameof(SchedulesForEventsEntity.Description)}, " +
-                                $"@{nameof(SchedulesForEventsEntity.StartDate)}, " +
-                                $"@{nameof(SchedulesForEventsEntity.EndDate)}, " +
-                                $"@{nameof(SchedulesForEventsEntity.CostMan)}, " +
-                                $"@{nameof(SchedulesForEventsEntity.CostWoman)}, " +
-                                $"@{nameof(SchedulesForEventsEntity.CostPair)});" +
-                                $"SELECT CAST(SCOPE_IDENTITY() AS INT)";
-                            var insertedScheduleId = await conn.QuerySingleAsync<int>(sql, new { EventId = request.Event.Id, schedule.Description, schedule.StartDate, schedule.EndDate, schedule.CostMan, schedule.CostWoman, schedule.CostPair}, transaction: transaction);
+                            var insertedScheduleId = await conn.QuerySingleAsync<int>(request.InsertScheduleForEventSql(),
+                                new { EventId = request.Event.Id, schedule.Description, schedule.StartDate, schedule.EndDate, schedule.CostMan, schedule.CostWoman, schedule.CostPair},
+                                transaction: transaction);
 
+                            // Доп. услуги расписания (features)
                             if (schedule.Features != null)
                             {
                                 foreach (var feature in schedule.Features)
                                 {
-                                    sql = $"INSERT INTO FeaturesForSchedules (" +
-                                        $"{nameof(FeaturesForSchedulesEntity.ScheduleId)}, " +
-                                        $"{nameof(FeaturesForSchedulesEntity.FeatureId)}" +
-                                        $") VALUES (" +
-                                        $"@{nameof(FeaturesForSchedulesEntity.ScheduleId)}, " +
-                                        $"@{nameof(FeaturesForSchedulesEntity.FeatureId)})";
-                                    result = await conn.ExecuteAsync(sql, new { ScheduleId = insertedScheduleId, FeatureId = feature.Id }, transaction: transaction);
+                                    result = await conn.ExecuteAsync(request.InsertFeatureForScheduleSql(),
+                                        new { ScheduleId = insertedScheduleId, FeatureId = feature.Id },
+                                        transaction: transaction);
                                 }
                             }
                         }
                         else
                         {
-                            sql = $"UPDATE SchedulesForEvents SET " +
-                                $"{nameof(SchedulesForEventsEntity.Description)} = @{nameof(SchedulesForEventsEntity.Description)}, " +
-                                $"{nameof(SchedulesForEventsEntity.StartDate)} = @{nameof(SchedulesForEventsEntity.StartDate)}, " +
-                                $"{nameof(SchedulesForEventsEntity.EndDate)} = @{nameof(SchedulesForEventsEntity.EndDate)}, " +
-                                $"{nameof(SchedulesForEventsEntity.CostMan)} = @{nameof(SchedulesForEventsEntity.CostMan)}, " +
-                                $"{nameof(SchedulesForEventsEntity.CostWoman)} = @{nameof(SchedulesForEventsEntity.CostWoman)}, " +
-                                $"{nameof(SchedulesForEventsEntity.CostPair)} = @{nameof(SchedulesForEventsEntity.CostPair)}, " +
-                                $"{nameof(SchedulesForEventsEntity.IsDeleted)} = @{nameof(SchedulesForEventsEntity.IsDeleted)} " +
-                                $"WHERE Id = @Id AND EventId = @{nameof(SchedulesForEventsEntity.EventId)}";
-                            result = await conn.ExecuteAsync(sql, new { schedule.Id, EventId = request.Event.Id, schedule.Description, schedule.StartDate, schedule.EndDate, schedule.CostMan, schedule.CostWoman, schedule.CostPair, schedule.IsDeleted }, transaction: transaction);
+                            result = await conn.ExecuteAsync(request.UpdateScheduleForEventSql(),
+                                new { schedule.Id, EventId = request.Event.Id, schedule.Description, schedule.StartDate, schedule.EndDate, schedule.CostMan, schedule.CostWoman, schedule.CostPair, schedule.IsDeleted },
+                                transaction: transaction);
                         }
                     }
                 }
-
                 transaction.Commit();
             }
-
             return response;
         }
-
     }
 }

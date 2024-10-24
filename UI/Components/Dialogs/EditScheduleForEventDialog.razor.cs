@@ -1,4 +1,4 @@
-﻿using Common.Dto;
+﻿using Common.Dto.Views;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
 
@@ -7,9 +7,9 @@ namespace UI.Components.Dialogs
     public partial class EditScheduleForEventDialog
     {
         [CascadingParameter] MudDialogInstance MudDialog { get; set; } = null!;
-        [Parameter, EditorRequired] public SchedulesForEventsDto Schedule { get; set; } = new SchedulesForEventsDto();
+        [Parameter, EditorRequired] public SchedulesForEventsViewDto Schedule { get; set; } = new SchedulesForEventsViewDto();
 
-        SchedulesForEventsDto updatedSchedule { get; set; } = new SchedulesForEventsDto();
+        SchedulesForEventsViewDto updatedSchedule { get; set; } = new SchedulesForEventsViewDto();
 
         const int maxStartDateDays = 30 * 3;
         const int maxEndDateDays = 30;
@@ -59,7 +59,7 @@ namespace UI.Components.Dialogs
                 }
                 else
                 {
-                    updatedSchedule = new SchedulesForEventsDto
+                    updatedSchedule = new SchedulesForEventsViewDto
                     {
                         Id = Schedule.Id,
                         EventId = Schedule.EventId,

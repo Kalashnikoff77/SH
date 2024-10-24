@@ -1,6 +1,7 @@
 ﻿using Common.Dto.Requests;
 using Common.Models;
 using Dapper;
+using DataContext.Entities;
 using Microsoft.Data.SqlClient;
 using System.Text.RegularExpressions;
 using WebAPI.Exceptions;
@@ -143,6 +144,82 @@ namespace WebAPI.Extensions
 
             if (!request.AcceptTerms)
                 throw new BadRequestException("Вы не приняли условия пользования сайтом!");
+        }
+
+
+        /// <summary>
+        /// Генерация SQL для обновления мероприятия
+        /// </summary>
+        /// <returns>SQL скрипт</returns>
+        public static string UpdateEventSql(this UpdateEventRequestDto request)
+        {
+            var sql = $"UPDATE Events SET " +
+                $"{nameof(EventsEntity.Name)} = @{nameof(EventsEntity.Name)}, " +
+                $"{nameof(EventsEntity.Description)} = @{nameof(EventsEntity.Description)}, " +
+                $"{nameof(EventsEntity.MaxMen)} = @{nameof(EventsEntity.MaxMen)}, " +
+                $"{nameof(EventsEntity.MaxWomen)} = @{nameof(EventsEntity.MaxWomen)}, " +
+                $"{nameof(EventsEntity.MaxPairs)} = @{nameof(EventsEntity.MaxPairs)} " +
+                $"WHERE Id = @Id AND {nameof(EventsEntity.AdminId)} = @_accountId";
+            return sql;
+        }
+
+        /// <summary>
+        /// Генерация SQL для вставки расписания мероприятия
+        /// </summary>
+        /// <returns>SQL скрипт</returns>
+        public static string InsertScheduleForEventSql(this UpdateEventRequestDto request)
+        {
+            var sql = $"INSERT INTO SchedulesForEvents (" +
+                $"{nameof(SchedulesForEventsEntity.EventId)}, " +
+                $"{nameof(SchedulesForEventsEntity.Description)}, " +
+                $"{nameof(SchedulesForEventsEntity.StartDate)}, " +
+                $"{nameof(SchedulesForEventsEntity.EndDate)}, " +
+                $"{nameof(SchedulesForEventsEntity.CostMan)}, " +
+                $"{nameof(SchedulesForEventsEntity.CostWoman)}, " +
+                $"{nameof(SchedulesForEventsEntity.CostPair)}" +
+                $") VALUES (" +
+                $"@{nameof(SchedulesForEventsEntity.EventId)}, " +
+                $"@{nameof(SchedulesForEventsEntity.Description)}, " +
+                $"@{nameof(SchedulesForEventsEntity.StartDate)}, " +
+                $"@{nameof(SchedulesForEventsEntity.EndDate)}, " +
+                $"@{nameof(SchedulesForEventsEntity.CostMan)}, " +
+                $"@{nameof(SchedulesForEventsEntity.CostWoman)}, " +
+                $"@{nameof(SchedulesForEventsEntity.CostPair)});" +
+                $"SELECT CAST(SCOPE_IDENTITY() AS INT)";
+            return sql;
+        }
+
+        /// <summary>
+        /// Генерация SQL для обновления расписания мероприятия
+        /// </summary>
+        /// <returns>SQL скрипт</returns>
+        public static string UpdateScheduleForEventSql(this UpdateEventRequestDto request)
+        {
+            var sql = $"UPDATE SchedulesForEvents SET " +
+                $"{nameof(SchedulesForEventsEntity.Description)} = @{nameof(SchedulesForEventsEntity.Description)}, " +
+                $"{nameof(SchedulesForEventsEntity.StartDate)} = @{nameof(SchedulesForEventsEntity.StartDate)}, " +
+                $"{nameof(SchedulesForEventsEntity.EndDate)} = @{nameof(SchedulesForEventsEntity.EndDate)}, " +
+                $"{nameof(SchedulesForEventsEntity.CostMan)} = @{nameof(SchedulesForEventsEntity.CostMan)}, " +
+                $"{nameof(SchedulesForEventsEntity.CostWoman)} = @{nameof(SchedulesForEventsEntity.CostWoman)}, " +
+                $"{nameof(SchedulesForEventsEntity.CostPair)} = @{nameof(SchedulesForEventsEntity.CostPair)}, " +
+                $"{nameof(SchedulesForEventsEntity.IsDeleted)} = @{nameof(SchedulesForEventsEntity.IsDeleted)} " +
+                $"WHERE Id = @Id AND EventId = @{nameof(SchedulesForEventsEntity.EventId)}";
+            return sql;
+        }
+
+        /// <summary>
+        /// Генерация SQL для вставки услуги (feature) расписания
+        /// </summary>
+        /// <returns>SQL скрипт</returns>
+        public static string InsertFeatureForScheduleSql(this UpdateEventRequestDto request)
+        {
+            var sql = $"INSERT INTO FeaturesForSchedules (" +
+                $"{nameof(FeaturesForSchedulesEntity.ScheduleId)}, " +
+                $"{nameof(FeaturesForSchedulesEntity.FeatureId)}" +
+                $") VALUES (" +
+                $"@{nameof(FeaturesForSchedulesEntity.ScheduleId)}, " +
+                $"@{nameof(FeaturesForSchedulesEntity.FeatureId)})";
+            return sql;
         }
     }
 }

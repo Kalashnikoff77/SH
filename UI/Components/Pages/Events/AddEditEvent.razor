@@ -32,7 +32,7 @@ else
                 <TitleContent>
                     <div class="d-flex">
                         <MudIcon Color="IsPanel1Valid ? Color.Success : Color.Default" Icon="@Icons.Material.Filled.Settings" class="mr-3" />
-                        <MudText Color="IsPanel1Valid ? Color.Success : Color.Default"><b>1. Общие данные</b></MudText>
+                        <MudText Color="IsPanel1Valid ? Color.Success : Color.Default"><b>1. ОБЩИЕ ДАННЫЕ</b></MudText>
                     </div>
                 </TitleContent>
                 <ChildContent>
@@ -41,15 +41,16 @@ else
                             <MudTextField @bind-Value="Event.Name"
                                           Validation="@(new Func<string?, Task<string?>>(NameValidator))"
                                           HelperText="Пример: Тематическая вечеринка FreeLove"
-                                          Label="Название встречи"
+                                          Label="Название мероприятия"
                                           AdornmentIcon="@Icons.Material.Outlined.ShortText" AdornmentColor="@NameIconColor" Adornment="Adornment.End"
                                           Typo="Typo.body1" Margin="Margin.Normal" Variant="Variant.Outlined" MaxLength="StaticData.DB_EVENT_NAME_MAX" />
                             <MudTextField @bind-Value="Event.Description"
                                           Validation="@(new Func<string?, string?>(DescriptionValidator))"
                                           HelperText="Правила, программа и особенности встречи"
-                                          Label="Описание встречи"
+                                          Label="Описание мероприятия"
                                           Lines="3" MaxLines="5"
                                           AdornmentIcon="@Icons.Material.Outlined.Info" AdornmentColor="@DescriptionIconColor" Adornment="Adornment.End"
+                                          Class="mt-7"
                                           Typo="Typo.body1" Margin="Margin.Normal" Variant="Variant.Outlined" MaxLength="StaticData.DB_EVENT_DESCRIPTION_MAX" />
                         </MudItem>
                         <MudItem sm="4" xs="4">
@@ -82,8 +83,8 @@ else
             <MudExpansionPanel Disabled="!IsPanel1Valid" Expanded="IsPanel1Valid">
                 <TitleContent>
                     <div class="d-flex">
-                        <MudIcon Color="IsPanel2Valid ? Color.Success : Color.Default" Icon="@Icons.Material.Filled.Group" class="mr-3" />
-                        <MudText Color="IsPanel2Valid ? Color.Success : Color.Default"><b>2. Расписание</b></MudText>
+                        <MudIcon Color="IsPanel2Valid ? Color.Success : Color.Default" Icon="@Icons.Material.Filled.CalendarMonth" class="mr-3" />
+                        <MudText Color="IsPanel2Valid ? Color.Success : Color.Default"><b>2. РАСПИСАНИЕ</b></MudText>
                     </div>
                 </TitleContent>
 
@@ -142,7 +143,7 @@ else
                 <TitleContent>
                     <div class="d-flex">
                         <MudIcon Color="IsPanel3Valid ? Color.Success : Color.Default" Icon="@Icons.Material.Filled.Image" class="mr-3" />
-                        <MudText Color="IsPanel3Valid ? Color.Success : Color.Default"><b>3. Фотографии</b></MudText>
+                        <MudText Color="IsPanel3Valid ? Color.Success : Color.Default"><b>3. ФОТОГРАФИИ</b></MudText>
                     </div>
                 </TitleContent>
                 <ChildContent>

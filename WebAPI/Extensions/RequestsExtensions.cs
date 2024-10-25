@@ -3,8 +3,11 @@ using Common.Models;
 using Dapper;
 using DataContext.Entities;
 using Microsoft.Data.SqlClient;
+using Microsoft.Identity.Client;
 using System.Text.RegularExpressions;
+using WebAPI.Controllers;
 using WebAPI.Exceptions;
+using WebAPI.Models;
 
 namespace WebAPI.Extensions
 {
@@ -148,10 +151,10 @@ namespace WebAPI.Extensions
 
 
         /// <summary>
-        /// Генерация SQL для обновления мероприятия
+        /// Обновление мероприятия
         /// </summary>
         /// <returns>SQL скрипт</returns>
-        public static string UpdateEventSql(this UpdateEventRequestDto request)
+        public static async Task<int> UpdateEventAsync(this UpdateEventRequestDto request, UnitOfWork unitOfWork)
         {
             var sql = $"UPDATE Events SET " +
                 $"{nameof(EventsEntity.Name)} = @{nameof(EventsEntity.Name)}, " +
@@ -159,67 +162,83 @@ namespace WebAPI.Extensions
                 $"{nameof(EventsEntity.MaxMen)} = @{nameof(EventsEntity.MaxMen)}, " +
                 $"{nameof(EventsEntity.MaxWomen)} = @{nameof(EventsEntity.MaxWomen)}, " +
                 $"{nameof(EventsEntity.MaxPairs)} = @{nameof(EventsEntity.MaxPairs)} " +
-                $"WHERE Id = @Id AND {nameof(EventsEntity.AdminId)} = @_accountId";
-            return sql;
+                $"WHERE Id = @Id AND {nameof(EventsEntity.AdminId)} = @AccountId";
+
+            var result = await unitOfWork.SqlConnection.ExecuteAsync(sql,
+                new { request.Event.Id, request.Event.Name, request.Event.Description, request.Event.MaxMen, request.Event.MaxWomen, request.Event.MaxPairs, unitOfWork.AccountId },
+                transaction: unitOfWork.SqlTransaction);
+
+            return result;
         }
 
-        /// <summary>
-        /// Генерация SQL для вставки расписания мероприятия
-        /// </summary>
-        /// <returns>SQL скрипт</returns>
-        public static string InsertScheduleForEventSql(this UpdateEventRequestDto request)
+        public static async Task UpdateSchedulesAsync(this UpdateEventRequestDto request, UnitOfWork unitOfWork)
         {
-            var sql = $"INSERT INTO SchedulesForEvents (" +
-                $"{nameof(SchedulesForEventsEntity.EventId)}, " +
-                $"{nameof(SchedulesForEventsEntity.Description)}, " +
-                $"{nameof(SchedulesForEventsEntity.StartDate)}, " +
-                $"{nameof(SchedulesForEventsEntity.EndDate)}, " +
-                $"{nameof(SchedulesForEventsEntity.CostMan)}, " +
-                $"{nameof(SchedulesForEventsEntity.CostWoman)}, " +
-                $"{nameof(SchedulesForEventsEntity.CostPair)}" +
-                $") VALUES (" +
-                $"@{nameof(SchedulesForEventsEntity.EventId)}, " +
-                $"@{nameof(SchedulesForEventsEntity.Description)}, " +
-                $"@{nameof(SchedulesForEventsEntity.StartDate)}, " +
-                $"@{nameof(SchedulesForEventsEntity.EndDate)}, " +
-                $"@{nameof(SchedulesForEventsEntity.CostMan)}, " +
-                $"@{nameof(SchedulesForEventsEntity.CostWoman)}, " +
-                $"@{nameof(SchedulesForEventsEntity.CostPair)});" +
-                $"SELECT CAST(SCOPE_IDENTITY() AS INT)";
-            return sql;
-        }
+            string sql;
 
-        /// <summary>
-        /// Генерация SQL для обновления расписания мероприятия
-        /// </summary>
-        /// <returns>SQL скрипт</returns>
-        public static string UpdateScheduleForEventSql(this UpdateEventRequestDto request)
-        {
-            var sql = $"UPDATE SchedulesForEvents SET " +
-                $"{nameof(SchedulesForEventsEntity.Description)} = @{nameof(SchedulesForEventsEntity.Description)}, " +
-                $"{nameof(SchedulesForEventsEntity.StartDate)} = @{nameof(SchedulesForEventsEntity.StartDate)}, " +
-                $"{nameof(SchedulesForEventsEntity.EndDate)} = @{nameof(SchedulesForEventsEntity.EndDate)}, " +
-                $"{nameof(SchedulesForEventsEntity.CostMan)} = @{nameof(SchedulesForEventsEntity.CostMan)}, " +
-                $"{nameof(SchedulesForEventsEntity.CostWoman)} = @{nameof(SchedulesForEventsEntity.CostWoman)}, " +
-                $"{nameof(SchedulesForEventsEntity.CostPair)} = @{nameof(SchedulesForEventsEntity.CostPair)}, " +
-                $"{nameof(SchedulesForEventsEntity.IsDeleted)} = @{nameof(SchedulesForEventsEntity.IsDeleted)} " +
-                $"WHERE Id = @Id AND EventId = @{nameof(SchedulesForEventsEntity.EventId)}";
-            return sql;
-        }
+            if (request.Event.Schedule != null)
+            {
+                foreach (var schedule in request.Event.Schedule)
+                {
+                    if (schedule.Id == 0)
+                    {
+                        sql = $"INSERT INTO SchedulesForEvents (" +
+                            $"{nameof(SchedulesForEventsEntity.EventId)}, " +
+                            $"{nameof(SchedulesForEventsEntity.Description)}, " +
+                            $"{nameof(SchedulesForEventsEntity.StartDate)}, " +
+                            $"{nameof(SchedulesForEventsEntity.EndDate)}, " +
+                            $"{nameof(SchedulesForEventsEntity.CostMan)}, " +
+                            $"{nameof(SchedulesForEventsEntity.CostWoman)}, " +
+                            $"{nameof(SchedulesForEventsEntity.CostPair)}" +
+                            $") VALUES (" +
+                            $"@{nameof(SchedulesForEventsEntity.EventId)}, " +
+                            $"@{nameof(SchedulesForEventsEntity.Description)}, " +
+                            $"@{nameof(SchedulesForEventsEntity.StartDate)}, " +
+                            $"@{nameof(SchedulesForEventsEntity.EndDate)}, " +
+                            $"@{nameof(SchedulesForEventsEntity.CostMan)}, " +
+                            $"@{nameof(SchedulesForEventsEntity.CostWoman)}, " +
+                            $"@{nameof(SchedulesForEventsEntity.CostPair)});" +
+                            $"SELECT CAST(SCOPE_IDENTITY() AS INT)";
 
-        /// <summary>
-        /// Генерация SQL для вставки услуги (feature) расписания
-        /// </summary>
-        /// <returns>SQL скрипт</returns>
-        public static string InsertFeatureForScheduleSql(this UpdateEventRequestDto request)
-        {
-            var sql = $"INSERT INTO FeaturesForSchedules (" +
-                $"{nameof(FeaturesForSchedulesEntity.ScheduleId)}, " +
-                $"{nameof(FeaturesForSchedulesEntity.FeatureId)}" +
-                $") VALUES (" +
-                $"@{nameof(FeaturesForSchedulesEntity.ScheduleId)}, " +
-                $"@{nameof(FeaturesForSchedulesEntity.FeatureId)})";
-            return sql;
+                        var insertedScheduleId = await unitOfWork.SqlConnection.QuerySingleAsync<int>(sql,
+                            new { EventId = request.Event.Id, schedule.Description, schedule.StartDate, schedule.EndDate, schedule.CostMan, schedule.CostWoman, schedule.CostPair },
+                            transaction: unitOfWork.SqlTransaction);
+
+                        // Доп. услуги расписания (features)
+                        if (schedule.Features != null)
+                        {
+                            foreach (var feature in schedule.Features)
+                            {
+                                sql = $"INSERT INTO FeaturesForSchedules (" +
+                                    $"{nameof(FeaturesForSchedulesEntity.ScheduleId)}, " +
+                                    $"{nameof(FeaturesForSchedulesEntity.FeatureId)}" +
+                                    $") VALUES (" +
+                                    $"@{nameof(FeaturesForSchedulesEntity.ScheduleId)}, " +
+                                    $"@{nameof(FeaturesForSchedulesEntity.FeatureId)})";
+
+                                var result = await unitOfWork.SqlConnection.ExecuteAsync(sql,
+                                    new { ScheduleId = insertedScheduleId, FeatureId = feature.Id },
+                                    transaction: unitOfWork.SqlTransaction);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        sql = $"UPDATE SchedulesForEvents SET " +
+                            $"{nameof(SchedulesForEventsEntity.Description)} = @{nameof(SchedulesForEventsEntity.Description)}, " +
+                            $"{nameof(SchedulesForEventsEntity.StartDate)} = @{nameof(SchedulesForEventsEntity.StartDate)}, " +
+                            $"{nameof(SchedulesForEventsEntity.EndDate)} = @{nameof(SchedulesForEventsEntity.EndDate)}, " +
+                            $"{nameof(SchedulesForEventsEntity.CostMan)} = @{nameof(SchedulesForEventsEntity.CostMan)}, " +
+                            $"{nameof(SchedulesForEventsEntity.CostWoman)} = @{nameof(SchedulesForEventsEntity.CostWoman)}, " +
+                            $"{nameof(SchedulesForEventsEntity.CostPair)} = @{nameof(SchedulesForEventsEntity.CostPair)}, " +
+                            $"{nameof(SchedulesForEventsEntity.IsDeleted)} = @{nameof(SchedulesForEventsEntity.IsDeleted)} " +
+                            $"WHERE Id = @Id AND EventId = @{nameof(SchedulesForEventsEntity.EventId)}";
+
+                        var result = await unitOfWork.SqlConnection.ExecuteAsync(sql,
+                            new { schedule.Id, EventId = request.Event.Id, schedule.Description, schedule.StartDate, schedule.EndDate, schedule.CostMan, schedule.CostWoman, schedule.CostPair, schedule.IsDeleted },
+                            transaction: unitOfWork.SqlTransaction);
+                    }
+                }
+            }
         }
     }
 }

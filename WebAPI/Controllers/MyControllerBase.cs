@@ -14,14 +14,14 @@ namespace WebAPI.Controllers
         protected int _accountId;
         protected Guid _accountGuid;
 
-        protected string? connectionString;
+        protected string connectionString = null!;
 
         public MyControllerBase(IMapper mapper, IConfiguration configuration)
         {
             _mapper = mapper;
             _configuration = configuration;
 
-            connectionString = _configuration.GetConnectionString("DefaultConnection");
+            connectionString = _configuration.GetConnectionString("DefaultConnection")!;
         }
 
         protected bool AuthenticateUser()

@@ -5,7 +5,6 @@ using Common.Dto.Views;
 using Dapper;
 using DataContext.Entities.Views;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Data.SqlClient;
 
 namespace WebAPI.Controllers
 {
@@ -20,17 +19,14 @@ namespace WebAPI.Controllers
         {
             var response = new GetCountriesResponseDto();
 
-            using (var conn = new SqlConnection(connectionString))
-            {
-                IEnumerable<CountriesViewEntity> result;
+            IEnumerable<CountriesViewEntity> result;
 
-                if (request.CountryId == null)
-                    result = await conn.QueryAsync<CountriesViewEntity>($"SELECT * FROM CountriesView ORDER BY [Order] ASC, Name ASC");
-                else
-                    result = await conn.QueryAsync<CountriesViewEntity>($"SELECT TOP 1 * FROM CountriesView WHERE Id = @Id", new { Id = request.CountryId.Value });
+            if (request.CountryId == null)
+                result = await _unitOfWork.SqlConnection.QueryAsync<CountriesViewEntity>($"SELECT * FROM CountriesView ORDER BY [Order] ASC, Name ASC");
+            else
+                result = await _unitOfWork.SqlConnection.QueryAsync<CountriesViewEntity>($"SELECT TOP 1 * FROM CountriesView WHERE Id = @Id", new { Id = request.CountryId.Value });
+            response.Countries = _mapper.Map<List<CountriesViewDto>>(result);
 
-                response.Countries = _mapper.Map<List<CountriesViewDto>>(result);
-            }
             return response;
         }
 
@@ -43,12 +39,10 @@ namespace WebAPI.Controllers
         {
             var response = new GetRegionsForEventsResponseDto();
 
-            using (var conn = new SqlConnection(connectionString))
-            {
-                var sql = "SELECT * FROM RegionsForEventsView ORDER BY [Order]";
-                var result = await conn.QueryAsync<RegionsForEventsViewEntity>(sql);
-                response.RegionsForEvents = _mapper.Map<List<RegionsForEventsViewDto>>(result);
-            }
+            var sql = "SELECT * FROM RegionsForEventsView ORDER BY [Order]";
+            var result = await _unitOfWork.SqlConnection.QueryAsync<RegionsForEventsViewEntity>(sql);
+            response.RegionsForEvents = _mapper.Map<List<RegionsForEventsViewDto>>(result);
+
             return response;
         }
 

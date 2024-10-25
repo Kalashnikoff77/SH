@@ -2,8 +2,7 @@
 using Common.Enums;
 using Dapper;
 using DataContext.Entities;
-using Microsoft.Data.SqlClient;
-using Microsoft.EntityFrameworkCore;
+using System.Data.Common;
 
 namespace WebAPI.Models
 {
@@ -12,7 +11,7 @@ namespace WebAPI.Models
         public int SenderId { get; set; }
         public int RecipientId { get; set; }
 
-        public SqlConnection Conn { get; set; } = null!;
+        public DbConnection Conn { get; set; } = null!;
 
         public RelationsUpdateResponseDto Response { get; set; } = null!;
 

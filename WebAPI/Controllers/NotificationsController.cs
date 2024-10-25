@@ -7,10 +7,8 @@ using DataContext.Entities;
 using DataContext.Entities.Views;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using WebAPI.Exceptions;
-using WebAPI.Extensions;
 
 namespace WebAPI.Controllers
 {
@@ -27,14 +25,11 @@ namespace WebAPI.Controllers
 
             var response = new GetNotificationsCountResponseDto();
 
-            using (var conn = new SqlConnection(connectionString))
-            {
-                var sql = $"SELECT COUNT(*) FROM Notifications WHERE {nameof(NotificationsEntity.RecipientId)} = @_accountId";
-                response.TotalCount = await conn.QueryFirstAsync<int>(sql, new { _accountId });
+            var sql = $"SELECT COUNT(*) FROM Notifications WHERE {nameof(NotificationsEntity.RecipientId)} = @AccountId";
+            response.TotalCount = await _unitOfWork.SqlConnection.QueryFirstAsync<int>(sql, new { _unitOfWork.AccountId });
 
-                sql = $"SELECT COUNT(*) FROM Notifications WHERE {nameof(NotificationsEntity.RecipientId)} = @_accountId AND {nameof(NotificationsEntity.ReadDate)} IS NULL";
-                response.UnreadCount = await conn.QueryFirstAsync<int>(sql, new { _accountId });
-            }
+            sql = $"SELECT COUNT(*) FROM Notifications WHERE {nameof(NotificationsEntity.RecipientId)} = @AccountId AND {nameof(NotificationsEntity.ReadDate)} IS NULL";
+            response.UnreadCount = await _unitOfWork.SqlConnection.QueryFirstAsync<int>(sql, new { _unitOfWork.AccountId });
 
             return response;
         }
@@ -47,32 +42,29 @@ namespace WebAPI.Controllers
 
             var response = new GetNotificationsResponseDto();
 
-            using (var conn = new SqlConnection(connectionString))
+            // Получим все уведомления (с фильтром)
+            var sql = "SELECT * FROM NotificationsView " +
+                $"WHERE {nameof(NotificationsViewEntity.RecipientId)} = @AccountId" +
+                $"ORDER BY {nameof(NotificationsViewEntity.CreateDate)} DESC " +
+                $"OFFSET {request.Skip} ROWS FETCH NEXT {request.Take} ROWS ONLY";
+            var notifications = await _unitOfWork.SqlConnection.QueryAsync<NotificationsViewEntity>(sql, new { _unitOfWork.AccountId });
+            response.Notifications = _mapper.Map<List<NotificationsViewDto>>(notifications);
+
+            // Подсчитаем кол-во уведомлений (с фильтром)
+            sql = "SELECT COUNT(*) FROM NotificationsView " +
+                $"WHERE {nameof(NotificationsViewEntity.RecipientId)} = @AccountId";
+            response.Count = await _unitOfWork.SqlConnection.QuerySingleAsync<int>(sql, new { _unitOfWork.AccountId });
+
+            // Будем отмечать уведомления, как прочитанные?
+            if (request.MarkAsRead && response.Notifications.Any(x => x.ReadDate == null))
             {
-                // Получим все уведомления (с фильтром)
-                var sql = "SELECT * FROM NotificationsView " +
-                    $"WHERE {nameof(NotificationsViewEntity.RecipientId)} = @_accountId" +
-                    $"ORDER BY {nameof(NotificationsViewEntity.CreateDate)} DESC " +
-                    $"OFFSET {request.Skip} ROWS FETCH NEXT {request.Take} ROWS ONLY";
-                var notifications = await conn.QueryAsync<NotificationsViewEntity>(sql, new { _accountId });
-                response.Notifications = _mapper.Map<List<NotificationsViewDto>>(notifications);
+                var ids = response.Notifications
+                    .Where(w => w.ReadDate == null)
+                    .Select(s => s.Id.ToString());
 
-                // Подсчитаем кол-во уведомлений (с фильтром)
-                sql = "SELECT COUNT(*) FROM NotificationsView " +
-                    $"WHERE {nameof(NotificationsViewEntity.RecipientId)} = @_accountId";
-                response.Count = await conn.QuerySingleAsync<int>(sql, new { _accountId });
-
-                // Будем отмечать уведомления, как прочитанные?
-                if (request.MarkAsRead && response.Notifications.Any(x => x.ReadDate == null))
-                {
-                    var ids = response.Notifications
-                        .Where(w => w.ReadDate == null)
-                        .Select(s => s.Id.ToString());
-
-                    if (ids.Any())
-                        await conn.ExecuteAsync($"UPDATE Notifications SET {nameof(NotificationsEntity.ReadDate)} = getdate() " +
-                            $"WHERE Id IN ({ids.Aggregate((a, b) => a + ", " + b)})");
-                }
+                if (ids.Any())
+                    await _unitOfWork.SqlConnection.ExecuteAsync($"UPDATE Notifications SET {nameof(NotificationsEntity.ReadDate)} = getdate() " +
+                        $"WHERE Id IN ({ids.Aggregate((a, b) => a + ", " + b)})");
             }
 
             return response;
@@ -86,20 +78,17 @@ namespace WebAPI.Controllers
 
             var response = new ResponseDtoBase();
 
-            using (var conn = new SqlConnection(connectionString))
-            {
-                var sql = "SELECT TOP 1 Id FROM Accounts WHERE Id = @_accountId";
-                var senderId = await conn.QueryFirstOrDefaultAsync<int?>(sql, new { _accountId }) ?? throw new NotFoundException($"Пользователь-отправитель с Id {_accountId} не найден!");
+            var sql = "SELECT TOP 1 Id FROM Accounts WHERE Id = @AccountId";
+            var senderId = await _unitOfWork.SqlConnection.QueryFirstOrDefaultAsync<int?>(sql, new { _unitOfWork.AccountId }) ?? throw new NotFoundException($"Пользователь-отправитель с Id {_unitOfWork.AccountId} не найден!");
 
-                sql = "SELECT TOP 1 Id FROM Accounts WHERE Id = @RecipientId";
-                var recipientId = await conn.QueryFirstOrDefaultAsync<int?>(sql, new { request.RecipientId }) ?? throw new NotFoundException($"Пользователь-получатель с Id {_accountId} не найден!");
+            sql = "SELECT TOP 1 Id FROM Accounts WHERE Id = @RecipientId";
+            var recipientId = await _unitOfWork.SqlConnection.QueryFirstOrDefaultAsync<int?>(sql, new { request.RecipientId }) ?? throw new NotFoundException($"Пользователь-получатель с Id {_unitOfWork.AccountId} не найден!");
 
-                sql = $"INSERT INTO Notifications ({nameof(NotificationsEntity.SenderId)}, {nameof(NotificationsEntity.RecipientId)}, {nameof(NotificationsEntity.Text)}) " +
-                    "VALUES (@senderId, @recipientId, @Text)";
-                await conn.ExecuteAsync(sql, new { senderId, recipientId, request.Text });
+            sql = $"INSERT INTO Notifications ({nameof(NotificationsEntity.SenderId)}, {nameof(NotificationsEntity.RecipientId)}, {nameof(NotificationsEntity.Text)}) " +
+                "VALUES (@senderId, @recipientId, @Text)";
+            await _unitOfWork.SqlConnection.ExecuteAsync(sql, new { senderId, recipientId, request.Text });
 
-                return response;
-            }
+            return response;
         }
     }
 }

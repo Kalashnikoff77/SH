@@ -2,8 +2,8 @@
 using Common.Models;
 using Dapper;
 using DataContext.Entities;
-using Microsoft.Data.SqlClient;
 using PhotoSauce.MagicScaler;
+using System.Data.Common;
 
 namespace WebAPI.Extensions
 {
@@ -14,7 +14,7 @@ namespace WebAPI.Extensions
         /// </summary>
         /// <param name="accountsEntity"></param>
         /// <param name="photo"></param>
-        public static async Task ProcessPhotoAfterRegistration(this AccountsEntity accountsEntity, SqlConnection conn, AccountRegisterRequestDto request)
+        public static async Task ProcessPhotoAfterRegistration(this AccountsEntity accountsEntity, DbConnection conn, AccountRegisterRequestDto request)
         {
             if (!string.IsNullOrWhiteSpace(request.OriginalPhoto))
             {

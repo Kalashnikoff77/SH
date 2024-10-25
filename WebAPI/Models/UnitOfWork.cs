@@ -3,19 +3,16 @@ using System.Data.Common;
 
 namespace WebAPI.Models
 {
-    public class UnitOfWork : IDisposable
+    public class UnitOfWork : IAsyncDisposable
     {
         public UnitOfWork(string connectionString) =>
             SqlConnection = new SqlConnection(connectionString);
 
-        public UnitOfWork(string connectionString, int accountId) : this(connectionString) =>
-            AccountId = accountId;
-
         public DbConnection SqlConnection { get; set; } = null!;
-
         public DbTransaction? SqlTransaction { get; set; }
 
         public int? AccountId { get; set; }
+        public Guid? AccountGuid { get; set; }
 
         public async Task BeginTransactionAsync()
         {
@@ -29,7 +26,7 @@ namespace WebAPI.Models
                 await SqlTransaction.CommitAsync();
         }
 
-        public async void Dispose()
+        public async ValueTask DisposeAsync()
         {
             if (SqlTransaction != null)
                 await SqlTransaction.DisposeAsync();

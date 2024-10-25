@@ -2,10 +2,8 @@
 using Common.Models;
 using Dapper;
 using DataContext.Entities;
-using Microsoft.Data.SqlClient;
-using Microsoft.Identity.Client;
+using System.Data.Common;
 using System.Text.RegularExpressions;
-using WebAPI.Controllers;
 using WebAPI.Exceptions;
 using WebAPI.Models;
 
@@ -13,7 +11,7 @@ namespace WebAPI.Extensions
 {
     public static class RequestsExtensions
     {
-        public static async Task ValidateAsync(this AccountUpdateRequestDto request, int _accountId, SqlConnection conn)
+        public static async Task ValidateAsync(this AccountUpdateRequestDto request, int _accountId, DbConnection conn)
         {
             if (string.IsNullOrWhiteSpace(request.Email))
                 throw new BadRequestException("Укажите Ваш email!");
@@ -76,7 +74,7 @@ namespace WebAPI.Extensions
         }
 
 
-        public static async Task ValidateAsync(this AccountRegisterRequestDto request, SqlConnection conn)
+        public static async Task ValidateAsync(this AccountRegisterRequestDto request, DbConnection conn)
         {
             if (string.IsNullOrWhiteSpace(request.Email))
                 throw new BadRequestException("Укажите Ваш email!");

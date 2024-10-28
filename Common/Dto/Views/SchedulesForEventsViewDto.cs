@@ -4,7 +4,7 @@
     {
         public EventsViewDto? Event { get; set; }
 
-        public List<FeaturesDto>? Features { get; set; }
+        public List<FeaturesDto>? Features { get; set; } = new List<FeaturesDto>();
 
         public List<SchedulesForAccountsViewDto>? RegisteredAccounts { get; set; }
 

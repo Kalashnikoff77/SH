@@ -41,17 +41,32 @@
             </MudItem>
 
             <MudItem sm="4" xs="12">
-                <MudNumericField @bind-Value="Schedule.CostPair" Label="Цена для пары" Variant="Variant.Text" Min="0" Max="500000" />
+                <MudNumericField @bind-Value="ScheduleCopy.CostPair" Label="Цена для пары" Variant="Variant.Text" Min="0" Max="500000" />
             </MudItem>
             <MudItem sm="4" xs="12">
-                <MudNumericField @bind-Value="Schedule.CostMan" Label="Цена для мужчины" Variant="Variant.Text" Min="0" Max="500000" />
+                <MudNumericField @bind-Value="ScheduleCopy.CostMan" Label="Цена для мужчины" Variant="Variant.Text" Min="0" Max="500000" />
             </MudItem>
             <MudItem sm="4" xs="12">
-                <MudNumericField @bind-Value="Schedule.CostWoman" Label="Цена для женщины" Variant="Variant.Text" Min="0" Max="500000" />
+                <MudNumericField @bind-Value="ScheduleCopy.CostWoman" Label="Цена для женщины" Variant="Variant.Text" Min="0" Max="500000" />
+            </MudItem>
+
+            <MudItem sm="12">
+                <MudStack Row Wrap="Wrap.Wrap" Spacing="1" Justify="Justify.Center" Class="mt-3">
+                    @{
+                        var btnColor = Color.Default;
+                        bool disabled = false;
+                        foreach (var feature in AllFeatures.OrderBy(o => o.Name))
+                        {
+                            btnColor = ScheduleCopy.Features!.Any(x => x.Id == feature.Id) ? Color.Info : Color.Default;
+                            disabled = ScheduleCopy.Features!.Count >= 5 && btnColor == Color.Default ? true : false;
+                            <MudButton OnClick="() => OnFeatureChanged(feature)" Disabled="@disabled" Variant="Variant.Outlined" Size="Size.Small" Color="btnColor" Style="padding: 0 5px 0 5px; font-size:12px; text-transform:none;">@feature.Name</MudButton>
+                        }
+                    }
+                </MudStack>
             </MudItem>
 
             <MudItem xs="12">
-                <MudTextField T="string" Label="Описание" Variant="Variant.Text" @bind-Value="@Schedule.Description" Lines="2" />
+                <MudTextField T="string" Label="Описание" Variant="Variant.Text" @bind-Value="@ScheduleCopy.Description" Lines="2" />
             </MudItem>
 
         </MudGrid>

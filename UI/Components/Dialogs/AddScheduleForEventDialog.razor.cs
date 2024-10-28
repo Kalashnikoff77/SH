@@ -1,5 +1,8 @@
 ﻿using Common.Dto;
+using Common.Dto.Requests;
+using Common.Dto.Responses;
 using Common.Dto.Views;
+using Common.Repository;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
 
@@ -9,13 +12,20 @@ namespace UI.Components.Dialogs
     {
         [CascadingParameter] MudDialogInstance MudDialog { get; set; } = null!;
         [Parameter, EditorRequired] public EventsViewDto Event { get; set; } = null!;
-        [Parameter, EditorRequired] public List<FeaturesDto> AllFeatures { get; set; } = null!;
 
-        SchedulesForEventsViewDto schedule { get; set; } = new SchedulesForEventsViewDto
-        {
-            Features = new List<FeaturesDto>()
-        };
+        [Inject] IRepository<GetFeaturesRequestDto, GetFeaturesResponseDto> _repoGetFeatures { get; set; } = null!;
+
+        public List<FeaturesDto> AllFeatures { get; set; } = new List<FeaturesDto>();
+
+        SchedulesForEventsViewDto schedule { get; set; } = new SchedulesForEventsViewDto();
+
         List<SchedulesForEventsViewDto> schedules { get; set; } = new List<SchedulesForEventsViewDto>();
+
+        protected async override Task OnInitializedAsync()
+        {
+            var featuresResponse = await _repoGetFeatures.HttpPostAsync(new GetFeaturesRequestDto());
+            AllFeatures = featuresResponse.Response.Features;
+        }
 
         const int maxStartDateDays = 30 * 3;
         const int maxEndDateDays = 30;

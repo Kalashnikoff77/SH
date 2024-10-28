@@ -177,6 +177,9 @@ namespace WebAPI.Extensions
             {
                 foreach (var schedule in request.Event.Schedule)
                 {
+                    if (schedule.Features == null) throw new BadRequestException($"Не выбрана ни одна услуга!");
+                    
+                    // Добавление нового расписания с услугами
                     if (schedule.Id == 0)
                     {
                         sql = $"INSERT INTO SchedulesForEvents (" +
@@ -202,23 +205,13 @@ namespace WebAPI.Extensions
                             transaction: unitOfWork.SqlTransaction);
 
                         // Доп. услуги расписания (features)
-                        if (schedule.Features != null)
-                        {
-                            foreach (var feature in schedule.Features)
-                            {
-                                sql = $"INSERT INTO FeaturesForSchedules (" +
-                                    $"{nameof(FeaturesForSchedulesEntity.ScheduleId)}, " +
-                                    $"{nameof(FeaturesForSchedulesEntity.FeatureId)}" +
-                                    $") VALUES (" +
-                                    $"@{nameof(FeaturesForSchedulesEntity.ScheduleId)}, " +
-                                    $"@{nameof(FeaturesForSchedulesEntity.FeatureId)})";
-
-                                var result = await unitOfWork.SqlConnection.ExecuteAsync(sql,
-                                    new { ScheduleId = insertedScheduleId, FeatureId = feature.Id },
-                                    transaction: unitOfWork.SqlTransaction);
-                            }
-                        }
+                        var p = new DynamicParameters();
+                        p.Add("@ScheduleId", insertedScheduleId);
+                        p.Add("@FeaturesIds", string.Join(",", schedule.Features.Select(s => s.Id)));
+                        await unitOfWork.SqlConnection.ExecuteAsync("UpdateFeaturesForSchedule_sp", p, commandType: System.Data.CommandType.StoredProcedure, transaction: unitOfWork.SqlTransaction);
                     }
+
+                    // Обновление расписания с услугами
                     else
                     {
                         sql = $"UPDATE SchedulesForEvents SET " +
@@ -234,6 +227,12 @@ namespace WebAPI.Extensions
                         var result = await unitOfWork.SqlConnection.ExecuteAsync(sql,
                             new { schedule.Id, EventId = request.Event.Id, schedule.Description, schedule.StartDate, schedule.EndDate, schedule.CostMan, schedule.CostWoman, schedule.CostPair, schedule.IsDeleted },
                             transaction: unitOfWork.SqlTransaction);
+
+                        // Доп. услуги расписания (features)
+                        var p = new DynamicParameters();
+                        p.Add("@ScheduleId", schedule.Id);
+                        p.Add("@FeaturesIds", string.Join(",", schedule.Features.Select(s => s.Id)));
+                        await unitOfWork.SqlConnection.ExecuteAsync("UpdateFeaturesForSchedule_sp", p, commandType: System.Data.CommandType.StoredProcedure, transaction: unitOfWork.SqlTransaction);
                     }
                 }
             }

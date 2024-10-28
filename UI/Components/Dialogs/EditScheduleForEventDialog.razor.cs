@@ -1,4 +1,9 @@
-﻿using Common.Dto.Views;
+﻿using Common.Dto;
+using Common.Dto.Requests;
+using Common.Dto.Responses;
+using Common.Dto.Views;
+using Common.Extensions;
+using Common.Repository;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
 
@@ -7,25 +12,39 @@ namespace UI.Components.Dialogs
     public partial class EditScheduleForEventDialog
     {
         [CascadingParameter] MudDialogInstance MudDialog { get; set; } = null!;
-        [Parameter, EditorRequired] public SchedulesForEventsViewDto Schedule { get; set; } = new SchedulesForEventsViewDto();
+        [Parameter, EditorRequired] public SchedulesForEventsViewDto Schedule { get; set; } = null!;
 
-        SchedulesForEventsViewDto updatedSchedule { get; set; } = new SchedulesForEventsViewDto();
+        [Inject] IRepository<GetFeaturesRequestDto, GetFeaturesResponseDto> _repoGetFeatures { get; set; } = null!;
+        List<FeaturesDto> AllFeatures { get; set; } = new List<FeaturesDto>();
+
+        SchedulesForEventsViewDto ScheduleCopy { get; set; } = new SchedulesForEventsViewDto();
 
         const int maxStartDateDays = 30 * 3;
         const int maxEndDateDays = 30;
         bool isFormValid = false;
         string? errorMessage;
 
-        protected override void OnInitialized()
+        protected async override Task OnInitializedAsync()
         {
-            startTime = new TimeSpan(Schedule.StartDate.Hour, Schedule.StartDate.Minute, Schedule.StartDate.Second);
-            endTime = new TimeSpan(Schedule.EndDate.Hour, Schedule.EndDate.Minute, Schedule.EndDate.Second);
+            var featuresResponse = await _repoGetFeatures.HttpPostAsync(new GetFeaturesRequestDto());
+            AllFeatures = featuresResponse.Response.Features;
+
+            startTime = new TimeSpan(ScheduleCopy.StartDate.Hour, ScheduleCopy.StartDate.Minute, ScheduleCopy.StartDate.Second);
+            endTime = new TimeSpan(ScheduleCopy.EndDate.Hour, ScheduleCopy.EndDate.Minute, ScheduleCopy.EndDate.Second);
+        }
+
+        protected override void OnParametersSet()
+        {
+            ScheduleCopy = Schedule.DeepCopy<SchedulesForEventsViewDto>()!;
+
+            if (ScheduleCopy.Features == null)
+                ScheduleCopy.Features = new List<FeaturesDto>();
         }
 
         DateTime? startDate
         {
-            get => Schedule.StartDate == DateTime.MinValue ? null : Schedule.StartDate;
-            set { Schedule.StartDate = value!.Value; CheckProperties(); }
+            get => ScheduleCopy.StartDate == DateTime.MinValue ? null : ScheduleCopy.StartDate;
+            set { ScheduleCopy.StartDate = value!.Value; CheckProperties(); }
         }
         TimeSpan? _startTime;
         TimeSpan? startTime
@@ -36,8 +55,8 @@ namespace UI.Components.Dialogs
 
         DateTime? endDate
         {
-            get => Schedule.EndDate == DateTime.MinValue ? null : Schedule.EndDate; 
-            set { Schedule.EndDate = value!.Value; CheckProperties(); }
+            get => ScheduleCopy.EndDate == DateTime.MinValue ? null : ScheduleCopy.EndDate; 
+            set { ScheduleCopy.EndDate = value!.Value; CheckProperties(); }
         }
         TimeSpan? _endTime;
         TimeSpan? endTime
@@ -46,32 +65,30 @@ namespace UI.Components.Dialogs
             set { _endTime = value!.Value; CheckProperties(); }
         }
 
+        void OnFeatureChanged(FeaturesDto feature)
+        {
+            var index = ScheduleCopy.Features!.FindIndex(x => x.Id == feature.Id);
+            if (index >= 0)
+                ScheduleCopy.Features.RemoveAt(index);
+            else
+                ScheduleCopy.Features.Add(feature);
+            CheckProperties();
+        }
+
         void CheckProperties()
         {
             isFormValid = false;
             errorMessage = null;
 
+            if (ScheduleCopy.Features!.Count == 0)
+                return;
+
             if (startDate.HasValue && startTime.HasValue && endDate.HasValue && endTime.HasValue)
             {
                 if (startDate.Value.Date + startTime.Value >= endDate.Value.Date + endTime.Value)
-                {
                     errorMessage = "Дата начала мероприятия должна быть меньше даты его окончания";
-                }
                 else
-                {
-                    updatedSchedule = new SchedulesForEventsViewDto
-                    {
-                        Id = Schedule.Id,
-                        EventId = Schedule.EventId,
-                        Description = Schedule.Description,
-                        StartDate = startDate.Value.Date + startTime.Value,
-                        EndDate = endDate.Value.Date + endTime.Value,
-                        CostMan = Schedule.CostMan,
-                        CostWoman = Schedule.CostWoman,
-                        CostPair = Schedule.CostPair
-                    };
                     isFormValid = true;
-                }
             }
             StateHasChanged();
         }
@@ -82,7 +99,7 @@ namespace UI.Components.Dialogs
             // Финальная проверка перед закрытием окна
             CheckProperties();
             if (isFormValid)
-                MudDialog.Close(DialogResult.Ok(updatedSchedule));
+                MudDialog.Close(DialogResult.Ok(ScheduleCopy));
         }
         void Cancel() => MudDialog.Cancel();
     }

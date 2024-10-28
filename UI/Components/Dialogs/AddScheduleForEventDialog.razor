@@ -79,11 +79,15 @@
 
                 <MudItem sm="12">
                     <MudStack Row Wrap="Wrap.Wrap" Spacing="1" Justify="Justify.Center" Class="mt-3">
-                        @foreach (var feature in AllFeatures)
-                        {
-                            var btnColor = schedule.Features!.Any(x => x.Id == feature.Id) ? Color.Info : Color.Default;
-                            var disabled = schedule.Features!.Count >= 5 && btnColor == Color.Default ? true : false;
-                            <MudButton OnClick="() => OnFeatureChanged(feature)" Disabled="@disabled" Variant="Variant.Outlined" Size="Size.Small" Color="btnColor" Style="padding: 0 5px 0 5px; font-size:12px; text-transform:none;">@feature.Name</MudButton>
+                        @{
+                            var btnColor = Color.Default;
+                            bool disabled = false;
+                            foreach (var feature in AllFeatures.OrderBy(o => o.Name))
+                            {
+                                btnColor = schedule.Features.Any(x => x.Id == feature.Id) ? Color.Info : Color.Default;
+                                disabled = schedule.Features.Count >= 5 && btnColor == Color.Default ? true : false;
+                                <MudButton OnClick="() => OnFeatureChanged(feature)" Color="@btnColor" Disabled="@disabled" Variant="Variant.Outlined" Size="Size.Small" Style="padding: 0 5px 0 5px; font-size:12px; text-transform:none;">@feature.Name</MudButton>
+                            }
                         }
                     </MudStack>
                 </MudItem>

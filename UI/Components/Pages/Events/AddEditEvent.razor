@@ -108,7 +108,7 @@ else
                                             @if (context.Item.Features != null)
                                             {
                                                 <MudStack Row Wrap="Wrap.Wrap" Spacing="2" Class="mt-1">
-                                                    @foreach (var feature in context.Item.Features)
+                                                    @foreach (var feature in context.Item.Features.OrderBy(o => o.Name))
                                                     {
                                                         <MudButton Variant="Variant.Outlined" Size="Size.Small" Color="Color.Primary" Style="padding: 0 5px 0 5px; font-size:12px; text-transform:none; font-weight:500; opacity:0.6">@feature.Name</MudButton>
                                                     }

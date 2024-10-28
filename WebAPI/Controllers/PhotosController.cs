@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using PhotoSauce.MagicScaler;
+using System;
 using WebAPI.Exceptions;
 
 namespace WebAPI.Controllers
@@ -91,27 +92,30 @@ namespace WebAPI.Controllers
 
 
         /// <summary>
-        /// Загрузка в базу и каталог фото, которые в Блейзоре были помещены в каталог temp
+        /// Загрузка в базу и каталог фото, которое в Блейзоре было помещено в каталог temp
         /// </summary>
-        [Route("UploadFromTemp"), HttpPost, Authorize]
-        public async Task<UploadPhotoFromTempResponseDto> UploadFromTempAsync(UploadPhotoFromTempRequestDto request)
+        [Route("UploadAccountFromTemp"), HttpPost, Authorize]
+        public async Task<UploadAccountPhotoFromTempResponseDto> UploadAccountFromTempAsync(UploadAccountPhotoFromTempRequestDto request)
         {
             AuthenticateUser();
 
-            var response = new UploadPhotoFromTempResponseDto();
+            var response = new UploadAccountPhotoFromTempResponseDto();
+
+            var guid = Guid.NewGuid();
+            var tempDir = StaticData.AccountsPhotosTempDir;
+            var dir = $"{StaticData.AccountsPhotosDir}/{_unitOfWork.AccountId}/{guid}";
 
             if (!string.IsNullOrWhiteSpace(request.PhotosTempFileNames))
             {
-                var guid = Guid.NewGuid();
-                Directory.CreateDirectory($"{StaticData.AccountsPhotosDir}/{_unitOfWork.AccountId}/{guid}");
+                Directory.CreateDirectory(dir);
 
                 foreach (var image in StaticData.Images)
                 {
-                    var fileName = $"{StaticData.AccountsPhotosDir}/{_unitOfWork.AccountId}/{guid}/{image.Key}.jpg";
+                    var fileName = $"{dir}/{image.Key}.jpg";
 
                     using (MemoryStream output = new MemoryStream(500000))
                     {
-                        MagicImageProcessor.ProcessImage($"{StaticData.AccountsPhotosTempDir}/{request.PhotosTempFileNames}", output, image.Value);
+                        MagicImageProcessor.ProcessImage($"{tempDir}/{request.PhotosTempFileNames}", output, image.Value);
                         await System.IO.File.WriteAllBytesAsync(fileName, output.ToArray());
                     }
                 }
@@ -130,9 +134,59 @@ namespace WebAPI.Controllers
                 };
             }
 
-            System.IO.File.Delete($"{StaticData.AccountsPhotosTempDir}/{request.PhotosTempFileNames}");
+            System.IO.File.Delete($"{tempDir}/{request.PhotosTempFileNames}");
 
             return response;
         }
+
+
+        /// <summary>
+        /// Загрузка в базу и каталог фото, которое в Блейзоре было помещено в каталог temp
+        /// </summary>
+        [Route("UploadEventFromTemp"), HttpPost, Authorize]
+        public async Task<UploadEventPhotoFromTempResponseDto> UploadEventFromTempAsync(UploadEventPhotoFromTempRequestDto request)
+        {
+            AuthenticateUser();
+
+            var response = new UploadEventPhotoFromTempResponseDto();
+
+            var guid = Guid.NewGuid();
+            var tempDir = StaticData.EventsPhotosTempDir;
+            var dir = $"{StaticData.EventsPhotosDir}/{request.EventId}/{guid}";
+
+            if (!string.IsNullOrWhiteSpace(request.PhotosTempFileNames))
+            {
+                Directory.CreateDirectory(dir);
+
+                foreach (var image in StaticData.Images)
+                {
+                    var fileName = $"{dir}/{image.Key}.jpg";
+
+                    using (MemoryStream output = new MemoryStream(500000))
+                    {
+                        MagicImageProcessor.ProcessImage($"{tempDir}/{request.PhotosTempFileNames}", output, image.Value);
+                        await System.IO.File.WriteAllBytesAsync(fileName, output.ToArray());
+                    }
+                }
+
+                var sql = "INSERT INTO PhotosForEvents " +
+                    $"({nameof(PhotosForEventsEntity.Guid)}, {nameof(PhotosForEventsEntity.EventId)}) " +
+                    "VALUES " +
+                    $"(@{nameof(PhotosForEventsEntity.Guid)}, @{nameof(PhotosForEventsEntity.EventId)});" +
+                    $"SELECT CAST(SCOPE_IDENTITY() AS INT)";
+                var newId = await _unitOfWork.SqlConnection.QuerySingleAsync<int>(sql, new { Guid = guid, request.EventId });
+
+                response.NewPhoto = new PhotosForEventsDto
+                {
+                    Id = newId,
+                    Guid = guid
+                };
+            }
+
+            System.IO.File.Delete($"{tempDir}/{request.PhotosTempFileNames}");
+
+            return response;
+        }
+
     }
 }

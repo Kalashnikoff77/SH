@@ -10,7 +10,7 @@ else
     <PageTitle>Добавление мероприятия</PageTitle>
 }
 
-@if (CurrentState.Account != null) 
+@if (CurrentState.Account != null)
 {
     <MudStack Style="min-width:300px; max-width:750px" Class="ml-3">
 
@@ -147,11 +147,31 @@ else
                     </div>
                 </TitleContent>
                 <ChildContent>
+                    <MudStack Row Justify="Justify.Center" class="mb-5">
+                        <MudFileUpload T="IReadOnlyList<IBrowserFile>" MaximumFileCount="20" Accept=".jpg,.jpeg,.png" FilesChanged="UploadPhotos">
+                            <ActivatorContent>
+                                <MudButton Disabled="processingPhoto" Size="Size.Small" Variant="Variant.Outlined" Color="Color.Primary" StartIcon="@Icons.Material.Sharp.Upload">
+                                    @if (processingPhoto)
+                                    {
+                                        <MudProgressCircular Size="Size.Small" Indeterminate="true" />
+                                        <MudText Class="ms-2">Обработка фото...</MudText>
+                                    }
+                                    else
+                                    {
+                                        <MudText>Добавить фотографии (макс. 20 шт.)</MudText>
+                                    }
+                                </MudButton>
+                            </ActivatorContent>
+                        </MudFileUpload>
+                    </MudStack>
+
                 </ChildContent>
             </MudExpansionPanel>
 
         </MudExpansionPanels>
 
+        
+        @* КНОПКА СОХРАНЕНИЯ *@
         <MudStack AlignItems="AlignItems.Center" Class="mt-5" Row="false">
             @if (EventId == null)
             {

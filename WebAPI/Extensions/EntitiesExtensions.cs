@@ -3,7 +3,7 @@ using Common.Models;
 using Dapper;
 using DataContext.Entities;
 using PhotoSauce.MagicScaler;
-using System.Data.Common;
+using WebAPI.Models;
 
 namespace WebAPI.Extensions
 {
@@ -12,9 +12,7 @@ namespace WebAPI.Extensions
         /// <summary>
         /// Обработка фото при регистрации аккаунта
         /// </summary>
-        /// <param name="accountsEntity"></param>
-        /// <param name="photo"></param>
-        public static async Task ProcessPhotoAfterRegistration(this AccountsEntity accountsEntity, DbConnection conn, AccountRegisterRequestDto request)
+        public static async Task ProcessPhotoAfterRegistration(this AccountsEntity accountsEntity, UnitOfWork unitOfWork, AccountRegisterRequestDto request)
         {
             if (!string.IsNullOrWhiteSpace(request.OriginalPhoto))
             {
@@ -36,7 +34,7 @@ namespace WebAPI.Extensions
                     $"({nameof(PhotosForAccountsEntity.Comment)}, {nameof(PhotosForAccountsEntity.Guid)}, {nameof(PhotosForAccountsEntity.IsAvatar)}, {nameof(PhotosForAccountsEntity.AccountId)}) " +
                     "VALUES " +
                     $"(@{nameof(PhotosForAccountsEntity.Comment)}, @{nameof(PhotosForAccountsEntity.Guid)}, @{nameof(PhotosForAccountsEntity.IsAvatar)}, @{nameof(PhotosForAccountsEntity.AccountId)})";
-                await conn.ExecuteAsync(sql, new { Comment = accountsEntity.Name, Guid = guid, IsAvatar = true, AccountId = accountsEntity.Id});
+                await unitOfWork.SqlConnection.ExecuteAsync(sql, new { Comment = accountsEntity.Name, Guid = guid, IsAvatar = true, AccountId = accountsEntity.Id});
 
                 File.Delete($"{StaticData.AccountsPhotosTempDir}/{request.OriginalPhoto}");
             }

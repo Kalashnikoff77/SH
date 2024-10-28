@@ -89,9 +89,11 @@ namespace Common.Models
         public const short DB_EVENT_DESCRIPTION_MAX = 2048;
         public const short DB_EVENT_ADDRESS_MAX = 150;
 
-        public const string AccountsPhotosDir = "../UI/wwwroot/images/AccountsPhotos/";
-        public const string AccountsPhotosTempDir = "../UI/wwwroot/images/AccountsPhotos/temp/";
-        public const string EventsPhotosDir = "../UI/wwwroot/images/EventsPhotos/";
+        public const string AccountsPhotosDir = "../UI/wwwroot/images/AccountsPhotos";
+        public const string AccountsPhotosTempDir = AccountsPhotosDir + "/temp";
+
+        public const string EventsPhotosDir = "../UI/wwwroot/images/EventsPhotos";
+        public const string EventsPhotosTempDir = EventsPhotosDir + "/temp";
 
         /// <summary>
         /// Генерация токена JWT

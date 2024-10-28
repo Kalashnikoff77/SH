@@ -16,7 +16,7 @@ namespace UI.Components.Pages.Profile
         [Parameter, EditorRequired] public EventCallback UpdateProfileCallback { get; set; }
 
         [Inject] IRepository<UpdatePhotoRequestDto, ResponseDtoBase> _repoUpdatePhoto { get; set; } = null!;
-        [Inject] IRepository<UploadPhotoFromTempRequestDto, UploadPhotoFromTempResponseDto> _repoUploadPhoto { get; set; } = null!;
+        [Inject] IRepository<UploadAccountPhotoFromTempRequestDto, UploadAccountPhotoFromTempResponseDto> _repoUploadPhoto { get; set; } = null!;
 
         bool processingPhoto;
         string? avatarBackground;
@@ -74,7 +74,7 @@ namespace UI.Components.Pages.Profile
                 processingPhoto = true;
                 StateHasChanged();
 
-                var request = new UploadPhotoFromTempRequestDto { Token = CurrentState.Account.Token };
+                var request = new UploadAccountPhotoFromTempRequestDto { Token = CurrentState.Account.Token };
 
                 List<string> files = new List<string>();
 

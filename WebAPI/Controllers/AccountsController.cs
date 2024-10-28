@@ -150,7 +150,7 @@ namespace WebAPI.Controllers
 
             await _unitOfWork.CommitTransactionAsync();
 
-            await accountsEntity.ProcessPhotoAfterRegistration(_unitOfWork.SqlConnection, request);
+            await accountsEntity.ProcessPhotoAfterRegistration(_unitOfWork, request);
 
             return response;
         }
@@ -335,8 +335,8 @@ namespace WebAPI.Controllers
         /// <summary>
         /// Регистрация пользователя на мероприятие (или отмена регистрации)
         /// </summary>
-        [Route("EventRegistration"), HttpPost, Authorize]
-        public async Task<EventRegistrationResponseDto> EventRegistrationAsync(EventRegistrationRequestDto request)
+        [Route("RegistrationForEvent"), HttpPost, Authorize]
+        public async Task<EventRegistrationResponseDto> RegistrationForEventAsync(EventRegistrationRequestDto request)
         {
             AuthenticateUser();
 

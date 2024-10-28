@@ -108,14 +108,14 @@
                 <MudStack AlignItems="AlignItems.Center">
                     @if (urlPreviewImage != null)
                     {
-                        <MudImage Src=@($"/images/AccountsPhotos/temp/{urlPreviewImage}") Fluid="true" ObjectFit="ObjectFit.Fill" Elevation="4" Class="rounded-lg" />
+                        <MudImage Src=@($"/images/AccountsPhotos/temp/{urlPreviewImage}") Fluid ObjectFit="ObjectFit.Fill" Elevation="4" Class="rounded-lg" />
                     }
                     <MudFileUpload T="IBrowserFile" Accept=".jpg,.jpeg,.png" FilesChanged="UploadAvatar">
                         <ActivatorContent>
                             <MudButton Disabled="processingPhoto" Size="Size.Small" Variant="Variant.Outlined" Color="Color.Primary" StartIcon="@Icons.Material.Sharp.Upload">
                                 @if (processingPhoto)
                                 {
-                                    <MudProgressCircular Size="Size.Small" Indeterminate="true" />
+                                    <MudProgressCircular Size="Size.Small" Indeterminate />
                                     <MudText Class="ms-2">Обработка фото...</MudText>
                                 } 
                                 else

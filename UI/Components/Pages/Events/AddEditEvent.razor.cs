@@ -6,6 +6,7 @@ using Common.Models;
 using Common.Models.States;
 using Common.Repository;
 using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Forms;
 using MudBlazor;
 using System.Net;
 using UI.Components.Dialogs;
@@ -13,12 +14,13 @@ using UI.Models;
 
 namespace UI.Components.Pages.Events
 {
-    public partial class AddEditEvent
+    public partial class AddEditEvent : IDisposable
     {
         [CascadingParameter] public CurrentState CurrentState { get; set; } = null!;
         [Inject] IRepository<EventCheckRequestDto, EventCheckResponseDto> _repoCheckAdding { get; set; } = null!;
         [Inject] IRepository<GetEventsRequestDto, GetEventsResponseDto> _repoGetEvent { get; set; } = null!;
         [Inject] IRepository<UpdateEventRequestDto, UpdateEventResponseDto> _repoUpdateEvent { get; set; } = null!;
+        [Inject] IRepository<UploadEventPhotoFromTempRequestDto, UploadEventPhotoFromTempResponseDto> _repoUploadPhoto { get; set; } = null!;
 
         [Inject] IDialogService DialogService { get; set; } = null!;
         [Parameter] public int? EventId { get; set; }
@@ -41,7 +43,7 @@ namespace UI.Components.Pages.Events
         {
             if (EventId != null)
             {
-                var apiResponse = await _repoGetEvent.HttpPostAsync(new GetEventsRequestDto { EventId = EventId });
+                var apiResponse = await _repoGetEvent.HttpPostAsync(new GetEventsRequestDto { EventId = EventId, IsPhotosIncluded = true });
                 if (apiResponse.StatusCode == HttpStatusCode.OK && apiResponse.Response.Event != null)
                 {
                     Event = apiResponse.Response.Event;
@@ -240,6 +242,50 @@ namespace UI.Components.Pages.Events
         #endregion
 
 
+        #region /// 3. ФОТО ///
+        async void UploadPhotos(IReadOnlyList<IBrowserFile> photos)
+        {
+            if (photos.Count > 0 && CurrentState.Account != null)
+            {
+                processingPhoto = true;
+                StateHasChanged();
+
+                var request = new UploadEventPhotoFromTempRequestDto 
+                {
+                    EventId = Event.Id,
+                    Token = CurrentState.Account.Token
+                };
+
+                List<string> files = new List<string>();
+
+                if (Event.Photos == null)
+                    Event.Photos = new List<PhotosForEventsDto>();
+
+                foreach (var photo in photos)
+                {
+                    var baseFileName = DateTime.Now.ToString("yyyyMMddmmss") + "_" + Guid.NewGuid().ToString();
+                    var originalFileName = baseFileName + Path.GetExtension(photo.Name);
+
+                    await using (FileStream fs = new(StaticData.EventsPhotosTempDir + originalFileName, FileMode.Create))
+                        await photo.OpenReadStream(photo.Size).CopyToAsync(fs);
+
+                    request.PhotosTempFileNames = originalFileName;
+
+                    var apiResponse = await _repoUploadPhoto.HttpPostAsync(request);
+
+                    Event.Photos.Add(apiResponse.Response.NewPhoto);
+                    StateHasChanged();
+
+                    if (Event.Photos.Count >= 20) break;
+                }
+
+                processingPhoto = false;
+                StateHasChanged();
+            }
+        }
+        #endregion
+
+
         #region /// ДОБАВЛЕНИЕ / УДАЛЕНИЕ ///
         async void AddAsync()
         {
@@ -272,5 +318,8 @@ namespace UI.Components.Pages.Events
             StateHasChanged();
         }
 
+        public void Dispose()
+        {
+        }
     }
 }

@@ -301,31 +301,28 @@ namespace UI.Components.Pages
 
 
         #region /// ШАГ 3: АВАТАР ///
-        string? baseFileName;
-        string? originalFileName;
-        string? previewFileName;
-        string? urlPreviewImage;
-
+        string? baseFileName, originalFileName, previewFileName, urlPreviewImage;
+        
         async void UploadAvatar(IBrowserFile file)
         {
             processingPhoto = true;
 
-            if (File.Exists(StaticData.AccountsPhotosDir + originalFileName))
-                File.Delete(StaticData.AccountsPhotosDir + originalFileName);
-            if (File.Exists(StaticData.AccountsPhotosDir + previewFileName))
-                File.Delete(StaticData.AccountsPhotosDir + previewFileName);
+            if (File.Exists(StaticData.AccountsPhotosTempDir + "/" + originalFileName))
+                File.Delete(StaticData.AccountsPhotosTempDir + "/" + originalFileName);
+            if (File.Exists(StaticData.AccountsPhotosTempDir + "/" + previewFileName))
+                File.Delete(StaticData.AccountsPhotosTempDir + "/" + previewFileName);
 
             baseFileName = DateTime.Now.ToString("yyyyMMdd") + "_" + Guid.NewGuid().ToString();
             originalFileName = baseFileName + Path.GetExtension(file.Name);
             previewFileName = baseFileName + "_" + EnumImageSize.s150x150 + ".jpg";
 
-            await using (FileStream fs = new(StaticData.AccountsPhotosDir + originalFileName, FileMode.Create))
+            await using (FileStream fs = new(StaticData.AccountsPhotosTempDir + "/" + originalFileName, FileMode.Create))
                 await file.OpenReadStream(file.Size).CopyToAsync(fs);
 
             using (MemoryStream output = new MemoryStream(500000))
             {
-                MagicImageProcessor.ProcessImage(StaticData.AccountsPhotosDir + originalFileName, output, StaticData.Images[EnumImageSize.s150x150]);
-                await File.WriteAllBytesAsync(StaticData.AccountsPhotosDir + previewFileName, output.ToArray());
+                MagicImageProcessor.ProcessImage(StaticData.AccountsPhotosTempDir + "/" + originalFileName, output, StaticData.Images[EnumImageSize.s150x150]);
+                await File.WriteAllBytesAsync(StaticData.AccountsPhotosTempDir + "/" + previewFileName, output.ToArray());
             }
 
             urlPreviewImage = previewFileName;
@@ -385,8 +382,8 @@ namespace UI.Components.Pages
 
         public void Dispose()
         {
-            if (File.Exists(StaticData.AccountsPhotosDir + originalFileName)) File.Delete(StaticData.AccountsPhotosDir + originalFileName);
-            if (File.Exists(StaticData.AccountsPhotosDir + previewFileName)) File.Delete(StaticData.AccountsPhotosDir + previewFileName);
+            if (File.Exists(StaticData.AccountsPhotosTempDir + "/" + originalFileName)) File.Delete(StaticData.AccountsPhotosTempDir + "/" + originalFileName);
+            if (File.Exists(StaticData.AccountsPhotosTempDir + "/" + previewFileName)) File.Delete(StaticData.AccountsPhotosTempDir + "/" + previewFileName);
         }
     }
 }

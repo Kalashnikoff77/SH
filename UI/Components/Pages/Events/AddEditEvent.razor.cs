@@ -2,12 +2,14 @@
 using Common.Dto.Requests;
 using Common.Dto.Responses;
 using Common.Dto.Views;
+using Common.Enums;
 using Common.Models;
 using Common.Models.States;
 using Common.Repository;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
 using MudBlazor;
+using PhotoSauce.MagicScaler;
 using System.Net;
 using UI.Components.Dialogs;
 using UI.Models;
@@ -38,6 +40,9 @@ namespace UI.Components.Pages.Events
 
         Dictionary<short, TabPanel> TabPanels { get; set; } = null!;
         bool IsPanel1Valid, IsPanel2Valid, IsPanel3Valid, isValid;
+
+        // Список загруженных фото во временный каталог
+        List<Tuple<string, string>> photos = new List<Tuple<string, string>>();
 
         protected override async Task OnInitializedAsync()
         {
@@ -243,45 +248,70 @@ namespace UI.Components.Pages.Events
 
 
         #region /// 3. ФОТО ///
-        async void UploadPhotos(IReadOnlyList<IBrowserFile> photos)
+        async void UploadPhotos(IReadOnlyList<IBrowserFile> browserPhotos)
         {
-            if (photos.Count > 0 && CurrentState.Account != null)
+            if (browserPhotos.Count > 0)
             {
                 processingPhoto = true;
                 StateHasChanged();
 
-                var request = new UploadEventPhotoFromTempRequestDto 
+                foreach (var photo in browserPhotos)
                 {
-                    EventId = Event.Id,
-                    Token = CurrentState.Account.Token
-                };
+                    var basePhoto = DateTime.Now.ToString("yyyyMMddmmss") + "_" + Guid.NewGuid().ToString();
+                    var originalPhoto = basePhoto + Path.GetExtension(photo.Name);
 
-                List<string> files = new List<string>();
-
-                if (Event.Photos == null)
-                    Event.Photos = new List<PhotosForEventsDto>();
-
-                foreach (var photo in photos)
-                {
-                    var baseFileName = DateTime.Now.ToString("yyyyMMddmmss") + "_" + Guid.NewGuid().ToString();
-                    var originalFileName = baseFileName + Path.GetExtension(photo.Name);
-
-                    await using (FileStream fs = new(StaticData.EventsPhotosTempDir + originalFileName, FileMode.Create))
+                    await using (FileStream fs = new(StaticData.EventsPhotosTempDir + "/" + originalPhoto, FileMode.Create))
                         await photo.OpenReadStream(photo.Size).CopyToAsync(fs);
 
-                    request.PhotosTempFileNames = originalFileName;
+                    var previewPhoto = basePhoto + "_" + EnumImageSize.s150x150 + ".jpg";
 
-                    var apiResponse = await _repoUploadPhoto.HttpPostAsync(request);
+                    using (MemoryStream output = new MemoryStream(500000))
+                    {
+                        MagicImageProcessor.ProcessImage(StaticData.EventsPhotosTempDir + "/" + originalPhoto, output, StaticData.Images[EnumImageSize.s150x150]);
+                        await File.WriteAllBytesAsync(StaticData.EventsPhotosTempDir + "/" + previewPhoto, output.ToArray());
+                    }
 
-                    Event.Photos.Add(apiResponse.Response.NewPhoto);
+                    photos.Add(new Tuple<string, string>(originalPhoto, previewPhoto));
                     StateHasChanged();
 
-                    if (Event.Photos.Count >= 20) break;
+                    if (photos.Count >= 20) break;
                 }
 
+                //var request = new UploadEventPhotoFromTempRequestDto
+                //{
+                //    EventId = Event.Id,
+                //    Token = CurrentState.Account.Token
+                //};
+
+                //foreach (var photo in photos)
+                //{
+                //    var baseFileName = DateTime.Now.ToString("yyyyMMddmmss") + "_" + Guid.NewGuid().ToString();
+                //    var originalFileName = baseFileName + Path.GetExtension(photo.Name);
+
+                //    await using (FileStream fs = new(StaticData.EventsPhotosTempDir + originalFileName, FileMode.Create))
+                //        await photo.OpenReadStream(photo.Size).CopyToAsync(fs);
+
+                //    request.PhotosTempFileNames = originalFileName;
+
+                //    var apiResponse = await _repoUploadPhoto.HttpPostAsync(request);
+
+                //    Event.Photos.Add(apiResponse.Response.NewPhoto);
+                //    StateHasChanged();
+
+                //    if (Event.Photos.Count >= 20) break;
+                //}
                 processingPhoto = false;
                 StateHasChanged();
             }
+        }
+
+        void DeleteAsync(Tuple<string, string> photo)
+        {
+            photos.Remove(photo);
+            if (File.Exists(StaticData.EventsPhotosTempDir + "/" + photo.Item1))
+                File.Delete(StaticData.EventsPhotosTempDir + "/" + photo.Item1);
+            if (File.Exists(StaticData.EventsPhotosTempDir + "/" + photo.Item2))
+                File.Delete(StaticData.EventsPhotosTempDir + "/" + photo.Item2);
         }
         #endregion
 
@@ -320,6 +350,13 @@ namespace UI.Components.Pages.Events
 
         public void Dispose()
         {
+            foreach (var photo in photos) 
+            {
+                if (File.Exists(StaticData.EventsPhotosTempDir + "/" + photo.Item1))
+                    File.Delete(StaticData.EventsPhotosTempDir + "/" + photo.Item1);
+                if (File.Exists(StaticData.EventsPhotosTempDir + "/" + photo.Item2))
+                    File.Delete(StaticData.EventsPhotosTempDir + "/" + photo.Item2);
+            }
         }
     }
 }

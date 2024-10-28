@@ -148,22 +148,44 @@ else
                 </TitleContent>
                 <ChildContent>
                     <MudStack Row Justify="Justify.Center" class="mb-5">
-                        <MudFileUpload T="IReadOnlyList<IBrowserFile>" MaximumFileCount="20" Accept=".jpg,.jpeg,.png" FilesChanged="UploadPhotos">
-                            <ActivatorContent>
-                                <MudButton Disabled="processingPhoto" Size="Size.Small" Variant="Variant.Outlined" Color="Color.Primary" StartIcon="@Icons.Material.Sharp.Upload">
-                                    @if (processingPhoto)
-                                    {
-                                        <MudProgressCircular Size="Size.Small" Indeterminate="true" />
-                                        <MudText Class="ms-2">Обработка фото...</MudText>
-                                    }
-                                    else
-                                    {
-                                        <MudText>Добавить фотографии (макс. 20 шт.)</MudText>
-                                    }
-                                </MudButton>
-                            </ActivatorContent>
-                        </MudFileUpload>
+                        @if (photos.Count >= 20)
+                        {
+                            <MudButton Disabled Size="Size.Small" Variant="Variant.Outlined" Color="Color.Primary" StartIcon="@Icons.Material.Sharp.Upload">
+                                <MudText>Загружено макс. кол-во фото (20 шт.)</MudText>
+                            </MudButton>
+                        }
+                        else
+                        {
+                            <MudFileUpload T="IReadOnlyList<IBrowserFile>" MaximumFileCount="255" Accept=".jpg,.jpeg,.png" FilesChanged="UploadPhotos">
+                                <ActivatorContent>
+                                    <MudButton Disabled="processingPhoto" Size="Size.Small" Variant="Variant.Outlined" Color="Color.Primary" StartIcon="@Icons.Material.Sharp.Upload">
+                                        @if (processingPhoto)
+                                        {
+                                            <MudProgressCircular Size="Size.Small" Indeterminate />
+                                            <MudText Class="ms-2">Обработка фото...</MudText>
+                                        }
+                                        else
+                                        {
+                                            <MudText>Добавить фотографии (макс. 20 шт.)</MudText>
+                                        }
+                                    </MudButton>
+                                </ActivatorContent>
+                            </MudFileUpload>
+                        }
                     </MudStack>
+
+                    @if (photos.Count > 0)
+                    {
+                        <MudStack Row Wrap="Wrap.Wrap" Spacing="0" Justify="Justify.SpaceEvenly">
+                            @foreach (var photo in photos)
+                            {
+                                <MudPaper Outlined class="pa-3 mb-8" style="max-width:274px; text-align:center">
+                                    <MudImage Width="250" Height="250" Src="@("/images/EventsPhotos/temp/" + photo.Item2)" Class="mb-2" />
+                                    <MudButton OnClick="@(() => DeleteAsync(photo))" StartIcon="@Icons.Material.Outlined.Clear" Color="Color.Error" Variant="Variant.Text" Size="Size.Small">Удалить</MudButton>
+                                </MudPaper>
+                            }
+                        </MudStack>
+                    }
 
                 </ChildContent>
             </MudExpansionPanel>

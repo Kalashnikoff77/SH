@@ -255,63 +255,38 @@ namespace UI.Components.Pages.Events
                 processingPhoto = true;
                 StateHasChanged();
 
+                var guid = Guid.NewGuid();
+                var dir = $"{StaticData.EventsPhotosDir}/{Event.Id}/{guid}";
+
                 foreach (var photo in browserPhotos)
                 {
-                    var basePhoto = DateTime.Now.ToString("yyyyMMddmmss") + "_" + Guid.NewGuid().ToString();
-                    var originalPhoto = basePhoto + Path.GetExtension(photo.Name);
-
-                    await using (FileStream fs = new(StaticData.EventsPhotosTempDir + "/" + originalPhoto, FileMode.Create))
-                        await photo.OpenReadStream(photo.Size).CopyToAsync(fs);
-
-                    var previewPhoto = basePhoto + "_" + EnumImageSize.s150x150 + ".jpg";
-
-                    using (MemoryStream output = new MemoryStream(500000))
+                    using (var ms = new MemoryStream((int)photo.Size))
                     {
-                        MagicImageProcessor.ProcessImage(StaticData.EventsPhotosTempDir + "/" + originalPhoto, output, StaticData.Images[EnumImageSize.s150x150]);
-                        await File.WriteAllBytesAsync(StaticData.EventsPhotosTempDir + "/" + previewPhoto, output.ToArray());
-                    }
+                        await photo.OpenReadStream(photo.Size).CopyToAsync(ms);
 
-                    photos.Add(new Tuple<string, string>(originalPhoto, previewPhoto));
-                    StateHasChanged();
+                        var request = new UploadEventPhotoFromTempRequestDto
+                        {
+                            EventId = Event.Id,
+                            Token = CurrentState.Account.Token,
+                            File = ms.ToArray()
+                        };
+                        var apiResponse = await _repoUploadPhoto.HttpPostAsync(request);
+
+                        Event.Photos.Add(apiResponse.Response.NewPhoto);
+                        StateHasChanged();
+                    }
 
                     if (photos.Count >= 20) break;
                 }
 
-                //var request = new UploadEventPhotoFromTempRequestDto
-                //{
-                //    EventId = Event.Id,
-                //    Token = CurrentState.Account.Token
-                //};
-
-                //foreach (var photo in photos)
-                //{
-                //    var baseFileName = DateTime.Now.ToString("yyyyMMddmmss") + "_" + Guid.NewGuid().ToString();
-                //    var originalFileName = baseFileName + Path.GetExtension(photo.Name);
-
-                //    await using (FileStream fs = new(StaticData.EventsPhotosTempDir + originalFileName, FileMode.Create))
-                //        await photo.OpenReadStream(photo.Size).CopyToAsync(fs);
-
-                //    request.PhotosTempFileNames = originalFileName;
-
-                //    var apiResponse = await _repoUploadPhoto.HttpPostAsync(request);
-
-                //    Event.Photos.Add(apiResponse.Response.NewPhoto);
-                //    StateHasChanged();
-
-                //    if (Event.Photos.Count >= 20) break;
-                //}
                 processingPhoto = false;
                 StateHasChanged();
             }
         }
 
-        void DeleteAsync(Tuple<string, string> photo)
+        void DeletePhoto(PhotosForEventsDto photo)
         {
-            photos.Remove(photo);
-            if (File.Exists(StaticData.EventsPhotosTempDir + "/" + photo.Item1))
-                File.Delete(StaticData.EventsPhotosTempDir + "/" + photo.Item1);
-            if (File.Exists(StaticData.EventsPhotosTempDir + "/" + photo.Item2))
-                File.Delete(StaticData.EventsPhotosTempDir + "/" + photo.Item2);
+            photo.IsDeleted = true;
         }
         #endregion
 

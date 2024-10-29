@@ -6,7 +6,7 @@
 
         public static void Main(string[] args)
         {
-            AccountsPhotos.Process(connectionString);
+            //AccountsPhotos.Process(connectionString);
 
             //EventsPhotos.Process(connectionString);
 

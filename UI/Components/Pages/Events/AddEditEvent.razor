@@ -174,14 +174,14 @@ else
                         }
                     </MudStack>
 
-                    @if (photos.Count > 0)
+                    @if (Event.Photos?.Count > 0)
                     {
                         <MudStack Row Wrap="Wrap.Wrap" Spacing="0" Justify="Justify.SpaceEvenly">
-                            @foreach (var photo in photos)
+                            @foreach (var photo in Event.Photos.Where(w => w.IsDeleted == false))
                             {
                                 <MudPaper Outlined class="pa-3 mb-8" style="max-width:274px; text-align:center">
-                                    <MudImage Width="250" Height="250" Src="@("/images/EventsPhotos/temp/" + photo.Item2)" Class="mb-2" />
-                                    <MudButton OnClick="@(() => DeleteAsync(photo))" StartIcon="@Icons.Material.Outlined.Clear" Color="Color.Error" Variant="Variant.Text" Size="Size.Small">Удалить</MudButton>
+                                    <MudImage Width="250" Height="250" Src="@($"/images/EventsPhotos/{Event.Id}/{photo.Guid}/{EnumImageSize.s250x250}.jpg")" Class="mb-2" />
+                                    <MudButton OnClick="@(() => DeletePhoto(photo))" StartIcon="@Icons.Material.Outlined.Clear" Color="Color.Error" Variant="Variant.Text" Size="Size.Small">Удалить</MudButton>
                                 </MudPaper>
                             }
                         </MudStack>

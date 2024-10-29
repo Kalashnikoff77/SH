@@ -1,4 +1,7 @@
-﻿namespace Common.Dto.Requests
+﻿using Microsoft.AspNetCore.Components.Forms;
+using Microsoft.AspNetCore.Http;
+
+namespace Common.Dto.Requests
 {
     public class UploadEventPhotoFromTempRequestDto : RequestDtoBase
     {
@@ -13,5 +16,7 @@
         /// Ссылка на имя необработанного файла фоток в каталоге temp
         /// </summary>
         public string PhotosTempFileNames { get; set; } = null!;
+
+        public byte[] File { get; set; } = null!;
     }
 }

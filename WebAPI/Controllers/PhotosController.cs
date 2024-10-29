@@ -11,7 +11,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using PhotoSauce.MagicScaler;
-using System;
 using WebAPI.Exceptions;
 
 namespace WebAPI.Controllers
@@ -154,7 +153,7 @@ namespace WebAPI.Controllers
             var tempDir = StaticData.EventsPhotosTempDir;
             var dir = $"{StaticData.EventsPhotosDir}/{request.EventId}/{guid}";
 
-            if (!string.IsNullOrWhiteSpace(request.PhotosTempFileNames))
+            if (request.File != null)
             {
                 Directory.CreateDirectory(dir);
 
@@ -164,7 +163,8 @@ namespace WebAPI.Controllers
 
                     using (MemoryStream output = new MemoryStream(500000))
                     {
-                        MagicImageProcessor.ProcessImage($"{tempDir}/{request.PhotosTempFileNames}", output, image.Value);
+                        var stream = new MemoryStream(request.File);
+                        MagicImageProcessor.ProcessImage(stream, output, image.Value);
                         await System.IO.File.WriteAllBytesAsync(fileName, output.ToArray());
                     }
                 }
@@ -182,8 +182,6 @@ namespace WebAPI.Controllers
                     Guid = guid
                 };
             }
-
-            System.IO.File.Delete($"{tempDir}/{request.PhotosTempFileNames}");
 
             return response;
         }

@@ -13,7 +13,10 @@ namespace Program
             SqlConnection conn = new SqlConnection(connectionString);
             conn.Open();
 
-            SqlCommand command = new SqlCommand("SELECT Id, Guid, Name FROM Events", conn);
+            SqlCommand command = new SqlCommand("TRUNCATE TABLE PhotosForEvents", conn);
+            command.ExecuteNonQuery();
+
+            command = new SqlCommand("SELECT Id, Guid, Name FROM Events", conn);
             var reader = command.ExecuteReader();
 
             while (reader.Read())

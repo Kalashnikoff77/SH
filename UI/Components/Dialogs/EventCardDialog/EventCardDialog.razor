@@ -3,7 +3,7 @@
     <MudDialog Style="width:550px; min-width:360px">
         <DialogContent>
             <MudStack AlignItems="AlignItems.Center" Class="mb-3">
-                <MudCarousel @ref="Carousel" TData="PhotosForEventsDto" ShowArrows ShowBullets AutoCycle Style="width:300px; height:400px">
+                <MudCarousel @ref="Carousel" TData="PhotosForEventsDto" ShowArrows ShowBullets="false" AutoCycle Style="width:300px; height:400px">
                     @if (ScheduleForEventView.Event.Photos != null)
                     {
                         @foreach (var photo in ScheduleForEventView.Event.Photos)

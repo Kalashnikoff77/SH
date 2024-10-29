@@ -5,7 +5,7 @@
             <MudStack AlignItems="AlignItems.Center" Class="mb-3">
                 @if (Account.Photos != null)
                 {
-                    <MudCarousel @ref="Carousel" TData="PhotosForEventsDto" ShowArrows ShowBullets AutoCycle Style="width:300px; height:400px">
+                    <MudCarousel @ref="Carousel" TData="PhotosForEventsDto" ShowArrows ShowBullets="false" AutoCycle Style="width:300px; height:400px">
                         @foreach (var photo in Account.Photos)
                         {
                             <MudCarouselItem Transition="Transition.Slide">

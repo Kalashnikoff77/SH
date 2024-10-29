@@ -9,5 +9,7 @@
         public bool IsAvatar { get; set; }
 
         public int EventId { get; set; }
+
+        public bool IsDeleted { get; set; }
     }
 }

@@ -21,6 +21,16 @@
             <MudText Typo="Typo.body2"><b>@ScheduleForEventView.ToStartEndString()</b></MudText>
         </MudStack>
 
+        @if (ScheduleForEventView.Features != null)
+        {
+            <MudStack Row Wrap="Wrap.Wrap" Spacing="1" Class="mb-1">
+                @foreach (var feature in ScheduleForEventView.Features.OrderBy(o => o.Name))
+                {
+                    <span style="padding: 0 5px 0 5px; font-size:12px; font-weight:500; opacity:0.6; border-width:1px; border-style:dotted">@feature.Name</span>
+                }
+            </MudStack>
+        }
+
         @if (!string.IsNullOrWhiteSpace(ScheduleForEventView.Description))
         {
             <MudText Typo="Typo.body2">@ScheduleForEventView.Description</MudText>

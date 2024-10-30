@@ -2,14 +2,12 @@
 using Common.Dto.Requests;
 using Common.Dto.Responses;
 using Common.Dto.Views;
-using Common.Enums;
 using Common.Models;
 using Common.Models.States;
 using Common.Repository;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
 using MudBlazor;
-using PhotoSauce.MagicScaler;
 using System.Net;
 using UI.Components.Dialogs;
 using UI.Models;
@@ -266,7 +264,7 @@ namespace UI.Components.Pages.Events
 
                         var request = new UploadPhotoToTempRequestDto
                         {
-                            Id = Event.Id,
+                            EventId = Event.Id,
                             Token = CurrentState.Account?.Token,
                             File = ms.ToArray()
                         };
@@ -339,8 +337,8 @@ namespace UI.Components.Pages.Events
         {
             if (Event.Photos != null)
                 foreach (var photo in Event.Photos.Where(w => w.Id == 0))
-                    if (Directory.Exists(StaticData.EventsPhotosTempDir + "/" + photo.Guid))
-                        Directory.Delete(StaticData.EventsPhotosTempDir + "/" + photo.Guid, true);
+                    if (Directory.Exists(StaticData.TempPhotosDir + "/" + photo.Guid))
+                        Directory.Delete(StaticData.TempPhotosDir + "/" + photo.Guid, true);
         }
     }
 }

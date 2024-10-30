@@ -253,6 +253,9 @@ namespace WebAPI.Controllers
             // Обновление расписаний мероприятия
             await request.UpdateSchedulesAsync(_unitOfWork);
 
+            // Обновление фото меропириятия
+            await request.UpdatePhotosAsync(_unitOfWork);
+
             await _unitOfWork.CommitTransactionAsync();
 
             return response;

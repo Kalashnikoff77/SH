@@ -86,7 +86,7 @@ namespace UI.Components.Pages.Profile
                     var baseFileName = DateTime.Now.ToString("yyyyMMddmmss") + "_" + Guid.NewGuid().ToString();
                     var originalFileName = baseFileName + Path.GetExtension(photo.Name);
 
-                    await using (FileStream fs = new(StaticData.AccountsPhotosTempDir + originalFileName, FileMode.Create))
+                    await using (FileStream fs = new(StaticData.TempPhotosDir + originalFileName, FileMode.Create))
                         await photo.OpenReadStream(photo.Size).CopyToAsync(fs);
 
                     request.PhotosTempFileNames = originalFileName;

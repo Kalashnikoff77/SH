@@ -102,7 +102,7 @@ namespace WebAPI.Controllers
             var response = new UploadAccountPhotoFromTempResponseDto();
 
             var guid = Guid.NewGuid();
-            var tempDir = StaticData.AccountsPhotosTempDir;
+            var tempDir = StaticData.TempPhotosDir;
             var dir = $"{StaticData.AccountsPhotosDir}/{_unitOfWork.AccountId}/{guid}";
 
             if (!string.IsNullOrWhiteSpace(request.PhotosTempFileNames))
@@ -113,7 +113,7 @@ namespace WebAPI.Controllers
                 {
                     var fileName = $"{dir}/{image.Key}.jpg";
 
-                    using (MemoryStream output = new MemoryStream(500000))
+                    using (MemoryStream output = new MemoryStream(300000))
                     {
                         MagicImageProcessor.ProcessImage($"{tempDir}/{request.PhotosTempFileNames}", output, image.Value);
                         await System.IO.File.WriteAllBytesAsync(fileName, output.ToArray());
@@ -153,7 +153,7 @@ namespace WebAPI.Controllers
             if (request.File != null)
             {
                 var guid = Guid.NewGuid();
-                var tempDir = $"{StaticData.EventsPhotosTempDir}/{guid}";
+                var tempDir = $"{StaticData.TempPhotosDir}/{guid}";
 
                 Directory.CreateDirectory(tempDir);
 
@@ -167,13 +167,6 @@ namespace WebAPI.Controllers
                     MagicImageProcessor.ProcessImage(new MemoryStream(request.File), output, StaticData.Images[EnumImageSize.s250x250]);
                     await System.IO.File.WriteAllBytesAsync($"{tempDir}/{EnumImageSize.s250x250}.jpg", output.ToArray());
                 }
-
-                //var sql = "INSERT INTO PhotosForEvents " +
-                //    $"({nameof(PhotosForEventsEntity.Guid)}, {nameof(PhotosForEventsEntity.EventId)}) " +
-                //    "VALUES " +
-                //    $"(@{nameof(PhotosForEventsEntity.Guid)}, @{nameof(PhotosForEventsEntity.EventId)});" +
-                //    $"SELECT CAST(SCOPE_IDENTITY() AS INT)";
-                //var newId = await _unitOfWork.SqlConnection.QuerySingleAsync<int>(sql, new { Guid = guid, request.EventId });
 
                 response.NewPhoto = new PhotosForEventsDto
                 {

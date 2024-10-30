@@ -307,22 +307,22 @@ namespace UI.Components.Pages
         {
             processingPhoto = true;
 
-            if (File.Exists(StaticData.AccountsPhotosTempDir + "/" + originalFileName))
-                File.Delete(StaticData.AccountsPhotosTempDir + "/" + originalFileName);
-            if (File.Exists(StaticData.AccountsPhotosTempDir + "/" + previewFileName))
-                File.Delete(StaticData.AccountsPhotosTempDir + "/" + previewFileName);
+            if (File.Exists(StaticData.TempPhotosDir + "/" + originalFileName))
+                File.Delete(StaticData.TempPhotosDir + "/" + originalFileName);
+            if (File.Exists(StaticData.TempPhotosDir + "/" + previewFileName))
+                File.Delete(StaticData.TempPhotosDir + "/" + previewFileName);
 
             baseFileName = DateTime.Now.ToString("yyyyMMdd") + "_" + Guid.NewGuid().ToString();
             originalFileName = baseFileName + Path.GetExtension(file.Name);
             previewFileName = baseFileName + "_" + EnumImageSize.s150x150 + ".jpg";
 
-            await using (FileStream fs = new(StaticData.AccountsPhotosTempDir + "/" + originalFileName, FileMode.Create))
+            await using (FileStream fs = new(StaticData.TempPhotosDir + "/" + originalFileName, FileMode.Create))
                 await file.OpenReadStream(file.Size).CopyToAsync(fs);
 
-            using (MemoryStream output = new MemoryStream(500000))
+            using (MemoryStream output = new MemoryStream(300000))
             {
-                MagicImageProcessor.ProcessImage(StaticData.AccountsPhotosTempDir + "/" + originalFileName, output, StaticData.Images[EnumImageSize.s150x150]);
-                await File.WriteAllBytesAsync(StaticData.AccountsPhotosTempDir + "/" + previewFileName, output.ToArray());
+                MagicImageProcessor.ProcessImage(StaticData.TempPhotosDir + "/" + originalFileName, output, StaticData.Images[EnumImageSize.s150x150]);
+                await File.WriteAllBytesAsync(StaticData.TempPhotosDir + "/" + previewFileName, output.ToArray());
             }
 
             urlPreviewImage = previewFileName;
@@ -382,8 +382,8 @@ namespace UI.Components.Pages
 
         public void Dispose()
         {
-            if (File.Exists(StaticData.AccountsPhotosTempDir + "/" + originalFileName)) File.Delete(StaticData.AccountsPhotosTempDir + "/" + originalFileName);
-            if (File.Exists(StaticData.AccountsPhotosTempDir + "/" + previewFileName)) File.Delete(StaticData.AccountsPhotosTempDir + "/" + previewFileName);
+            if (File.Exists(StaticData.TempPhotosDir + "/" + originalFileName)) File.Delete(StaticData.TempPhotosDir + "/" + originalFileName);
+            if (File.Exists(StaticData.TempPhotosDir + "/" + previewFileName)) File.Delete(StaticData.TempPhotosDir + "/" + previewFileName);
         }
     }
 }

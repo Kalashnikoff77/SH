@@ -23,9 +23,9 @@ namespace WebAPI.Extensions
                 {
                     var fileName = $"{StaticData.AccountsPhotosDir}/{accountsEntity.Id}/{guid}/{image.Key}.jpg";
 
-                    using (MemoryStream output = new MemoryStream(500000))
+                    using (MemoryStream output = new MemoryStream(300000))
                     {
-                        MagicImageProcessor.ProcessImage($"{StaticData.AccountsPhotosTempDir}/{request.OriginalPhoto}", output, image.Value);
+                        MagicImageProcessor.ProcessImage($"{StaticData.TempPhotosDir}/{request.OriginalPhoto}", output, image.Value);
                         await File.WriteAllBytesAsync(fileName, output.ToArray());
                     }
                 }
@@ -36,7 +36,7 @@ namespace WebAPI.Extensions
                     $"(@{nameof(PhotosForAccountsEntity.Comment)}, @{nameof(PhotosForAccountsEntity.Guid)}, @{nameof(PhotosForAccountsEntity.IsAvatar)}, @{nameof(PhotosForAccountsEntity.AccountId)})";
                 await unitOfWork.SqlConnection.ExecuteAsync(sql, new { Comment = accountsEntity.Name, Guid = guid, IsAvatar = true, AccountId = accountsEntity.Id});
 
-                File.Delete($"{StaticData.AccountsPhotosTempDir}/{request.OriginalPhoto}");
+                File.Delete($"{StaticData.TempPhotosDir}/{request.OriginalPhoto}");
             }
         }
 

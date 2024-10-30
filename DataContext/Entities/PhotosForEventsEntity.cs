@@ -8,14 +8,17 @@ namespace DataContext.Entities
         public Guid Guid { get; set; }
 
         [Required]
+        public DateTime CreateDate { get; set; }
+
+        [Required]
+        public int EventId { get; set; }
+
+        [Required]
         public string? Comment { get; set; }
 
         [Required]
         public bool IsAvatar { get; set; }
 
         public bool IsDeleted { get; set; }
-
-        [Required]
-        public int EventId { get; set; }
     }
 }

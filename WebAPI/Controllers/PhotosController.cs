@@ -3,6 +3,7 @@ using Common.Dto;
 using Common.Dto.Requests;
 using Common.Dto.Responses;
 using Common.Dto.Views;
+using Common.Enums;
 using Common.Models;
 using Dapper;
 using DataContext.Entities;
@@ -140,50 +141,48 @@ namespace WebAPI.Controllers
 
 
         /// <summary>
-        /// Загрузка в базу и каталог фото, которое в Блейзоре было помещено в каталог temp
+        /// Загрузка фото во временный каталог temp: оригинал и аватар 250х250
         /// </summary>
-        [Route("UploadEventFromTemp"), HttpPost, Authorize]
-        public async Task<UploadEventPhotoFromTempResponseDto> UploadEventFromTempAsync(UploadEventPhotoFromTempRequestDto request)
+        [Route("UploadPhotoToTemp"), HttpPost, Authorize]
+        public async Task<UploadPhotoToTempResponseDto> UploadPhotoToTempAsync(UploadPhotoToTempRequestDto request)
         {
             AuthenticateUser();
 
-            var response = new UploadEventPhotoFromTempResponseDto();
-
-            var guid = Guid.NewGuid();
-            var dir = $"{StaticData.EventsPhotosDir}/{request.EventId}/{guid}";
+            var response = new UploadPhotoToTempResponseDto();
 
             if (request.File != null)
             {
-                Directory.CreateDirectory(dir);
+                var guid = Guid.NewGuid();
+                var tempDir = $"{StaticData.EventsPhotosTempDir}/{guid}";
 
-                foreach (var image in StaticData.Images)
+                Directory.CreateDirectory(tempDir);
+
+                // Сохраняем оригинал файла
+                using (MemoryStream output = new MemoryStream(request.File))
+                    await System.IO.File.WriteAllBytesAsync($"{tempDir}/original.jpg", output.ToArray());
+
+                // Сохраняем временный аватар файла
+                using (MemoryStream output = new MemoryStream(50000))
                 {
-                    var fileName = $"{dir}/{image.Key}.jpg";
-
-                    using (MemoryStream output = new MemoryStream(500000))
-                    {
-                        var stream = new MemoryStream(request.File);
-                        MagicImageProcessor.ProcessImage(stream, output, image.Value);
-                        await System.IO.File.WriteAllBytesAsync(fileName, output.ToArray());
-                    }
+                    MagicImageProcessor.ProcessImage(new MemoryStream(request.File), output, StaticData.Images[EnumImageSize.s250x250]);
+                    await System.IO.File.WriteAllBytesAsync($"{tempDir}/{EnumImageSize.s250x250}.jpg", output.ToArray());
                 }
 
-                var sql = "INSERT INTO PhotosForEvents " +
-                    $"({nameof(PhotosForEventsEntity.Guid)}, {nameof(PhotosForEventsEntity.EventId)}) " +
-                    "VALUES " +
-                    $"(@{nameof(PhotosForEventsEntity.Guid)}, @{nameof(PhotosForEventsEntity.EventId)});" +
-                    $"SELECT CAST(SCOPE_IDENTITY() AS INT)";
-                var newId = await _unitOfWork.SqlConnection.QuerySingleAsync<int>(sql, new { Guid = guid, request.EventId });
+                //var sql = "INSERT INTO PhotosForEvents " +
+                //    $"({nameof(PhotosForEventsEntity.Guid)}, {nameof(PhotosForEventsEntity.EventId)}) " +
+                //    "VALUES " +
+                //    $"(@{nameof(PhotosForEventsEntity.Guid)}, @{nameof(PhotosForEventsEntity.EventId)});" +
+                //    $"SELECT CAST(SCOPE_IDENTITY() AS INT)";
+                //var newId = await _unitOfWork.SqlConnection.QuerySingleAsync<int>(sql, new { Guid = guid, request.EventId });
 
                 response.NewPhoto = new PhotosForEventsDto
                 {
-                    Id = newId,
-                    Guid = guid
+                    Guid = guid,
+                    CreateDate = DateTime.Now
                 };
             }
 
             return response;
         }
-
     }
 }

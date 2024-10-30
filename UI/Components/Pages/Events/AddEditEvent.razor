@@ -177,18 +177,15 @@ else
                     @if (Event.Photos?.Count > 0)
                     {
                         <MudStack Row Wrap="Wrap.Wrap" Spacing="0" Justify="Justify.SpaceEvenly">
-                            @foreach (var photo in Event.Photos.Where(w => w.IsDeleted == false).OrderByDescending(o => o.IsAvatar).ThenByDescending(o => o.Id))
+                            @foreach (var photo in Event.Photos.Where(w => w.IsDeleted == false).OrderByDescending(o => o.IsAvatar).ThenByDescending(o => o.CreateDate))
                             {
                                 <MudPaper Outlined class="pa-3 mb-8" style="@("max-width:274px; " + (photo.IsAvatar ? "background-color:#EDFFEE" : null))">
-                                    <MudImage Width="250" Height="250" Src="@($"/images/EventsPhotos/{Event.Id}/{photo.Guid}/{EnumImageSize.s250x250}.jpg")" Class="mb-2" />
+                                    <MudImage Width="250" Height="250" Src="@($"/images/EventsPhotos/" + (photo.Id == 0 ? "temp" : Event.Id) + $"/{photo.Guid}/{EnumImageSize.s250x250}.jpg")" Class="mb-2" />
                                     <MudStack Row>
                                         <MudTextField T="string" Value="@photo.Comment" ValueChanged="@((c) => UpdateCommentPhoto(photo, c))" Label="Описание" Variant="Variant.Text" />
                                         <MudMenu Icon="@Icons.Material.Filled.MoreVert" Size="Size.Small" AnchorOrigin="Origin.BottomLeft" TransformOrigin="Origin.TopCenter" Dense>
-                                            @if (!photo.IsAvatar)
-                                            {
-                                                <MudMenuItem OnClick="@(() => SetAsAvatarPhoto(photo))" Icon="@Icons.Material.Filled.Portrait">Установить как аватар</MudMenuItem>
-                                            }
-                                            <MudMenuItem OnClick="@(() => DeletePhoto(photo))" IconColor="Color.Error" Icon="@Icons.Material.Outlined.Delete">Удалить</MudMenuItem>
+                                            <MudMenuItem Disabled="@photo.IsAvatar" OnClick="@(() => SetAsAvatarPhoto(photo))" Icon="@Icons.Material.Filled.Portrait">Установить как аватар</MudMenuItem>
+                                            <MudMenuItem Disabled="@photo.IsAvatar" OnClick="@(() => DeletePhoto(photo))" IconColor="Color.Error" Icon="@Icons.Material.Outlined.Delete">Удалить</MudMenuItem>
                                         </MudMenu>
                                     </MudStack>
                                 </MudPaper>

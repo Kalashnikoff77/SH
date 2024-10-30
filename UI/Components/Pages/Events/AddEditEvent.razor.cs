@@ -22,7 +22,7 @@ namespace UI.Components.Pages.Events
         [Inject] IRepository<EventCheckRequestDto, EventCheckResponseDto> _repoCheckAdding { get; set; } = null!;
         [Inject] IRepository<GetEventsRequestDto, GetEventsResponseDto> _repoGetEvent { get; set; } = null!;
         [Inject] IRepository<UpdateEventRequestDto, UpdateEventResponseDto> _repoUpdateEvent { get; set; } = null!;
-        [Inject] IRepository<UploadEventPhotoFromTempRequestDto, UploadEventPhotoFromTempResponseDto> _repoUploadPhoto { get; set; } = null!;
+        [Inject] IRepository<UploadPhotoToTempRequestDto, UploadPhotoToTempResponseDto> _repoUploadPhoto { get; set; } = null!;
 
         [Inject] IDialogService DialogService { get; set; } = null!;
         [Parameter] public int? EventId { get; set; }
@@ -264,14 +264,18 @@ namespace UI.Components.Pages.Events
                     {
                         await photo.OpenReadStream(photo.Size).CopyToAsync(ms);
 
-                        var request = new UploadEventPhotoFromTempRequestDto
+                        var request = new UploadPhotoToTempRequestDto
                         {
-                            EventId = Event.Id,
-                            Token = CurrentState.Account.Token,
+                            Id = Event.Id,
+                            Token = CurrentState.Account?.Token,
                             File = ms.ToArray()
                         };
                         var apiResponse = await _repoUploadPhoto.HttpPostAsync(request);
+                        
+                        if (Event.Photos == null)
+                            Event.Photos = new List<PhotosForEventsDto>();
                         Event.Photos.Insert(0, apiResponse.Response.NewPhoto);
+                        
                         StateHasChanged();
                     }
 
@@ -333,13 +337,10 @@ namespace UI.Components.Pages.Events
 
         public void Dispose()
         {
-            foreach (var photo in photos) 
-            {
-                if (File.Exists(StaticData.EventsPhotosTempDir + "/" + photo.Item1))
-                    File.Delete(StaticData.EventsPhotosTempDir + "/" + photo.Item1);
-                if (File.Exists(StaticData.EventsPhotosTempDir + "/" + photo.Item2))
-                    File.Delete(StaticData.EventsPhotosTempDir + "/" + photo.Item2);
-            }
+            if (Event.Photos != null)
+                foreach (var photo in Event.Photos.Where(w => w.Id == 0))
+                    if (Directory.Exists(StaticData.EventsPhotosTempDir + "/" + photo.Guid))
+                        Directory.Delete(StaticData.EventsPhotosTempDir + "/" + photo.Guid, true);
         }
     }
 }

@@ -148,6 +148,21 @@ namespace WebAPI.Controllers
         {
             AuthenticateUser();
 
+            if (request.EventId.HasValue)
+            {
+                var sql = $"SELECT TOP 1 Id FROM Events WHERE Id = @EventId AND {nameof(EventsEntity.AdminId)} = @{nameof(EventsEntity.AdminId)}";
+                var evtId = await _unitOfWork.SqlConnection.QueryFirstOrDefaultAsync<int?>(sql, new { request.EventId, AdminId = _unitOfWork.AccountId })
+                    ?? throw new NotFoundException("Соответствующее мероприятие не найдено!");
+            }
+            else if (request.AccountId.HasValue)
+            {
+                var sql = $"SELECT TOP 1 Id FROM Accounts WHERE Id = @AccountId";
+                var accId = await _unitOfWork.SqlConnection.QueryFirstOrDefaultAsync<int?>(sql, new { _unitOfWork.AccountId })
+                    ?? throw new NotFoundException($"Пользователь с Id {request.AccountId} не найден!");
+            }
+            else
+                throw new BadRequestException("Необходимо указать Id аккаунта или мероприятия!");
+
             var response = new UploadPhotoToTempResponseDto();
 
             if (request.File != null)
@@ -161,7 +176,7 @@ namespace WebAPI.Controllers
                 using (MemoryStream output = new MemoryStream(request.File))
                     await System.IO.File.WriteAllBytesAsync($"{tempDir}/original.jpg", output.ToArray());
 
-                // Сохраняем временный аватар файла
+                // Сохраняем временный аватар файла 250x250
                 using (MemoryStream output = new MemoryStream(50000))
                 {
                     MagicImageProcessor.ProcessImage(new MemoryStream(request.File), output, StaticData.Images[EnumImageSize.s250x250]);

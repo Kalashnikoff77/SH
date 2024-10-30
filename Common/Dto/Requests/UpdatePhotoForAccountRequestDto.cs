@@ -1,8 +1,8 @@
 ﻿namespace Common.Dto.Requests
 {
-    public class UpdatePhotoRequestDto : RequestDtoBase
+    public class UpdatePhotoForAccountRequestDto : RequestDtoBase
     {
-        public override string Uri => "/Photos/Update";
+        public override string Uri => "/Photos/UpdatePhotoForAccount";
 
         public Guid Guid { get; set; }
 

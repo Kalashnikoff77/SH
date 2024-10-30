@@ -271,8 +271,7 @@ namespace UI.Components.Pages.Events
                             File = ms.ToArray()
                         };
                         var apiResponse = await _repoUploadPhoto.HttpPostAsync(request);
-
-                        Event.Photos.Add(apiResponse.Response.NewPhoto);
+                        Event.Photos.Insert(0, apiResponse.Response.NewPhoto);
                         StateHasChanged();
                     }
 
@@ -282,6 +281,15 @@ namespace UI.Components.Pages.Events
                 processingPhoto = false;
                 StateHasChanged();
             }
+        }
+
+        void UpdateCommentPhoto(PhotosForEventsDto photo, string comment)
+        {
+            photo.Comment = comment;
+        }
+
+        void SetAsAvatarPhoto(PhotosForEventsDto photo)
+        {
         }
 
         void DeletePhoto(PhotosForEventsDto photo)

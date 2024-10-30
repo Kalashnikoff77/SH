@@ -15,7 +15,7 @@ namespace UI.Components.Pages.Profile
         [CascadingParameter] public CurrentState CurrentState { get; set; } = null!;
         [Parameter, EditorRequired] public EventCallback UpdateProfileCallback { get; set; }
 
-        [Inject] IRepository<UpdatePhotoRequestDto, ResponseDtoBase> _repoUpdatePhoto { get; set; } = null!;
+        [Inject] IRepository<UpdatePhotoForAccountRequestDto, ResponseDtoBase> _repoUpdatePhoto { get; set; } = null!;
         [Inject] IRepository<UploadAccountPhotoFromTempRequestDto, UploadAccountPhotoFromTempResponseDto> _repoUploadPhoto { get; set; } = null!;
 
         bool processingPhoto;
@@ -28,7 +28,7 @@ namespace UI.Components.Pages.Profile
             {
                 shouldRender = false;
 
-                var request = new UpdatePhotoRequestDto
+                var request = new UpdatePhotoForAccountRequestDto
                 {
                     Token = CurrentState.Account.Token,
                     Guid = photo.Guid,

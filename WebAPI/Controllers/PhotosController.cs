@@ -44,8 +44,8 @@ namespace WebAPI.Controllers
         }
 
 
-        [Route("Update"), HttpPost, Authorize]
-        public async Task<ResponseDtoBase> UpdateAsync(UpdatePhotoRequestDto request)
+        [Route("UpdatePhotoForAccount"), HttpPost, Authorize]
+        public async Task<ResponseDtoBase> UpdatePhotoForAccountAsync(UpdatePhotoForAccountRequestDto request)
         {
             AuthenticateUser();
 
@@ -150,7 +150,6 @@ namespace WebAPI.Controllers
             var response = new UploadEventPhotoFromTempResponseDto();
 
             var guid = Guid.NewGuid();
-            var tempDir = StaticData.EventsPhotosTempDir;
             var dir = $"{StaticData.EventsPhotosDir}/{request.EventId}/{guid}";
 
             if (request.File != null)

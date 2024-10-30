@@ -4,14 +4,8 @@
     {
         public override string Uri => "/Photos/UploadPhotoToTemp";
 
-        /// <summary>
-        /// Id аккаунта, к которому принадлежит фото
-        /// </summary>
         public int? AccountId { get; set; }
 
-        /// <summary>
-        /// Id события, к которому принадлежит фото
-        /// </summary>
         public int? EventId { get; set; }
 
         /// <summary>

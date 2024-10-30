@@ -9,7 +9,7 @@
                         @foreach (var photo in ScheduleForEventView.Event.Photos)
                         {
                             <MudCarouselItem Transition="Transition.Slide">
-                                <MudImage Src=@($"/images/EventsPhotos/{photo.EventId}/{photo.Guid}/{EnumImageSize.s450x600}.jpg") Fluid="true" Style="border-radius:2%" />
+                                <MudImage Src=@($"/images/EventsPhotos/{photo.RelatedId}/{photo.Guid}/{EnumImageSize.s450x600}.jpg") Fluid="true" Style="border-radius:2%" />
                             </MudCarouselItem>
                         }
                     }

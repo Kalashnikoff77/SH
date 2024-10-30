@@ -2,6 +2,7 @@
 {
     public class UploadPhotoToTempResponseDto : ResponseDtoBase
     {
-        public PhotosForEventsDto NewPhoto { get; set; } = null!;
+        public PhotosForAccountsDto? NewAccountPhoto { get; set; }
+        public PhotosForEventsDto? NewEventPhoto { get; set; }
     }
 }

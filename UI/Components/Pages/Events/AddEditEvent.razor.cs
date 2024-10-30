@@ -2,6 +2,7 @@
 using Common.Dto.Requests;
 using Common.Dto.Responses;
 using Common.Dto.Views;
+using Common.Extensions;
 using Common.Models;
 using Common.Models.States;
 using Common.Repository;
@@ -20,7 +21,7 @@ namespace UI.Components.Pages.Events
         [Inject] IRepository<EventCheckRequestDto, EventCheckResponseDto> _repoCheckAdding { get; set; } = null!;
         [Inject] IRepository<GetEventsRequestDto, GetEventsResponseDto> _repoGetEvent { get; set; } = null!;
         [Inject] IRepository<UpdateEventRequestDto, UpdateEventResponseDto> _repoUpdateEvent { get; set; } = null!;
-        [Inject] IRepository<UploadPhotoToTempRequestDto, UploadPhotoToTempResponseDto> _repoUploadPhoto { get; set; } = null!;
+        [Inject] IRepository<UploadPhotoToTempRequestDto, UploadPhotoToTempResponseDto> _repoUploadPhotoToTemp { get; set; } = null!;
 
         [Inject] IDialogService DialogService { get; set; } = null!;
         [Parameter] public int? EventId { get; set; }
@@ -38,9 +39,6 @@ namespace UI.Components.Pages.Events
 
         Dictionary<short, TabPanel> TabPanels { get; set; } = null!;
         bool IsPanel1Valid, IsPanel2Valid, IsPanel3Valid, isValid;
-
-        // Список загруженных фото во временный каталог
-        List<Tuple<string, string>> photos = new List<Tuple<string, string>>();
 
         protected override async Task OnInitializedAsync()
         {
@@ -253,31 +251,18 @@ namespace UI.Components.Pages.Events
                 processingPhoto = true;
                 StateHasChanged();
 
-                var guid = Guid.NewGuid();
-                var dir = $"{StaticData.EventsPhotosDir}/{Event.Id}/{guid}";
+                if (Event.Photos == null)
+                    Event.Photos = new List<PhotosForEventsDto>();
 
                 foreach (var photo in browserPhotos)
                 {
-                    using (var ms = new MemoryStream((int)photo.Size))
-                    {
-                        await photo.OpenReadStream(photo.Size).CopyToAsync(ms);
+                    var newPhoto = await photo.Upload<PhotosForEventsDto>(CurrentState.Account?.Token, _repoUploadPhotoToTemp, eventId: Event.Id);
 
-                        var request = new UploadPhotoToTempRequestDto
-                        {
-                            EventId = Event.Id,
-                            Token = CurrentState.Account?.Token,
-                            File = ms.ToArray()
-                        };
-                        var apiResponse = await _repoUploadPhoto.HttpPostAsync(request);
-                        
-                        if (Event.Photos == null)
-                            Event.Photos = new List<PhotosForEventsDto>();
-                        Event.Photos.Insert(0, apiResponse.Response.NewPhoto);
-                        
-                        StateHasChanged();
-                    }
+                    if (newPhoto != null)
+                        Event.Photos.Insert(0, newPhoto);
 
-                    if (photos.Count >= 20) break;
+                    StateHasChanged();
+                    if (Event.Photos.Count(x => x.IsDeleted == false) >= 20) break;
                 }
 
                 processingPhoto = false;
@@ -292,11 +277,8 @@ namespace UI.Components.Pages.Events
 
         void SetAsAvatarPhoto(PhotosForEventsDto photo)
         {
-        }
-
-        void DeletePhoto(PhotosForEventsDto photo)
-        {
-            photo.IsDeleted = true;
+            Event.Photos?.ForEach(x => x.IsAvatar = false);
+            photo.IsAvatar = true;
         }
         #endregion
 

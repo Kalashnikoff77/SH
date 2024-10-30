@@ -31,9 +31,9 @@ namespace WebAPI.Extensions
                 }
 
                 var sql = "INSERT INTO PhotosForAccounts " +
-                    $"({nameof(PhotosForAccountsEntity.Comment)}, {nameof(PhotosForAccountsEntity.Guid)}, {nameof(PhotosForAccountsEntity.IsAvatar)}, {nameof(PhotosForAccountsEntity.AccountId)}) " +
+                    $"({nameof(PhotosForAccountsEntity.Comment)}, {nameof(PhotosForAccountsEntity.Guid)}, {nameof(PhotosForAccountsEntity.IsAvatar)}, {nameof(PhotosForAccountsEntity.RelatedId)}) " +
                     "VALUES " +
-                    $"(@{nameof(PhotosForAccountsEntity.Comment)}, @{nameof(PhotosForAccountsEntity.Guid)}, @{nameof(PhotosForAccountsEntity.IsAvatar)}, @{nameof(PhotosForAccountsEntity.AccountId)})";
+                    $"(@{nameof(PhotosForAccountsEntity.Comment)}, @{nameof(PhotosForAccountsEntity.Guid)}, @{nameof(PhotosForAccountsEntity.IsAvatar)}, @{nameof(PhotosForAccountsEntity.RelatedId)})";
                 await unitOfWork.SqlConnection.ExecuteAsync(sql, new { Comment = accountsEntity.Name, Guid = guid, IsAvatar = true, AccountId = accountsEntity.Id});
 
                 File.Delete($"{StaticData.TempPhotosDir}/{request.OriginalPhoto}");

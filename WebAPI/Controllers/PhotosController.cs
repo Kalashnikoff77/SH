@@ -36,7 +36,7 @@ namespace WebAPI.Controllers
 
             var sql = "SELECT TOP (@Take) " +
                 $"{columns.Aggregate((a, b) => a + ", " + b)} " +
-                $"FROM AccountsPhotosView WHERE {nameof(PhotosForAccountsViewEntity.AccountId)} = @accountId " +
+                $"FROM AccountsPhotosView WHERE {nameof(PhotosForAccountsViewEntity.RelatedId)} = @accountId " +
                 "ORDER BY Id DESC";
             var result = await _unitOfWork.SqlConnection.QueryAsync<PhotosForAccountsViewEntity>(sql, new { accountId, request.Take });
             response.Photos = _mapper.Map<List<PhotosForAccountsViewDto>>(result);
@@ -66,7 +66,7 @@ namespace WebAPI.Controllers
                 }
                 else
                 {
-                    sql = $"UPDATE PhotosForAccounts SET {nameof(PhotosForAccountsEntity.IsAvatar)} = 0 WHERE {nameof(PhotosForAccountsEntity.AccountId)} = @AccountId";
+                    sql = $"UPDATE PhotosForAccounts SET {nameof(PhotosForAccountsEntity.IsAvatar)} = 0 WHERE {nameof(PhotosForAccountsEntity.RelatedId)} = @AccountId";
                     await _unitOfWork.SqlConnection.ExecuteAsync(sql, new { _unitOfWork.AccountId });
                     sql = $"UPDATE PhotosForAccounts SET {nameof(PhotosForAccountsEntity.IsAvatar)} = 1 WHERE {nameof(PhotosForAccountsEntity.Id)} = @Id";
                     await _unitOfWork.SqlConnection.ExecuteAsync(sql, new { photo.Id });
@@ -121,9 +121,9 @@ namespace WebAPI.Controllers
                 }
 
                 var sql = "INSERT INTO PhotosForAccounts " +
-                    $"({nameof(PhotosForAccountsEntity.Guid)}, {nameof(PhotosForAccountsEntity.AccountId)}) " +
+                    $"({nameof(PhotosForAccountsEntity.Guid)}, {nameof(PhotosForAccountsEntity.RelatedId)}) " +
                     "VALUES " +
-                    $"(@{nameof(PhotosForAccountsEntity.Guid)}, @{nameof(PhotosForAccountsEntity.AccountId)});" +
+                    $"(@{nameof(PhotosForAccountsEntity.Guid)}, @{nameof(PhotosForAccountsEntity.RelatedId)});" +
                     $"SELECT CAST(SCOPE_IDENTITY() AS INT)";
                 var newId = await _unitOfWork.SqlConnection.QuerySingleAsync<int>(sql, new { Guid = guid, _unitOfWork.AccountId });
 
@@ -168,11 +168,10 @@ namespace WebAPI.Controllers
                     await System.IO.File.WriteAllBytesAsync($"{tempDir}/{EnumImageSize.s250x250}.jpg", output.ToArray());
                 }
 
-                response.NewPhoto = new PhotosForEventsDto
-                {
-                    Guid = guid,
-                    CreateDate = DateTime.Now
-                };
+                if (request.AccountId.HasValue)
+                    response.NewAccountPhoto = new PhotosForAccountsDto { Guid = guid, CreateDate = DateTime.Now };
+                else
+                    response.NewEventPhoto = new PhotosForEventsDto { Guid = guid, CreateDate = DateTime.Now };
             }
 
             return response;

@@ -148,7 +148,7 @@ else
                 </TitleContent>
                 <ChildContent>
                     <MudStack Row Justify="Justify.Center" class="mb-5">
-                        @if (photos.Count >= 20)
+                        @if (Event.Photos?.Count(x => x.IsDeleted == false) >= 20)
                         {
                             <MudButton Disabled Size="Size.Small" Variant="Variant.Outlined" Color="Color.Primary" StartIcon="@Icons.Material.Sharp.Upload">
                                 <MudText>Загружено макс. кол-во фото (20 шт.)</MudText>
@@ -185,7 +185,7 @@ else
                                         <MudTextField T="string" Value="@photo.Comment" ValueChanged="@((c) => UpdateCommentPhoto(photo, c))" Label="Описание" Variant="Variant.Text" />
                                         <MudMenu Icon="@Icons.Material.Filled.MoreVert" Size="Size.Small" AnchorOrigin="Origin.BottomLeft" TransformOrigin="Origin.TopCenter" Dense>
                                             <MudMenuItem Disabled="@photo.IsAvatar" OnClick="@(() => SetAsAvatarPhoto(photo))" Icon="@Icons.Material.Filled.Portrait">Установить как аватар</MudMenuItem>
-                                            <MudMenuItem Disabled="@photo.IsAvatar" OnClick="@(() => DeletePhoto(photo))" IconColor="Color.Error" Icon="@Icons.Material.Outlined.Delete">Удалить</MudMenuItem>
+                                            <MudMenuItem Disabled="@photo.IsAvatar" OnClick="@(() => photo.IsDeleted = true)" IconColor="Color.Error" Icon="@Icons.Material.Outlined.Delete">Удалить</MudMenuItem>
                                         </MudMenu>
                                     </MudStack>
                                 </MudPaper>

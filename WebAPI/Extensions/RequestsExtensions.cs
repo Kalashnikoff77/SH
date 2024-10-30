@@ -261,9 +261,9 @@ namespace WebAPI.Extensions
                             $"{nameof(PhotosForEventsEntity.Comment)} = @{nameof(PhotosForEventsEntity.Comment)}, " +
                             $"{nameof(PhotosForEventsEntity.IsAvatar)} = @{nameof(PhotosForEventsEntity.IsAvatar)}, " +
                             $"{nameof(PhotosForEventsEntity.IsDeleted)} = @{nameof(PhotosForEventsEntity.IsDeleted)} " +
-                            $"WHERE Id = @Id AND EventId = @{nameof(PhotosForEventsEntity.EventId)}";
+                            $"WHERE Id = @Id AND {nameof(PhotosForEventsEntity.RelatedId)} = @{nameof(PhotosForEventsEntity.RelatedId)}";
                         var result = await unitOfWork.SqlConnection.ExecuteAsync(sql,
-                            new { photo.Id, EventId = request.Event.Id, photo.IsAvatar, photo.Comment, photo.IsDeleted },
+                            new { photo.Id, RelatedId = request.Event.Id, photo.IsAvatar, photo.Comment, photo.IsDeleted },
                             transaction: unitOfWork.SqlTransaction);
                     }
                     // Добавление нового фото
@@ -272,26 +272,28 @@ namespace WebAPI.Extensions
                         // Есть ли фото во временном каталоге?
                         if (Directory.Exists($"{StaticData.TempPhotosDir}/{photo.Guid}"))
                         {
-                            Directory.CreateDirectory($"{StaticData.EventsPhotosDir}/{request.Event.Id}/{photo.Guid}");
-
-                            var sourceFileName = $"{StaticData.TempPhotosDir}/{photo.Guid}/original.jpg";
-
-                            foreach (var image in StaticData.Images)
+                            // Фото добавили, затем сразу удалили, а потом сохраняют. Значит, фото можно не обрабатывать.
+                            if (!photo.IsDeleted)
                             {
-                                var destFileName = $@"{StaticData.EventsPhotosDir}/{request.Event.Id}/{photo.Guid}/{image.Key}.jpg";
+                                Directory.CreateDirectory($"{StaticData.EventsPhotosDir}/{request.Event.Id}/{photo.Guid}");
+                                var sourceFileName = $"{StaticData.TempPhotosDir}/{photo.Guid}/original.jpg";
 
-                                MemoryStream output = new MemoryStream(300000);
-                                MagicImageProcessor.ProcessImage(sourceFileName, output, image.Value);
-                                File.WriteAllBytes(destFileName, output.ToArray());
+                                foreach (var image in StaticData.Images)
+                                {
+                                    var destFileName = $@"{StaticData.EventsPhotosDir}/{request.Event.Id}/{photo.Guid}/{image.Key}.jpg";
+
+                                    MemoryStream output = new MemoryStream(300000);
+                                    MagicImageProcessor.ProcessImage(sourceFileName, output, image.Value);
+                                    File.WriteAllBytes(destFileName, output.ToArray());
+                                }
+
+                                sql = "INSERT INTO PhotosForEvents " +
+                                    $"({nameof(PhotosForEventsEntity.Guid)}, {nameof(PhotosForEventsEntity.RelatedId)}, {nameof(PhotosForEventsEntity.Comment)}, {nameof(PhotosForEventsEntity.IsAvatar)}) " +
+                                    "VALUES " +
+                                    $"(@{nameof(PhotosForEventsEntity.Guid)}, @{nameof(PhotosForEventsEntity.RelatedId)}, @{nameof(PhotosForEventsEntity.Comment)}, @{nameof(PhotosForEventsEntity.IsAvatar)});" +
+                                    $"SELECT CAST(SCOPE_IDENTITY() AS INT)";
+                                var newId = await unitOfWork.SqlConnection.QuerySingleAsync<int>(sql, new { photo.Guid, RelatedId = request.Event.Id, photo.Comment, photo.IsAvatar }, transaction: unitOfWork.SqlTransaction);
                             }
-
-                            sql = "INSERT INTO PhotosForEvents " +
-                                $"({nameof(PhotosForEventsEntity.Guid)}, {nameof(PhotosForEventsEntity.EventId)}, {nameof(PhotosForEventsEntity.Comment)}, {nameof(PhotosForEventsEntity.IsAvatar)}) " +
-                                "VALUES " +
-                                $"(@{nameof(PhotosForEventsEntity.Guid)}, @{nameof(PhotosForEventsEntity.EventId)}, @{nameof(PhotosForEventsEntity.Comment)}, @{nameof(PhotosForEventsEntity.IsAvatar)});" +
-                                $"SELECT CAST(SCOPE_IDENTITY() AS INT)";
-                            var newId = await unitOfWork.SqlConnection.QuerySingleAsync<int>(sql, new { photo.Guid, EventId = request.Event.Id, photo.Comment, photo.IsAvatar }, transaction: unitOfWork.SqlTransaction);
-
                             Directory.Delete($"{StaticData.TempPhotosDir}/{photo.Guid}", true);
                         }
                     }

@@ -1,13 +1,6 @@
 ﻿namespace Common.Dto
 {
-    public class PhotosForAccountsDto : DtoBase
+    public class PhotosForAccountsDto : PhotosDtoBase
     {
-        public Guid Guid { get; set; }
-
-        public string? Comment { get; set; }
-
-        public bool IsAvatar { get; set; }
-
-        public int AccountId { get; set; }
     }
 }

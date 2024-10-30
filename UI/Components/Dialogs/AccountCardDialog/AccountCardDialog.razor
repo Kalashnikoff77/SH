@@ -9,7 +9,7 @@
                         @foreach (var photo in Account.Photos)
                         {
                             <MudCarouselItem Transition="Transition.Slide">
-                                <MudImage Src=@($"/images/AccountsPhotos/{photo.AccountId}/{photo.Guid}/{EnumImageSize.s450x600}.jpg") Fluid Style="border-radius:2%" />
+                                <MudImage Src=@($"/images/AccountsPhotos/{photo.RelatedId}/{photo.Guid}/{EnumImageSize.s450x600}.jpg") Fluid Style="border-radius:2%" />
                             </MudCarouselItem>
                         }
                     </MudCarousel>

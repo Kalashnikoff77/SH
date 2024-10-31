@@ -270,10 +270,8 @@ namespace UI.Components.Pages.Events
             }
         }
 
-        void UpdateCommentPhoto(PhotosForEventsDto photo, string comment)
-        {
+        void UpdateCommentPhoto(PhotosForEventsDto photo, string comment) =>
             photo.Comment = comment;
-        }
 
         void SetAsAvatarPhoto(PhotosForEventsDto photo)
         {

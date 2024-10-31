@@ -1,6 +1,6 @@
 ﻿namespace Common.Dto.Requests
 {
-    public class AccountUpdateRequestDto : RequestDtoBase
+    public class UpdateAccountRequestDto : RequestDtoBase
     {
         public override string Uri => "/Accounts/Update";
 
@@ -20,6 +20,8 @@
         public List<UsersDto> Users { get; set; } = null!;
 
         public List<HobbiesDto>? Hobbies { get; set; }
+
+        public List<PhotosForAccountsDto> Photos { get; set; } = null!;
 
         public string? ErrorMessage { get; set; }
         public bool Remember { get; set; }

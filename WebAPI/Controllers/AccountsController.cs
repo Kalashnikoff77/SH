@@ -178,86 +178,6 @@ namespace WebAPI.Controllers
         }
 
 
-        [Route("Update"), HttpPost, Authorize]
-        public async Task<AccountUpdateResponseDto> UpdateAsync(AccountUpdateRequestDto request)
-        {
-            AuthenticateUser();
-
-            var response = new AccountUpdateResponseDto();
-
-            await request.ValidateAsync(_unitOfWork.AccountId!.Value, _unitOfWork.SqlConnection);
-
-            // Получим данные о текущем пользователе из базы
-            var columns = GetRequiredColumns<AccountsViewEntity>();
-            var sql = $"SELECT TOP 1 {columns.Aggregate((a, b) => a + ", " + b)}, {nameof(AccountsViewEntity.Password)}, {nameof(AccountsViewEntity.Users)} " +
-                "FROM AccountsView WHERE Id = @AccountId";
-            var accountsViewEntity = await _unitOfWork.SqlConnection.QueryFirstOrDefaultAsync<AccountsViewEntity>(sql, new { _unitOfWork.AccountId }) ?? throw new BadRequestException($"Аккаунт {request.Name} не найден!");
-            var accountsView = _mapper.Map<AccountsViewDto>(accountsViewEntity);
-
-            await _unitOfWork.BeginTransactionAsync();
-
-            // Обновление Users
-            foreach (var user in request.Users)
-            {
-                // Добавление
-                if (user.Id == -1)
-                {
-                    sql = $"INSERT INTO Users ({nameof(UsersEntity.Name)}, {nameof(UsersEntity.Height)}, {nameof(UsersEntity.Weight)}, {nameof(UsersEntity.BirthDate)}, {nameof(UsersEntity.About)}, {nameof(UsersEntity.Gender)}, {nameof(UsersEntity.AccountId)}) " +
-                        "VALUES " +
-                        $"(@{nameof(UsersEntity.Name)}, @{nameof(UsersEntity.Height)}, @{nameof(UsersEntity.Weight)}, @{nameof(UsersEntity.BirthDate)}, @{nameof(UsersEntity.About)}, @{nameof(UsersEntity.Gender)}, @AccountId)";
-                    await _unitOfWork.SqlConnection.ExecuteAsync(sql, new { user.Name, user.Height, user.Weight, user.BirthDate, user.About, user.Gender, _unitOfWork.AccountId }, transaction: _unitOfWork.SqlTransaction);
-                }
-                // Обновление / Удаление
-                else
-                {
-                    sql = $"UPDATE Users SET " +
-                        $"{nameof(UsersEntity.BirthDate)} = @{nameof(user.BirthDate)}, " +
-                        $"{nameof(UsersEntity.Name)} = @{nameof(user.Name)}, " +
-                        $"{nameof(UsersEntity.Gender)} = @{nameof(user.Gender)}, " +
-                        $"{nameof(UsersEntity.Height)} = @{nameof(user.Height)}, " +
-                        $"{nameof(UsersEntity.Weight)} = @{nameof(user.Weight)}, " +
-                        $"{nameof(UsersEntity.About)} = @{nameof(user.About)}, " +
-                        $"{nameof(UsersEntity.IsDeleted)} = @{nameof(user.IsDeleted)} " +
-                        $"WHERE Id = @Id AND AccountId = @AccountId";
-                    await _unitOfWork.SqlConnection.ExecuteAsync(sql, new { user.Id, _unitOfWork.AccountId, user.BirthDate, user.Name, user.Gender, user.Height, user.Weight, user.About, user.IsDeleted }, transaction: _unitOfWork.SqlTransaction);
-                }
-            }
-
-            // Обновление HobbiesForAccounts
-            if (request.Hobbies != null)
-            {
-                var p = new DynamicParameters();
-                p.Add("@AccountId", _unitOfWork.AccountId);
-                p.Add("@HobbiesIds", string.Join(",", request.Hobbies.Select(s => s.Id)));
-                await _unitOfWork.SqlConnection.ExecuteAsync("UpdateHobbiesForAccounts_sp", p, commandType: System.Data.CommandType.StoredProcedure, transaction: _unitOfWork.SqlTransaction);
-            }
-
-            // Обновление Accounts
-            sql = $"UPDATE Accounts SET " +
-                $"{nameof(AccountsEntity.Email)} = @{nameof(request.Email)}, " +
-                $"{nameof(AccountsEntity.Name)} = @{nameof(request.Name)}, " +
-                $"{nameof(AccountsEntity.Informing)} = @informing, " +
-                $"{nameof(AccountsEntity.RegionId)} = @{nameof(AccountsEntity.RegionId)} " +
-                "WHERE Id = @AccountId";
-            await _unitOfWork.SqlConnection.ExecuteAsync(sql, new { request.Email, request.Name, informing = JsonSerializer.Serialize(request.Informing), RegionId = request.Country.Region.Id, _unitOfWork.AccountId }, transaction: _unitOfWork.SqlTransaction);
-
-            // Обновление пароля
-            if (!string.IsNullOrWhiteSpace(request.Password))
-            {
-                sql = $"UPDATE Accounts SET {nameof(AccountsEntity.Password)} = @{nameof(AccountsEntity.Password)} WHERE {nameof(AccountsEntity.Id)} = @AccountId";
-                await _unitOfWork.SqlConnection.ExecuteAsync(sql, new {Password = request.Password2, _unitOfWork.AccountId}, transaction: _unitOfWork.SqlTransaction);
-            }
-
-            await _unitOfWork.CommitTransactionAsync();
-
-            // Вернём для дальнейшего вызова AccountLogin, чтобы в UI Storage обновить данные пользователя
-            response.Email = request.Email;
-            response.Password = request.Password; // Вернёт null, если новый пароль не был указан в запросе
-
-            return response;
-        }
-
-
         [Route("CheckUpdate"), HttpPost, Authorize]
         public async Task<AccountCheckUpdateResponseDto> CheckUpdateAsync(AccountCheckUpdateRequestDto request)
         {
@@ -445,5 +365,42 @@ namespace WebAPI.Controllers
 
             return response;
         }
+
+        [Route("Update"), HttpPost, Authorize]
+        public async Task<UpdateAccountResponseDto> UpdateAsync(UpdateAccountRequestDto request)
+        {
+            AuthenticateUser();
+
+            var response = new UpdateAccountResponseDto();
+
+            await request.ValidateAsync(_unitOfWork.AccountId!.Value, _unitOfWork.SqlConnection);
+
+            await _unitOfWork.BeginTransactionAsync();
+
+            // Обновление Users
+            await request.UpdateUsersAsync(_unitOfWork);
+
+            // Обновление HobbiesForAccounts
+            await request.UpdateHobbiesAsync(_unitOfWork);
+
+            // Обновление Accounts
+            await request.UpdateAccountAsync(_unitOfWork);
+
+            // Обновление пароля
+            await request.UpdatePasswordAsync(_unitOfWork);
+
+            // Обновление фото аккаунта
+            await request.UpdatePhotosAsync(_unitOfWork);
+
+            await _unitOfWork.CommitTransactionAsync();
+
+            // Вернём для дальнейшего вызова AccountLogin, чтобы в UI Storage обновить данные пользователя
+            response.Email = request.Email;
+            response.Password = request.Password; // Вернёт null, если новый пароль не был указан в запросе
+
+            return response;
+        }
+
+
     }
 }

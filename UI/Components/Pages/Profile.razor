@@ -1,6 +1,6 @@
 ﻿@page "/profile"
 
-@if (CurrentState.Account != null)
+@if (CurrentState.Account != null && updateRequestDto != null)
 {
     <PageTitle>Настройки профиля: @CurrentState.Account.Name</PageTitle>
 
@@ -22,18 +22,18 @@
                 <ChildContent>
                     <MudGrid>
                         <MudItem sm="6" xs="12">
-                            <MudTextField @bind-Value="accountUpdateDto.Name" Validation="@(new Func<string, Task<string?>>(NameValidator))" HelperText="Пример: Иван да Марья Мск" AdornmentIcon="@Icons.Material.Outlined.Person" AdornmentColor="@NameIconColor" Adornment="Adornment.End" Label="Имя учётной записи" Typo="Typo.body1" Margin="Margin.Normal" Variant="Variant.Text" MaxLength="StaticData.DB_ACCOUNTS_NAME_MAX" />
+                            <MudTextField @bind-Value="updateRequestDto.Name" Validation="@(new Func<string, Task<string?>>(NameValidator))" HelperText="Пример: Иван да Марья Мск" AdornmentIcon="@Icons.Material.Outlined.Person" AdornmentColor="@NameIconColor" Adornment="Adornment.End" Label="Имя учётной записи" Typo="Typo.body1" Margin="Margin.Normal" Variant="Variant.Text" MaxLength="StaticData.DB_ACCOUNTS_NAME_MAX" />
                         </MudItem>
                         <MudItem sm="6" xs="12">
-                            <MudTextField @bind-Value="accountUpdateDto.Email" InputType="InputType.Email" Validation="@(new Func<string, Task<string?>>(EmailValidator))" HelperText="Пример: email@mail.ru" AdornmentIcon="@Icons.Material.Outlined.Mail" AdornmentColor="@EmailIconColor" Adornment="Adornment.End" Label="Email" Typo="Typo.body1" Margin="Margin.Normal" Variant="Variant.Text" MaxLength="StaticData.DB_ACCOUNTS_EMAIL_MAX" />
+                            <MudTextField @bind-Value="updateRequestDto.Email" InputType="InputType.Email" Validation="@(new Func<string, Task<string?>>(EmailValidator))" HelperText="Пример: email@mail.ru" AdornmentIcon="@Icons.Material.Outlined.Mail" AdornmentColor="@EmailIconColor" Adornment="Adornment.End" Label="Email" Typo="Typo.body1" Margin="Margin.Normal" Variant="Variant.Text" MaxLength="StaticData.DB_ACCOUNTS_EMAIL_MAX" />
                         </MudItem>
                     </MudGrid>
                     <MudGrid>
                         <MudItem sm="6" xs="12">
-                            <MudTextField @bind-Value="accountUpdateDto.Password" InputType="InputType.Password" Validation="@(new Func<string, string?>(PasswordValidator))" AdornmentColor="@PasswordIconColor" HelperText="Длина от 4 до 35 символов" Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Outlined.Lock" Label="Пароль" Typo="Typo.body1" Margin="Margin.Normal" Variant="Variant.Text" MaxLength="StaticData.DB_ACCOUNTS_PASSWORD_MAX" />
+                            <MudTextField @bind-Value="updateRequestDto.Password" InputType="InputType.Password" Validation="@(new Func<string, string?>(PasswordValidator))" AdornmentColor="@PasswordIconColor" HelperText="Длина от 4 до 35 символов" Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Outlined.Lock" Label="Пароль" Typo="Typo.body1" Margin="Margin.Normal" Variant="Variant.Text" MaxLength="StaticData.DB_ACCOUNTS_PASSWORD_MAX" />
                         </MudItem>
                         <MudItem sm="6" xs="12">
-                            <MudTextField @bind-Value="accountUpdateDto.Password2" InputType="InputType.Password" Validation="@(new Func<string, string?>(Password2Validator))" AdornmentColor="@Password2IconColor" HelperText="Повторите тот же пароль" Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Outlined.Lock" Label="Повтор пароля" Typo="Typo.body1" Margin="Margin.Normal" Variant="Variant.Text" MaxLength="StaticData.DB_ACCOUNTS_PASSWORD_MAX" />
+                            <MudTextField @bind-Value="updateRequestDto.Password2" InputType="InputType.Password" Validation="@(new Func<string, string?>(Password2Validator))" AdornmentColor="@Password2IconColor" HelperText="Повторите тот же пароль" Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Outlined.Lock" Label="Повтор пароля" Typo="Typo.body1" Margin="Margin.Normal" Variant="Variant.Text" MaxLength="StaticData.DB_ACCOUNTS_PASSWORD_MAX" />
                         </MudItem>
                     </MudGrid>
                     <MudGrid>
@@ -62,7 +62,7 @@
                 </TitleContent>
                 <ChildContent>
 
-                    <MudDataGrid T="UsersDto" Items="@accountUpdateDto.Users.Where(w => w.IsDeleted == false)" Striped Hover ReadOnly Bordered>
+                    <MudDataGrid T="UsersDto" Items="@updateRequestDto.Users.Where(w => w.IsDeleted == false)" Striped Hover ReadOnly Bordered>
                         <Columns>
                             <TemplateColumn Title="Общее" Context="user">
                                 <CellTemplate>
@@ -92,7 +92,7 @@
                     </MudDataGrid>
 
                     <MudStack AlignItems="AlignItems.End">
-                        <MudButton StartIcon="@Icons.Material.Outlined.Add" ButtonType="ButtonType.Button" Color="Color.Primary" Size="Size.Small" Variant="Variant.Filled" OnClick="AddUserAsync" Disabled="!(accountUpdateDto.Users.Where(w => w.IsDeleted == false).Count() < 2)" Class="mt-5">Добавить</MudButton>
+                        <MudButton StartIcon="@Icons.Material.Outlined.Add" ButtonType="ButtonType.Button" Color="Color.Primary" Size="Size.Small" Variant="Variant.Filled" OnClick="AddUserAsync" Disabled="!(updateRequestDto.Users.Where(w => w.IsDeleted == false).Count() < 2)" Class="mt-5">Добавить</MudButton>
                     </MudStack>
                 </ChildContent>
             </MudExpansionPanel>
@@ -112,8 +112,8 @@
                         <MudStack Row Wrap="Wrap.Wrap" Spacing="4" Justify="Justify.Center">
                             @foreach (var hobby in hobbies)
                             {
-                                var btnColor = CurrentState.Account.Hobbies != null && CurrentState.Account.Hobbies.Any(x => x.Id == hobby.Id) ? Color.Info : Color.Default;
-                                var disabled = CurrentState.Account.Hobbies != null && CurrentState.Account.Hobbies.Count >= 5 && btnColor == Color.Default ? true : false;
+                                var btnColor = updateRequestDto.Hobbies != null && updateRequestDto.Hobbies.Any(x => x.Id == hobby.Id) ? Color.Info : Color.Default;
+                                var disabled = updateRequestDto.Hobbies != null && updateRequestDto.Hobbies.Count >= 5 && btnColor == Color.Default ? true : false;
                                 <MudButton OnClick="() => OnHobbyChanged(hobby)" Disabled="@disabled" Variant="Variant.Filled" Size="Size.Small" Color="btnColor">@hobby.Name</MudButton>
                             }
                         </MudStack>
@@ -132,21 +132,63 @@
                 </TitleContent>
                 <ChildContent>
                     <MudStack Row Justify="Justify.Center" class="mb-5">
+                        @if (updateRequestDto.Photos?.Count(x => x.IsDeleted == false) >= 20)
+                        {
+                            <MudButton Disabled Size="Size.Small" Variant="Variant.Outlined" Color="Color.Primary" StartIcon="@Icons.Material.Sharp.Upload">
+                                <MudText>Загружено макс. кол-во фото (20 шт.)</MudText>
+                            </MudButton>
+                        }
+                        else
+                        {
+                            <MudFileUpload T="IReadOnlyList<IBrowserFile>" MaximumFileCount="255" Accept=".jpg,.jpeg,.png" FilesChanged="UploadPhotos">
+                                <ActivatorContent>
+                                    <MudButton Disabled="processingPhoto" Size="Size.Small" Variant="Variant.Outlined" Color="Color.Primary" StartIcon="@Icons.Material.Sharp.Upload">
+                                        @if (processingPhoto)
+                                        {
+                                            <MudProgressCircular Size="Size.Small" Indeterminate />
+                                            <MudText Class="ms-2">Обработка фото...</MudText>
+                                        }
+                                        else
+                                        {
+                                            <MudText>Добавить фотографии (макс. 20 шт.)</MudText>
+                                        }
+                                    </MudButton>
+                                </ActivatorContent>
+                            </MudFileUpload>
+                        }
                     </MudStack>
+
+                    @if (updateRequestDto.Photos.Count > 0)
+                    {
+                        <MudStack Row Wrap="Wrap.Wrap" Spacing="0" Justify="Justify.SpaceEvenly">
+                            @foreach (var photo in updateRequestDto.Photos.Where(w => w.IsDeleted == false).OrderByDescending(o => o.IsAvatar).ThenByDescending(o => o.CreateDate))
+                            {
+                                <MudPaper Outlined class="pa-3 mb-8" style="@("max-width:274px; " + (photo.IsAvatar ? "background-color:#EDFFEE" : null))">
+                                    <MudImage Width="250" Height="250" Src="@($"/images/" + (photo.Id == 0 ? "temp" : $"AccountsPhotos/{CurrentState.Account.Id}") + $"/{photo.Guid}/{EnumImageSize.s250x250}.jpg")" Class="mb-2" />
+                                    <MudStack Row>
+                                        <MudTextField T="string" Value="@photo.Comment" ValueChanged="@((c) => UpdateCommentPhoto(photo, c))" Label="Описание" Variant="Variant.Text" />
+                                        <MudMenu Icon="@Icons.Material.Filled.MoreVert" Size="Size.Small" AnchorOrigin="Origin.BottomLeft" TransformOrigin="Origin.TopCenter" Dense>
+                                            <MudMenuItem Disabled="@photo.IsAvatar" OnClick="@(() => SetAsAvatarPhoto(photo))" Icon="@Icons.Material.Filled.Portrait">Установить как аватар</MudMenuItem>
+                                            <MudMenuItem Disabled="@photo.IsAvatar" OnClick="@(() => photo.IsDeleted = true)" IconColor="Color.Error" Icon="@Icons.Material.Outlined.Delete">Удалить</MudMenuItem>
+                                        </MudMenu>
+                                    </MudStack>
+                                </MudPaper>
+                            }
+                        </MudStack>
+                    }
                 </ChildContent>
             </MudExpansionPanel>
-
 
         </MudExpansionPanels>
 
 
         @* КНОПКА СОХРАНЕНИЯ *@
         <MudStack AlignItems="AlignItems.Center" Class="mt-5" Row="false">
-            @if (!string.IsNullOrEmpty(accountUpdateDto.ErrorMessage))
+            @if (!string.IsNullOrEmpty(updateRequestDto.ErrorMessage))
             {
-                <MudAlert Severity="Severity.Error">@accountUpdateDto.ErrorMessage</MudAlert>
+                <MudAlert Severity="Severity.Error">@updateRequestDto.ErrorMessage</MudAlert>
             }
-            <MudCheckBox @bind-Value="accountUpdateDto.Remember" Disabled="!(IsPanel1Valid && IsPanel2Valid)" Color="Color.Primary">
+            <MudCheckBox @bind-Value="updateRequestDto.Remember" Disabled="!(IsPanel1Valid && IsPanel2Valid)" Color="Color.Primary">
                 <MudText Typo="Typo.body2">Запомнить меня</MudText>
             </MudCheckBox>
 

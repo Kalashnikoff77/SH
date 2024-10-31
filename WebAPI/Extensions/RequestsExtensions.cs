@@ -5,6 +5,7 @@ using DataContext.Entities;
 using PhotoSauce.MagicScaler;
 using System;
 using System.Data.Common;
+using System.Text.Json;
 using System.Text.RegularExpressions;
 using WebAPI.Exceptions;
 using WebAPI.Models;
@@ -13,7 +14,7 @@ namespace WebAPI.Extensions
 {
     public static class RequestsExtensions
     {
-        public static async Task ValidateAsync(this AccountUpdateRequestDto request, int _accountId, DbConnection conn)
+        public static async Task ValidateAsync(this UpdateAccountRequestDto request, int _accountId, DbConnection conn)
         {
             if (string.IsNullOrWhiteSpace(request.Email))
                 throw new BadRequestException("Укажите Ваш email!");
@@ -244,7 +245,7 @@ namespace WebAPI.Extensions
         }
 
         /// <summary>
-        /// Обновление фото
+        /// Обновление фото мероприятия
         /// </summary>
         public static async Task UpdatePhotosAsync(this UpdateEventRequestDto request, UnitOfWork unitOfWork)
         {
@@ -305,5 +306,126 @@ namespace WebAPI.Extensions
                 }
             }
         }
+
+        public static async Task UpdateUsersAsync(this UpdateAccountRequestDto request, UnitOfWork unitOfWork)
+        {
+            foreach (var user in request.Users)
+            {
+                // Добавление
+                if (user.Id == -1)
+                {
+                    var sql = $"INSERT INTO Users ({nameof(UsersEntity.Name)}, {nameof(UsersEntity.Height)}, {nameof(UsersEntity.Weight)}, {nameof(UsersEntity.BirthDate)}, {nameof(UsersEntity.About)}, {nameof(UsersEntity.Gender)}, {nameof(UsersEntity.AccountId)}) " +
+                        "VALUES " +
+                        $"(@{nameof(UsersEntity.Name)}, @{nameof(UsersEntity.Height)}, @{nameof(UsersEntity.Weight)}, @{nameof(UsersEntity.BirthDate)}, @{nameof(UsersEntity.About)}, @{nameof(UsersEntity.Gender)}, @AccountId)";
+                    await unitOfWork.SqlConnection.ExecuteAsync(sql, new { user.Name, user.Height, user.Weight, user.BirthDate, user.About, user.Gender, unitOfWork.AccountId }, transaction: unitOfWork.SqlTransaction);
+                }
+                // Обновление / Удаление
+                else
+                {
+                    var sql = $"UPDATE Users SET " +
+                        $"{nameof(UsersEntity.BirthDate)} = @{nameof(user.BirthDate)}, " +
+                        $"{nameof(UsersEntity.Name)} = @{nameof(user.Name)}, " +
+                        $"{nameof(UsersEntity.Gender)} = @{nameof(user.Gender)}, " +
+                        $"{nameof(UsersEntity.Height)} = @{nameof(user.Height)}, " +
+                        $"{nameof(UsersEntity.Weight)} = @{nameof(user.Weight)}, " +
+                        $"{nameof(UsersEntity.About)} = @{nameof(user.About)}, " +
+                        $"{nameof(UsersEntity.IsDeleted)} = @{nameof(user.IsDeleted)} " +
+                        $"WHERE Id = @Id AND AccountId = @AccountId";
+                    await unitOfWork.SqlConnection.ExecuteAsync(sql, new { user.Id, unitOfWork.AccountId, user.BirthDate, user.Name, user.Gender, user.Height, user.Weight, user.About, user.IsDeleted }, transaction: unitOfWork.SqlTransaction);
+                }
+            }
+        }
+
+        public static async Task UpdateHobbiesAsync(this UpdateAccountRequestDto request, UnitOfWork unitOfWork)
+        {
+            if (request.Hobbies != null)
+            {
+                var p = new DynamicParameters();
+                p.Add("@AccountId", unitOfWork.AccountId);
+                p.Add("@HobbiesIds", string.Join(",", request.Hobbies.Select(s => s.Id)));
+                await unitOfWork.SqlConnection.ExecuteAsync("UpdateHobbiesForAccounts_sp", p, commandType: System.Data.CommandType.StoredProcedure, transaction: unitOfWork.SqlTransaction);
+            }
+        }
+
+        public static async Task UpdateAccountAsync(this UpdateAccountRequestDto request, UnitOfWork unitOfWork)
+        {
+            var sql = $"UPDATE Accounts SET " +
+                $"{nameof(AccountsEntity.Email)} = @{nameof(request.Email)}, " +
+                $"{nameof(AccountsEntity.Name)} = @{nameof(request.Name)}, " +
+                $"{nameof(AccountsEntity.Informing)} = @informing, " +
+                $"{nameof(AccountsEntity.RegionId)} = @{nameof(AccountsEntity.RegionId)} " +
+                "WHERE Id = @AccountId";
+            await unitOfWork.SqlConnection.ExecuteAsync(sql, new { request.Email, request.Name, informing = JsonSerializer.Serialize(request.Informing), RegionId = request.Country.Region.Id, unitOfWork.AccountId }, transaction: unitOfWork.SqlTransaction);
+        }
+
+        public static async Task UpdatePasswordAsync(this UpdateAccountRequestDto request, UnitOfWork unitOfWork)
+        {
+            if (!string.IsNullOrWhiteSpace(request.Password))
+            {
+                var sql = $"UPDATE Accounts SET {nameof(AccountsEntity.Password)} = @{nameof(AccountsEntity.Password)} WHERE {nameof(AccountsEntity.Id)} = @AccountId";
+                await unitOfWork.SqlConnection.ExecuteAsync(sql, new { Password = request.Password2, unitOfWork.AccountId }, transaction: unitOfWork.SqlTransaction);
+            }
+        }
+
+        public static async Task UpdatePhotosAsync(this UpdateAccountRequestDto request, UnitOfWork unitOfWork)
+        {
+            string sql;
+
+            if (request.Photos != null)
+            {
+                // Снимем все галки аватара (на случай, если параллельно на другом устройстве редактируют фото)
+                sql = $"UPDATE PhotosForAccounts SET {nameof(PhotosForAccountsEntity.IsAvatar)} = 0 " +
+                    $"WHERE {nameof(PhotosForAccountsEntity.RelatedId)} = @{nameof(PhotosForAccountsEntity.RelatedId)}";
+                var result = await unitOfWork.SqlConnection.ExecuteAsync(sql, new { RelatedId = request.Id }, transaction: unitOfWork.SqlTransaction);
+
+                foreach (var photo in request.Photos)
+                {
+                    // Обновление существующего фото
+                    if (photo.Id != 0)
+                    {
+                        sql = $"UPDATE PhotosForAccounts SET " +
+                            $"{nameof(PhotosForAccountsEntity.Comment)} = @{nameof(PhotosForAccountsEntity.Comment)}, " +
+                            $"{nameof(PhotosForAccountsEntity.IsAvatar)} = @{nameof(PhotosForAccountsEntity.IsAvatar)}, " +
+                            $"{nameof(PhotosForAccountsEntity.IsDeleted)} = @{nameof(PhotosForAccountsEntity.IsDeleted)} " +
+                            $"WHERE Id = @Id AND {nameof(PhotosForAccountsEntity.RelatedId)} = @{nameof(PhotosForAccountsEntity.RelatedId)}";
+                        result = await unitOfWork.SqlConnection.ExecuteAsync(sql,
+                            new { photo.Id, RelatedId = request.Id, photo.IsAvatar, photo.Comment, photo.IsDeleted },
+                            transaction: unitOfWork.SqlTransaction);
+                    }
+                    // Добавление нового фото
+                    else
+                    {
+                        // Есть ли фото во временном каталоге?
+                        if (Directory.Exists($"{StaticData.TempPhotosDir}/{photo.Guid}"))
+                        {
+                            // Фото добавили, затем сразу удалили, а потом сохраняют. Значит, фото можно не обрабатывать.
+                            if (!photo.IsDeleted)
+                            {
+                                Directory.CreateDirectory($"{StaticData.AccountsPhotosDir}/{request.Id}/{photo.Guid}");
+                                var sourceFileName = $"{StaticData.TempPhotosDir}/{photo.Guid}/original.jpg";
+
+                                foreach (var image in StaticData.Images)
+                                {
+                                    var destFileName = $@"{StaticData.AccountsPhotosDir}/{request.Id}/{photo.Guid}/{image.Key}.jpg";
+
+                                    MemoryStream output = new MemoryStream(300000);
+                                    MagicImageProcessor.ProcessImage(sourceFileName, output, image.Value);
+                                    File.WriteAllBytes(destFileName, output.ToArray());
+                                }
+
+                                sql = "INSERT INTO PhotosForAccounts " +
+                                    $"({nameof(PhotosForAccountsEntity.Guid)}, {nameof(PhotosForAccountsEntity.RelatedId)}, {nameof(PhotosForEventsEntity.Comment)}, {nameof(PhotosForAccountsEntity.IsAvatar)}) " +
+                                    "VALUES " +
+                                    $"(@{nameof(PhotosForAccountsEntity.Guid)}, @{nameof(PhotosForAccountsEntity.RelatedId)}, @{nameof(PhotosForEventsEntity.Comment)}, @{nameof(PhotosForAccountsEntity.IsAvatar)});" +
+                                    $"SELECT CAST(SCOPE_IDENTITY() AS INT)";
+                                var newId = await unitOfWork.SqlConnection.QuerySingleAsync<int>(sql, new { photo.Guid, RelatedId = request.Id, photo.Comment, photo.IsAvatar }, transaction: unitOfWork.SqlTransaction);
+                            }
+                            Directory.Delete($"{StaticData.TempPhotosDir}/{photo.Guid}", true);
+                        }
+                    }
+                }
+            }
+        }
+
     }
 }

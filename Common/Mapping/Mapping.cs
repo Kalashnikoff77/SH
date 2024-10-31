@@ -9,7 +9,7 @@ namespace Common.Mapping
     {
         public Mapping()
         {
-            CreateMap<AccountsViewDto, AccountUpdateRequestDto>()
+            CreateMap<AccountsViewDto, UpdateAccountRequestDto>()
                 .ForMember(to => to.Informing, from => from.ConvertUsing<InformingConverter, string?>(from => from.Informing))
                 .ForMember(to => to.Password2, from => from.MapFrom(from => from.Password));
         }

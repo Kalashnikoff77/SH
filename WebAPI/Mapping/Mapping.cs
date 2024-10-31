@@ -69,7 +69,7 @@ namespace WebAPI.Mapping
             CreateMap<HobbiesEntity, HobbiesDto>();
 
             // Регистрация аккаунта
-            CreateMap<AccountRegisterRequestDto, AccountsEntity>()
+            CreateMap<RegisterAccountRequestDto, AccountsEntity>()
                 .ForMember(to => to.RegionId, from => from.MapFrom(from => from.Country.Region.Id))
                 .ForMember(to => to.Informing, from => from.ConvertUsing<InformingToStringConverter, Informing>(from => from.Informing));
             CreateMap<UsersDto, UsersEntity>();

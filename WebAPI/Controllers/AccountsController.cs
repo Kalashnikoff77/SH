@@ -110,7 +110,7 @@ namespace WebAPI.Controllers
 
 
         [Route("Register"), HttpPost]
-        public async Task<ResponseDtoBase> RegisterAsync(AccountRegisterRequestDto request)
+        public async Task<ResponseDtoBase> RegisterAsync(RegisterAccountRequestDto request)
         {
             var response = new ResponseDtoBase();
 

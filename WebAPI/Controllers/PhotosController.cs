@@ -94,6 +94,7 @@ namespace WebAPI.Controllers
         /// <summary>
         /// Загрузка в базу и каталог фото, которое в Блейзоре было помещено в каталог temp
         /// </summary>
+        // TODO Удалить (OK)
         [Route("UploadAccountFromTemp"), HttpPost, Authorize]
         public async Task<UploadAccountPhotoFromTempResponseDto> UploadAccountFromTempAsync(UploadAccountPhotoFromTempRequestDto request)
         {
@@ -148,20 +149,19 @@ namespace WebAPI.Controllers
         {
             AuthenticateUser();
 
-            if (request.EventId.HasValue)
+            // Если EventId или AccountId = 0, то это новые создаваемые записи, проверять наличие их в БД нет смысли
+            if (request.EventId.HasValue && request.EventId > 0)
             {
                 var sql = $"SELECT TOP 1 Id FROM Events WHERE Id = @EventId AND {nameof(EventsEntity.AdminId)} = @{nameof(EventsEntity.AdminId)}";
                 var evtId = await _unitOfWork.SqlConnection.QueryFirstOrDefaultAsync<int?>(sql, new { request.EventId, AdminId = _unitOfWork.AccountId })
-                    ?? throw new NotFoundException("Соответствующее мероприятие не найдено!");
+                    ?? throw new NotFoundException($"Мероприятие с Id {request.EventId} не найдено!");
             }
-            else if (request.AccountId.HasValue)
+            if (request.AccountId.HasValue && request.AccountId > 0)
             {
                 var sql = $"SELECT TOP 1 Id FROM Accounts WHERE Id = @AccountId";
                 var accId = await _unitOfWork.SqlConnection.QueryFirstOrDefaultAsync<int?>(sql, new { _unitOfWork.AccountId })
                     ?? throw new NotFoundException($"Пользователь с Id {request.AccountId} не найден!");
             }
-            else
-                throw new BadRequestException("Необходимо указать Id аккаунта или мероприятия!");
 
             var response = new UploadPhotoToTempResponseDto();
 

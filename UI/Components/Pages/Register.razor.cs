@@ -26,7 +26,7 @@ namespace UI.Components.Pages
         [CascadingParameter] CurrentState CurrentState { get; set; } = null!;
         [Inject] IRepository<GetCountriesRequestDto, GetCountriesResponseDto> _repoGetCountries { get; set; } = null!;
         [Inject] IRepository<AccountCheckRegisterRequestDto, AccountCheckRegisterResponseDto> _repoCheckRegister { get; set; } = null!;
-        [Inject] IRepository<AccountRegisterRequestDto, ResponseDtoBase> _repoRegister { get; set; } = null!;
+        [Inject] IRepository<RegisterAccountRequestDto, ResponseDtoBase> _repoRegister { get; set; } = null!;
         [Inject] IRepository<LoginRequestDto, LoginResponseDto> _repoLogin { get; set; } = null!;
 
         [Inject] ProtectedLocalStorage _protectedLocalStore { get; set; } = null!;
@@ -35,7 +35,7 @@ namespace UI.Components.Pages
         [Inject] IDialogService DialogService { get; set; } = null!;
         [Inject] IConfiguration _config { get; set; } = null!;
 
-        AccountRegisterRequestDto accountRegisterDto = new AccountRegisterRequestDto
+        RegisterAccountRequestDto accountRegisterDto = new RegisterAccountRequestDto
         {
             Name = "Олег и Марина Мск2",
             Email = "olegmar@mail.ru",

@@ -5,6 +5,7 @@
 
 AccountsPhotos/
 EventsPhotos/
+temp/
 
 # User-specific files
 *.rsuser

@@ -234,6 +234,35 @@ namespace WebAPI.Controllers
             return response;
         }
 
+        /// <summary>
+        /// Добавление мероприятия
+        /// </summary>
+        [Route("Add"), HttpPost, Authorize]
+        public async Task<AddEventResponseDto> AddAsync(AddEventRequestDto request)
+        {
+            AuthenticateUser();
+
+            var response = new AddEventResponseDto();
+
+            // Проверка
+            await request.ValidateAsync(_unitOfWork);
+
+            await _unitOfWork.BeginTransactionAsync();
+
+            // Обновление мероприятия
+            await request.AddEventAsync(_unitOfWork);
+
+            //// Обновление расписаний мероприятия
+            //await request.UpdateSchedulesAsync(_unitOfWork);
+
+            //// Обновление фото меропириятия
+            //await request.UpdatePhotosAsync(_unitOfWork);
+
+            await _unitOfWork.CommitTransactionAsync();
+
+            return response;
+        }
+
 
         /// <summary>
         /// Обновление мероприятия
@@ -242,6 +271,10 @@ namespace WebAPI.Controllers
         public async Task<UpdateEventResponseDto> UpdateAsync(UpdateEventRequestDto request)
         {
             AuthenticateUser();
+
+            // Проверка
+            // TODO СДЕЛАТЬ ПРОВЕРКУ! (OK)
+            //await request.ValidateAsync(_unitOfWork);
 
             var response = new UpdateEventResponseDto();
 

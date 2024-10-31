@@ -1,6 +1,6 @@
 ﻿namespace Common.Dto.Requests
 {
-    public class AccountRegisterRequestDto : RequestDtoBase
+    public class RegisterAccountRequestDto : RequestDtoBase
     {
         public override string Uri => "/Accounts/Register";
 

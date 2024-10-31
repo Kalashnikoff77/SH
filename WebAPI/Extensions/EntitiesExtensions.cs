@@ -12,7 +12,7 @@ namespace WebAPI.Extensions
         /// <summary>
         /// Обработка фото при регистрации аккаунта
         /// </summary>
-        public static async Task ProcessPhotoAfterRegistration(this AccountsEntity accountsEntity, UnitOfWork unitOfWork, AccountRegisterRequestDto request)
+        public static async Task ProcessPhotoAfterRegistration(this AccountsEntity accountsEntity, UnitOfWork unitOfWork, RegisterAccountRequestDto request)
         {
             if (!string.IsNullOrWhiteSpace(request.OriginalPhoto))
             {

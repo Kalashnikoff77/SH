@@ -69,7 +69,7 @@ namespace UI.Components.Pages.Events
                     } }
                 },
                 { 2, new TabPanel { Items = new Dictionary<string, bool> { { "Schedule", isValid } } } },
-                { 3, new TabPanel { Items = new Dictionary<string, bool> { { "Photo", isValid } } } }
+                { 3, new TabPanel { Items = new Dictionary<string, bool> { { "Photos", isValid } } } }
             };
 
             CheckPanelsVisibility();
@@ -268,6 +268,8 @@ namespace UI.Components.Pages.Events
                 processingPhoto = false;
                 StateHasChanged();
             }
+
+            CheckPanel3Properties();
         }
 
         void UpdateCommentPhoto(PhotosForEventsDto photo, string comment) =>
@@ -278,6 +280,23 @@ namespace UI.Components.Pages.Events
             Event.Photos?.ForEach(x => x.IsAvatar = false);
             photo.IsAvatar = true;
         }
+
+        void DeletePhoto(PhotosForEventsDto photo)
+        {
+            photo.IsDeleted = true;
+            CheckPanel3Properties();
+        }
+
+        void CheckPanel3Properties()
+        {
+            if (Event.Photos?.Any(x => x.IsDeleted == false) == true)
+                TabPanels[3].Items["Photos"] = true;
+            else
+                TabPanels[3].Items["Photos"] = false;
+
+            CheckPanelsVisibility();
+        }
+
         #endregion
 
 

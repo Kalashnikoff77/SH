@@ -3,7 +3,6 @@ using Common.Models;
 using Dapper;
 using DataContext.Entities;
 using PhotoSauce.MagicScaler;
-using System;
 using System.Data.Common;
 using System.Text.Json;
 using System.Text.RegularExpressions;
@@ -77,7 +76,7 @@ namespace WebAPI.Extensions
         }
 
 
-        public static async Task ValidateAsync(this AccountRegisterRequestDto request, DbConnection conn)
+        public static async Task ValidateAsync(this RegisterAccountRequestDto request, DbConnection conn)
         {
             if (string.IsNullOrWhiteSpace(request.Email))
                 throw new BadRequestException("Укажите Ваш email!");
@@ -151,10 +150,38 @@ namespace WebAPI.Extensions
         }
 
 
+
+        public static async Task ValidateAsync(this AddEventRequestDto request, UnitOfWork unitOfWork)
+        {
+            //if (request.Users == null || request.Users.Count == 0)
+            //    throw new BadRequestException("Вы не добавили ни одного партнёра в аккаунт!");
+        }
+
+
+        /// <summary>
+        /// Добавление мероприятия
+        /// </summary>
+        public static async Task<int> AddEventAsync(this AddEventRequestDto request, UnitOfWork unitOfWork)
+        {
+            var sql = $"UPDATE Events SET " +
+                $"{nameof(EventsEntity.Name)} = @{nameof(EventsEntity.Name)}, " +
+                $"{nameof(EventsEntity.Description)} = @{nameof(EventsEntity.Description)}, " +
+                $"{nameof(EventsEntity.MaxMen)} = @{nameof(EventsEntity.MaxMen)}, " +
+                $"{nameof(EventsEntity.MaxWomen)} = @{nameof(EventsEntity.MaxWomen)}, " +
+                $"{nameof(EventsEntity.MaxPairs)} = @{nameof(EventsEntity.MaxPairs)} " +
+                $"WHERE Id = @Id AND {nameof(EventsEntity.AdminId)} = @AccountId";
+
+            var result = await unitOfWork.SqlConnection.ExecuteAsync(sql,
+                new { request.Event.Id, request.Event.Name, request.Event.Description, request.Event.MaxMen, request.Event.MaxWomen, request.Event.MaxPairs, unitOfWork.AccountId },
+                transaction: unitOfWork.SqlTransaction);
+
+            return result;
+        }
+
+
         /// <summary>
         /// Обновление мероприятия
         /// </summary>
-        /// <returns>SQL скрипт</returns>
         public static async Task<int> UpdateEventAsync(this UpdateEventRequestDto request, UnitOfWork unitOfWork)
         {
             var sql = $"UPDATE Events SET " +
@@ -173,7 +200,7 @@ namespace WebAPI.Extensions
         }
 
         /// <summary>
-        /// Обновление расписания
+        /// Обновление расписания мероприятия
         /// </summary>
         public static async Task UpdateSchedulesAsync(this UpdateEventRequestDto request, UnitOfWork unitOfWork)
         {
@@ -307,6 +334,18 @@ namespace WebAPI.Extensions
             }
         }
 
+
+        public static async Task UpdateAccountAsync(this UpdateAccountRequestDto request, UnitOfWork unitOfWork)
+        {
+            var sql = $"UPDATE Accounts SET " +
+                $"{nameof(AccountsEntity.Email)} = @{nameof(request.Email)}, " +
+                $"{nameof(AccountsEntity.Name)} = @{nameof(request.Name)}, " +
+                $"{nameof(AccountsEntity.Informing)} = @informing, " +
+                $"{nameof(AccountsEntity.RegionId)} = @{nameof(AccountsEntity.RegionId)} " +
+                "WHERE Id = @AccountId";
+            await unitOfWork.SqlConnection.ExecuteAsync(sql, new { request.Email, request.Name, informing = JsonSerializer.Serialize(request.Informing), RegionId = request.Country.Region.Id, unitOfWork.AccountId }, transaction: unitOfWork.SqlTransaction);
+        }
+
         public static async Task UpdateUsersAsync(this UpdateAccountRequestDto request, UnitOfWork unitOfWork)
         {
             foreach (var user in request.Users)
@@ -345,17 +384,6 @@ namespace WebAPI.Extensions
                 p.Add("@HobbiesIds", string.Join(",", request.Hobbies.Select(s => s.Id)));
                 await unitOfWork.SqlConnection.ExecuteAsync("UpdateHobbiesForAccounts_sp", p, commandType: System.Data.CommandType.StoredProcedure, transaction: unitOfWork.SqlTransaction);
             }
-        }
-
-        public static async Task UpdateAccountAsync(this UpdateAccountRequestDto request, UnitOfWork unitOfWork)
-        {
-            var sql = $"UPDATE Accounts SET " +
-                $"{nameof(AccountsEntity.Email)} = @{nameof(request.Email)}, " +
-                $"{nameof(AccountsEntity.Name)} = @{nameof(request.Name)}, " +
-                $"{nameof(AccountsEntity.Informing)} = @informing, " +
-                $"{nameof(AccountsEntity.RegionId)} = @{nameof(AccountsEntity.RegionId)} " +
-                "WHERE Id = @AccountId";
-            await unitOfWork.SqlConnection.ExecuteAsync(sql, new { request.Email, request.Name, informing = JsonSerializer.Serialize(request.Informing), RegionId = request.Country.Region.Id, unitOfWork.AccountId }, transaction: unitOfWork.SqlTransaction);
         }
 
         public static async Task UpdatePasswordAsync(this UpdateAccountRequestDto request, UnitOfWork unitOfWork)

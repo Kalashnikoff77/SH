@@ -252,6 +252,11 @@ namespace WebAPI.Extensions
 
             if (request.Event.Photos != null)
             {
+                // Снимем все галки аватара (на случай, если параллельно на другом устройстве редактируют фото)
+                sql = $"UPDATE PhotosForEvents SET {nameof(PhotosForEventsEntity.IsAvatar)} = 0 " +
+                    $"WHERE {nameof(PhotosForEventsEntity.RelatedId)} = @{nameof(PhotosForEventsEntity.RelatedId)}";
+                var result = await unitOfWork.SqlConnection.ExecuteAsync(sql, new { RelatedId = request.Event.Id }, transaction: unitOfWork.SqlTransaction);
+
                 foreach (var photo in request.Event.Photos)
                 {
                     // Обновление существующего фото
@@ -262,7 +267,7 @@ namespace WebAPI.Extensions
                             $"{nameof(PhotosForEventsEntity.IsAvatar)} = @{nameof(PhotosForEventsEntity.IsAvatar)}, " +
                             $"{nameof(PhotosForEventsEntity.IsDeleted)} = @{nameof(PhotosForEventsEntity.IsDeleted)} " +
                             $"WHERE Id = @Id AND {nameof(PhotosForEventsEntity.RelatedId)} = @{nameof(PhotosForEventsEntity.RelatedId)}";
-                        var result = await unitOfWork.SqlConnection.ExecuteAsync(sql,
+                        result = await unitOfWork.SqlConnection.ExecuteAsync(sql,
                             new { photo.Id, RelatedId = request.Event.Id, photo.IsAvatar, photo.Comment, photo.IsDeleted },
                             transaction: unitOfWork.SqlTransaction);
                     }

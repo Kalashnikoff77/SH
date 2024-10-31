@@ -298,8 +298,13 @@ namespace UI.Components.Pages.Events
             processingEvent = true;
             StateHasChanged();
 
+            // Обновление данных
             var request = new UpdateEventRequestDto { Event = Event, Token = CurrentState.Account?.Token };
-            var response = await _repoUpdateEvent.HttpPostAsync(request);
+            var apiUpdateResponse = await _repoUpdateEvent.HttpPostAsync(request);
+
+            // Перезагрузка мероприятия
+            var apiReloadResponse = await _repoGetEvent.HttpPostAsync(new GetEventsRequestDto { EventId = EventId, IsPhotosIncluded = true });
+            Event = apiReloadResponse.Response.Event!;
 
             processingEvent = false;
             StateHasChanged();

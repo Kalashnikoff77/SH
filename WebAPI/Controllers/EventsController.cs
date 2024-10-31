@@ -245,21 +245,22 @@ namespace WebAPI.Controllers
             var response = new AddEventResponseDto();
 
             // Проверка
-            await request.ValidateAsync(_unitOfWork);
+            request.Validate(_unitOfWork);
 
             await _unitOfWork.BeginTransactionAsync();
 
-            // Обновление мероприятия
-            await request.AddEventAsync(_unitOfWork);
+            // Добавление мероприятия
+            request.Event.Id = await request.AddEventAsync(_unitOfWork);
 
-            //// Обновление расписаний мероприятия
-            //await request.UpdateSchedulesAsync(_unitOfWork);
+            //// Добавление расписаний мероприятия
+            await request.AddSchedulesAsync(_unitOfWork);
 
-            //// Обновление фото меропириятия
-            //await request.UpdatePhotosAsync(_unitOfWork);
+            //// Добавление фото меропириятия
+            await request.AddPhotosAsync(_unitOfWork);
 
             await _unitOfWork.CommitTransactionAsync();
 
+            response.NewEventId = request.Event.Id;
             return response;
         }
 
@@ -273,8 +274,7 @@ namespace WebAPI.Controllers
             AuthenticateUser();
 
             // Проверка
-            // TODO СДЕЛАТЬ ПРОВЕРКУ! (OK)
-            //await request.ValidateAsync(_unitOfWork);
+            request.Validate(_unitOfWork);
 
             var response = new UpdateEventResponseDto();
 

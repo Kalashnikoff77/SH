@@ -8,6 +8,8 @@
 
         public string Description { get; set; } = null!;
 
+        public int AdminId { get; set; }
+
         public int RegionId { get; set; }
 
         public string Address { get; set; } = null!;

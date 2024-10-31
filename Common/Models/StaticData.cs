@@ -87,6 +87,7 @@ namespace Common.Models
         public const short DB_EVENT_NAME_MAX = 50;
         public const short DB_EVENT_DESCRIPTION_MIN = 50;
         public const short DB_EVENT_DESCRIPTION_MAX = 2048;
+        public const short DB_EVENT_ADDRESS_MIN = 10;
         public const short DB_EVENT_ADDRESS_MAX = 150;
 
         public const string TempPhotosDir = "../UI/wwwroot/images/temp";

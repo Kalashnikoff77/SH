@@ -20,6 +20,7 @@ namespace UI.Components.Pages.Events
         [CascadingParameter] public CurrentState CurrentState { get; set; } = null!;
         [Inject] IRepository<EventCheckRequestDto, EventCheckResponseDto> _repoCheckAdding { get; set; } = null!;
         [Inject] IRepository<GetEventsRequestDto, GetEventsResponseDto> _repoGetEvent { get; set; } = null!;
+        [Inject] IRepository<AddEventRequestDto, AddEventResponseDto> _repoAddEvent { get; set; } = null!;
         [Inject] IRepository<UpdateEventRequestDto, UpdateEventResponseDto> _repoUpdateEvent { get; set; } = null!;
         [Inject] IRepository<UploadPhotoToTempRequestDto, UploadPhotoToTempResponseDto> _repoUploadPhotoToTemp { get; set; } = null!;
 
@@ -306,6 +307,15 @@ namespace UI.Components.Pages.Events
             processingEvent = true;
             StateHasChanged();
 
+            // Добавление мероприятия
+            var request = new AddEventRequestDto { Event = Event, Token = CurrentState.Account?.Token };
+            var apiAddResponse = await _repoAddEvent.HttpPostAsync(request);
+            EventId = apiAddResponse.Response.NewEventId;
+
+            // Перезагрузка мероприятия
+            var apiReloadResponse = await _repoGetEvent.HttpPostAsync(new GetEventsRequestDto { EventId = EventId, IsPhotosIncluded = true });
+            Event = apiReloadResponse.Response.Event!;
+
             processingEvent = false;
             StateHasChanged();
         }
@@ -315,7 +325,7 @@ namespace UI.Components.Pages.Events
             processingEvent = true;
             StateHasChanged();
 
-            // Обновление данных
+            // Обновление мероприятия
             var request = new UpdateEventRequestDto { Event = Event, Token = CurrentState.Account?.Token };
             var apiUpdateResponse = await _repoUpdateEvent.HttpPostAsync(request);
 

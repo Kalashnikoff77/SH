@@ -18,6 +18,7 @@ namespace UI.Components.Pages.Events
     public partial class AddEditEvent : IDisposable
     {
         [CascadingParameter] public CurrentState CurrentState { get; set; } = null!;
+        [Inject] IRepository<GetCountriesRequestDto, GetCountriesResponseDto> _repoGetCountries { get; set; } = null!;
         [Inject] IRepository<EventCheckRequestDto, EventCheckResponseDto> _repoCheckAdding { get; set; } = null!;
         [Inject] IRepository<GetEventsRequestDto, GetEventsResponseDto> _repoGetEvent { get; set; } = null!;
         [Inject] IRepository<AddEventRequestDto, AddEventResponseDto> _repoAddEvent { get; set; } = null!;
@@ -31,10 +32,14 @@ namespace UI.Components.Pages.Events
         {
             Name = "Название мероприятия в клубе",
             Description = "Длинное описание, которое должно быть более пятидесяти символов в длину, иначе не прокатит",
+            Address = "МО, пос. Каменка, д. 12",
             MaxPairs = 10,
             MaxMen = 5,
             MaxWomen = 15
         };
+
+        List<CountriesViewDto> countries { get; set; } = null!;
+        List<RegionsDto>? regions { get; set; } = new List<RegionsDto>();
 
         bool processingPhoto, processingEvent = false;
 
@@ -58,6 +63,9 @@ namespace UI.Components.Pages.Events
                 }
             }
 
+            var apiCountriesResponse = await _repoGetCountries.HttpPostAsync(new GetCountriesRequestDto());
+            countries = apiCountriesResponse.Response.Countries;
+
             TabPanels = new Dictionary<short, TabPanel>
             {
                 { 1, new TabPanel { Items = new Dictionary<string, bool>
@@ -66,7 +74,10 @@ namespace UI.Components.Pages.Events
                         { nameof(Event.Description), isValid },
                         { nameof(Event.MaxPairs), isValid },
                         { nameof(Event.MaxMen), isValid },
-                        { nameof(Event.MaxWomen), isValid}
+                        { nameof(Event.MaxWomen), isValid },
+                        { nameof(Event.Country), isValid },
+                        { nameof(Event.Country.Region), isValid },
+                        { nameof(Event.Address), isValid }
                     } }
                 },
                 { 2, new TabPanel { Items = new Dictionary<string, bool> { { "Schedule", isValid } } } },
@@ -74,6 +85,15 @@ namespace UI.Components.Pages.Events
             };
 
             CheckPanelsVisibility();
+        }
+
+        protected override void OnParametersSet()
+        {
+            if (EventId != null && Event.Country != null)
+            {
+                countryText = Event.Country.Name;
+                regionText = Event.Country.Region.Name;
+            }
         }
 
 
@@ -107,6 +127,102 @@ namespace UI.Components.Pages.Events
             CheckPanel1Properties(errorMessage, nameof(Event.Description), ref DescriptionIconColor);
             return errorMessage;
         }
+
+        Color CountryIconColor = Color.Default;
+        string? CountryValidator(string country)
+        {
+            string? errorMessage = null;
+            if (string.IsNullOrWhiteSpace(countryText))
+                errorMessage = $"Выберите страну";
+
+            // Сбросим в false регион
+            TabPanels[1].Items[nameof(Event.Country.Region)] = false;
+
+            CheckPanel1Properties(errorMessage, nameof(Event.Country), ref CountryIconColor);
+            return errorMessage;
+        }
+
+        Color RegionIconColor = Color.Default;
+        string? RegionValidator(string region)
+        {
+            string? errorMessage = null;
+            if (string.IsNullOrWhiteSpace(regionText))
+                errorMessage = $"Выберите регион";
+
+            CheckPanel1Properties(errorMessage, nameof(Event.Country.Region), ref RegionIconColor);
+            return errorMessage;
+        }
+
+        Color AddressIconColor = Color.Default;
+        string? AddressValidator(string? address)
+        {
+            string? errorMessage = null;
+            if (string.IsNullOrWhiteSpace(address))
+                errorMessage = $"Укажите точный или примерный адрес";
+
+            CheckPanel1Properties(errorMessage, nameof(Event.Address), ref AddressIconColor);
+            return errorMessage;
+        }
+
+        async Task<IEnumerable<string>?> SearchCountry(string value, CancellationToken token)
+        {
+            if (string.IsNullOrWhiteSpace(value))
+                return countries.Select(s => s.Name);
+
+            return countries?.Select(s => s.Name)
+                .Where(x => x.Contains(value, StringComparison.InvariantCultureIgnoreCase));
+        }
+
+        async Task<IEnumerable<string>?> SearchRegion(string value, CancellationToken token)
+        {
+            if (string.IsNullOrWhiteSpace(value))
+                return regions?.Select(s => s.Name);
+
+            return regions?.Select(s => s.Name)
+                .Where(x => x.Contains(value, StringComparison.InvariantCultureIgnoreCase));
+        }
+
+
+        string? _countryText;
+        string? countryText
+        {
+            get => _countryText;
+            set
+            {
+                if (value != null)
+                {
+                    var country = countries.Where(c => c.Name == value)?.First();
+                    if (country != null)
+                    {
+                        if (Event.Country == null)
+                            Event.Country = new CountriesDto();
+                        Event.Country.Id = country.Id;
+                        regions = countries
+                            .Where(x => x.Id == country.Id).FirstOrDefault()?
+                            .Regions?.Select(s => s).ToList();
+                    }
+                }
+                _countryText = value;
+                _regionText = null;
+            }
+        }
+
+        string? _regionText;
+        string? regionText
+        {
+            get => _regionText;
+            set
+            {
+                if (value != null && regions != null)
+                {
+                    var region = regions.Where(c => c.Name == value)?.First();
+                    if (region != null)
+                        Event.Country!.Region.Id = region.Id;
+                }
+                _regionText = value;
+            }
+        }
+
 
         Color MaxPairsIconColor = Color.Default;
         string? MaxPairsValidator(short? num)
@@ -260,7 +376,12 @@ namespace UI.Components.Pages.Events
                     var newPhoto = await photo.Upload<PhotosForEventsDto>(CurrentState.Account?.Token, _repoUploadPhotoToTemp, eventId: Event.Id);
 
                     if (newPhoto != null)
+                    {
+                        // Если это первая фотка, то отметим её как аватар
+                        if (Event.Photos.Count(x => x.IsDeleted == false) == 0)
+                            newPhoto.IsAvatar = true;
                         Event.Photos.Insert(0, newPhoto);
+                    }
 
                     StateHasChanged();
                     if (Event.Photos.Count(x => x.IsDeleted == false) >= 20) break;

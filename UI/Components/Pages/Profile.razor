@@ -99,11 +99,11 @@
 
 
             @* ХОББИ *@
-            <MudExpansionPanel Disabled="!IsPanel2Valid" Expanded="IsPanel2Valid">
+            <MudExpansionPanel Disabled="!(IsPanel1Valid && IsPanel2Valid)" Expanded="(IsPanel1Valid && IsPanel2Valid)">
                 <TitleContent>
                     <div class="d-flex">
-                        <MudIcon Color="IsPanel2Valid ? Color.Success : Color.Default" Icon="@Icons.Material.Filled.Window" class="mr-3" />
-                        <MudText Color="IsPanel2Valid ? Color.Success : Color.Default"><b>3. ХОББИ, УВЛЕЧЕНИЯ</b></MudText>
+                        <MudIcon Color="IsPanel3Valid ? Color.Success : Color.Default" Icon="@Icons.Material.Filled.Window" class="mr-3" />
+                        <MudText Color="IsPanel3Valid ? Color.Success : Color.Default"><b>3. ХОББИ, УВЛЕЧЕНИЯ</b></MudText>
                     </div>
                 </TitleContent>
                 <ChildContent>
@@ -120,11 +120,11 @@
 
 
             @* ФОТО *@
-            <MudExpansionPanel Disabled="!(IsPanel1Valid && IsPanel2Valid)" Expanded="(IsPanel1Valid && IsPanel2Valid)">
+            <MudExpansionPanel Disabled="!(IsPanel1Valid && IsPanel2Valid && IsPanel3Valid)" Expanded="(IsPanel1Valid && IsPanel2Valid && IsPanel3Valid)">
                 <TitleContent>
                     <div class="d-flex">
-                        <MudIcon Color="IsPanel3Valid ? Color.Success : Color.Default" Icon="@Icons.Material.Filled.Image" class="mr-3" />
-                        <MudText Color="IsPanel3Valid ? Color.Success : Color.Default"><b>4. ФОТОГРАФИИ</b></MudText>
+                        <MudIcon Color="IsPanel4Valid ? Color.Success : Color.Default" Icon="@Icons.Material.Filled.Image" class="mr-3" />
+                        <MudText Color="IsPanel4Valid ? Color.Success : Color.Default"><b>4. ФОТОГРАФИИ</b></MudText>
                     </div>
                 </TitleContent>
                 <ChildContent>

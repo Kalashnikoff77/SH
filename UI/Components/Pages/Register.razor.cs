@@ -197,6 +197,9 @@ namespace UI.Components.Pages
             if (string.IsNullOrWhiteSpace(countryText)) 
                 errorMessage = $"Выберите страну";
 
+            // Сбросим в false регион
+            TabPanels[1].Items[nameof(accountRegisterDto.Country.Region)] = false;
+
             CheckPanel1Properties(errorMessage, nameof(accountRegisterDto.Country), ref CountryIconColor);
             return errorMessage;
         }

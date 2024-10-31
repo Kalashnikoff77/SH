@@ -48,6 +48,7 @@ namespace UI.Components.Pages
         bool IsPanel1Valid => TabPanels[1].Items.All(x => x.Value == true);
         bool IsPanel2Valid => TabPanels[2].Items.All(x => x.Value == true);
         bool IsPanel3Valid => TabPanels[3].Items.All(x => x.Value == true);
+        bool IsPanel4Valid => TabPanels[4].Items.All(x => x.Value == true);
 
         protected override async Task OnInitializedAsync()
         {
@@ -66,7 +67,8 @@ namespace UI.Components.Pages
                     }
                 },
                 { 2, new TabPanel { Items = new Dictionary<string, bool> { { nameof(updateRequestDto.Users), true } } } },
-                { 3, new TabPanel { Items = new Dictionary<string, bool> { { "Photo", true } } } }
+                { 3, new TabPanel { Items = new Dictionary<string, bool> { { nameof(updateRequestDto.Hobbies), true } } } },
+                { 4, new TabPanel { Items = new Dictionary<string, bool> { { "Photo", true } } } }
             };
 
             var apiCountriesResponse = await _repoGetCountries.HttpPostAsync(new GetCountriesRequestDto());
@@ -196,6 +198,9 @@ namespace UI.Components.Pages
             if (string.IsNullOrWhiteSpace(countryText))
                 errorMessage = $"Выберите страну";
 
+            // Сбросим в false регион
+            TabPanels[1].Items[nameof(updateRequestDto.Country.Region)] = false;
+
             CheckPanel1Properties(errorMessage, nameof(updateRequestDto.Country), ref CountryIconColor);
             return errorMessage;
         }
@@ -315,6 +320,17 @@ namespace UI.Components.Pages
             }
             else
                 updateRequestDto.Hobbies = [hobby];
+
+            CheckPanel3Properties();
+        }
+
+        void CheckPanel3Properties()
+        {
+            if (updateRequestDto.Hobbies != null && updateRequestDto.Hobbies.Any())
+                TabPanels[3].Items[nameof(updateRequestDto.Hobbies)] = true;
+            else
+                TabPanels[3].Items[nameof(updateRequestDto.Hobbies)] = false;
+            StateHasChanged();
         }
         #endregion
 

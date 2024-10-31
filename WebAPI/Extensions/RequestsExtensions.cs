@@ -164,7 +164,7 @@ namespace WebAPI.Extensions
             if (request.Event.Name.Length < StaticData.DB_EVENT_NAME_MIN || request.Event.Name.Length > StaticData.DB_EVENT_NAME_MAX)
                 throw new BadRequestException($"Длина названия должна быть от {StaticData.DB_EVENT_NAME_MIN} до {StaticData.DB_EVENT_NAME_MAX} символов!");
 
-            if (request.Event.RegionId == 0)
+            if (request.Event.Country?.Region.Id == 0)
                 throw new BadRequestException("Вы не указали регион проведения мероприятия!");
 
             if (string.IsNullOrWhiteSpace(request.Event.Address))
@@ -207,7 +207,8 @@ namespace WebAPI.Extensions
                 "SELECT CAST(SCOPE_IDENTITY() AS INT)";
 
             var newEventId = await unitOfWork.SqlConnection.QuerySingleAsync<int>(sql,
-                new { request.Event.Name, request.Event.Description, AdminId = unitOfWork.AccountId, request.Event.RegionId, request.Event.Address,
+                new { request.Event.Name, request.Event.Description, AdminId = unitOfWork.AccountId,
+                    RegionId = request.Event.Country!.Region.Id, request.Event.Address,
                     request.Event.MaxMen, request.Event.MaxWomen, request.Event.MaxPairs },
                 transaction: unitOfWork.SqlTransaction);
 
@@ -317,7 +318,7 @@ namespace WebAPI.Extensions
             if (request.Event.Name.Length < StaticData.DB_EVENT_NAME_MIN || request.Event.Name.Length > StaticData.DB_EVENT_NAME_MAX)
                 throw new BadRequestException($"Длина названия должна быть от {StaticData.DB_EVENT_NAME_MIN} до {StaticData.DB_EVENT_NAME_MAX} символов!");
 
-            if (request.Event.RegionId == 0)
+            if (request.Event.Country?.Region.Id == 0)
                 throw new BadRequestException("Вы не указали регион проведения мероприятия!");
 
             if (string.IsNullOrWhiteSpace(request.Event.Address))
@@ -341,13 +342,17 @@ namespace WebAPI.Extensions
             var sql = $"UPDATE Events SET " +
                 $"{nameof(EventsEntity.Name)} = @{nameof(EventsEntity.Name)}, " +
                 $"{nameof(EventsEntity.Description)} = @{nameof(EventsEntity.Description)}, " +
+                $"{nameof(EventsEntity.RegionId)} = @{nameof(EventsEntity.RegionId)}, " +
+                $"{nameof(EventsEntity.Address)} = @{nameof(EventsEntity.Address)}, " +
                 $"{nameof(EventsEntity.MaxMen)} = @{nameof(EventsEntity.MaxMen)}, " +
                 $"{nameof(EventsEntity.MaxWomen)} = @{nameof(EventsEntity.MaxWomen)}, " +
                 $"{nameof(EventsEntity.MaxPairs)} = @{nameof(EventsEntity.MaxPairs)} " +
                 $"WHERE Id = @Id AND {nameof(EventsEntity.AdminId)} = @AccountId";
 
             var result = await unitOfWork.SqlConnection.ExecuteAsync(sql,
-                new { request.Event.Id, request.Event.Name, request.Event.Description, request.Event.MaxMen, request.Event.MaxWomen, request.Event.MaxPairs, unitOfWork.AccountId },
+                new { request.Event.Id, request.Event.Name, request.Event.Description,
+                    RegionId = request.Event.Country!.Region.Id, request.Event.Address,
+                    request.Event.MaxMen, request.Event.MaxWomen, request.Event.MaxPairs, unitOfWork.AccountId },
                 transaction: unitOfWork.SqlTransaction);
 
             return result;

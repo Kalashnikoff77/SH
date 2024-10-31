@@ -11,7 +11,7 @@ namespace Common.Extensions
         /// <summary>
         /// Сохранение фото во временном каталоге
         /// </summary>
-        public static async Task<T?> Upload<T>(this IBrowserFile photo, string? token, IRepository<UploadPhotoToTempRequestDto, UploadPhotoToTempResponseDto> repoUploadPhotoToTemp, int? accountId = null, int? eventId = null)
+        public static async Task<T> Upload<T>(this IBrowserFile photo, string? token, IRepository<UploadPhotoToTempRequestDto, UploadPhotoToTempResponseDto> repoUploadPhotoToTemp, int? accountId = null, int? eventId = null)
             where T : PhotosDtoBase
         {
             if (accountId == null && eventId == null)

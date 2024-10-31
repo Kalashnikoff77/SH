@@ -53,27 +53,49 @@ else
                                           Class="mt-7"
                                           Typo="Typo.body1" Margin="Margin.Normal" Variant="Variant.Outlined" MaxLength="StaticData.DB_EVENT_DESCRIPTION_MAX" />
                         </MudItem>
-                        <MudItem sm="4" xs="4">
+
+                        <MudItem sm="4" xs="4" Class="pt-2">
                             <MudNumericField @bind-Value="Event.MaxPairs"
                                              Validation="@(new Func<short?, string?>(MaxPairsValidator))"
                                              HelperText="Максимальное кол-во пар"
                                              AdornmentIcon="@Icons.Material.Filled.PeopleAlt" Adornment="Adornment.End" AdornmentColor="@MaxPairsIconColor"
                                              Typo="Typo.body1" Margin="Margin.Dense" Variant="Variant.Outlined" />
                         </MudItem>
-                        <MudItem sm="4" xs="4">
+                        <MudItem sm="4" xs="4" Class="pt-2">
                             <MudNumericField @bind-Value="Event.MaxMen"
                                              Validation="@(new Func<short?, string?>(MaxMenValidator))"
                                              HelperText="Максимальное кол-во мужчин"
                                              AdornmentIcon="@Icons.Material.Filled.Face5" Adornment="Adornment.End" AdornmentColor="@MaxMenIconColor"
                                              Typo="Typo.body1" Margin="Margin.Dense" Variant="Variant.Outlined" />
                         </MudItem>
-                        <MudItem sm="4" xs="4">
+                        <MudItem sm="4" xs="4" Class="pt-2">
                             <MudNumericField @bind-Value="Event.MaxWomen"
                                              Validation="@(new Func<short?, string?>(MaxWomenValidator))"
                                              HelperText="Максимальное кол-во женщин"
                                              AdornmentIcon="@Icons.Material.Filled.Face3" Adornment="Adornment.End" AdornmentColor="@MaxWomenIconColor"
                                              Typo="Typo.body1" Margin="Margin.Dense" Variant="Variant.Outlined" />
                         </MudItem>
+
+                        <MudItem sm="6" xs="12" Class="pt-3">
+                            <MudStack Spacing="0">
+                                <MudAutocomplete AdornmentIcon="@Icons.Material.Outlined.LocationOn" AdornmentColor="@CountryIconColor" Validation="@(new Func<string, string?>(CountryValidator))" T="string" Label="Страна" @bind-Value="countryText" SearchFunc="@SearchCountry" ResetValueOnEmptyText="true" CoerceText="true" CoerceValue="false" />
+                            </MudStack>
+                        </MudItem>
+                        <MudItem sm="6" xs="12" Class="pt-3">
+                            <MudStack Spacing="0">
+                                <MudAutocomplete AdornmentIcon="@Icons.Material.Outlined.LocationOn" AdornmentColor="@RegionIconColor" Validation="@(new Func<string, string?>(RegionValidator))" T="string" Label="Регион" @bind-Value="regionText" SearchFunc="@SearchRegion" ResetValueOnEmptyText="true" CoerceText="true" CoerceValue="false" Disabled="countryText == null ? true : false" />
+                            </MudStack>
+                        </MudItem>
+
+                        <MudItem sm="12" Class="pt-5">
+                            <MudTextField @bind-Value="Event.Address"
+                                          Validation="@(new Func<string?, string?>(AddressValidator))"
+                                          HelperText="Пример: МО, пос. Каменка, ул. Центральная, д. 20"
+                                          Label="Точный или примерный адрес мероприятия"
+                                          AdornmentIcon="@Icons.Material.Outlined.ShortText" AdornmentColor="@AddressIconColor" Adornment="Adornment.End"
+                                          Typo="Typo.body1" Margin="Margin.Normal" Variant="Variant.Outlined" MaxLength="StaticData.DB_EVENT_ADDRESS_MAX" />
+                        </MudItem>
+
                     </MudGrid>
                 </ChildContent>
             </MudExpansionPanel>

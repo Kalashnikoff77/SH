@@ -2,6 +2,6 @@
 {
     public class GetHobbiesResponseDto : ResponseDtoBase
     {
-        public List<HobbiesDto>? Hobbies { get; set; }
+        public List<HobbiesDto> Hobbies { get; set; } = null!;
     }
 }

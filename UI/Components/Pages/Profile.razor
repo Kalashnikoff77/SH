@@ -107,17 +107,14 @@
                     </div>
                 </TitleContent>
                 <ChildContent>
-                    @if (hobbies != null)
-                    {
-                        <MudStack Row Wrap="Wrap.Wrap" Spacing="4" Justify="Justify.Center">
-                            @foreach (var hobby in hobbies)
-                            {
-                                var btnColor = updateRequestDto.Hobbies != null && updateRequestDto.Hobbies.Any(x => x.Id == hobby.Id) ? Color.Info : Color.Default;
-                                var disabled = updateRequestDto.Hobbies != null && updateRequestDto.Hobbies.Count >= 5 && btnColor == Color.Default ? true : false;
-                                <MudButton OnClick="() => OnHobbyChanged(hobby)" Disabled="@disabled" Variant="Variant.Filled" Size="Size.Small" Color="btnColor">@hobby.Name</MudButton>
-                            }
-                        </MudStack>
-                    }
+                    <MudStack Row Wrap="Wrap.Wrap" Spacing="4" Justify="Justify.Center">
+                        @foreach (var hobby in hobbies)
+                        {
+                            var btnColor = updateRequestDto.Hobbies != null && updateRequestDto.Hobbies.Any(x => x.Id == hobby.Id) ? Color.Info : Color.Default;
+                            var disabled = updateRequestDto.Hobbies != null && updateRequestDto.Hobbies.Count >= 5 && btnColor == Color.Default ? true : false;
+                            <MudButton OnClick="() => OnHobbyChanged(hobby)" Disabled="@disabled" Variant="Variant.Filled" Size="Size.Small" Color="btnColor">@hobby.Name</MudButton>
+                        }
+                    </MudStack>
                 </ChildContent>
             </MudExpansionPanel>
 

@@ -38,12 +38,11 @@ namespace UI.Components.Pages
         [Inject] IMapper _mapper { get; set; } = null!;
 
         UpdateAccountRequestDto updateRequestDto = null!;
-        List<CountriesViewDto> countries { get; set; } = new List<CountriesViewDto>();
-        List<RegionsDto>? regions { get; set; } = new List<RegionsDto>();
-        List<HobbiesDto>? hobbies { get; set; }
+        List<CountriesViewDto> countries { get; set; } = null!;
+        List<RegionsDto> regions { get; set; } = null!;
+        List<HobbiesDto> hobbies { get; set; } = null!;
 
-        bool processingAccount, processingPhoto = false;
-        bool isDataSaved = false;
+        bool processingAccount, processingPhoto, isDataSaved = false;
 
         Dictionary<short, TabPanel> TabPanels { get; set; } = null!;
         bool IsPanel1Valid => TabPanels[1].Items.All(x => x.Value == true);
@@ -71,7 +70,7 @@ namespace UI.Components.Pages
             };
 
             var apiCountriesResponse = await _repoGetCountries.HttpPostAsync(new GetCountriesRequestDto());
-            countries.AddRange(apiCountriesResponse.Response.Countries);
+            countries = apiCountriesResponse.Response.Countries;
 
             var apiHobbiesResponse = await _repoGetHobbies.HttpPostAsync(new GetHobbiesRequestDto());
             hobbies = apiHobbiesResponse.Response.Hobbies;
@@ -107,8 +106,8 @@ namespace UI.Components.Pages
                     {
                         updateRequestDto.Country.Id = country.Id;
                         regions = countries
-                            .Where(x => x.Id == country.Id).FirstOrDefault()?
-                            .Regions?.Select(s => s).ToList();
+                            .Where(x => x.Id == country.Id).First()
+                            .Regions!.Select(s => s).ToList();
                     }
                 }
                 _countryText = value;

@@ -422,7 +422,7 @@ namespace UI.Components.Pages
             }
 
             processingAccount = false;
-            StateHasChanged();
+            CurrentState.StateHasChanged();
         }
 
         public void Dispose()

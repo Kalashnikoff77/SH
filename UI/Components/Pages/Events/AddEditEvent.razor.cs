@@ -43,22 +43,22 @@ namespace UI.Components.Pages.Events
 
         bool processingPhoto, processingEvent = false;
 
-        /// <summary>
-        /// Для предотвращения повторного выполнения OnParametersSet (выполняется при переходе на другую ссылку)
-        /// </summary>
-        bool isFirstSetParameters = true;
-
         Dictionary<short, TabPanel> TabPanels { get; set; } = null!;
         bool IsPanel1Valid, IsPanel2Valid, IsPanel3Valid, isValid;
 
         protected override async Task OnInitializedAsync()
         {
+            var apiCountriesResponse = await _repoGetCountries.HttpPostAsync(new GetCountriesRequestDto());
+            countries = apiCountriesResponse.Response.Countries;
+
             if (EventId != null)
             {
                 var apiResponse = await _repoGetEvent.HttpPostAsync(new GetEventsRequestDto { EventId = EventId, IsPhotosIncluded = true });
                 if (apiResponse.StatusCode == HttpStatusCode.OK && apiResponse.Response.Event != null)
                 {
                     Event = apiResponse.Response.Event;
+                    countryText = Event.Country!.Name;
+                    regionText = Event.Country.Region.Name;
                     isValid = true;
                 }
                 else
@@ -67,9 +67,6 @@ namespace UI.Components.Pages.Events
                     isValid = false;
                 }
             }
-
-            var apiCountriesResponse = await _repoGetCountries.HttpPostAsync(new GetCountriesRequestDto());
-            countries = apiCountriesResponse.Response.Countries;
 
             TabPanels = new Dictionary<short, TabPanel>
             {
@@ -90,16 +87,6 @@ namespace UI.Components.Pages.Events
             };
 
             CheckPanelsVisibility();
-        }
-
-        protected override void OnParametersSet()
-        {
-            if (EventId != null && Event.Country != null && isFirstSetParameters)
-            {
-                countryText = Event.Country.Name;
-                regionText = Event.Country.Region.Name;
-                isFirstSetParameters = false;
-            }
         }
 
 

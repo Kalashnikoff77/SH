@@ -411,7 +411,6 @@ namespace UI.Components.Pages.Events
 
             CheckPanelsVisibility();
         }
-
         #endregion
 
 

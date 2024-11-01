@@ -16,11 +16,11 @@ namespace UI.Components.Dialogs
         {
             DialogOptions dialogOptions = new() { CloseOnEscapeKey = true, CloseButton = true };
 
-            var dialogParams = new DialogParameters<AccountCardDialog.AccountCardDialog>
+            var dialogParams = new DialogParameters<AccountCardDialog>
             {
                 { x => x.Account, account }
             };
-            return _dialog.ShowAsync<AccountCardDialog.AccountCardDialog>(account.Name, dialogParams, dialogOptions);
+            return _dialog.ShowAsync<AccountCardDialog>(account.Name, dialogParams, dialogOptions);
         }
 
         /// <summary>

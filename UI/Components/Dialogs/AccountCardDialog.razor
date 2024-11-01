@@ -6,7 +6,7 @@
                 @if (Account.Photos != null)
                 {
                     <MudCarousel @ref="Carousel" TData="PhotosForEventsDto" ShowArrows ShowBullets="false" AutoCycle Style="width:300px; height:400px">
-                        @foreach (var photo in Account.Photos)
+                        @foreach (var photo in Account.Photos.OrderByDescending(o => o.IsAvatar).ThenByDescending(o => o.CreateDate))
                         {
                             <MudCarouselItem Transition="Transition.Slide">
                                 <MudImage Src=@($"/images/AccountsPhotos/{photo.RelatedId}/{photo.Guid}/{EnumImageSize.s450x600}.jpg") Fluid Style="border-radius:2%" />
@@ -30,7 +30,36 @@
 
             <MudDivider Class="mt-4" />
 
-            <About Account="@Account" />
+            <MudDataGrid Items="Account.Users" T="UsersDto" Elevation="0" Hover HeaderClass="dataGridHideTHead" Filterable="false">
+                <Columns>
+                    <TemplateColumn>
+                        <CellTemplate>
+                            <MudStack Spacing="3" Row AlignItems="AlignItems.Center">
+                                <UserGenderIcon User="@context.Item" />
+                                <MudText Typo="Typo.body2"><b>@context.Item.Name</b></MudText>
+                            </MudStack>
+                        </CellTemplate>
+                    </TemplateColumn>
+
+                    <TemplateColumn>
+                        <CellTemplate>
+                            <MudText Typo="Typo.body2">@context.Item.ToGenderAgeString()</MudText>
+                        </CellTemplate>
+                    </TemplateColumn>
+
+                    <TemplateColumn>
+                        <CellTemplate>
+                            <MudText Typo="Typo.body2" Style="white-space:nowrap">@context.Item.Height см. / @context.Item.Weight кг.</MudText>
+                        </CellTemplate>
+                    </TemplateColumn>
+
+                    <TemplateColumn>
+                        <CellTemplate>
+                            <MudText Style="font-size: 12px">@context.Item.About</MudText>
+                        </CellTemplate>
+                    </TemplateColumn>
+                </Columns>
+            </MudDataGrid>
 
         </DialogContent>
 

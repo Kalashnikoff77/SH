@@ -92,59 +92,9 @@ namespace WebAPI.Controllers
 
 
         /// <summary>
-        /// Загрузка в базу и каталог фото, которое в Блейзоре было помещено в каталог temp
-        /// </summary>
-        // TODO Удалить (OK)
-        [Route("UploadAccountFromTemp"), HttpPost, Authorize]
-        public async Task<UploadAccountPhotoFromTempResponseDto> UploadAccountFromTempAsync(UploadAccountPhotoFromTempRequestDto request)
-        {
-            AuthenticateUser();
-
-            var response = new UploadAccountPhotoFromTempResponseDto();
-
-            var guid = Guid.NewGuid();
-            var tempDir = StaticData.TempPhotosDir;
-            var dir = $"{StaticData.AccountsPhotosDir}/{_unitOfWork.AccountId}/{guid}";
-
-            if (!string.IsNullOrWhiteSpace(request.PhotosTempFileNames))
-            {
-                Directory.CreateDirectory(dir);
-
-                foreach (var image in StaticData.Images)
-                {
-                    var fileName = $"{dir}/{image.Key}.jpg";
-
-                    using (MemoryStream output = new MemoryStream(300000))
-                    {
-                        MagicImageProcessor.ProcessImage($"{tempDir}/{request.PhotosTempFileNames}", output, image.Value);
-                        await System.IO.File.WriteAllBytesAsync(fileName, output.ToArray());
-                    }
-                }
-
-                var sql = "INSERT INTO PhotosForAccounts " +
-                    $"({nameof(PhotosForAccountsEntity.Guid)}, {nameof(PhotosForAccountsEntity.RelatedId)}) " +
-                    "VALUES " +
-                    $"(@{nameof(PhotosForAccountsEntity.Guid)}, @{nameof(PhotosForAccountsEntity.RelatedId)});" +
-                    $"SELECT CAST(SCOPE_IDENTITY() AS INT)";
-                var newId = await _unitOfWork.SqlConnection.QuerySingleAsync<int>(sql, new { Guid = guid, _unitOfWork.AccountId });
-
-                response.NewPhoto = new PhotosForAccountsDto
-                {
-                    Id = newId,
-                    Guid = guid
-                };
-            }
-
-            System.IO.File.Delete($"{tempDir}/{request.PhotosTempFileNames}");
-
-            return response;
-        }
-
-
-        /// <summary>
         /// Загрузка фото во временный каталог temp: оригинал и аватар 250х250
         /// </summary>
-        [Route("UploadPhotoToTemp"), HttpPost, Authorize]
+        [Route("UploadPhotoToTemp"), HttpPost]
         public async Task<UploadPhotoToTempResponseDto> UploadPhotoToTempAsync(UploadPhotoToTempRequestDto request)
         {
             AuthenticateUser();

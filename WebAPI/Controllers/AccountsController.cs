@@ -9,7 +9,6 @@ using DataContext.Entities;
 using DataContext.Entities.Views;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Text.Json;
 using WebAPI.Exceptions;
 using WebAPI.Extensions;
 using WebAPI.Models;
@@ -104,53 +103,6 @@ namespace WebAPI.Controllers
             var sql = $"SELECT TOP 1 * FROM AccountsView WHERE Id = @AccountId";
             var result = await _unitOfWork.SqlConnection.QueryFirstOrDefaultAsync<AccountsViewEntity>(sql, new { _unitOfWork.AccountId }) ?? throw new NotFoundException($"Аккаунт с Id {_unitOfWork.AccountId} не найден!");
             response.Account = _mapper.Map<AccountsViewDto>(result);
-
-            return response;
-        }
-
-
-        [Route("Register"), HttpPost]
-        public async Task<ResponseDtoBase> RegisterAsync(RegisterAccountRequestDto request)
-        {
-            var response = new ResponseDtoBase();
-
-            await request.ValidateAsync(_unitOfWork.SqlConnection);
-
-            var accountsEntity = _mapper.Map<AccountsEntity>(request);
-
-            // Регион
-            var sql = "SELECT TOP 1 Id FROM Regions WHERE Id = @Id";
-            var regionId = await _unitOfWork.SqlConnection.QueryFirstOrDefaultAsync<int?>(sql, new { request.Country.Region.Id }) ?? throw new BadRequestException($"Указанный регион (id: {request.Country.Region.Id}) не найден в базе данных!");
-
-            await _unitOfWork.BeginTransactionAsync();
-
-            // Accounts
-            sql = "INSERT INTO Accounts " +
-                $"({nameof(AccountsEntity.Email)}, {nameof(AccountsEntity.Name)}, {nameof(AccountsEntity.Password)}, {nameof(AccountsEntity.Informing)}, {nameof(AccountsEntity.RegionId)}) " +
-                "VALUES " +
-                $"(@{nameof(AccountsEntity.Email)}, @{nameof(AccountsEntity.Name)}, @{nameof(AccountsEntity.Password)}, @{nameof(AccountsEntity.Informing)}, @{nameof(AccountsEntity.RegionId)}) " +
-                "SELECT CAST(SCOPE_IDENTITY() AS INT)";
-            accountsEntity.Id = await _unitOfWork.SqlConnection.QuerySingleAsync<int>(sql, new { accountsEntity.Email, accountsEntity.Name, accountsEntity.Password, accountsEntity.Informing, accountsEntity.RegionId }, transaction: _unitOfWork.SqlTransaction);
-
-            // Users
-            var users = _mapper.Map<List<UsersEntity>>(request.Users);
-            foreach (var u in users)
-            {
-                sql = "INSERT INTO Users " +
-                    $"({nameof(UsersEntity.Name)}, {nameof(UsersEntity.Height)}, {nameof(UsersEntity.Weight)}, {nameof(UsersEntity.BirthDate)}, {nameof(UsersEntity.Gender)}, {nameof(UsersEntity.AccountId)}) " +
-                    "VALUES " +
-                    $"(@{nameof(UsersEntity.Name)}, @{nameof(UsersEntity.Height)}, @{nameof(UsersEntity.Weight)}, @{nameof(UsersEntity.BirthDate)}, @{nameof(UsersEntity.Gender)}, @{nameof(UsersEntity.AccountId)})";
-                await _unitOfWork.SqlConnection.ExecuteAsync(sql, new { u.Name, u.Height, u.Weight, u.BirthDate, u.Gender, AccountId = accountsEntity.Id }, transaction: _unitOfWork.SqlTransaction);
-            }
-
-            // AccountsWishList
-            sql = $"INSERT INTO AccountsWishLists ({nameof(AccountsWishLists.Comment)}, {nameof(AccountsWishLists.AccountId)}) " +
-                $"VALUES (@Comment, @AccountId)";
-            await _unitOfWork.SqlConnection.ExecuteAsync(sql, new { Comment = "Привет!", AccountId = accountsEntity.Id }, transaction: _unitOfWork.SqlTransaction);
-
-            await _unitOfWork.CommitTransactionAsync();
-
-            await accountsEntity.ProcessPhotoAfterRegistration(_unitOfWork, request);
 
             return response;
         }
@@ -252,9 +204,7 @@ namespace WebAPI.Controllers
         }
 
 
-        /// <summary>
-        /// Регистрация пользователя на мероприятие (или отмена регистрации)
-        /// </summary>
+        // Регистрация пользователя на мероприятие (или отмена регистрации)
         [Route("RegistrationForEvent"), HttpPost, Authorize]
         public async Task<EventRegistrationResponseDto> RegistrationForEventAsync(EventRegistrationRequestDto request)
         {
@@ -315,9 +265,7 @@ namespace WebAPI.Controllers
         }
 
 
-        /// <summary>
-        /// Получить список друзей, подписчиков и т.п. указанного пользователя
-        /// </summary>
+        // Получить список друзей, подписчиков и т.п. указанного пользователя
         [Route("GetRelations"), HttpPost]
         public async Task<GetAccountsResponseDto> GetRelationsAsync(GetRelationsForAccountsRequestDto request)
         {
@@ -366,6 +314,31 @@ namespace WebAPI.Controllers
             return response;
         }
 
+
+        [Route("Register"), HttpPost]
+        public async Task<ResponseDtoBase> RegisterAsync(RegisterAccountRequestDto request)
+        {
+            var response = new ResponseDtoBase();
+
+            await request.ValidateAsync(_unitOfWork);
+
+            await _unitOfWork.BeginTransactionAsync();
+
+            // Добавление Account
+            var newAccountId = await request.InsertAccountAsync(_unitOfWork);
+
+            // Добавление Users
+            await request.InsertUsersAsync(_unitOfWork, _mapper, newAccountId);
+
+            // Вставка в WishList
+            await request.InsertWishListAsync(_unitOfWork, newAccountId);
+
+            await _unitOfWork.CommitTransactionAsync();
+
+            return response;
+        }
+
+
         [Route("Update"), HttpPost, Authorize]
         public async Task<UpdateAccountResponseDto> UpdateAsync(UpdateAccountRequestDto request)
         {
@@ -400,7 +373,5 @@ namespace WebAPI.Controllers
 
             return response;
         }
-
-
     }
 }

@@ -2,7 +2,6 @@
 using Common.Dto.Requests;
 using Common.Dto.Responses;
 using Common.Dto.Views;
-using Common.Enums;
 using Common.Extensions;
 using Common.JSProcessor;
 using Common.Models;
@@ -13,7 +12,6 @@ using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
 using Microsoft.AspNetCore.Components.Web;
 using MudBlazor;
-using PhotoSauce.MagicScaler;
 using System.Net;
 using System.Text.RegularExpressions;
 using UI.Components.Dialogs;
@@ -28,6 +26,7 @@ namespace UI.Components.Pages
         [Inject] IRepository<AccountCheckRegisterRequestDto, AccountCheckRegisterResponseDto> _repoCheckRegister { get; set; } = null!;
         [Inject] IRepository<RegisterAccountRequestDto, ResponseDtoBase> _repoRegister { get; set; } = null!;
         [Inject] IRepository<LoginRequestDto, LoginResponseDto> _repoLogin { get; set; } = null!;
+        [Inject] IRepository<UploadPhotoToTempRequestDto, UploadPhotoToTempResponseDto> _repoUploadPhotoToTemp { get; set; } = null!;
 
         [Inject] ProtectedLocalStorage _protectedLocalStore { get; set; } = null!;
         [Inject] ProtectedSessionStorage _protectedSessionStore { get; set; } = null!;
@@ -35,7 +34,7 @@ namespace UI.Components.Pages
         [Inject] IDialogService DialogService { get; set; } = null!;
         [Inject] IConfiguration _config { get; set; } = null!;
 
-        RegisterAccountRequestDto accountRegisterDto = new RegisterAccountRequestDto
+        RegisterAccountRequestDto registerRequestDto = new RegisterAccountRequestDto
         {
             Name = "Олег и Марина Мск2",
             Email = "olegmar@mail.ru",
@@ -60,24 +59,24 @@ namespace UI.Components.Pages
             {
                 { 1, new TabPanel { Items = new Dictionary<string, bool>
                         {
-                            { nameof(accountRegisterDto.Name), false },
-                            { nameof(accountRegisterDto.Email), false },
-                            { nameof(accountRegisterDto.Password), false },
-                            { nameof(accountRegisterDto.Password2), false },
-                            { nameof(accountRegisterDto.Country), false },
-                            { nameof(accountRegisterDto.Country.Region), false }
+                            { nameof(registerRequestDto.Name), false },
+                            { nameof(registerRequestDto.Email), false },
+                            { nameof(registerRequestDto.Password), false },
+                            { nameof(registerRequestDto.Password2), false },
+                            { nameof(registerRequestDto.Country), false },
+                            { nameof(registerRequestDto.Country.Region), false }
                         }
                     }
                 },
-                { 2, new TabPanel { Items = new Dictionary<string, bool> { { nameof(accountRegisterDto.Users), false } } } },
-                { 3, new TabPanel { Items = new Dictionary<string, bool> { { nameof(accountRegisterDto.Avatar), false } } } }
+                { 2, new TabPanel { Items = new Dictionary<string, bool> { { nameof(registerRequestDto.Users), false } } } },
+                { 3, new TabPanel { Items = new Dictionary<string, bool> { { nameof(registerRequestDto.Avatar), false } } } }
             };
 
             var apiResponse = await _repoGetCountries.HttpPostAsync(new GetCountriesRequestDto());
             countries.AddRange(apiResponse.Response.Countries);
 
-            // TODO УДАЛИТЬ (OK)
-            accountRegisterDto.Users = new List<UsersDto> 
+            // TODO УДАЛИТЬ ЗНАЧЕНИЯ ПО УМОЛЧАНИЮ (OK)
+            registerRequestDto.Users = new List<UsersDto> 
             {
                 new UsersDto { Id = 0, Name = "Олег", Gender = 0, Weight=80, Height=180, BirthDate = DateTime.Parse("29.01.1977") },
                 new UsersDto { Id = 1, Name = "Марина", Gender = 1, Weight=74, Height=173, BirthDate = DateTime.Parse("01.07.1969") }
@@ -96,7 +95,7 @@ namespace UI.Components.Pages
                     var country = countries.Where(c => c.Name == value)?.First();
                     if (country != null)
                     {
-                        accountRegisterDto.Country.Id = country.Id;
+                        registerRequestDto.Country.Id = country.Id;
                         regions = countries
                             .Where(x => x.Id == country.Id).FirstOrDefault()?
                             .Regions?.Select(s => s).ToList();
@@ -117,7 +116,7 @@ namespace UI.Components.Pages
                 {
                     var region = regions.Where(c => c.Name == value)?.First();
                     if (region != null)
-                        accountRegisterDto.Country.Region.Id = region.Id;
+                        registerRequestDto.Country.Region.Id = region.Id;
                 }
                 _regionText = value;
             }
@@ -138,7 +137,7 @@ namespace UI.Components.Pages
                     errorMessage = $"Это имя уже занято. Выберите другое.";
             }
 
-            CheckPanel1Properties(errorMessage, nameof(accountRegisterDto.Name), ref NameIconColor);
+            CheckPanel1Properties(errorMessage, nameof(registerRequestDto.Name), ref NameIconColor);
 
             return errorMessage;
         }
@@ -163,7 +162,7 @@ namespace UI.Components.Pages
                     errorMessage = $"Этот email уже зарегистрирован. Забыли пароль?";
             }
 
-            CheckPanel1Properties(errorMessage, nameof(accountRegisterDto.Email), ref EmailIconColor);
+            CheckPanel1Properties(errorMessage, nameof(registerRequestDto.Email), ref EmailIconColor);
 
             return errorMessage;
         }
@@ -175,7 +174,7 @@ namespace UI.Components.Pages
             if (string.IsNullOrWhiteSpace(password) || password.Length < StaticData.DB_ACCOUNTS_PASSWORD_MIN)
                 errorMessage = $"Пароль должен содержать {StaticData.DB_ACCOUNTS_PASSWORD_MIN}-{StaticData.DB_ACCOUNTS_PASSWORD_MAX} символов";
 
-            CheckPanel1Properties(errorMessage, nameof(accountRegisterDto.Password), ref PasswordIconColor);
+            CheckPanel1Properties(errorMessage, nameof(registerRequestDto.Password), ref PasswordIconColor);
             return errorMessage;
         }
 
@@ -183,10 +182,10 @@ namespace UI.Components.Pages
         string? Password2Validator(string password2)
         {
             string? errorMessage = null;
-            if (accountRegisterDto.Password != password2) 
+            if (registerRequestDto.Password != password2) 
                 errorMessage = $"Пароли не совпадают";
 
-            CheckPanel1Properties(errorMessage, nameof(accountRegisterDto.Password2), ref Password2IconColor);
+            CheckPanel1Properties(errorMessage, nameof(registerRequestDto.Password2), ref Password2IconColor);
             return errorMessage;
         }
 
@@ -198,9 +197,9 @@ namespace UI.Components.Pages
                 errorMessage = $"Выберите страну";
 
             // Сбросим в false регион
-            TabPanels[1].Items[nameof(accountRegisterDto.Country.Region)] = false;
+            TabPanels[1].Items[nameof(registerRequestDto.Country.Region)] = false;
 
-            CheckPanel1Properties(errorMessage, nameof(accountRegisterDto.Country), ref CountryIconColor);
+            CheckPanel1Properties(errorMessage, nameof(registerRequestDto.Country), ref CountryIconColor);
             return errorMessage;
         }
 
@@ -211,7 +210,7 @@ namespace UI.Components.Pages
             if (string.IsNullOrWhiteSpace(regionText))
                 errorMessage = $"Выберите регион";
 
-            CheckPanel1Properties(errorMessage, nameof(accountRegisterDto.Country.Region), ref RegionIconColor);
+            CheckPanel1Properties(errorMessage, nameof(registerRequestDto.Country.Region), ref RegionIconColor);
             return errorMessage;
         }
 
@@ -264,8 +263,8 @@ namespace UI.Components.Pages
             var resultDialog = await DialogService.ShowAsync<ConfirmDialog>($"Удаление {user.Name}", parameters, options);
             var result = await resultDialog.Result;
             
-            if (result != null && result.Canceled == false && accountRegisterDto.Users.Contains(user))
-                accountRegisterDto.Users.Remove(user);
+            if (result != null && result.Canceled == false && registerRequestDto.Users.Contains(user))
+                registerRequestDto.Users.Remove(user);
 
             CheckPanel2Properties();
         }
@@ -278,7 +277,7 @@ namespace UI.Components.Pages
             var resultDialog = await DialogService.ShowAsync<EditUserDialog>("Добавление партнёра", parameters, options);
             var result = await resultDialog.Result;
             if (result != null && result.Canceled == false && result.Data != null)
-                accountRegisterDto.Users.Add((UsersDto)result.Data);
+                registerRequestDto.Users.Add((UsersDto)result.Data);
 
             CheckPanel2Properties();
         }
@@ -292,63 +291,70 @@ namespace UI.Components.Pages
             var result = await resultDialog.Result;
             if (result != null && result.Canceled == false && result.Data != null)
             {
-                var position = accountRegisterDto.Users.IndexOf(user);
-                accountRegisterDto.Users.RemoveAt(position);
-                accountRegisterDto.Users.Insert(position, result.Data.DeepCopy<UsersDto>()!);
+                var position = registerRequestDto.Users.IndexOf(user);
+                registerRequestDto.Users.RemoveAt(position);
+                registerRequestDto.Users.Insert(position, result.Data.DeepCopy<UsersDto>()!);
             }
         }
 
         void CheckPanel2Properties() =>
-            TabPanels[2].Items[nameof(accountRegisterDto.Users)] = accountRegisterDto.Users.Count == 0 ? false : true;
+            TabPanels[2].Items[nameof(registerRequestDto.Users)] = registerRequestDto.Users.Count == 0 ? false : true;
         #endregion
 
 
-        #region /// ШАГ 3: АВАТАР ///
-        string? baseFileName, originalFileName, previewFileName, urlPreviewImage;
-        
-        async void UploadAvatar(IBrowserFile file)
+        #region /// ШАГ 3: ФОТО ///
+        async void UploadPhotos(IReadOnlyList<IBrowserFile> browserPhotos)
         {
-            processingPhoto = true;
-
-            if (File.Exists(StaticData.TempPhotosDir + "/" + originalFileName))
-                File.Delete(StaticData.TempPhotosDir + "/" + originalFileName);
-            if (File.Exists(StaticData.TempPhotosDir + "/" + previewFileName))
-                File.Delete(StaticData.TempPhotosDir + "/" + previewFileName);
-
-            baseFileName = DateTime.Now.ToString("yyyyMMdd") + "_" + Guid.NewGuid().ToString();
-            originalFileName = baseFileName + Path.GetExtension(file.Name);
-            previewFileName = baseFileName + "_" + EnumImageSize.s150x150 + ".jpg";
-
-            await using (FileStream fs = new(StaticData.TempPhotosDir + "/" + originalFileName, FileMode.Create))
-                await file.OpenReadStream(file.Size).CopyToAsync(fs);
-
-            using (MemoryStream output = new MemoryStream(300000))
+            if (browserPhotos.Count > 0)
             {
-                MagicImageProcessor.ProcessImage(StaticData.TempPhotosDir + "/" + originalFileName, output, StaticData.Images[EnumImageSize.s150x150]);
-                await File.WriteAllBytesAsync(StaticData.TempPhotosDir + "/" + previewFileName, output.ToArray());
+                processingPhoto = true;
+                StateHasChanged();
+
+                if (registerRequestDto.Photos == null)
+                    registerRequestDto.Photos = new List<PhotosForAccountsDto>();
+
+                foreach (var photo in browserPhotos)
+                {
+                    var newPhoto = await photo.Upload<PhotosForAccountsDto>(CurrentState.Account?.Token, _repoUploadPhotoToTemp, accountId: 0);
+
+                    if (newPhoto != null)
+                    {
+                        // Если это первая фотка, то отметим её как аватар
+                        if (registerRequestDto.Photos.Count(x => x.IsDeleted == false) == 0)
+                            newPhoto.IsAvatar = true;
+                        registerRequestDto.Photos.Insert(0, newPhoto);
+                    }
+
+                    StateHasChanged();
+                    if (registerRequestDto.Photos.Count(x => x.IsDeleted == false) >= 20) break;
+                }
+
+                processingPhoto = false;
+                StateHasChanged();
             }
+        }
 
-            urlPreviewImage = previewFileName;
-            accountRegisterDto.OriginalPhoto = originalFileName;
+        void UpdateCommentPhoto(PhotosForAccountsDto photo, string comment) =>
+            photo.Comment = comment;
 
-            TabPanels[3].Items[nameof(accountRegisterDto.Avatar)] = true;
-
-            processingPhoto = false;
-            StateHasChanged();
+        void SetAsAvatarPhoto(PhotosForAccountsDto photo)
+        {
+            registerRequestDto.Photos?.ForEach(x => x.IsAvatar = false);
+            photo.IsAvatar = true;
         }
         #endregion
 
 
         async void SubmitAsync()
         {
-            accountRegisterDto.ErrorMessage = null;
+            registerRequestDto.ErrorMessage = null;
             processingAccount = true;
 
-            var response = await _repoRegister.HttpPostAsync(accountRegisterDto);
+            var response = await _repoRegister.HttpPostAsync(registerRequestDto);
 
             if (response.StatusCode != HttpStatusCode.OK)
             {
-                accountRegisterDto.ErrorMessage = response.Response.ErrorMessage;
+                registerRequestDto.ErrorMessage = response.Response.ErrorMessage;
                 processingAccount = false;
                 StateHasChanged();
             }
@@ -356,9 +362,9 @@ namespace UI.Components.Pages
             {
                 LoginRequestDto loginRequestDto = new LoginRequestDto
                 {
-                    Email = accountRegisterDto.Email,
-                    Password = accountRegisterDto.Password,
-                    Remember = accountRegisterDto.Remember
+                    Email = registerRequestDto.Email,
+                    Password = registerRequestDto.Password,
+                    Remember = registerRequestDto.Remember
                 };
 
                 var apiResponse = await _repoLogin.HttpPostAsync(loginRequestDto);
@@ -377,7 +383,7 @@ namespace UI.Components.Pages
                 }
                 else
                 {
-                    accountRegisterDto.ErrorMessage = apiResponse.Response.ErrorMessage;
+                    registerRequestDto.ErrorMessage = apiResponse.Response.ErrorMessage;
                     StateHasChanged();
                 }
             }
@@ -385,8 +391,10 @@ namespace UI.Components.Pages
 
         public void Dispose()
         {
-            if (File.Exists(StaticData.TempPhotosDir + "/" + originalFileName)) File.Delete(StaticData.TempPhotosDir + "/" + originalFileName);
-            if (File.Exists(StaticData.TempPhotosDir + "/" + previewFileName)) File.Delete(StaticData.TempPhotosDir + "/" + previewFileName);
+            if (registerRequestDto?.Photos != null)
+                foreach (var photo in registerRequestDto.Photos.Where(w => w.Id == 0))
+                    if (Directory.Exists(StaticData.TempPhotosDir + "/" + photo.Guid))
+                        Directory.Delete(StaticData.TempPhotosDir + "/" + photo.Guid, true);
         }
     }
 }

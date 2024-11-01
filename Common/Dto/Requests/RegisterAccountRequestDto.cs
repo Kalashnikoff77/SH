@@ -11,13 +11,15 @@
         public string Password { get; set; } = null!;
         public string Password2 { get; set; } = null!;
 
-        public string OriginalPhoto { get; set; } = null!;
-
         public Informing Informing { get; set; } = new Informing();
 
         public List<UsersDto> Users { get; set; } = new List<UsersDto>();
 
         public CountriesDto Country { get; set; } = new CountriesDto() { Region = new RegionsDto() };
+
+        public List<HobbiesDto>? Hobbies { get; set; }
+
+        public List<PhotosForAccountsDto> Photos { get; set; } = null!;
 
         public bool IsConfirmed { get; set; } = false;
 

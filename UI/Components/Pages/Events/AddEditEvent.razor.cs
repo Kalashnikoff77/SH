@@ -41,7 +41,7 @@ namespace UI.Components.Pages.Events
         List<CountriesViewDto> countries { get; set; } = null!;
         List<RegionsDto>? regions { get; set; } = new List<RegionsDto>();
 
-        bool processingPhoto, processingEvent = false;
+        bool processingPhoto, processingEvent, isDataSaved = false;
 
         Dictionary<short, TabPanel> TabPanels { get; set; } = null!;
         bool IsPanel1Valid, IsPanel2Valid, IsPanel3Valid, isValid;
@@ -430,6 +430,7 @@ namespace UI.Components.Pages.Events
             var apiReloadResponse = await _repoGetEvent.HttpPostAsync(new GetEventsRequestDto { EventId = EventId, IsPhotosIncluded = true });
             Event = apiReloadResponse.Response.Event!;
 
+            isDataSaved = true;
             processingEvent = false;
             StateHasChanged();
         }
@@ -447,6 +448,7 @@ namespace UI.Components.Pages.Events
             var apiReloadResponse = await _repoGetEvent.HttpPostAsync(new GetEventsRequestDto { EventId = EventId, IsPhotosIncluded = true });
             Event = apiReloadResponse.Response.Event!;
 
+            isDataSaved = true;
             processingEvent = false;
             StateHasChanged();
         }

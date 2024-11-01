@@ -6,7 +6,7 @@
                 <MudCarousel @ref="Carousel" TData="PhotosForEventsDto" ShowArrows ShowBullets="false" AutoCycle Style="width:300px; height:400px">
                     @if (ScheduleForEventView.Event.Photos != null)
                     {
-                        @foreach (var photo in ScheduleForEventView.Event.Photos)
+                        @foreach (var photo in ScheduleForEventView.Event.Photos.OrderByDescending(o => o.IsAvatar).ThenByDescending(o => o.CreateDate))
                         {
                             <MudCarouselItem Transition="Transition.Slide">
                                 <MudImage Src=@($"/images/EventsPhotos/{photo.RelatedId}/{photo.Guid}/{EnumImageSize.s450x600}.jpg") Fluid="true" Style="border-radius:2%" />

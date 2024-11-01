@@ -43,6 +43,11 @@ namespace UI.Components.Pages.Events
 
         bool processingPhoto, processingEvent = false;
 
+        /// <summary>
+        /// Для предотвращения повторного выполнения OnParametersSet (выполняется при переходе на другую ссылку)
+        /// </summary>
+        bool isFirstSetParameters = true;
+
         Dictionary<short, TabPanel> TabPanels { get; set; } = null!;
         bool IsPanel1Valid, IsPanel2Valid, IsPanel3Valid, isValid;
 
@@ -89,10 +94,11 @@ namespace UI.Components.Pages.Events
 
         protected override void OnParametersSet()
         {
-            if (EventId != null && Event.Country != null)
+            if (EventId != null && Event.Country != null && isFirstSetParameters)
             {
                 countryText = Event.Country.Name;
                 regionText = Event.Country.Region.Name;
+                isFirstSetParameters = false;
             }
         }
 

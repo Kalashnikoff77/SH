@@ -44,6 +44,11 @@ namespace UI.Components.Pages
 
         bool processingAccount, processingPhoto, isDataSaved = false;
 
+        /// <summary>
+        /// Для предотвращения повторного выполнения OnParametersSet (выполняется при переходе на другую ссылку)
+        /// </summary>
+        bool isFirstSetParameters = true;
+
         Dictionary<short, TabPanel> TabPanels { get; set; } = null!;
         bool IsPanel1Valid => TabPanels[1].Items.All(x => x.Value == true);
         bool IsPanel2Valid => TabPanels[2].Items.All(x => x.Value == true);
@@ -80,7 +85,7 @@ namespace UI.Components.Pages
 
         protected override async Task OnParametersSetAsync()
         {
-            if (CurrentState.Account != null)
+            if (CurrentState.Account != null && isFirstSetParameters)
             {
                 updateRequestDto = _mapper.Map<UpdateAccountRequestDto>(CurrentState.Account);
 
@@ -90,6 +95,8 @@ namespace UI.Components.Pages
                 var storage = await _protectedLocalStore.GetAsync<LoginRequestDto>(nameof(LoginRequestDto));
                 if (storage.Success)
                     updateRequestDto.Remember = true;
+
+                isFirstSetParameters = false;
             }
         }
 

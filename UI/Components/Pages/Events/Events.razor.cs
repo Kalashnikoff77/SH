@@ -46,12 +46,6 @@ namespace UI.Components.Pages.Events
             AdminsList = adminsResponse.Response.AdminsForEvents;
         }
 
-        protected override void OnParametersSet()
-        {
-            base.OnParametersSet();
-        }
-
-
         protected override void OnAfterRender(bool firstRender)
         {
             OnScheduleChangedHandler = OnScheduleChangedHandler.SignalRClient(CurrentState, (Func<OnScheduleChangedResponse, Task>)(async (response) =>

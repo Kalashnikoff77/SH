@@ -55,7 +55,6 @@ namespace Common.Models.States
         /// <summary>
         /// Внесём данные о полученном аккаунте в CurrentState.Account
         /// </summary>
-        /// <param name="loggedInAccount"></param>
         public void SetAccount(AccountsViewDto? loggedInAccount)
         {
             Account = loggedInAccount;

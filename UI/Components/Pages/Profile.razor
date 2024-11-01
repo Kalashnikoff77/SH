@@ -155,24 +155,22 @@
                         }
                     </MudStack>
 
-                    @if (updateRequestDto.Photos.Count > 0)
-                    {
-                        <MudStack Row Wrap="Wrap.Wrap" Spacing="0" Justify="Justify.SpaceEvenly">
-                            @foreach (var photo in updateRequestDto.Photos.Where(w => w.IsDeleted == false).OrderByDescending(o => o.IsAvatar).ThenByDescending(o => o.CreateDate))
-                            {
-                                <MudPaper Outlined class="pa-3 mb-8" style="@("max-width:274px; " + (photo.IsAvatar ? "background-color:#EDFFEE" : null))">
-                                    <MudImage Width="250" Height="250" Src="@($"/images/" + (photo.Id == 0 ? "temp" : $"AccountsPhotos/{CurrentState.Account.Id}") + $"/{photo.Guid}/{EnumImageSize.s250x250}.jpg")" Class="mb-2" />
-                                    <MudStack Row>
-                                        <MudTextField T="string" Value="@photo.Comment" ValueChanged="@((c) => UpdateCommentPhoto(photo, c))" Label="Описание" Variant="Variant.Text" />
-                                        <MudMenu Icon="@Icons.Material.Filled.MoreVert" Size="Size.Small" AnchorOrigin="Origin.BottomLeft" TransformOrigin="Origin.TopCenter" Dense>
-                                            <MudMenuItem Disabled="@photo.IsAvatar" OnClick="@(() => SetAsAvatarPhoto(photo))" Icon="@Icons.Material.Filled.Portrait">Установить как аватар</MudMenuItem>
-                                            <MudMenuItem Disabled="@photo.IsAvatar" OnClick="@(() => photo.IsDeleted = true)" IconColor="Color.Error" Icon="@Icons.Material.Outlined.Delete">Удалить</MudMenuItem>
-                                        </MudMenu>
-                                    </MudStack>
-                                </MudPaper>
-                            }
-                        </MudStack>
-                    }
+                    <MudStack Row Wrap="Wrap.Wrap" Spacing="0" Justify="Justify.SpaceEvenly">
+                        @foreach (var photo in updateRequestDto.Photos.Where(w => w.IsDeleted == false).OrderByDescending(o => o.IsAvatar).ThenByDescending(o => o.CreateDate))
+                        {
+                            <MudPaper Outlined class="pa-3 mb-8" style="@("max-width:274px; " + (photo.IsAvatar ? "background-color:#EDFFEE" : null))">
+                                <MudImage Width="250" Height="250" Src="@($"/images/" + (photo.Id == 0 ? "temp" : $"AccountsPhotos/{CurrentState.Account.Id}") + $"/{photo.Guid}/{EnumImageSize.s250x250}.jpg")" Class="mb-2" />
+                                <MudStack Row>
+                                    <MudTextField T="string" Value="@photo.Comment" ValueChanged="@((c) => UpdateCommentPhoto(photo, c))" Label="Описание" Variant="Variant.Text" />
+                                    <MudMenu Icon="@Icons.Material.Filled.MoreVert" Size="Size.Small" AnchorOrigin="Origin.BottomLeft" TransformOrigin="Origin.TopCenter" Dense>
+                                        <MudMenuItem Disabled="@photo.IsAvatar" OnClick="@(() => SetAsAvatarPhoto(photo))" Icon="@Icons.Material.Filled.Portrait">Установить как аватар</MudMenuItem>
+                                        <MudMenuItem Disabled="@photo.IsAvatar" OnClick="@(() => photo.IsDeleted = true)" IconColor="Color.Error" Icon="@Icons.Material.Outlined.Delete">Удалить</MudMenuItem>
+                                    </MudMenu>
+                                </MudStack>
+                            </MudPaper>
+                        }
+                    </MudStack>
+
                 </ChildContent>
             </MudExpansionPanel>
 

@@ -68,7 +68,7 @@ namespace UI.Components.Pages
                 },
                 { 2, new TabPanel { Items = new Dictionary<string, bool> { { nameof(updateRequestDto.Users), true } } } },
                 { 3, new TabPanel { Items = new Dictionary<string, bool> { { nameof(updateRequestDto.Hobbies), true } } } },
-                { 4, new TabPanel { Items = new Dictionary<string, bool> { { "Photo", true } } } }
+                { 4, new TabPanel { Items = new Dictionary<string, bool> { { "Photos", true } } } }
             };
 
             var apiCountriesResponse = await _repoGetCountries.HttpPostAsync(new GetCountriesRequestDto());
@@ -367,7 +367,7 @@ namespace UI.Components.Pages
 
         void SetAsAvatarPhoto(PhotosForAccountsDto photo)
         {
-            CurrentState.Account!.Photos?.ForEach(x => x.IsAvatar = false);
+            updateRequestDto.Photos?.ForEach(x => x.IsAvatar = false);
             photo.IsAvatar = true;
         }
         #endregion
@@ -420,8 +420,8 @@ namespace UI.Components.Pages
 
         public void Dispose()
         {
-            if (CurrentState.Account?.Photos != null)
-                foreach (var photo in CurrentState.Account.Photos.Where(w => w.Id == 0))
+            if (updateRequestDto?.Photos != null)
+                foreach (var photo in updateRequestDto.Photos.Where(w => w.Id == 0))
                     if (Directory.Exists(StaticData.TempPhotosDir + "/" + photo.Guid))
                         Directory.Delete(StaticData.TempPhotosDir + "/" + photo.Guid, true);
         }

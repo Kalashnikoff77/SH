@@ -3,7 +3,7 @@ using System.Text;
 
 namespace UI.Components.Pages.Events
 {
-    public partial class ScheduleToText
+    public partial class ScheduleToTextComponent
     {
         [Parameter, EditorRequired] public bool IsOneTimeEvent { get; set; }
         [Parameter, EditorRequired] public DateTime? StartDate { get; set; }

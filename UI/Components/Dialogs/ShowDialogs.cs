@@ -45,11 +45,11 @@ namespace UI.Components.Dialogs
         {
             DialogOptions dialogOptions = new() { CloseOnEscapeKey = true, CloseButton = true };
 
-            var dialogParams = new DialogParameters<RegistrationForEventDialog>
+            var dialogParams = new DialogParameters<RegisterForEventDialog>
             {
                 { x => x.ScheduleForEventView, schedule }
             };
-            return _dialog.ShowAsync<RegistrationForEventDialog>($"Подтверждение регистрации", dialogParams, dialogOptions);
+            return _dialog.ShowAsync<RegisterForEventDialog>($"Подтверждение регистрации", dialogParams, dialogOptions);
         }
 
         /// <summary>
@@ -59,11 +59,11 @@ namespace UI.Components.Dialogs
         {
             DialogOptions dialogOptions = new() { CloseOnEscapeKey = true, CloseButton = true };
 
-            var dialogParams = new DialogParameters<RegistrationForEventDialog>
+            var dialogParams = new DialogParameters<RegisterForEventDialog>
             {
                 { x => x.ScheduleForEventView, schedule }
             };
-            return _dialog.ShowAsync<CancelRegistrationForEventDialog>($"Отмена регистрации", dialogParams, dialogOptions);
+            return _dialog.ShowAsync<UnregisterForEventDialog>($"Отмена регистрации", dialogParams, dialogOptions);
         }
 
     }

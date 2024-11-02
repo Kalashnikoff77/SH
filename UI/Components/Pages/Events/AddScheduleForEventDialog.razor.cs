@@ -6,7 +6,7 @@ using Common.Repository;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
 
-namespace UI.Components.Dialogs
+namespace UI.Components.Pages.Events
 {
     public partial class AddScheduleForEventDialog
     {
@@ -34,7 +34,7 @@ namespace UI.Components.Dialogs
 
         bool _isOneTimeEvent = true;
         bool isOneTimeEvent
-        { 
+        {
             get => _isOneTimeEvent;
             set { _isOneTimeEvent = value; daysOfWeek.Clear(); CheckProperties(); }
         }
@@ -50,13 +50,13 @@ namespace UI.Components.Dialogs
         TimeSpan? _startTime;
         TimeSpan? startTime
         {
-            get => _startTime; 
+            get => _startTime;
             set { _startTime = value!.Value; CheckProperties(); }
         }
 
         DateTime? endDate
         {
-            get => schedule.EndDate == DateTime.MinValue ? null : schedule.EndDate; 
+            get => schedule.EndDate == DateTime.MinValue ? null : schedule.EndDate;
             set { schedule.EndDate = value!.Value; CheckProperties(); }
         }
         TimeSpan? _endTime;

@@ -23,6 +23,7 @@ namespace UI.Components.Pages
     {
         [CascadingParameter] CurrentState CurrentState { get; set; } = null!;
         [Inject] IRepository<GetCountriesRequestDto, GetCountriesResponseDto> _repoGetCountries { get; set; } = null!;
+        [Inject] IRepository<GetHobbiesRequestDto, GetHobbiesResponseDto> _repoGetHobbies { get; set; } = null!;
         [Inject] IRepository<AccountCheckRegisterRequestDto, AccountCheckRegisterResponseDto> _repoCheckRegister { get; set; } = null!;
         [Inject] IRepository<RegisterAccountRequestDto, ResponseDtoBase> _repoRegister { get; set; } = null!;
         [Inject] IRepository<LoginRequestDto, LoginResponseDto> _repoLogin { get; set; } = null!;
@@ -34,16 +35,11 @@ namespace UI.Components.Pages
         [Inject] IDialogService DialogService { get; set; } = null!;
         [Inject] IConfiguration _config { get; set; } = null!;
 
-        RegisterAccountRequestDto registerRequestDto = new RegisterAccountRequestDto
-        {
-            Name = "Олег и Марина Мск2",
-            Email = "olegmar@mail.ru",
-            Password = "pass1234",
-            Password2 = "pass1234"
-        };
-        
+        RegisterAccountRequestDto accountRequestDto = null!;
+
         List<CountriesViewDto> countries { get; set; } = new List<CountriesViewDto>();
         List<RegionsDto>? regions { get; set; } = new List<RegionsDto>();
+        List<HobbiesDto> hobbies { get; set; } = null!;
 
         Dictionary<short, TabPanel> TabPanels { get; set; } = null!;
         bool processingPhoto = false;
@@ -52,6 +48,7 @@ namespace UI.Components.Pages
         bool IsPanel1Valid => TabPanels[1].Items.All(x => x.Value == true);
         bool IsPanel2Valid => TabPanels[2].Items.All(x => x.Value == true);
         bool IsPanel3Valid => TabPanels[3].Items.All(x => x.Value == true);
+        bool IsPanel4Valid => TabPanels[4].Items.All(x => x.Value == true);
 
         protected override async Task OnInitializedAsync()
         {
@@ -59,27 +56,38 @@ namespace UI.Components.Pages
             {
                 { 1, new TabPanel { Items = new Dictionary<string, bool>
                         {
-                            { nameof(registerRequestDto.Name), false },
-                            { nameof(registerRequestDto.Email), false },
-                            { nameof(registerRequestDto.Password), false },
-                            { nameof(registerRequestDto.Password2), false },
-                            { nameof(registerRequestDto.Country), false },
-                            { nameof(registerRequestDto.Country.Region), false }
+                            { nameof(accountRequestDto.Name), false },
+                            { nameof(accountRequestDto.Email), false },
+                            { nameof(accountRequestDto.Password), false },
+                            { nameof(accountRequestDto.Password2), false },
+                            { nameof(accountRequestDto.Country), false },
+                            { nameof(accountRequestDto.Country.Region), false }
                         }
                     }
                 },
-                { 2, new TabPanel { Items = new Dictionary<string, bool> { { nameof(registerRequestDto.Users), false } } } },
-                { 3, new TabPanel { Items = new Dictionary<string, bool> { { nameof(registerRequestDto.Avatar), false } } } }
+                { 2, new TabPanel { Items = new Dictionary<string, bool> { { nameof(accountRequestDto.Users), false } } } },
+                { 3, new TabPanel { Items = new Dictionary<string, bool> { { nameof(accountRequestDto.Hobbies), false } } } },
+                { 4, new TabPanel { Items = new Dictionary<string, bool> { { "Photos", false } } } }
             };
 
-            var apiResponse = await _repoGetCountries.HttpPostAsync(new GetCountriesRequestDto());
-            countries.AddRange(apiResponse.Response.Countries);
+            var apiCountriesResponse = await _repoGetCountries.HttpPostAsync(new GetCountriesRequestDto());
+            countries.AddRange(apiCountriesResponse.Response.Countries);
+
+            var apiHobbiesResponse = await _repoGetHobbies.HttpPostAsync(new GetHobbiesRequestDto());
+            hobbies = apiHobbiesResponse.Response.Hobbies;
 
             // TODO УДАЛИТЬ ЗНАЧЕНИЯ ПО УМОЛЧАНИЮ (OK)
-            registerRequestDto.Users = new List<UsersDto> 
+            accountRequestDto = new RegisterAccountRequestDto
             {
-                new UsersDto { Id = 0, Name = "Олег", Gender = 0, Weight=80, Height=180, BirthDate = DateTime.Parse("29.01.1977") },
-                new UsersDto { Id = 1, Name = "Марина", Gender = 1, Weight=74, Height=173, BirthDate = DateTime.Parse("01.07.1969") }
+                Name = "Олег и Марина Мск2",
+                Email = "olegmar@mail.ru",
+                Password = "pass1234",
+                Password2 = "pass1234",
+                Users = new List<UsersDto>
+                {
+                    new UsersDto { Id = 0, Name = "Олег", Gender = 0, Weight=80, Height=180, BirthDate = DateTime.Parse("29.01.1977") },
+                    new UsersDto { Id = 1, Name = "Марина", Gender = 1, Weight=74, Height=173, BirthDate = DateTime.Parse("01.07.1969") }
+                }
             };
         }
 
@@ -95,7 +103,7 @@ namespace UI.Components.Pages
                     var country = countries.Where(c => c.Name == value)?.First();
                     if (country != null)
                     {
-                        registerRequestDto.Country.Id = country.Id;
+                        accountRequestDto.Country.Id = country.Id;
                         regions = countries
                             .Where(x => x.Id == country.Id).FirstOrDefault()?
                             .Regions?.Select(s => s).ToList();
@@ -116,7 +124,7 @@ namespace UI.Components.Pages
                 {
                     var region = regions.Where(c => c.Name == value)?.First();
                     if (region != null)
-                        registerRequestDto.Country.Region.Id = region.Id;
+                        accountRequestDto.Country.Region.Id = region.Id;
                 }
                 _regionText = value;
             }
@@ -137,7 +145,7 @@ namespace UI.Components.Pages
                     errorMessage = $"Это имя уже занято. Выберите другое.";
             }
 
-            CheckPanel1Properties(errorMessage, nameof(registerRequestDto.Name), ref NameIconColor);
+            CheckPanel1Properties(errorMessage, nameof(accountRequestDto.Name), ref NameIconColor);
 
             return errorMessage;
         }
@@ -162,7 +170,7 @@ namespace UI.Components.Pages
                     errorMessage = $"Этот email уже зарегистрирован. Забыли пароль?";
             }
 
-            CheckPanel1Properties(errorMessage, nameof(registerRequestDto.Email), ref EmailIconColor);
+            CheckPanel1Properties(errorMessage, nameof(accountRequestDto.Email), ref EmailIconColor);
 
             return errorMessage;
         }
@@ -174,7 +182,7 @@ namespace UI.Components.Pages
             if (string.IsNullOrWhiteSpace(password) || password.Length < StaticData.DB_ACCOUNTS_PASSWORD_MIN)
                 errorMessage = $"Пароль должен содержать {StaticData.DB_ACCOUNTS_PASSWORD_MIN}-{StaticData.DB_ACCOUNTS_PASSWORD_MAX} символов";
 
-            CheckPanel1Properties(errorMessage, nameof(registerRequestDto.Password), ref PasswordIconColor);
+            CheckPanel1Properties(errorMessage, nameof(accountRequestDto.Password), ref PasswordIconColor);
             return errorMessage;
         }
 
@@ -182,10 +190,10 @@ namespace UI.Components.Pages
         string? Password2Validator(string password2)
         {
             string? errorMessage = null;
-            if (registerRequestDto.Password != password2) 
+            if (accountRequestDto.Password != password2) 
                 errorMessage = $"Пароли не совпадают";
 
-            CheckPanel1Properties(errorMessage, nameof(registerRequestDto.Password2), ref Password2IconColor);
+            CheckPanel1Properties(errorMessage, nameof(accountRequestDto.Password2), ref Password2IconColor);
             return errorMessage;
         }
 
@@ -197,9 +205,9 @@ namespace UI.Components.Pages
                 errorMessage = $"Выберите страну";
 
             // Сбросим в false регион
-            TabPanels[1].Items[nameof(registerRequestDto.Country.Region)] = false;
+            TabPanels[1].Items[nameof(accountRequestDto.Country.Region)] = false;
 
-            CheckPanel1Properties(errorMessage, nameof(registerRequestDto.Country), ref CountryIconColor);
+            CheckPanel1Properties(errorMessage, nameof(accountRequestDto.Country), ref CountryIconColor);
             return errorMessage;
         }
 
@@ -210,7 +218,7 @@ namespace UI.Components.Pages
             if (string.IsNullOrWhiteSpace(regionText))
                 errorMessage = $"Выберите регион";
 
-            CheckPanel1Properties(errorMessage, nameof(registerRequestDto.Country.Region), ref RegionIconColor);
+            CheckPanel1Properties(errorMessage, nameof(accountRequestDto.Country.Region), ref RegionIconColor);
             return errorMessage;
         }
 
@@ -263,8 +271,8 @@ namespace UI.Components.Pages
             var resultDialog = await DialogService.ShowAsync<ConfirmDialog>($"Удаление {user.Name}", parameters, options);
             var result = await resultDialog.Result;
             
-            if (result != null && result.Canceled == false && registerRequestDto.Users.Contains(user))
-                registerRequestDto.Users.Remove(user);
+            if (result != null && result.Canceled == false && accountRequestDto.Users.Contains(user))
+                accountRequestDto.Users.Remove(user);
 
             CheckPanel2Properties();
         }
@@ -277,7 +285,7 @@ namespace UI.Components.Pages
             var resultDialog = await DialogService.ShowAsync<EditUserDialog>("Добавление партнёра", parameters, options);
             var result = await resultDialog.Result;
             if (result != null && result.Canceled == false && result.Data != null)
-                registerRequestDto.Users.Add((UsersDto)result.Data);
+                accountRequestDto.Users.Add((UsersDto)result.Data);
 
             CheckPanel2Properties();
         }
@@ -291,18 +299,46 @@ namespace UI.Components.Pages
             var result = await resultDialog.Result;
             if (result != null && result.Canceled == false && result.Data != null)
             {
-                var position = registerRequestDto.Users.IndexOf(user);
-                registerRequestDto.Users.RemoveAt(position);
-                registerRequestDto.Users.Insert(position, result.Data.DeepCopy<UsersDto>()!);
+                var position = accountRequestDto.Users.IndexOf(user);
+                accountRequestDto.Users.RemoveAt(position);
+                accountRequestDto.Users.Insert(position, result.Data.DeepCopy<UsersDto>()!);
             }
         }
 
         void CheckPanel2Properties() =>
-            TabPanels[2].Items[nameof(registerRequestDto.Users)] = registerRequestDto.Users.Count == 0 ? false : true;
+            TabPanels[2].Items[nameof(accountRequestDto.Users)] = accountRequestDto.Users.Count == 0 ? false : true;
         #endregion
 
 
-        #region /// ШАГ 3: ФОТО ///
+        #region /// ШАГ 3: ХОББИ ///
+        void OnHobbyChanged(HobbiesDto hobby)
+        {
+            if (accountRequestDto.Hobbies != null)
+            {
+                var index = accountRequestDto.Hobbies.FindIndex(x => x.Id == hobby.Id);
+                if (index >= 0)
+                    accountRequestDto.Hobbies.RemoveAt(index);
+                else
+                    accountRequestDto.Hobbies.Add(hobby);
+            }
+            else
+                accountRequestDto.Hobbies = [hobby];
+
+            CheckPanel3Properties();
+        }
+
+        void CheckPanel3Properties()
+        {
+            if (accountRequestDto.Hobbies != null && accountRequestDto.Hobbies.Any())
+                TabPanels[3].Items[nameof(accountRequestDto.Hobbies)] = true;
+            else
+                TabPanels[3].Items[nameof(accountRequestDto.Hobbies)] = false;
+            StateHasChanged();
+        }
+        #endregion
+
+
+        #region /// ШАГ 4: ФОТО ///
         async void UploadPhotos(IReadOnlyList<IBrowserFile> browserPhotos)
         {
             if (browserPhotos.Count > 0)
@@ -310,8 +346,8 @@ namespace UI.Components.Pages
                 processingPhoto = true;
                 StateHasChanged();
 
-                if (registerRequestDto.Photos == null)
-                    registerRequestDto.Photos = new List<PhotosForAccountsDto>();
+                if (accountRequestDto.Photos == null)
+                    accountRequestDto.Photos = new List<PhotosForAccountsDto>();
 
                 foreach (var photo in browserPhotos)
                 {
@@ -320,16 +356,17 @@ namespace UI.Components.Pages
                     if (newPhoto != null)
                     {
                         // Если это первая фотка, то отметим её как аватар
-                        if (registerRequestDto.Photos.Count(x => x.IsDeleted == false) == 0)
+                        if (accountRequestDto.Photos.Count(x => x.IsDeleted == false) == 0)
                             newPhoto.IsAvatar = true;
-                        registerRequestDto.Photos.Insert(0, newPhoto);
+                        accountRequestDto.Photos.Insert(0, newPhoto);
                     }
 
                     StateHasChanged();
-                    if (registerRequestDto.Photos.Count(x => x.IsDeleted == false) >= 20) break;
+                    if (accountRequestDto.Photos.Count(x => x.IsDeleted == false) >= 20) break;
                 }
 
                 processingPhoto = false;
+                TabPanels[4].Items["Photos"] = true;
                 StateHasChanged();
             }
         }
@@ -339,7 +376,7 @@ namespace UI.Components.Pages
 
         void SetAsAvatarPhoto(PhotosForAccountsDto photo)
         {
-            registerRequestDto.Photos?.ForEach(x => x.IsAvatar = false);
+            accountRequestDto.Photos?.ForEach(x => x.IsAvatar = false);
             photo.IsAvatar = true;
         }
         #endregion
@@ -347,14 +384,14 @@ namespace UI.Components.Pages
 
         async void SubmitAsync()
         {
-            registerRequestDto.ErrorMessage = null;
+            accountRequestDto.ErrorMessage = null;
             processingAccount = true;
 
-            var response = await _repoRegister.HttpPostAsync(registerRequestDto);
+            var response = await _repoRegister.HttpPostAsync(accountRequestDto);
 
             if (response.StatusCode != HttpStatusCode.OK)
             {
-                registerRequestDto.ErrorMessage = response.Response.ErrorMessage;
+                accountRequestDto.ErrorMessage = response.Response.ErrorMessage;
                 processingAccount = false;
                 StateHasChanged();
             }
@@ -362,9 +399,9 @@ namespace UI.Components.Pages
             {
                 LoginRequestDto loginRequestDto = new LoginRequestDto
                 {
-                    Email = registerRequestDto.Email,
-                    Password = registerRequestDto.Password,
-                    Remember = registerRequestDto.Remember
+                    Email = accountRequestDto.Email,
+                    Password = accountRequestDto.Password,
+                    Remember = accountRequestDto.Remember
                 };
 
                 var apiResponse = await _repoLogin.HttpPostAsync(loginRequestDto);
@@ -383,7 +420,7 @@ namespace UI.Components.Pages
                 }
                 else
                 {
-                    registerRequestDto.ErrorMessage = apiResponse.Response.ErrorMessage;
+                    accountRequestDto.ErrorMessage = apiResponse.Response.ErrorMessage;
                     StateHasChanged();
                 }
             }
@@ -391,8 +428,8 @@ namespace UI.Components.Pages
 
         public void Dispose()
         {
-            if (registerRequestDto?.Photos != null)
-                foreach (var photo in registerRequestDto.Photos.Where(w => w.Id == 0))
+            if (accountRequestDto?.Photos != null)
+                foreach (var photo in accountRequestDto.Photos.Where(w => w.Id == 0))
                     if (Directory.Exists(StaticData.TempPhotosDir + "/" + photo.Guid))
                         Directory.Delete(StaticData.TempPhotosDir + "/" + photo.Guid, true);
         }

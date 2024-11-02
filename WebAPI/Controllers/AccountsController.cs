@@ -328,9 +328,12 @@ namespace WebAPI.Controllers
             var newAccountId = await request.InsertAccountAsync(_unitOfWork);
 
             // Добавление Users
-            await request.InsertUsersAsync(_unitOfWork, _mapper, newAccountId);
+            await request.InsertUsersAsync(_unitOfWork, newAccountId);
 
-            // Вставка в WishList
+            // Добавление хобби
+            await request.InsertHobbiesAsync(_unitOfWork, newAccountId);
+
+            // Вставка в AccountsWishList
             await request.InsertWishListAsync(_unitOfWork, newAccountId);
 
             await _unitOfWork.CommitTransactionAsync();

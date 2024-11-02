@@ -3,6 +3,8 @@ using Common.Dto.Requests;
 using Common.Models;
 using Dapper;
 using DataContext.Entities;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
 using WebAPI.Exceptions;
 using WebAPI.Models;
@@ -75,8 +77,9 @@ namespace WebAPI.Extensions
                 ?? throw new BadRequestException($"Указанный регион (id: {request.Country.Region.Id}) не найден в базе данных!");
 
             sql = "SELECT TOP 1 Id FROM Accounts WHERE Email = @Email";
-            var resultEmail = await unitOfWork.SqlConnection.QueryFirstOrDefaultAsync<int?>(sql, new { request.Email })
-                ?? throw new BadRequestException($"Аккаунт с email {request.Email} уже зарегистрирован! Укажите другой адрес или запросите пароль на email.");
+            var resultEmail = await unitOfWork.SqlConnection.QueryFirstOrDefaultAsync<int?>(sql, new { request.Email });
+            if (resultEmail != null)
+                throw new BadRequestException($"Аккаунт с email {request.Email} уже зарегистрирован! Укажите другой адрес или запросите пароль на email.");
 
             sql = "SELECT TOP 1 Id FROM Accounts WHERE Name = @Name";
             var resultName = await unitOfWork.SqlConnection.QueryFirstOrDefaultAsync<int?>(sql, new { request.Name });
@@ -89,27 +92,40 @@ namespace WebAPI.Extensions
 
         public static async Task<int> InsertAccountAsync(this RegisterAccountRequestDto request, UnitOfWork unitOfWork)
         {
+            string Informing = JsonSerializer.Serialize(request.Informing);
+
             var sql = "INSERT INTO Accounts " +
                 $"({nameof(AccountsEntity.Email)}, {nameof(AccountsEntity.Name)}, {nameof(AccountsEntity.Password)}, {nameof(AccountsEntity.Informing)}, {nameof(AccountsEntity.RegionId)}) " +
                 "VALUES " +
                 $"(@{nameof(AccountsEntity.Email)}, @{nameof(AccountsEntity.Name)}, @{nameof(AccountsEntity.Password)}, @{nameof(AccountsEntity.Informing)}, @{nameof(AccountsEntity.RegionId)}) " +
                 "SELECT CAST(SCOPE_IDENTITY() AS INT)";
-            var newAccountId = await unitOfWork.SqlConnection.QuerySingleAsync<int>(sql, new { request.Email, request.Name, request.Password, request.Informing, request.Country.Region.Id }, 
+            var newAccountId = await unitOfWork.SqlConnection.QuerySingleAsync<int>(sql, new { request.Email, request.Name, request.Password, Informing, RegionId = request.Country.Region.Id }, 
                 transaction: unitOfWork.SqlTransaction);
 
             return newAccountId;
         }
 
-        public static async Task InsertUsersAsync(this RegisterAccountRequestDto request, UnitOfWork unitOfWork, IMapper mapper, int newAccountId)
+        public static async Task InsertUsersAsync(this RegisterAccountRequestDto request, UnitOfWork unitOfWork, int newAccountId)
         {
-            var users = mapper.Map<List<UsersEntity>>(request.Users);
-            foreach (var u in users)
+            foreach (var u in request.Users)
             {
                 var sql = "INSERT INTO Users " +
                     $"({nameof(UsersEntity.Name)}, {nameof(UsersEntity.Height)}, {nameof(UsersEntity.Weight)}, {nameof(UsersEntity.BirthDate)}, {nameof(UsersEntity.Gender)}, {nameof(UsersEntity.AccountId)}) " +
                     "VALUES " +
                     $"(@{nameof(UsersEntity.Name)}, @{nameof(UsersEntity.Height)}, @{nameof(UsersEntity.Weight)}, @{nameof(UsersEntity.BirthDate)}, @{nameof(UsersEntity.Gender)}, @{nameof(UsersEntity.AccountId)})";
                 await unitOfWork.SqlConnection.ExecuteAsync(sql, new { u.Name, u.Height, u.Weight, u.BirthDate, u.Gender, AccountId = newAccountId }, transaction: unitOfWork.SqlTransaction);
+            }
+        }
+
+        public static async Task InsertHobbiesAsync(this RegisterAccountRequestDto request, UnitOfWork unitOfWork, int newAccountId)
+        {
+            foreach (var h in request.Hobbies)
+            {
+                var sql = "INSERT INTO HobbiesForAccounts " +
+                    $"({nameof(HobbiesForAccountsEntity.AccountId)}, {nameof(HobbiesForAccountsEntity.HobbyId)}) " +
+                    "VALUES " +
+                    $"(@{nameof(HobbiesForAccountsEntity.AccountId)}, @{nameof(HobbiesForAccountsEntity.HobbyId)})";
+                await unitOfWork.SqlConnection.ExecuteAsync(sql, new { AccountId = newAccountId, HobbyId = h.Id }, transaction: unitOfWork.SqlTransaction);
             }
         }
 

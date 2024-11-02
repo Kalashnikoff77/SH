@@ -17,7 +17,7 @@
 
         public CountriesDto Country { get; set; } = new CountriesDto() { Region = new RegionsDto() };
 
-        public List<HobbiesDto>? Hobbies { get; set; }
+        public List<HobbiesDto> Hobbies { get; set; } = new List<HobbiesDto>();
 
         public List<PhotosForAccountsDto> Photos { get; set; } = null!;
 
@@ -25,9 +25,8 @@
 
         public bool AcceptTerms { get; set; } = true;
 
-
-        public string? Avatar { get; set; }
-        public string? ErrorMessage { get; set; }
         public bool Remember { get; set; }
+
+        public string? ErrorMessage { get; set; }
     }
 }

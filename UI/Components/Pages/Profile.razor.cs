@@ -37,7 +37,7 @@ namespace UI.Components.Pages
 
         [Inject] IMapper _mapper { get; set; } = null!;
 
-        UpdateAccountRequestDto updateRequestDto = null!;
+        UpdateAccountRequestDto accountRequestDto = null!;
         List<CountriesViewDto> countries { get; set; } = null!;
         List<RegionsDto> regions { get; set; } = null!;
         List<HobbiesDto> hobbies { get; set; } = null!;
@@ -62,17 +62,17 @@ namespace UI.Components.Pages
                 { 1, new TabPanel {
                     Items = new Dictionary<string, bool>
                         {
-                            { nameof(updateRequestDto.Name), true },
-                            { nameof(updateRequestDto.Email), true },
-                            { nameof(updateRequestDto.Password), true },
-                            { nameof(updateRequestDto.Password2), true },
-                            { nameof(updateRequestDto.Country), true },
-                            { nameof(updateRequestDto.Country.Region), true }
+                            { nameof(accountRequestDto.Name), true },
+                            { nameof(accountRequestDto.Email), true },
+                            { nameof(accountRequestDto.Password), true },
+                            { nameof(accountRequestDto.Password2), true },
+                            { nameof(accountRequestDto.Country), true },
+                            { nameof(accountRequestDto.Country.Region), true }
                         }
                     }
                 },
-                { 2, new TabPanel { Items = new Dictionary<string, bool> { { nameof(updateRequestDto.Users), true } } } },
-                { 3, new TabPanel { Items = new Dictionary<string, bool> { { nameof(updateRequestDto.Hobbies), true } } } },
+                { 2, new TabPanel { Items = new Dictionary<string, bool> { { nameof(accountRequestDto.Users), true } } } },
+                { 3, new TabPanel { Items = new Dictionary<string, bool> { { nameof(accountRequestDto.Hobbies), true } } } },
                 { 4, new TabPanel { Items = new Dictionary<string, bool> { { "Photos", true } } } }
             };
 
@@ -87,14 +87,14 @@ namespace UI.Components.Pages
         {
             if (CurrentState.Account != null && isFirstSetParameters)
             {
-                updateRequestDto = _mapper.Map<UpdateAccountRequestDto>(CurrentState.Account);
+                accountRequestDto = _mapper.Map<UpdateAccountRequestDto>(CurrentState.Account);
 
                 countryText = CurrentState.Account.Country!.Name;
                 regionText = CurrentState.Account.Country!.Region.Name;
 
                 var storage = await _protectedLocalStore.GetAsync<LoginRequestDto>(nameof(LoginRequestDto));
                 if (storage.Success)
-                    updateRequestDto.Remember = true;
+                    accountRequestDto.Remember = true;
 
                 isFirstSetParameters = false;
             }
@@ -113,7 +113,7 @@ namespace UI.Components.Pages
                     var country = countries.Where(c => c.Name == value)?.First();
                     if (country != null)
                     {
-                        updateRequestDto.Country.Id = country.Id;
+                        accountRequestDto.Country.Id = country.Id;
                         regions = countries
                             .Where(x => x.Id == country.Id).First()
                             .Regions!.Select(s => s).ToList();
@@ -134,7 +134,7 @@ namespace UI.Components.Pages
                 {
                     var region = regions.Where(c => c.Name == value)?.First();
                     if (region != null)
-                        updateRequestDto.Country.Region.Id = region.Id;
+                        accountRequestDto.Country.Region.Id = region.Id;
                 }
                 _regionText = value;
             }
@@ -151,7 +151,7 @@ namespace UI.Components.Pages
             if (apiResponse.Response.AccountNameExists)
                 errorMessage = $"Это имя уже занято. Выберите другое.";
 
-            CheckPanel1Properties(errorMessage, nameof(updateRequestDto.Name), ref NameIconColor);
+            CheckPanel1Properties(errorMessage, nameof(accountRequestDto.Name), ref NameIconColor);
 
             return errorMessage;
         }
@@ -171,7 +171,7 @@ namespace UI.Components.Pages
             if (apiResponse.Response.AccountEmailExists)
                 errorMessage = $"Этот email уже занят другим пользователем.";
 
-            CheckPanel1Properties(errorMessage, nameof(updateRequestDto.Email), ref EmailIconColor);
+            CheckPanel1Properties(errorMessage, nameof(accountRequestDto.Email), ref EmailIconColor);
 
             return errorMessage;
         }
@@ -183,7 +183,7 @@ namespace UI.Components.Pages
             if (string.IsNullOrWhiteSpace(password) || password.Length < StaticData.DB_ACCOUNTS_PASSWORD_MIN)
                 errorMessage = $"Пароль должен содержать {StaticData.DB_ACCOUNTS_PASSWORD_MIN}-{StaticData.DB_ACCOUNTS_PASSWORD_MAX} символов";
 
-            CheckPanel1Properties(errorMessage, nameof(updateRequestDto.Password), ref PasswordIconColor);
+            CheckPanel1Properties(errorMessage, nameof(accountRequestDto.Password), ref PasswordIconColor);
             return errorMessage;
         }
 
@@ -191,10 +191,10 @@ namespace UI.Components.Pages
         string? Password2Validator(string password2)
         {
             string? errorMessage = null;
-            if (updateRequestDto.Password != password2)
+            if (accountRequestDto.Password != password2)
                 errorMessage = $"Пароли не совпадают";
 
-            CheckPanel1Properties(errorMessage, nameof(updateRequestDto.Password2), ref Password2IconColor);
+            CheckPanel1Properties(errorMessage, nameof(accountRequestDto.Password2), ref Password2IconColor);
             return errorMessage;
         }
 
@@ -206,9 +206,9 @@ namespace UI.Components.Pages
                 errorMessage = $"Выберите страну";
 
             // Сбросим в false регион
-            TabPanels[1].Items[nameof(updateRequestDto.Country.Region)] = false;
+            TabPanels[1].Items[nameof(accountRequestDto.Country.Region)] = false;
 
-            CheckPanel1Properties(errorMessage, nameof(updateRequestDto.Country), ref CountryIconColor);
+            CheckPanel1Properties(errorMessage, nameof(accountRequestDto.Country), ref CountryIconColor);
             return errorMessage;
         }
 
@@ -219,7 +219,7 @@ namespace UI.Components.Pages
             if (string.IsNullOrWhiteSpace(regionText))
                 errorMessage = $"Выберите регион";
 
-            CheckPanel1Properties(errorMessage, nameof(updateRequestDto.Country.Region), ref RegionIconColor);
+            CheckPanel1Properties(errorMessage, nameof(accountRequestDto.Country.Region), ref RegionIconColor);
             return errorMessage;
         }
 
@@ -272,11 +272,11 @@ namespace UI.Components.Pages
             var resultDialog = await DialogService.ShowAsync<ConfirmDialog>($"Удаление {user.Name}", parameters, options);
             var result = await resultDialog.Result;
 
-            if (result != null && result.Canceled == false && updateRequestDto.Users.Contains(user))
+            if (result != null && result.Canceled == false && accountRequestDto.Users.Contains(user))
             {
-                var index = updateRequestDto.Users.IndexOf(user);
+                var index = accountRequestDto.Users.IndexOf(user);
                 if (index >= 0)
-                    updateRequestDto.Users[index].IsDeleted = true;
+                    accountRequestDto.Users[index].IsDeleted = true;
             }
             CheckPanel2Properties();
         }
@@ -290,9 +290,9 @@ namespace UI.Components.Pages
             var result = await resultDialog.Result;
             if (result != null && result.Canceled == false && result.Data != null)
             {
-                var position = updateRequestDto.Users.IndexOf(user);
-                updateRequestDto.Users.RemoveAt(position);
-                updateRequestDto.Users.Insert(position, result.Data.DeepCopy<UsersDto>()!);
+                var position = accountRequestDto.Users.IndexOf(user);
+                accountRequestDto.Users.RemoveAt(position);
+                accountRequestDto.Users.Insert(position, result.Data.DeepCopy<UsersDto>()!);
             }
         }
 
@@ -304,39 +304,39 @@ namespace UI.Components.Pages
             var resultDialog = await DialogService.ShowAsync<EditUserDialog>("Добавление партнёра", parameters, options);
             var result = await resultDialog.Result;
             if (result != null && result.Canceled == false && result.Data != null)
-                updateRequestDto.Users.Add((UsersDto)result.Data);
+                accountRequestDto.Users.Add((UsersDto)result.Data);
 
             CheckPanel2Properties();
         }
 
         void CheckPanel2Properties() =>
-            TabPanels[2].Items[nameof(updateRequestDto.Users)] = updateRequestDto.Users.Where(w => !w.IsDeleted).Count() == 0 ? false : true;
+            TabPanels[2].Items[nameof(accountRequestDto.Users)] = accountRequestDto.Users.Where(w => !w.IsDeleted).Count() == 0 ? false : true;
         #endregion
 
 
         #region /// ШАГ 3: ХОББИ ///
         void OnHobbyChanged(HobbiesDto hobby)
         {
-            if (updateRequestDto.Hobbies != null)
+            if (accountRequestDto.Hobbies != null)
             {
-                var index = updateRequestDto.Hobbies.FindIndex(x => x.Id == hobby.Id);
+                var index = accountRequestDto.Hobbies.FindIndex(x => x.Id == hobby.Id);
                 if (index >= 0)
-                    updateRequestDto.Hobbies.RemoveAt(index);
+                    accountRequestDto.Hobbies.RemoveAt(index);
                 else
-                    updateRequestDto.Hobbies.Add(hobby);
+                    accountRequestDto.Hobbies.Add(hobby);
             }
             else
-                updateRequestDto.Hobbies = [hobby];
+                accountRequestDto.Hobbies = [hobby];
 
             CheckPanel3Properties();
         }
 
         void CheckPanel3Properties()
         {
-            if (updateRequestDto.Hobbies != null && updateRequestDto.Hobbies.Any())
-                TabPanels[3].Items[nameof(updateRequestDto.Hobbies)] = true;
+            if (accountRequestDto.Hobbies != null && accountRequestDto.Hobbies.Any())
+                TabPanels[3].Items[nameof(accountRequestDto.Hobbies)] = true;
             else
-                TabPanels[3].Items[nameof(updateRequestDto.Hobbies)] = false;
+                TabPanels[3].Items[nameof(accountRequestDto.Hobbies)] = false;
             StateHasChanged();
         }
         #endregion
@@ -350,18 +350,18 @@ namespace UI.Components.Pages
                 processingPhoto = true;
                 StateHasChanged();
 
-                if (updateRequestDto.Photos == null)
-                    updateRequestDto.Photos = new List<PhotosForAccountsDto>();
+                if (accountRequestDto.Photos == null)
+                    accountRequestDto.Photos = new List<PhotosForAccountsDto>();
 
                 foreach (var photo in browserPhotos)
                 {
                     var newPhoto = await photo.Upload<PhotosForAccountsDto>(CurrentState.Account?.Token, _repoUploadPhotoToTemp, accountId: CurrentState.Account!.Id);
 
                     if (newPhoto != null)
-                        updateRequestDto.Photos.Insert(0, newPhoto);
+                        accountRequestDto.Photos.Insert(0, newPhoto);
 
                     StateHasChanged();
-                    if (updateRequestDto.Photos.Count(x => x.IsDeleted == false) >= 20) break;
+                    if (accountRequestDto.Photos.Count(x => x.IsDeleted == false) >= 20) break;
                 }
 
                 processingPhoto = false;
@@ -374,7 +374,7 @@ namespace UI.Components.Pages
 
         void SetAsAvatarPhoto(PhotosForAccountsDto photo)
         {
-            updateRequestDto.Photos?.ForEach(x => x.IsAvatar = false);
+            accountRequestDto.Photos?.ForEach(x => x.IsAvatar = false);
             photo.IsAvatar = true;
         }
         #endregion
@@ -382,23 +382,23 @@ namespace UI.Components.Pages
 
         async void SubmitAsync()
         {
-            updateRequestDto.ErrorMessage = null;
+            accountRequestDto.ErrorMessage = null;
             processingAccount = true;
             StateHasChanged();
 
-            var response = await _repoUpdate.HttpPostAsync(updateRequestDto);
+            var response = await _repoUpdate.HttpPostAsync(accountRequestDto);
 
             if (response.StatusCode != HttpStatusCode.OK)
             {
-                updateRequestDto.ErrorMessage = response.Response.ErrorMessage;
+                accountRequestDto.ErrorMessage = response.Response.ErrorMessage;
             }
             else
             {
                 LoginRequestDto loginRequestDto = new LoginRequestDto
                 {
-                    Email = updateRequestDto.Email,
-                    Password = updateRequestDto.Password,
-                    Remember = updateRequestDto.Remember
+                    Email = accountRequestDto.Email,
+                    Password = accountRequestDto.Password,
+                    Remember = accountRequestDto.Remember
                 };
 
                 var apiResponse = await _repoLogin.HttpPostAsync(loginRequestDto);
@@ -417,7 +417,7 @@ namespace UI.Components.Pages
                 }
                 else
                 {
-                    updateRequestDto.ErrorMessage = apiResponse.Response.ErrorMessage;
+                    accountRequestDto.ErrorMessage = apiResponse.Response.ErrorMessage;
                 }
             }
 
@@ -427,8 +427,8 @@ namespace UI.Components.Pages
 
         public void Dispose()
         {
-            if (updateRequestDto?.Photos != null)
-                foreach (var photo in updateRequestDto.Photos.Where(w => w.Id == 0))
+            if (accountRequestDto?.Photos != null)
+                foreach (var photo in accountRequestDto.Photos.Where(w => w.Id == 0))
                     if (Directory.Exists(StaticData.TempPhotosDir + "/" + photo.Guid))
                         Directory.Delete(StaticData.TempPhotosDir + "/" + photo.Guid, true);
         }

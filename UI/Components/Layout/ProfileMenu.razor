@@ -1,15 +1,18 @@
-﻿<MudMenu Icon="@Icons.Material.Filled.MoreVert" AnchorOrigin="Origin.BottomLeft" TransformOrigin="Origin.TopCenter">
-    @if (CurrentState.Account != null)
+﻿    @if (CurrentState.Account != null)
     {
-        <MudMenuItem Href="/profile" Icon="@Icons.Material.Filled.Settings">Настройки профиля</MudMenuItem>
-        <MudDivider />
-        <MudMenuItem Icon="@Icons.Material.Filled.Logout" OnClick="async() => { await CurrentState.LogOutAsync(); }">Выйти</MudMenuItem>
+        <MudMenu Icon="@Icons.Material.Filled.MoreVert" AnchorOrigin="Origin.BottomLeft" TransformOrigin="Origin.TopCenter">
+            <MudMenuItem Href="/profile" Icon="@Icons.Material.Filled.Settings">Настройки профиля</MudMenuItem>
+            <MudDivider />
+            <MudMenuItem Icon="@Icons.Material.Filled.Logout" OnClick="async() => { await CurrentState.LogOutAsync(); }">Выйти</MudMenuItem>
+        </MudMenu>
     }
     else
     {
-        <MudMenuItem Href="/login" Icon="@Icons.Material.Filled.Login">Войти</MudMenuItem>
+        <MudMenu Icon="@Icons.Material.Filled.MoreVert" AnchorOrigin="Origin.BottomLeft" TransformOrigin="Origin.TopLeft">
+            <MudMenuItem Href="/login" Icon="@Icons.Material.Filled.Login">Войти</MudMenuItem>
+            <MudMenuItem Href="/register" Icon="@Icons.Material.Filled.HowToReg">Зарегистрироваться</MudMenuItem>
+        </MudMenu>
     }
-</MudMenu>
 
 @code {
     [CascadingParameter] CurrentState CurrentState { get; set; } = null!;

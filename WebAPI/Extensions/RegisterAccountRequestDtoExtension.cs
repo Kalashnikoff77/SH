@@ -1,10 +1,9 @@
-﻿using AutoMapper;
-using Common.Dto.Requests;
+﻿using Common.Dto.Requests;
 using Common.Models;
 using Dapper;
 using DataContext.Entities;
+using PhotoSauce.MagicScaler;
 using System.Text.Json;
-using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
 using WebAPI.Exceptions;
 using WebAPI.Models;
@@ -90,7 +89,7 @@ namespace WebAPI.Extensions
                 throw new BadRequestException("Вы не приняли условия пользования сайтом!");
         }
 
-        public static async Task<int> InsertAccountAsync(this RegisterAccountRequestDto request, UnitOfWork unitOfWork)
+        public static async Task<int> AddAccountAsync(this RegisterAccountRequestDto request, UnitOfWork unitOfWork)
         {
             string Informing = JsonSerializer.Serialize(request.Informing);
 
@@ -105,7 +104,7 @@ namespace WebAPI.Extensions
             return newAccountId;
         }
 
-        public static async Task InsertUsersAsync(this RegisterAccountRequestDto request, UnitOfWork unitOfWork, int newAccountId)
+        public static async Task AddUsersAsync(this RegisterAccountRequestDto request, UnitOfWork unitOfWork)
         {
             foreach (var u in request.Users)
             {
@@ -113,11 +112,11 @@ namespace WebAPI.Extensions
                     $"({nameof(UsersEntity.Name)}, {nameof(UsersEntity.Height)}, {nameof(UsersEntity.Weight)}, {nameof(UsersEntity.BirthDate)}, {nameof(UsersEntity.Gender)}, {nameof(UsersEntity.AccountId)}) " +
                     "VALUES " +
                     $"(@{nameof(UsersEntity.Name)}, @{nameof(UsersEntity.Height)}, @{nameof(UsersEntity.Weight)}, @{nameof(UsersEntity.BirthDate)}, @{nameof(UsersEntity.Gender)}, @{nameof(UsersEntity.AccountId)})";
-                await unitOfWork.SqlConnection.ExecuteAsync(sql, new { u.Name, u.Height, u.Weight, u.BirthDate, u.Gender, AccountId = newAccountId }, transaction: unitOfWork.SqlTransaction);
+                await unitOfWork.SqlConnection.ExecuteAsync(sql, new { u.Name, u.Height, u.Weight, u.BirthDate, u.Gender, AccountId = request.Id }, transaction: unitOfWork.SqlTransaction);
             }
         }
 
-        public static async Task InsertHobbiesAsync(this RegisterAccountRequestDto request, UnitOfWork unitOfWork, int newAccountId)
+        public static async Task AddHobbiesAsync(this RegisterAccountRequestDto request, UnitOfWork unitOfWork)
         {
             foreach (var h in request.Hobbies)
             {
@@ -125,15 +124,55 @@ namespace WebAPI.Extensions
                     $"({nameof(HobbiesForAccountsEntity.AccountId)}, {nameof(HobbiesForAccountsEntity.HobbyId)}) " +
                     "VALUES " +
                     $"(@{nameof(HobbiesForAccountsEntity.AccountId)}, @{nameof(HobbiesForAccountsEntity.HobbyId)})";
-                await unitOfWork.SqlConnection.ExecuteAsync(sql, new { AccountId = newAccountId, HobbyId = h.Id }, transaction: unitOfWork.SqlTransaction);
+                await unitOfWork.SqlConnection.ExecuteAsync(sql, new { AccountId = request.Id, HobbyId = h.Id }, transaction: unitOfWork.SqlTransaction);
             }
         }
 
-        public static async Task InsertWishListAsync(this RegisterAccountRequestDto request, UnitOfWork unitOfWork, int newAccountId)
+        public static async Task AddWishListAsync(this RegisterAccountRequestDto request, UnitOfWork unitOfWork)
         {
             var sql = $"INSERT INTO AccountsWishLists ({nameof(AccountsWishLists.Comment)}, {nameof(AccountsWishLists.AccountId)}) " +
                 $"VALUES (@Comment, @AccountId)";
-            await unitOfWork.SqlConnection.ExecuteAsync(sql, new { Comment = "Привет!", AccountId = newAccountId }, transaction: unitOfWork.SqlTransaction);
+            await unitOfWork.SqlConnection.ExecuteAsync(sql, new { Comment = "Привет!", AccountId = request.Id }, transaction: unitOfWork.SqlTransaction);
         }
+
+        public static async Task InsertPhotosAsync(this RegisterAccountRequestDto request, UnitOfWork unitOfWork)
+        {
+            string sql;
+
+            if (request.Photos != null)
+            {
+                foreach (var photo in request.Photos)
+                {
+                    // Есть ли фото во временном каталоге?
+                    if (Directory.Exists($"{StaticData.TempPhotosDir}/{photo.Guid}"))
+                    {
+                        // Фото добавили, затем сразу удалили, а потом сохраняют. Значит, фото можно не обрабатывать.
+                        if (!photo.IsDeleted)
+                        {
+                            Directory.CreateDirectory($"{StaticData.AccountsPhotosDir}/{request.Id}/{photo.Guid}");
+                            var sourceFileName = $"{StaticData.TempPhotosDir}/{photo.Guid}/original.jpg";
+
+                            foreach (var image in StaticData.Images)
+                            {
+                                var destFileName = $@"{StaticData.AccountsPhotosDir}/{request.Id}/{photo.Guid}/{image.Key}.jpg";
+
+                                MemoryStream output = new MemoryStream(300000);
+                                MagicImageProcessor.ProcessImage(sourceFileName, output, image.Value);
+                                File.WriteAllBytes(destFileName, output.ToArray());
+                            }
+
+                            sql = "INSERT INTO PhotosForAccounts " +
+                                $"({nameof(PhotosForAccountsEntity.Guid)}, {nameof(PhotosForAccountsEntity.RelatedId)}, {nameof(PhotosForAccountsEntity.Comment)}, {nameof(PhotosForAccountsEntity.IsAvatar)}) " +
+                                "VALUES " +
+                                $"(@{nameof(PhotosForAccountsEntity.Guid)}, @{nameof(PhotosForAccountsEntity.RelatedId)}, @{nameof(PhotosForAccountsEntity.Comment)}, @{nameof(PhotosForAccountsEntity.IsAvatar)});" +
+                                $"SELECT CAST(SCOPE_IDENTITY() AS INT)";
+                            var newId = await unitOfWork.SqlConnection.QuerySingleAsync<int>(sql, new { photo.Guid, RelatedId = request.Id, photo.Comment, photo.IsAvatar }, transaction: unitOfWork.SqlTransaction);
+                        }
+                        Directory.Delete($"{StaticData.TempPhotosDir}/{photo.Guid}", true);
+                    }
+                }
+            }
+        }
+
     }
 }

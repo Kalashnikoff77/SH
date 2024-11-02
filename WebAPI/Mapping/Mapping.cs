@@ -61,15 +61,9 @@ namespace WebAPI.Mapping
                 .ForMember(to => to.Account, from => from.ConvertUsing<JsonToClassConverter<AccountsViewDto>, string?>(from => from.Account));
 
             CreateMap<MessagesEntity, MessagesDto>();
-
             CreateMap<AccountsEntity, AccountsDto>();
             CreateMap<FeaturesEntity, FeaturesDto>();
             CreateMap<HobbiesEntity, HobbiesDto>();
-
-            // Регистрация аккаунта
-            //CreateMap<RegisterAccountRequestDto, AccountsEntity>()
-            //    .ForMember(to => to.RegionId, from => from.MapFrom(from => from.Country.Region.Id))
-            //    .ForMember(to => to.Informing, from => from.ConvertUsing<InformingToStringConverter, Informing>(from => from.Informing));
         }
     }
 }

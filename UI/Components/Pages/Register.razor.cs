@@ -31,14 +31,14 @@ namespace UI.Components.Pages
 
         [Inject] ProtectedLocalStorage _protectedLocalStore { get; set; } = null!;
         [Inject] ProtectedSessionStorage _protectedSessionStore { get; set; } = null!;
-        [Inject] IDialogService DialogService { get; set; } = null!;
+        [Inject] IDialogService _dialogService { get; set; } = null!;
         [Inject] IConfiguration _config { get; set; } = null!;
         [Inject] IJSProcessor _JSProcessor { get; set; } = null!;
 
         RegisterAccountRequestDto accountRequestDto = null!;
 
-        List<CountriesViewDto> countries { get; set; } = new List<CountriesViewDto>();
-        List<RegionsDto>? regions { get; set; } = new List<RegionsDto>();
+        List<CountriesViewDto> countries { get; set; } = null!;
+        List<RegionsDto>? regions { get; set; } = null!;
         List<HobbiesDto> hobbies { get; set; } = null!;
 
         bool processingAccount, processingPhoto = false;
@@ -69,7 +69,7 @@ namespace UI.Components.Pages
         protected override async Task OnInitializedAsync()
         {
             var apiCountriesResponse = await _repoGetCountries.HttpPostAsync(new GetCountriesRequestDto());
-            countries.AddRange(apiCountriesResponse.Response.Countries);
+            countries = apiCountriesResponse.Response.Countries;
 
             var apiHobbiesResponse = await _repoGetHobbies.HttpPostAsync(new GetHobbiesRequestDto());
             hobbies = apiHobbiesResponse.Response.Hobbies;
@@ -96,15 +96,13 @@ namespace UI.Components.Pages
             get => _countryText;
             set
             {
-                if (value != null)
+                if (value != null && countries.Any())
                 {
-                    var country = countries.Where(c => c.Name == value)?.First();
+                    var country = countries.Where(c => c.Name == value).FirstOrDefault();
                     if (country != null)
                     {
                         accountRequestDto.Country.Id = country.Id;
-                        regions = countries
-                            .Where(x => x.Id == country.Id).FirstOrDefault()?
-                            .Regions?.Select(s => s).ToList();
+                        regions = country.Regions;
                     }
                 }
                 _countryText = value;
@@ -118,9 +116,9 @@ namespace UI.Components.Pages
             get => _regionText;
             set
             {
-                if (value != null && regions != null)
+                if (value != null && countries.Any() && regions != null)
                 {
-                    var region = regions.Where(c => c.Name == value)?.First();
+                    var region = regions.Where(c => c.Name == value).FirstOrDefault();
                     if (region != null)
                         accountRequestDto.Country.Region.Id = region.Id;
                 }
@@ -204,6 +202,7 @@ namespace UI.Components.Pages
 
             // Сбросим в false регион
             TabPanels[1].Items[nameof(accountRequestDto.Country.Region)] = false;
+            RegionIconColor = Color.Default;
 
             CheckPanel1Properties(errorMessage, nameof(accountRequestDto.Country), ref CountryIconColor);
             return errorMessage;
@@ -266,7 +265,7 @@ namespace UI.Components.Pages
                 { x => x.Color, Color.Error }
             };
             var options = new DialogOptions() { CloseButton = true, MaxWidth = MaxWidth.ExtraSmall };
-            var resultDialog = await DialogService.ShowAsync<ConfirmDialog>($"Удаление {user.Name}", parameters, options);
+            var resultDialog = await _dialogService.ShowAsync<ConfirmDialog>($"Удаление {user.Name}", parameters, options);
             var result = await resultDialog.Result;
             
             if (result != null && result.Canceled == false && accountRequestDto.Users.Contains(user))
@@ -280,7 +279,7 @@ namespace UI.Components.Pages
             var parameters = new DialogParameters<EditUserDialog> { { x => x.User, null } };
             var options = new DialogOptions { CloseOnEscapeKey = true, CloseButton = true };
 
-            var resultDialog = await DialogService.ShowAsync<EditUserDialog>("Добавление партнёра", parameters, options);
+            var resultDialog = await _dialogService.ShowAsync<EditUserDialog>("Добавление партнёра", parameters, options);
             var result = await resultDialog.Result;
             if (result != null && result.Canceled == false && result.Data != null)
                 accountRequestDto.Users.Add((UsersDto)result.Data);
@@ -293,7 +292,7 @@ namespace UI.Components.Pages
             var parameters = new DialogParameters<EditUserDialog> { { x => x.User, user } };
             var options = new DialogOptions { CloseOnEscapeKey = true, CloseButton = true };
 
-            var resultDialog = await DialogService.ShowAsync<EditUserDialog>("Редактирование партнёра", parameters, options);
+            var resultDialog = await _dialogService.ShowAsync<EditUserDialog>("Редактирование партнёра", parameters, options);
             var result = await resultDialog.Result;
             if (result != null && result.Canceled == false && result.Data != null)
             {

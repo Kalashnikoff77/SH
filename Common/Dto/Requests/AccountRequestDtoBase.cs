@@ -13,7 +13,7 @@
 
         public Informing Informing { get; set; } = null!;
 
-        public CountriesDto Country { get; set; } = null!;
+        public CountriesDto Country { get; set; } = new CountriesDto();
 
         public List<UsersDto> Users { get; set; } = null!;
 

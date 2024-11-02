@@ -31,9 +31,9 @@ namespace UI.Components.Pages
 
         [Inject] ProtectedLocalStorage _protectedLocalStore { get; set; } = null!;
         [Inject] ProtectedSessionStorage _protectedSessionStore { get; set; } = null!;
-        [Inject] IJSProcessor _JSProcessor { get; set; } = null!;
         [Inject] IDialogService DialogService { get; set; } = null!;
         [Inject] IConfiguration _config { get; set; } = null!;
+        [Inject] IJSProcessor _JSProcessor { get; set; } = null!;
 
         RegisterAccountRequestDto accountRequestDto = null!;
 
@@ -41,18 +41,14 @@ namespace UI.Components.Pages
         List<RegionsDto>? regions { get; set; } = new List<RegionsDto>();
         List<HobbiesDto> hobbies { get; set; } = null!;
 
-        Dictionary<short, TabPanel> TabPanels { get; set; } = null!;
-        bool processingPhoto = false;
-        bool processingAccount = false;
+        bool processingAccount, processingPhoto = false;
 
         bool IsPanel1Valid => TabPanels[1].Items.All(x => x.Value == true);
         bool IsPanel2Valid => TabPanels[2].Items.All(x => x.Value == true);
         bool IsPanel3Valid => TabPanels[3].Items.All(x => x.Value == true);
         bool IsPanel4Valid => TabPanels[4].Items.All(x => x.Value == true);
 
-        protected override async Task OnInitializedAsync()
-        {
-            TabPanels = new Dictionary<short, TabPanel>
+        static IReadOnlyDictionary<short, TabPanel> TabPanels = new Dictionary<short, TabPanel>
             {
                 { 1, new TabPanel { Items = new Dictionary<string, bool>
                         {
@@ -70,6 +66,8 @@ namespace UI.Components.Pages
                 { 4, new TabPanel { Items = new Dictionary<string, bool> { { "Photos", false } } } }
             };
 
+        protected override async Task OnInitializedAsync()
+        {
             var apiCountriesResponse = await _repoGetCountries.HttpPostAsync(new GetCountriesRequestDto());
             countries.AddRange(apiCountriesResponse.Response.Countries);
 

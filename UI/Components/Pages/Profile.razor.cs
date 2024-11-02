@@ -22,7 +22,6 @@ namespace UI.Components.Pages
     public partial class Profile : IDisposable
     {
         [CascadingParameter] CurrentState CurrentState { get; set; } = null!;
-
         [Inject] IRepository<GetCountriesRequestDto, GetCountriesResponseDto> _repoGetCountries { get; set; } = null!;
         [Inject] IRepository<GetHobbiesRequestDto, GetHobbiesResponseDto> _repoGetHobbies { get; set; } = null!;
         [Inject] IRepository<AccountCheckUpdateRequestDto, AccountCheckUpdateResponseDto> _repoCheckUpdate { get; set; } = null!;
@@ -34,48 +33,46 @@ namespace UI.Components.Pages
         [Inject] ProtectedSessionStorage _protectedSessionStore { get; set; } = null!;
         [Inject] IDialogService DialogService { get; set; } = null!;
         [Inject] IConfiguration _config { get; set; } = null!;
-
         [Inject] IMapper _mapper { get; set; } = null!;
 
         UpdateAccountRequestDto accountRequestDto = null!;
+
         List<CountriesViewDto> countries { get; set; } = null!;
         List<RegionsDto> regions { get; set; } = null!;
         List<HobbiesDto> hobbies { get; set; } = null!;
 
         bool processingAccount, processingPhoto, isDataSaved = false;
-
         /// <summary>
         /// Для предотвращения повторного выполнения OnParametersSet (выполняется при переходе на другую ссылку)
         /// </summary>
         bool isFirstSetParameters = true;
 
-        Dictionary<short, TabPanel> TabPanels { get; set; } = null!;
         bool IsPanel1Valid => TabPanels[1].Items.All(x => x.Value == true);
         bool IsPanel2Valid => TabPanels[2].Items.All(x => x.Value == true);
         bool IsPanel3Valid => TabPanels[3].Items.All(x => x.Value == true);
         bool IsPanel4Valid => TabPanels[4].Items.All(x => x.Value == true);
 
+        static IReadOnlyDictionary<short, TabPanel> TabPanels = new Dictionary<short, TabPanel>
+        {
+            { 1, new TabPanel { Items = new Dictionary<string, bool>
+                    {
+                        { nameof(accountRequestDto.Name), true },
+                        { nameof(accountRequestDto.Email), true },
+                        { nameof(accountRequestDto.Password), true },
+                        { nameof(accountRequestDto.Password2), true },
+                        { nameof(accountRequestDto.Country), true },
+                        { nameof(accountRequestDto.Country.Region), true }
+                    }
+                }
+            },
+            { 2, new TabPanel { Items = new Dictionary<string, bool> { { nameof(accountRequestDto.Users), true } } } },
+            { 3, new TabPanel { Items = new Dictionary<string, bool> { { nameof(accountRequestDto.Hobbies), true } } } },
+            { 4, new TabPanel { Items = new Dictionary<string, bool> { { "Photos", true } } } }
+        };
+
+
         protected override async Task OnInitializedAsync()
         {
-            TabPanels = new Dictionary<short, TabPanel>
-            {
-                { 1, new TabPanel {
-                    Items = new Dictionary<string, bool>
-                        {
-                            { nameof(accountRequestDto.Name), true },
-                            { nameof(accountRequestDto.Email), true },
-                            { nameof(accountRequestDto.Password), true },
-                            { nameof(accountRequestDto.Password2), true },
-                            { nameof(accountRequestDto.Country), true },
-                            { nameof(accountRequestDto.Country.Region), true }
-                        }
-                    }
-                },
-                { 2, new TabPanel { Items = new Dictionary<string, bool> { { nameof(accountRequestDto.Users), true } } } },
-                { 3, new TabPanel { Items = new Dictionary<string, bool> { { nameof(accountRequestDto.Hobbies), true } } } },
-                { 4, new TabPanel { Items = new Dictionary<string, bool> { { "Photos", true } } } }
-            };
-
             var apiCountriesResponse = await _repoGetCountries.HttpPostAsync(new GetCountriesRequestDto());
             countries = apiCountriesResponse.Response.Countries;
 

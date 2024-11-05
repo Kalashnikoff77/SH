@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Components;
 using System.Net;
 using MudBlazor;
 
-namespace UI.Components.Pages
+namespace UI.Components.Pages.Account
 {
     public partial class Login
     {

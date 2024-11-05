@@ -4,6 +4,7 @@ using Common.Dto.Requests;
 using Common.Dto.Responses;
 using Common.Dto.Views;
 using Common.Extensions;
+using Common.JSProcessor;
 using Common.Models;
 using Common.Models.States;
 using Common.Repository;
@@ -12,95 +13,55 @@ using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
 using Microsoft.AspNetCore.Components.Web;
 using MudBlazor;
-using System.Net;
 using System.Text.RegularExpressions;
 using UI.Components.Dialogs;
 using UI.Models;
 
-namespace UI.Components.Pages
+namespace UI.Components.Pages.Account
 {
-    public partial class Profile : IDisposable
+    public abstract class AccountDto : ComponentBase
     {
-        [CascadingParameter] CurrentState CurrentState { get; set; } = null!;
-        [Inject] IRepository<GetCountriesRequestDto, GetCountriesResponseDto> _repoGetCountries { get; set; } = null!;
-        [Inject] IRepository<GetHobbiesRequestDto, GetHobbiesResponseDto> _repoGetHobbies { get; set; } = null!;
-        [Inject] IRepository<AccountCheckUpdateRequestDto, AccountCheckUpdateResponseDto> _repoCheckUpdate { get; set; } = null!;
-        [Inject] IRepository<UpdateAccountRequestDto, ResponseDtoBase> _repoUpdate { get; set; } = null!;
-        [Inject] IRepository<LoginRequestDto, LoginResponseDto> _repoLogin { get; set; } = null!;
-        [Inject] IRepository<UploadPhotoToTempRequestDto, UploadPhotoToTempResponseDto> _repoUploadPhotoToTemp { get; set; } = null!;
+        [CascadingParameter] protected CurrentState CurrentState { get; set; } = null!;
+        [Inject] protected IRepository<UploadPhotoToTempRequestDto, UploadPhotoToTempResponseDto> _repoUploadPhotoToTemp { get; set; } = null!;
+        [Inject] protected IRepository<GetCountriesRequestDto, GetCountriesResponseDto> _repoGetCountries { get; set; } = null!;
+        [Inject] protected IRepository<GetHobbiesRequestDto, GetHobbiesResponseDto> _repoGetHobbies { get; set; } = null!;
+        [Inject] protected IRepository<LoginRequestDto, LoginResponseDto> _repoLogin { get; set; } = null!;
 
-        [Inject] ProtectedLocalStorage _protectedLocalStore { get; set; } = null!;
-        [Inject] ProtectedSessionStorage _protectedSessionStore { get; set; } = null!;
-        [Inject] IDialogService _dialogService { get; set; } = null!;
-        [Inject] IConfiguration _config { get; set; } = null!;
-        [Inject] IMapper _mapper { get; set; } = null!;
+        [Inject] protected ProtectedLocalStorage _protectedLocalStore { get; set; } = null!;
+        [Inject] protected ProtectedSessionStorage _protectedSessionStore { get; set; } = null!;
+        [Inject] protected IDialogService _dialogService { get; set; } = null!;
+        [Inject] protected IConfiguration _config { get; set; } = null!;
+        [Inject] protected IJSProcessor _JSProcessor { get; set; } = null!;
+        [Inject] protected IMapper _mapper { get; set; } = null!;
 
-        UpdateAccountRequestDto accountRequestDto = null!;
+        [Inject] protected IRepository<AccountCheckUpdateRequestDto, AccountCheckUpdateResponseDto> _repoCheckUpdate { get; set; } = null!;
+        [Inject] protected IRepository<UpdateAccountRequestDto, ResponseDtoBase> _repoUpdate { get; set; } = null!;
+        [Inject] protected IRepository<AccountCheckRegisterRequestDto, AccountCheckRegisterResponseDto> _repoCheckRegister { get; set; } = null!;
+        [Inject] protected IRepository<RegisterAccountRequestDto, ResponseDtoBase> _repoRegister { get; set; } = null!;
 
-        List<CountriesViewDto> countries { get; set; } = null!;
-        List<RegionsDto>? regions { get; set; } = null;
-        List<HobbiesDto> hobbies { get; set; } = null!;
-
-        bool processingAccount, processingPhoto, isDataSaved = false;
+        protected bool processingAccount, processingPhoto, isDataSaved = false;
         /// <summary>
         /// Для предотвращения повторного выполнения OnParametersSet (выполняется при переходе на другую ссылку)
         /// </summary>
-        bool isFirstSetParameters = true;
+        protected bool isFirstSetParameters = true;
 
-        bool IsPanel1Valid => TabPanels[1].Items.All(x => x.Value == true);
-        bool IsPanel2Valid => TabPanels[2].Items.All(x => x.Value == true);
-        bool IsPanel3Valid => TabPanels[3].Items.All(x => x.Value == true);
-        bool IsPanel4Valid => TabPanels[4].Items.All(x => x.Value == true);
+        protected List<CountriesViewDto> countries { get; set; } = null!;
+        protected List<RegionsDto>? regions { get; set; } = null;
+        protected List<HobbiesDto> hobbies { get; set; } = null!;
 
-        static IReadOnlyDictionary<short, TabPanel> TabPanels = new Dictionary<short, TabPanel>
-        {
-            { 1, new TabPanel { Items = new Dictionary<string, bool>
-                    {
-                        { nameof(accountRequestDto.Name), true },
-                        { nameof(accountRequestDto.Email), true },
-                        { nameof(accountRequestDto.Password), true },
-                        { nameof(accountRequestDto.Password2), true },
-                        { nameof(accountRequestDto.Country), true },
-                        { nameof(accountRequestDto.Country.Region), true }
-                    }
-                }
-            },
-            { 2, new TabPanel { Items = new Dictionary<string, bool> { { nameof(accountRequestDto.Users), true } } } },
-            { 3, new TabPanel { Items = new Dictionary<string, bool> { { nameof(accountRequestDto.Hobbies), true } } } },
-            { 4, new TabPanel { Items = new Dictionary<string, bool> { { "Photos", true } } } }
-        };
+        protected AccountRequestDtoBase accountRequestDto { get; set; } = null!;
 
+        protected Dictionary<short, TabPanel> TabPanels = new Dictionary<short, TabPanel>();
 
-        protected override async Task OnInitializedAsync()
-        {
-            var apiCountriesResponse = await _repoGetCountries.HttpPostAsync(new GetCountriesRequestDto());
-            countries = apiCountriesResponse.Response.Countries;
-
-            var apiHobbiesResponse = await _repoGetHobbies.HttpPostAsync(new GetHobbiesRequestDto());
-            hobbies = apiHobbiesResponse.Response.Hobbies;
-        }
-
-        protected override async Task OnParametersSetAsync()
-        {
-            if (CurrentState.Account != null && isFirstSetParameters)
-            {
-                accountRequestDto = _mapper.Map<UpdateAccountRequestDto>(CurrentState.Account);
-
-                countryText = CurrentState.Account.Country!.Name;
-                regionText = CurrentState.Account.Country!.Region.Name;
-
-                var storage = await _protectedLocalStore.GetAsync<LoginRequestDto>(nameof(LoginRequestDto));
-                if (storage.Success)
-                    accountRequestDto.Remember = true;
-
-                isFirstSetParameters = false;
-            }
-        }
+        protected bool IsPanel1Valid => TabPanels[1].Items.All(x => x.Value == true);
+        protected bool IsPanel2Valid => TabPanels[2].Items.All(x => x.Value == true);
+        protected bool IsPanel3Valid => TabPanels[3].Items.All(x => x.Value == true);
+        protected bool IsPanel4Valid => TabPanels[4].Items.All(x => x.Value == true);
 
 
         #region /// ШАГ 1: ОБЩЕЕ ///
         string? _countryText;
-        string? countryText
+        protected string? countryText
         {
             get => _countryText;
             set
@@ -120,7 +81,7 @@ namespace UI.Components.Pages
         }
 
         string? _regionText;
-        string? regionText
+        protected string? regionText
         {
             get => _regionText;
             set
@@ -135,14 +96,14 @@ namespace UI.Components.Pages
             }
         }
 
-        Color NameIconColor = Color.Default;
-        async Task<string?> NameValidator(string name)
+        protected Color NameIconColor = Color.Default;
+        protected async Task<string?> NameValidator(string name)
         {
             string? errorMessage = null;
             if (string.IsNullOrWhiteSpace(name) || name.Length < StaticData.DB_ACCOUNTS_NAME_MIN)
                 errorMessage = $"Имя должно содержать {StaticData.DB_ACCOUNTS_NAME_MIN}-{StaticData.DB_ACCOUNTS_NAME_MAX} символов";
 
-            var apiResponse = await _repoCheckUpdate.HttpPostAsync(new AccountCheckUpdateRequestDto { AccountName = name, Token = CurrentState.Account!.Token });
+            var apiResponse = await _repoCheckUpdate.HttpPostAsync(new AccountCheckUpdateRequestDto { AccountName = name, Token = CurrentState.Account?.Token });
             if (apiResponse.Response.AccountNameExists)
                 errorMessage = $"Это имя уже занято. Выберите другое.";
 
@@ -151,8 +112,8 @@ namespace UI.Components.Pages
             return errorMessage;
         }
 
-        Color EmailIconColor = Color.Default;
-        async Task<string?> EmailValidator(string email)
+        protected Color EmailIconColor = Color.Default;
+        protected async Task<string?> EmailValidator(string email)
         {
             string? errorMessage = null;
 
@@ -162,7 +123,7 @@ namespace UI.Components.Pages
             if (!Regex.IsMatch(email, @"^[a-z0-9_\.-]{1,32}@[a-z0-9\.-]{1,32}\.[a-z]{2,8}$"))
                 errorMessage = $"Проверьте корректность email";
 
-            var apiResponse = await _repoCheckUpdate.HttpPostAsync(new AccountCheckUpdateRequestDto { AccountEmail = email, Token = CurrentState.Account!.Token });
+            var apiResponse = await _repoCheckUpdate.HttpPostAsync(new AccountCheckUpdateRequestDto { AccountEmail = email, Token = CurrentState.Account?.Token });
             if (apiResponse.Response.AccountEmailExists)
                 errorMessage = $"Этот email уже занят другим пользователем.";
 
@@ -171,8 +132,8 @@ namespace UI.Components.Pages
             return errorMessage;
         }
 
-        Color PasswordIconColor = Color.Default;
-        string? PasswordValidator(string password)
+        protected Color PasswordIconColor = Color.Default;
+        protected string? PasswordValidator(string password)
         {
             string? errorMessage = null;
             if (string.IsNullOrWhiteSpace(password) || password.Length < StaticData.DB_ACCOUNTS_PASSWORD_MIN)
@@ -182,8 +143,8 @@ namespace UI.Components.Pages
             return errorMessage;
         }
 
-        Color Password2IconColor = Color.Default;
-        string? Password2Validator(string password2)
+        protected Color Password2IconColor = Color.Default;
+        protected string? Password2Validator(string password2)
         {
             string? errorMessage = null;
             if (accountRequestDto.Password != password2)
@@ -193,8 +154,8 @@ namespace UI.Components.Pages
             return errorMessage;
         }
 
-        Color CountryIconColor = Color.Default;
-        string? CountryValidator(string country)
+        protected Color CountryIconColor = Color.Default;
+        protected string? CountryValidator(string country)
         {
             string? errorMessage = null;
             if (string.IsNullOrWhiteSpace(countryText))
@@ -208,8 +169,8 @@ namespace UI.Components.Pages
             return errorMessage;
         }
 
-        Color RegionIconColor = Color.Default;
-        string? RegionValidator(string region)
+        protected Color RegionIconColor = Color.Default;
+        protected string? RegionValidator(string region)
         {
             string? errorMessage = null;
             if (string.IsNullOrWhiteSpace(regionText))
@@ -235,7 +196,7 @@ namespace UI.Components.Pages
         }
 
 
-        async Task<IEnumerable<string>?> SearchCountry(string value, CancellationToken token)
+        protected async Task<IEnumerable<string>?> SearchCountryAsync(string value, CancellationToken token)
         {
             if (string.IsNullOrWhiteSpace(value))
                 return countries.Select(s => s.Name);
@@ -244,7 +205,7 @@ namespace UI.Components.Pages
                 .Where(x => x.Contains(value, StringComparison.InvariantCultureIgnoreCase));
         }
 
-        async Task<IEnumerable<string>?> SearchRegion(string value, CancellationToken token)
+        protected async Task<IEnumerable<string>?> SearchRegionAsync(string value, CancellationToken token)
         {
             if (string.IsNullOrWhiteSpace(value))
                 return regions?.Select(s => s.Name);
@@ -256,7 +217,7 @@ namespace UI.Components.Pages
 
 
         #region /// ШАГ 2: ПАРТНЁРЫ ///
-        async Task DeleteUserDialogAsync(UsersDto user)
+        protected async Task DeleteUserDialogAsync(UsersDto user)
         {
             var parameters = new DialogParameters<ConfirmDialog>
             {
@@ -269,15 +230,25 @@ namespace UI.Components.Pages
             var result = await resultDialog.Result;
 
             if (result != null && result.Canceled == false && accountRequestDto.Users.Contains(user))
-            {
-                var index = accountRequestDto.Users.IndexOf(user);
-                if (index >= 0)
-                    accountRequestDto.Users[index].IsDeleted = true;
-            }
+                accountRequestDto.Users.Remove(user);
+
             CheckPanel2Properties();
         }
 
-        async Task UpdateUserDialogAsync(UsersDto user)
+        protected async Task AddUserDialogAsync(MouseEventArgs args)
+        {
+            var parameters = new DialogParameters<EditUserDialog> { { x => x.User, null } };
+            var options = new DialogOptions { CloseOnEscapeKey = true, CloseButton = true };
+
+            var resultDialog = await _dialogService.ShowAsync<EditUserDialog>("Добавление партнёра", parameters, options);
+            var result = await resultDialog.Result;
+            if (result != null && result.Canceled == false && result.Data != null)
+                accountRequestDto.Users.Add((UsersDto)result.Data);
+
+            CheckPanel2Properties();
+        }
+
+        protected async Task UpdateUserDialogAsync(UsersDto user)
         {
             var parameters = new DialogParameters<EditUserDialog> { { x => x.User, user } };
             var options = new DialogOptions { CloseOnEscapeKey = true, CloseButton = true };
@@ -292,26 +263,13 @@ namespace UI.Components.Pages
             }
         }
 
-        async Task AddUserAsync(MouseEventArgs args)
-        {
-            var parameters = new DialogParameters<EditUserDialog> { { x => x.User, null } };
-            var options = new DialogOptions { CloseOnEscapeKey = true, CloseButton = true };
-
-            var resultDialog = await _dialogService.ShowAsync<EditUserDialog>("Добавление партнёра", parameters, options);
-            var result = await resultDialog.Result;
-            if (result != null && result.Canceled == false && result.Data != null)
-                accountRequestDto.Users.Add((UsersDto)result.Data);
-
-            CheckPanel2Properties();
-        }
-
         void CheckPanel2Properties() =>
-            TabPanels[2].Items[nameof(accountRequestDto.Users)] = accountRequestDto.Users.Where(w => !w.IsDeleted).Count() == 0 ? false : true;
+            TabPanels[2].Items[nameof(accountRequestDto.Users)] = accountRequestDto.Users.Count == 0 ? false : true;
         #endregion
 
 
         #region /// ШАГ 3: ХОББИ ///
-        void OnHobbyChanged(HobbiesDto hobby)
+        protected void OnHobbyChanged(HobbiesDto hobby)
         {
             if (accountRequestDto.Hobbies != null)
             {
@@ -339,7 +297,7 @@ namespace UI.Components.Pages
 
 
         #region /// ШАГ 4: ФОТО ///
-        async void UploadPhotos(IReadOnlyList<IBrowserFile> browserPhotos)
+        protected async void UploadPhotosAsync(IReadOnlyList<IBrowserFile> browserPhotos)
         {
             if (browserPhotos.Count > 0)
             {
@@ -351,75 +309,44 @@ namespace UI.Components.Pages
 
                 foreach (var photo in browserPhotos)
                 {
-                    var newPhoto = await photo.Upload<PhotosForAccountsDto>(CurrentState.Account?.Token, _repoUploadPhotoToTemp, accountId: CurrentState.Account!.Id);
+                    var newPhoto = await photo.Upload<PhotosForAccountsDto>(CurrentState.Account?.Token, _repoUploadPhotoToTemp, accountId: CurrentState.Account?.Id ?? 0);
 
                     if (newPhoto != null)
+                    {
+                        // Если это первая фотка, то отметим её как аватар
+                        if (accountRequestDto.Photos.Count(x => x.IsDeleted == false) == 0)
+                            newPhoto.IsAvatar = true;
                         accountRequestDto.Photos.Insert(0, newPhoto);
-
-                    StateHasChanged();
+                    }
                     if (accountRequestDto.Photos.Count(x => x.IsDeleted == false) >= 20) break;
                 }
 
                 processingPhoto = false;
-                StateHasChanged();
+
+                CheckPanel4Properties();
             }
         }
 
-        void UpdateCommentPhoto(PhotosForAccountsDto photo, string comment) =>
+        void CheckPanel4Properties()
+        {
+            if (accountRequestDto.Photos.Count(x => x.IsDeleted == false) > 0)
+                TabPanels[4].Items["Photos"] = true;
+            else
+                TabPanels[4].Items["Photos"] = false;
+
+            StateHasChanged();
+        }
+
+        protected void UpdateCommentPhoto(PhotosForAccountsDto photo, string comment) =>
             photo.Comment = comment;
 
-        void SetAsAvatarPhoto(PhotosForAccountsDto photo)
+        protected void SetAsAvatarPhoto(PhotosForAccountsDto photo)
         {
             accountRequestDto.Photos?.ForEach(x => x.IsAvatar = false);
             photo.IsAvatar = true;
         }
         #endregion
 
-
-        async void SubmitAsync()
-        {
-            accountRequestDto.ErrorMessage = null;
-            processingAccount = true;
-            StateHasChanged();
-
-            var response = await _repoUpdate.HttpPostAsync(accountRequestDto);
-
-            if (response.StatusCode != HttpStatusCode.OK)
-            {
-                accountRequestDto.ErrorMessage = response.Response.ErrorMessage;
-            }
-            else
-            {
-                LoginRequestDto loginRequestDto = new LoginRequestDto
-                {
-                    Email = accountRequestDto.Email,
-                    Password = accountRequestDto.Password,
-                    Remember = accountRequestDto.Remember
-                };
-
-                var apiResponse = await _repoLogin.HttpPostAsync(loginRequestDto);
-
-                if (apiResponse.StatusCode == HttpStatusCode.OK)
-                {
-                    apiResponse.Response.Account!.Token = StaticData.GenerateToken(apiResponse.Response.Account.Id, apiResponse.Response.Account.Guid, _config);
-                    CurrentState.SetAccount(apiResponse.Response.Account);
-
-                    if (loginRequestDto.Remember)
-                        await _protectedLocalStore.SetAsync(nameof(LoginRequestDto), loginRequestDto);
-                    else
-                        await _protectedSessionStore.SetAsync(nameof(LoginRequestDto), loginRequestDto);
-
-                    isDataSaved = true;
-                }
-                else
-                {
-                    accountRequestDto.ErrorMessage = apiResponse.Response.ErrorMessage;
-                }
-            }
-
-            processingAccount = false;
-            CurrentState.StateHasChanged();
-        }
 
         public void Dispose()
         {
@@ -428,6 +355,5 @@ namespace UI.Components.Pages
                     if (Directory.Exists(StaticData.TempPhotosDir + "/" + photo.Guid))
                         Directory.Delete(StaticData.TempPhotosDir + "/" + photo.Guid, true);
         }
-
     }
 }

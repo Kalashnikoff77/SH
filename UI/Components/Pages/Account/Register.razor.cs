@@ -7,7 +7,7 @@ using UI.Models;
 
 namespace UI.Components.Pages.Account
 {
-    public partial class Register : AccountDto, IDisposable
+    public partial class Register : AccountDtoBase, IDisposable
     {
         protected override async Task OnInitializedAsync()
         {

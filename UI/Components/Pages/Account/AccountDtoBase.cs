@@ -19,7 +19,7 @@ using UI.Models;
 
 namespace UI.Components.Pages.Account
 {
-    public abstract class AccountDto : ComponentBase
+    public abstract class AccountDtoBase : ComponentBase
     {
         [CascadingParameter] protected CurrentState CurrentState { get; set; } = null!;
         [Inject] protected IRepository<UploadPhotoToTempRequestDto, UploadPhotoToTempResponseDto> _repoUploadPhotoToTemp { get; set; } = null!;

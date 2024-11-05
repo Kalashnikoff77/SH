@@ -1,4 +1,5 @@
 ﻿using Common.Dto.Requests;
+using Common.Extensions;
 using Common.Models;
 using Common.Models.States;
 using System.Net;
@@ -6,7 +7,7 @@ using UI.Models;
 
 namespace UI.Components.Pages.Account
 {
-    public partial class Profile : AccountDto, IDisposable
+    public partial class Profile : AccountDtoBase, IDisposable
     {
         protected override async Task OnInitializedAsync()
         {
@@ -41,7 +42,7 @@ namespace UI.Components.Pages.Account
         {
             if (CurrentState.Account != null && isFirstSetParameters)
             {
-                accountRequestDto = _mapper.Map<UpdateAccountRequestDto>(CurrentState.Account);
+                accountRequestDto = CurrentState.Account.DeepCopy<UpdateAccountRequestDto>()!;
 
                 countryText = CurrentState.Account.Country!.Name;
                 regionText = CurrentState.Account.Country!.Region.Name;

@@ -2,10 +2,8 @@
 
 namespace Common.Dto.Requests
 {
-    public class AddEventRequestDto : RequestDtoBase
+    public class AddEventRequestDto : EventRequestDtoBase
     {
         public override string Uri => "/Events/Add";
-
-        public EventsViewDto Event { get; set; } = null!;
     }
 }

@@ -18,8 +18,7 @@ namespace WebAPI.Mapping
                 .ForMember(to => to.Photos, from => from.ConvertUsing<JsonToClassConverter<List<PhotosForAccountsDto>>, string?>(from => from.Photos))
                 .ForMember(to => to.Hobbies, from => from.ConvertUsing<JsonToClassConverter<List<HobbiesDto>>, string?>(from => from.Hobbies))
                 .ForMember(to => to.Relations, from => from.ConvertUsing<JsonToClassConverter<List<RelationsForAccountsDto>>, string?>(from => from.Relations))
-                .ForMember(to => to.Schedules, from => from.ConvertUsing<JsonToClassConverter<List<SchedulesForAccountsDto>>, string?>(from => from.Schedules))
-                .ForMember(to => to.Informing, from => from.ConvertUsing<StringToInformingConverter, string>(from => from.Informing));
+                .ForMember(to => to.Schedules, from => from.ConvertUsing<JsonToClassConverter<List<SchedulesForAccountsDto>>, string?>(from => from.Schedules));
 
             CreateMap<CountriesViewEntity, CountriesViewDto>()
                 .ForMember(to => to.Regions, from => from.ConvertUsing<JsonToClassConverter<List<RegionsDto>>, string?>(from => from.Regions));

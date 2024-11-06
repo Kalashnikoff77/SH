@@ -16,18 +16,18 @@ namespace UI.Components.Pages.Account
                 { 1, new TabPanel
                     {
                         Items = new Dictionary<string, bool>
-                    {
-                        { nameof(accountRequestDto.Name), false },
-                        { nameof(accountRequestDto.Email), false },
-                        { nameof(accountRequestDto.Password), false },
-                        { nameof(accountRequestDto.Password2), false },
-                        { nameof(accountRequestDto.Country), false },
-                        { nameof(accountRequestDto.Country.Region), false }
-                    }
+                        {
+                            { nameof(AccountRequestDto.Name), false },
+                            { nameof(AccountRequestDto.Email), false },
+                            { nameof(AccountRequestDto.Password), false },
+                            { nameof(AccountRequestDto.Password2), false },
+                            { nameof(AccountRequestDto.Country), false },
+                            { nameof(AccountRequestDto.Country.Region), false }
+                        }
                     }
                 },
-                { 2, new TabPanel { Items = new Dictionary<string, bool> { { nameof(accountRequestDto.Users), false } } } },
-                { 3, new TabPanel { Items = new Dictionary<string, bool> { { nameof(accountRequestDto.Hobbies), false } } } },
+                { 2, new TabPanel { Items = new Dictionary<string, bool> { { nameof(AccountRequestDto.Users), false } } } },
+                { 3, new TabPanel { Items = new Dictionary<string, bool> { { nameof(AccountRequestDto.Hobbies), false } } } },
                 { 4, new TabPanel { Items = new Dictionary<string, bool> { { "Photos", false } } } }
             };
 
@@ -35,10 +35,10 @@ namespace UI.Components.Pages.Account
             countries = apiCountriesResponse.Response.Countries;
 
             var apiHobbiesResponse = await _repoGetHobbies.HttpPostAsync(new GetHobbiesRequestDto());
-            hobbies = apiHobbiesResponse.Response.Hobbies;
+            Hobbies = apiHobbiesResponse.Response.Hobbies;
 
             // TODO УДАЛИТЬ ЗНАЧЕНИЯ ПО УМОЛЧАНИЮ (OK)
-            accountRequestDto = new RegisterAccountRequestDto
+            AccountRequestDto = new RegisterAccountRequestDto
             {
                 Name = "Олег и Марина Мск2",
                 Email = "olegmar@mail.ru",
@@ -55,25 +55,25 @@ namespace UI.Components.Pages.Account
 
         async void SubmitAsync()
         {
-            accountRequestDto.ErrorMessage = null;
-            processingAccount = true;
+            AccountRequestDto.ErrorMessage = null;
+            ProcessingAccount = true;
             StateHasChanged();
 
-            var response = await _repoRegister.HttpPostAsync((RegisterAccountRequestDto)accountRequestDto);
+            var response = await _repoRegister.HttpPostAsync((RegisterAccountRequestDto)AccountRequestDto);
 
             if (response.StatusCode != HttpStatusCode.OK)
             {
-                accountRequestDto.ErrorMessage = response.Response.ErrorMessage;
-                processingAccount = false;
+                AccountRequestDto.ErrorMessage = response.Response.ErrorMessage;
+                ProcessingAccount = false;
                 StateHasChanged();
             }
             else
             {
                 LoginRequestDto loginRequestDto = new LoginRequestDto
                 {
-                    Email = accountRequestDto.Email,
-                    Password = accountRequestDto.Password,
-                    Remember = accountRequestDto.Remember
+                    Email = AccountRequestDto.Email,
+                    Password = AccountRequestDto.Password,
+                    Remember = AccountRequestDto.Remember
                 };
 
                 var apiResponse = await _repoLogin.HttpPostAsync(loginRequestDto);
@@ -92,7 +92,7 @@ namespace UI.Components.Pages.Account
                 }
                 else
                 {
-                    accountRequestDto.ErrorMessage = apiResponse.Response.ErrorMessage;
+                    AccountRequestDto.ErrorMessage = apiResponse.Response.ErrorMessage;
                     StateHasChanged();
                 }
             }

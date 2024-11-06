@@ -2,6 +2,7 @@
 using Common.Extensions;
 using Common.Models;
 using Common.Models.States;
+using MudBlazor;
 using System.Net;
 using UI.Models;
 
@@ -16,18 +17,18 @@ namespace UI.Components.Pages.Account
                 { 1, new TabPanel
                     {
                         Items = new Dictionary<string, bool>
-                    {
-                        { nameof(accountRequestDto.Name), true },
-                        { nameof(accountRequestDto.Email), true },
-                        { nameof(accountRequestDto.Password), true },
-                        { nameof(accountRequestDto.Password2), true },
-                        { nameof(accountRequestDto.Country), true },
-                        { nameof(accountRequestDto.Country.Region), true }
-                    }
+                        {
+                            { nameof(AccountRequestDto.Name), true },
+                            { nameof(AccountRequestDto.Email), true },
+                            { nameof(AccountRequestDto.Password), true },
+                            { nameof(AccountRequestDto.Password2), true },
+                            { nameof(AccountRequestDto.Country), true },
+                            { nameof(AccountRequestDto.Country.Region), true }
+                        }
                     }
                 },
-                { 2, new TabPanel { Items = new Dictionary<string, bool> { { nameof(accountRequestDto.Users), true } } } },
-                { 3, new TabPanel { Items = new Dictionary<string, bool> { { nameof(accountRequestDto.Hobbies), true } } } },
+                { 2, new TabPanel { Items = new Dictionary<string, bool> { { nameof(AccountRequestDto.Users), true } } } },
+                { 3, new TabPanel { Items = new Dictionary<string, bool> { { nameof(AccountRequestDto.Hobbies), true } } } },
                 { 4, new TabPanel { Items = new Dictionary<string, bool> { { "Photos", true } } } }
             };
 
@@ -35,46 +36,49 @@ namespace UI.Components.Pages.Account
             countries = apiCountriesResponse.Response.Countries;
 
             var apiHobbiesResponse = await _repoGetHobbies.HttpPostAsync(new GetHobbiesRequestDto());
-            hobbies = apiHobbiesResponse.Response.Hobbies;
+            Hobbies = apiHobbiesResponse.Response.Hobbies;
         }
 
         protected override async Task OnParametersSetAsync()
         {
             if (CurrentState.Account != null && isFirstSetParameters)
             {
-                accountRequestDto = CurrentState.Account.DeepCopy<UpdateAccountRequestDto>()!;
+                AccountRequestDto = CurrentState.Account.DeepCopy<UpdateAccountRequestDto>()!;
+                AccountRequestDto.Password2 = AccountRequestDto.Password; // Дубликат пароля для формы
 
                 countryText = CurrentState.Account.Country!.Name;
                 regionText = CurrentState.Account.Country!.Region.Name;
 
                 var storage = await _protectedLocalStore.GetAsync<LoginRequestDto>(nameof(LoginRequestDto));
                 if (storage.Success)
-                    accountRequestDto.Remember = true;
+                    AccountRequestDto.Remember = true;
 
                 isFirstSetParameters = false;
             }
+
+            NameIconColor = EmailIconColor = PasswordIconColor = Password2IconColor = CountryIconColor = RegionIconColor = Color.Success;
         }
 
 
         async void SubmitAsync()
         {
-            accountRequestDto.ErrorMessage = null;
-            processingAccount = true;
+            AccountRequestDto.ErrorMessage = null;
+            ProcessingAccount = true;
             StateHasChanged();
 
-            var response = await _repoUpdate.HttpPostAsync((UpdateAccountRequestDto)accountRequestDto);
+            var response = await _repoUpdate.HttpPostAsync((UpdateAccountRequestDto)AccountRequestDto);
 
             if (response.StatusCode != HttpStatusCode.OK)
             {
-                accountRequestDto.ErrorMessage = response.Response.ErrorMessage;
+                AccountRequestDto.ErrorMessage = response.Response.ErrorMessage;
             }
             else
             {
                 LoginRequestDto loginRequestDto = new LoginRequestDto
                 {
-                    Email = accountRequestDto.Email,
-                    Password = accountRequestDto.Password,
-                    Remember = accountRequestDto.Remember
+                    Email = AccountRequestDto.Email,
+                    Password = AccountRequestDto.Password,
+                    Remember = AccountRequestDto.Remember
                 };
 
                 var apiResponse = await _repoLogin.HttpPostAsync(loginRequestDto);
@@ -89,15 +93,15 @@ namespace UI.Components.Pages.Account
                     else
                         await _protectedSessionStore.SetAsync(nameof(LoginRequestDto), loginRequestDto);
 
-                    isDataSaved = true;
+                    IsDataSaved = true;
                 }
                 else
                 {
-                    accountRequestDto.ErrorMessage = apiResponse.Response.ErrorMessage;
+                    AccountRequestDto.ErrorMessage = apiResponse.Response.ErrorMessage;
                 }
             }
 
-            processingAccount = false;
+            ProcessingAccount = false;
             CurrentState.StateHasChanged();
         }
     }

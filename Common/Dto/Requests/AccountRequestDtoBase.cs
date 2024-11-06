@@ -11,7 +11,7 @@
         public string Password { get; set; } = null!;
         public string Password2 { get; set; } = null!;
 
-        public Informing Informing { get; set; } = null!;
+        public string Informing { get; set; } = null!;
 
         public CountriesDto Country { get; set; } = new CountriesDto();
 

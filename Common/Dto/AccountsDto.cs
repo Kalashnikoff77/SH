@@ -10,7 +10,7 @@
 
         public string? Password { get; set; }
 
-        public Informing Informing { get; set; } = null!;
+        public string Informing { get; set; } = null!;
 
         public bool? IsConfirmed { get; set; }
 

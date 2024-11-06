@@ -80,10 +80,10 @@ namespace WebAPI.Extensions
             var sql = $"UPDATE Accounts SET " +
                 $"{nameof(AccountsEntity.Email)} = @{nameof(request.Email)}, " +
                 $"{nameof(AccountsEntity.Name)} = @{nameof(request.Name)}, " +
-                $"{nameof(AccountsEntity.Informing)} = @informing, " +
+                $"{nameof(AccountsEntity.Informing)} = @{nameof(AccountsEntity.Informing)}, " +
                 $"{nameof(AccountsEntity.RegionId)} = @{nameof(AccountsEntity.RegionId)} " +
                 "WHERE Id = @AccountId";
-            await unitOfWork.SqlConnection.ExecuteAsync(sql, new { request.Email, request.Name, informing = JsonSerializer.Serialize(request.Informing), RegionId = request.Country.Region.Id, unitOfWork.AccountId }, transaction: unitOfWork.SqlTransaction);
+            await unitOfWork.SqlConnection.ExecuteAsync(sql, new { request.Email, request.Name, request.Informing, RegionId = request.Country.Region.Id, unitOfWork.AccountId }, transaction: unitOfWork.SqlTransaction);
         }
 
         public static async Task UpdateUsersAsync(this UpdateAccountRequestDto request, UnitOfWork unitOfWork)

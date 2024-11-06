@@ -16,21 +16,21 @@
         </MudGrid>
         <MudGrid>
             <MudItem sm="6" xs="12">
-                <MudTextField @bind-Value="Data.AccountRequestDto.Password" Validation="@(new Func<string, string?>(Data.PasswordValidator))" AdornmentColor="@Data.PasswordIconColor" HelperText="Длина от 4 до 35 символов" Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Outlined.Lock" Label="Пароль" Typo="Typo.body1" Margin="Margin.Normal" Variant="Variant.Text" MaxLength="StaticData.DB_ACCOUNTS_PASSWORD_MAX" />
+                <MudTextField @bind-Value="Data.Password" Validation="@(new Func<string, string?>(Data.PasswordValidator))" AdornmentColor="@Data.PasswordIconColor" HelperText="Длина от 4 до 35 символов" Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Outlined.Lock" Label="Пароль" Typo="Typo.body1" Margin="Margin.Normal" Variant="Variant.Text" MaxLength="StaticData.DB_ACCOUNTS_PASSWORD_MAX" />
             </MudItem>
             <MudItem sm="6" xs="12">
-                <MudTextField @bind-Value="Data.AccountRequestDto.Password2" Validation="@(new Func<string, string?>(Data.Password2Validator))" AdornmentColor="@Data.Password2IconColor" HelperText="Повторите тот же пароль" Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Outlined.Lock" Label="Повтор пароля" Typo="Typo.body1" Margin="Margin.Normal" Variant="Variant.Text" MaxLength="StaticData.DB_ACCOUNTS_PASSWORD_MAX" />
+                <MudTextField @bind-Value="Data.Password2" Validation="@(new Func<string, string?>(Data.Password2Validator))" AdornmentColor="@Data.Password2IconColor" HelperText="Повторите тот же пароль" Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Outlined.Lock" Label="Повтор пароля" Typo="Typo.body1" Margin="Margin.Normal" Variant="Variant.Text" MaxLength="StaticData.DB_ACCOUNTS_PASSWORD_MAX" />
             </MudItem>
         </MudGrid>
         <MudGrid>
             <MudItem sm="6" xs="12">
                 <MudStack Spacing="0" Class="mt-2">
-                    <MudAutocomplete AdornmentIcon="@Icons.Material.Outlined.LocationOn" AdornmentColor="@Data.CountryIconColor" Validation="@(new Func<string, string?>(Data.CountryValidator))" T="string" Label="Страна" @bind-Value="Data.countryText" SearchFunc="@Data.SearchCountryAsync" ResetValueOnEmptyText="true" CoerceText="true" CoerceValue="false" />
+                    <MudAutocomplete AdornmentIcon="@Icons.Material.Outlined.LocationOn" AdornmentColor="@Data.CountryIconColor" Validation="@(new Func<string, string?>(Data.CountryValidator))" T="string" Label="Страна" @bind-Value="Data.CountryText" SearchFunc="@Data.SearchCountryAsync" ResetValueOnEmptyText="true" CoerceText="true" CoerceValue="false" />
                 </MudStack>
             </MudItem>
             <MudItem sm="6" xs="12">
                 <MudStack Spacing="0" Class="mt-2">
-                    <MudAutocomplete AdornmentIcon="@Icons.Material.Outlined.LocationOn" AdornmentColor="@Data.RegionIconColor" Validation="@(new Func<string, string?>(Data.RegionValidator))" T="string" Label="Регион" @bind-Value="Data.regionText" SearchFunc="@Data.SearchRegionAsync" ResetValueOnEmptyText="true" CoerceText="true" CoerceValue="false" Disabled="Data.countryText == null ? true : false" />
+                    <MudAutocomplete AdornmentIcon="@Icons.Material.Outlined.LocationOn" AdornmentColor="@Data.RegionIconColor" Validation="@(new Func<string, string?>(Data.RegionValidator))" T="string" Label="Регион" @bind-Value="Data.RegionText" SearchFunc="@Data.SearchRegionAsync" ResetValueOnEmptyText="true" CoerceText="true" CoerceValue="false" Disabled="Data.CountryText == null ? true : false" />
                 </MudStack>
             </MudItem>
         </MudGrid>

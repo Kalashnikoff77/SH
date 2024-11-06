@@ -60,7 +60,7 @@ namespace UI.Components.Pages.Account
 
         #region /// ШАГ 1: ОБЩЕЕ ///
         string? _countryText;
-        public string? countryText
+        public string? CountryText
         {
             get => _countryText;
             set
@@ -75,12 +75,12 @@ namespace UI.Components.Pages.Account
                     }
                 }
                 _countryText = value;
-                _regionText = null;
+                RegionText = null;
             }
         }
 
         string? _regionText;
-        public string? regionText
+        public string? RegionText
         {
             get => _regionText;
             set
@@ -154,6 +154,15 @@ namespace UI.Components.Pages.Account
         }
 
         public Color PasswordIconColor = Color.Default;
+        public string? Password
+        {
+            get => AccountRequestDto.Password;
+            set
+            {
+                AccountRequestDto.Password = value!;
+                Password2 = null;
+            }
+        }
         public string? PasswordValidator(string password)
         {
             string? errorMessage = null;
@@ -165,6 +174,11 @@ namespace UI.Components.Pages.Account
         }
 
         public Color Password2IconColor = Color.Default;
+        public string? Password2
+        {
+            get => AccountRequestDto.Password2;
+            set => AccountRequestDto.Password2 = value!;
+        }
         public string? Password2Validator(string password2)
         {
             string? errorMessage = null;
@@ -175,15 +189,17 @@ namespace UI.Components.Pages.Account
             return errorMessage;
         }
 
+
         public Color CountryIconColor = Color.Default;
         public string? CountryValidator(string country)
         {
             string? errorMessage = null;
-            if (string.IsNullOrWhiteSpace(countryText))
+            if (string.IsNullOrWhiteSpace(CountryText))
                 errorMessage = $"Выберите страну";
 
             // Сбросим в false регион
             TabPanels[1].Items[nameof(AccountRequestDto.Country.Region)] = false;
+            RegionText = null;
             RegionIconColor = Color.Default;
 
             CheckPanel1Properties(errorMessage, nameof(AccountRequestDto.Country), ref CountryIconColor);
@@ -194,7 +210,7 @@ namespace UI.Components.Pages.Account
         public string? RegionValidator(string region)
         {
             string? errorMessage = null;
-            if (string.IsNullOrWhiteSpace(regionText))
+            if (string.IsNullOrWhiteSpace(RegionText))
                 errorMessage = $"Выберите регион";
 
             CheckPanel1Properties(errorMessage, nameof(AccountRequestDto.Country.Region), ref RegionIconColor);

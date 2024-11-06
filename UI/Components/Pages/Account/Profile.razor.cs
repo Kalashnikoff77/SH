@@ -46,17 +46,17 @@ namespace UI.Components.Pages.Account
                 AccountRequestDto = CurrentState.Account.DeepCopy<UpdateAccountRequestDto>()!;
                 AccountRequestDto.Password2 = AccountRequestDto.Password; // Дубликат пароля для формы
 
-                countryText = CurrentState.Account.Country!.Name;
-                regionText = CurrentState.Account.Country!.Region.Name;
+                CountryText = CurrentState.Account.Country!.Name;
+                RegionText = CurrentState.Account.Country!.Region.Name;
 
                 var storage = await _protectedLocalStore.GetAsync<LoginRequestDto>(nameof(LoginRequestDto));
                 if (storage.Success)
                     AccountRequestDto.Remember = true;
 
+                NameIconColor = EmailIconColor = PasswordIconColor = Password2IconColor = CountryIconColor = RegionIconColor = Color.Success;
+
                 isFirstSetParameters = false;
             }
-
-            NameIconColor = EmailIconColor = PasswordIconColor = Password2IconColor = CountryIconColor = RegionIconColor = Color.Success;
         }
 
 

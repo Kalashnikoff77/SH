@@ -91,14 +91,12 @@ namespace WebAPI.Extensions
 
         public static async Task<int> AddAccountAsync(this RegisterAccountRequestDto request, UnitOfWork unitOfWork)
         {
-            string Informing = JsonSerializer.Serialize(request.Informing);
-
             var sql = "INSERT INTO Accounts " +
                 $"({nameof(AccountsEntity.Email)}, {nameof(AccountsEntity.Name)}, {nameof(AccountsEntity.Password)}, {nameof(AccountsEntity.Informing)}, {nameof(AccountsEntity.RegionId)}) " +
                 "VALUES " +
                 $"(@{nameof(AccountsEntity.Email)}, @{nameof(AccountsEntity.Name)}, @{nameof(AccountsEntity.Password)}, @{nameof(AccountsEntity.Informing)}, @{nameof(AccountsEntity.RegionId)}) " +
                 "SELECT CAST(SCOPE_IDENTITY() AS INT)";
-            var newAccountId = await unitOfWork.SqlConnection.QuerySingleAsync<int>(sql, new { request.Email, request.Name, request.Password, Informing, RegionId = request.Country.Region.Id }, 
+            var newAccountId = await unitOfWork.SqlConnection.QuerySingleAsync<int>(sql, new { request.Email, request.Name, request.Password, request.Informing, RegionId = request.Country.Region.Id }, 
                 transaction: unitOfWork.SqlTransaction);
 
             return newAccountId;

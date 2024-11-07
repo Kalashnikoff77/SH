@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
 using Microsoft.AspNetCore.Components.Web;
 using MudBlazor;
+using System.Text.Json;
 using System.Text.RegularExpressions;
 using UI.Components.Dialogs;
 using UI.Models;
@@ -48,9 +49,10 @@ namespace UI.Components.Pages.Account
         protected List<RegionsDto>? regions { get; set; } = null;
 
         public AccountRequestDtoBase AccountRequestDto { get; set; } = null!;
-
         public List<HobbiesDto> Hobbies { get; set; } = null!;
         public bool ProcessingAccount, ProcessingPhoto, IsDataSaved = false;
+
+        public Informing Informing = new Informing();
 
         public bool IsPanel1Valid => TabPanels[1].Items.All(x => x.Value == true);
         public bool IsPanel2Valid => TabPanels[2].Items.All(x => x.Value == true);

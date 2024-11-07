@@ -1,9 +1,11 @@
-﻿using Common.Dto.Requests;
+﻿using Common.Dto;
+using Common.Dto.Requests;
 using Common.Extensions;
 using Common.Models;
 using Common.Models.States;
 using MudBlazor;
 using System.Net;
+using System.Text.Json;
 using UI.Models;
 
 namespace UI.Components.Pages.Account
@@ -46,6 +48,8 @@ namespace UI.Components.Pages.Account
                 AccountRequestDto = CurrentState.Account.DeepCopy<UpdateAccountRequestDto>()!;
                 AccountRequestDto.Password2 = AccountRequestDto.Password; // Дубликат пароля для формы
 
+                Informing = JsonSerializer.Deserialize<Informing>(AccountRequestDto.Informing)!;
+
                 CountryText = CurrentState.Account.Country!.Name;
                 RegionText = CurrentState.Account.Country!.Region.Name;
 
@@ -65,6 +69,8 @@ namespace UI.Components.Pages.Account
             AccountRequestDto.ErrorMessage = null;
             ProcessingAccount = true;
             StateHasChanged();
+
+            AccountRequestDto.Informing = JsonSerializer.Serialize(Informing);
 
             var response = await _repoUpdate.HttpPostAsync((UpdateAccountRequestDto)AccountRequestDto);
 

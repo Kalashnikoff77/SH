@@ -46,6 +46,23 @@
                 }
             </MudSelect>
         </MudItem>
+
+        <MudItem xs="6" md="4" Style="padding-top:10px">
+            <MudStack Spacing="0" title="Показывать мероприятия только моего региона">
+                <MudSwitch @bind-Value="CurrentState.BrowserState.IsMyRegionEvents" Label="Мой регион" Color="Color.Primary" />
+            </MudStack>
+        </MudItem>
+        <MudItem xs="6" md="4" Style="padding-top:10px">
+            <MudStack Spacing="0" title="Показывать ближайшие мероприятия">
+                <MudSwitch @bind-Value="CurrentState.BrowserState.IsNearestEvents" Label="Ближайшие" Color="Color.Primary" />
+            </MudStack>
+        </MudItem>
+        <MudItem xs="6" md="4" Style="padding-top:10px">
+            <MudStack Spacing="0" title="Показывать прошедшие мероприятия">
+                <MudSwitch @bind-Value="CurrentState.BrowserState.IsPreviousEvents" Label="Прошедшие" Color="Color.Primary" />
+            </MudStack>
+        </MudItem>
+
     </MudGrid>
 
 

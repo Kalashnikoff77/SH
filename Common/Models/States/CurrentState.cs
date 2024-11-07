@@ -23,6 +23,11 @@ namespace Common.Models.States
         /// </summary>
         public bool IsAccountLoggedIn { get; set; }
 
+        /// <summary>
+        /// Состояние, хранящееся в браузере (обычно параметры)
+        /// </summary>
+        public BrowserState BrowserState { get; set; } = new BrowserState();
+
         public event Action? OnChange;
         public IJSRuntime JS { get; set; } = null!;
 

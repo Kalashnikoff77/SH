@@ -26,28 +26,58 @@ namespace UI.Components.Pages.Events
 
         [Inject] protected IDialogService DialogService { get; set; } = null!;
 
-        List<CountriesViewDto> countries { get; set; } = null!;
-        List<RegionsDto>? regions { get; set; } = new List<RegionsDto>();
-
-        protected bool processingPhoto, processingEvent, isDataSaved = false;
+        public bool processingPhoto, processingEvent, isDataSaved = false;
+        protected List<CountriesViewDto> countries { get; set; } = null!;
+        protected List<RegionsDto>? regions { get; set; } = new List<RegionsDto>();
 
         protected Dictionary<short, TabPanel> TabPanels { get; set; } = null!;
-        protected bool IsPanel1Valid, IsPanel2Valid, IsPanel3Valid, isValid;
+        public bool IsPanel1Valid, IsPanel2Valid, IsPanel3Valid;
 
         [Parameter] public int? EventId { get; set; }
 
-        EventsViewDto Event = new EventsViewDto()
-        {
-            Name = "Название мероприятия в клубе",
-            Description = "Длинное описание, которое должно быть более пятидесяти символов в длину, иначе не прокатит",
-            Address = "МО, пос. Каменка, д. 12",
-            MaxPairs = 10,
-            MaxMen = 5,
-            MaxWomen = 15
-        };
+        public EventsViewDto Event = null!;
 
 
         #region /// 1. ОБЩЕЕ ///
+        string? _countryText;
+        public string? CountryText
+        {
+            get => _countryText;
+            set
+            {
+                if (value != null && countries.Any())
+                {
+                    var country = countries.Where(c => c.Name == value).FirstOrDefault();
+                    if (country != null)
+                    {
+                        if (Event.Country == null)
+                            Event.Country = new CountriesDto();
+                        Event.Country.Id = country.Id;
+                        regions = country.Regions;
+                    }
+                }
+                _countryText = value;
+                RegionText = null;
+            }
+        }
+
+        string? _regionText;
+        public string? RegionText
+        {
+            get => _regionText;
+            set
+            {
+                if (value != null && countries.Any() && regions != null)
+                {
+                    var region = regions.Where(c => c.Name == value).FirstOrDefault();
+                    if (region != null)
+                        Event.Country!.Region.Id = region.Id;
+                }
+                _regionText = value;
+            }
+        }
+
+
         public Color NameIconColor = Color.Default;
         public async Task<string?> NameValidator(string? text)
         {
@@ -82,11 +112,13 @@ namespace UI.Components.Pages.Events
         public string? CountryValidator(string country)
         {
             string? errorMessage = null;
-            if (string.IsNullOrWhiteSpace(countryText))
+            if (string.IsNullOrWhiteSpace(CountryText))
                 errorMessage = $"Выберите страну";
 
             // Сбросим в false регион
             TabPanels[1].Items[nameof(Event.Country.Region)] = false;
+            RegionText = null;
+            RegionIconColor = Color.Default;
 
             CheckPanel1Properties(errorMessage, nameof(Event.Country), ref CountryIconColor);
             return errorMessage;
@@ -96,7 +128,7 @@ namespace UI.Components.Pages.Events
         public string? RegionValidator(string region)
         {
             string? errorMessage = null;
-            if (string.IsNullOrWhiteSpace(regionText))
+            if (string.IsNullOrWhiteSpace(RegionText))
                 errorMessage = $"Выберите регион";
 
             CheckPanel1Properties(errorMessage, nameof(Event.Country.Region), ref RegionIconColor);
@@ -131,48 +163,6 @@ namespace UI.Components.Pages.Events
             return regions?.Select(s => s.Name)
                 .Where(x => x.Contains(value, StringComparison.InvariantCultureIgnoreCase));
         }
-
-
-        string? _countryText;
-        public string? countryText
-        {
-            get => _countryText;
-            set
-            {
-                if (value != null)
-                {
-                    var country = countries.Where(c => c.Name == value)?.First();
-                    if (country != null)
-                    {
-                        if (Event.Country == null)
-                            Event.Country = new CountriesDto();
-                        Event.Country.Id = country.Id;
-                        regions = countries
-                            .Where(x => x.Id == country.Id).FirstOrDefault()?
-                            .Regions?.Select(s => s).ToList();
-                    }
-                }
-                _countryText = value;
-                _regionText = null;
-            }
-        }
-
-        string? _regionText;
-        public string? regionText
-        {
-            get => _regionText;
-            set
-            {
-                if (value != null && regions != null)
-                {
-                    var region = regions.Where(c => c.Name == value)?.First();
-                    if (region != null)
-                        Event.Country!.Region.Id = region.Id;
-                }
-                _regionText = value;
-            }
-        }
-
 
         public Color MaxPairsIconColor = Color.Default;
         public string? MaxPairsValidator(short? num)
@@ -365,7 +355,7 @@ namespace UI.Components.Pages.Events
         #endregion
 
 
-        void CheckPanelsVisibility()
+        protected void CheckPanelsVisibility()
         {
             IsPanel1Valid = TabPanels[1].Items.All(x => x.Value == true);
             IsPanel2Valid = TabPanels[2].Items.All(x => x.Value == true);

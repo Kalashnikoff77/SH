@@ -82,10 +82,19 @@ namespace WebAPI.Controllers
 
                 if (response.Count > 0)
                 {
-                    var sql = $"SELECT {columns.Aggregate((a, b) => a + ", " + b)} " +
-                        $"FROM SchedulesForEventsView WHERE Id IN ({string.Join(",", ids)}) " +
-                        $"ORDER BY {nameof(SchedulesForEventsViewDto.StartDate)} " +
-                        $"OFFSET {request.Skip} ROWS FETCH NEXT {request.Take} ROWS ONLY";
+                    string sql;
+                    if (request.IsActualEvents)
+                        sql = $"SELECT {columns.Aggregate((a, b) => a + ", " + b)} " +
+                            $"FROM SchedulesForEventsView " +
+                            $"WHERE Id IN ({string.Join(",", ids)}) AND {nameof(SchedulesForEventsViewDto.EndDate)} > getdate() " +
+                            $"ORDER BY {nameof(SchedulesForEventsViewDto.StartDate)} " +
+                            $"OFFSET {request.Skip} ROWS FETCH NEXT {request.Take} ROWS ONLY";
+                    else
+                        sql = $"SELECT {columns.Aggregate((a, b) => a + ", " + b)} " +
+                            $"FROM SchedulesForEventsView " +
+                            $"WHERE Id IN ({string.Join(",", ids)}) AND {nameof(SchedulesForEventsViewDto.EndDate)} < getdate() " +
+                            $"ORDER BY {nameof(SchedulesForEventsViewDto.EndDate)} DESC " +
+                            $"OFFSET {request.Skip} ROWS FETCH NEXT {request.Take} ROWS ONLY";
                     var result = await _unitOfWork.SqlConnection.QueryAsync<SchedulesForEventsViewEntity>(sql);
                     response.Schedules = _mapper.Map<List<SchedulesForEventsViewDto>>(result);
                 }

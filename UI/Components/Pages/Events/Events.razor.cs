@@ -33,6 +33,11 @@ namespace UI.Components.Pages.Events
 
         MudCarousel<PhotosForEventsDto> Carousel = null!;
 
+        /// <summary>
+        /// Для предотвращения повторного выполнения OnParametersSet (выполняется при переходе на другую ссылку)
+        /// </summary>
+        protected bool isFirstSetParameters = true;
+
         IDisposable? OnScheduleChangedHandler;
 
         #region Фильтр региона
@@ -44,6 +49,20 @@ namespace UI.Components.Pages.Events
             {
                 _selectedRegions = value;
                 request.RegionsIds = _selectedRegions.Select(s => s.Id);
+                dataGrid.ReloadServerData();
+            }
+        }
+        #endregion
+
+        #region Переключатель актуальных мероприятий
+        string actualEventsLabel = "Актуальные мероприятия";
+        bool isFinishedEvents
+        {
+            get => request.IsActualEvents;
+            set
+            {
+                request.IsActualEvents = value;
+                actualEventsLabel = value ? "Актуальные мероприятия" : "Завершённые мероприятия";
                 dataGrid.ReloadServerData();
             }
         }
@@ -64,11 +83,12 @@ namespace UI.Components.Pages.Events
         protected override void OnParametersSet()
         {
             // Установим фильтр региона согласно данным учётки пользователя
-            if (CurrentState.Account?.Country?.Region != null)
+            if (CurrentState.Account?.Country?.Region != null && isFirstSetParameters)
             {
                 var accountRegion = RegionsList.FirstOrDefault(w => w.Id == CurrentState.Account.Country.Region.Id);
                 if (accountRegion != null)
                     selectedRegions = new HashSet<RegionsForEventsViewDto>() { accountRegion };
+                isFirstSetParameters = false;
             }
         }
 

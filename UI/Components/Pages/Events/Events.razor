@@ -49,7 +49,7 @@
 
         <MudItem xs="12" Style="padding-top:10px">
             <MudStack Spacing="0" AlignItems="AlignItems.End">
-                <MudSwitch @bind-Value="CurrentState.BrowserState.IsPreviousEvents" Label="Завершённые мероприятия" Color="Color.Primary" />
+                <MudSwitch Size="Size.Small" @bind-Value="isFinishedEvents" Label="@actualEventsLabel" Color="Color.Primary" />
             </MudStack>
         </MudItem>
 

@@ -18,6 +18,7 @@ namespace UI.Components.Pages.Events
         [Inject] IRepository<GetFeaturesForEventsRequestDto, GetFeaturesForEventsResponseDto> _repoGetFeatures { get; set; } = null!;
         [Inject] IRepository<GetRegionsForEventsRequestDto, GetRegionsForEventsResponseDto> _repoGetRegions { get; set; } = null!;
         [Inject] IRepository<GetAdminsForEventsRequestDto, GetAdminsForEventsResponseDto> _repoGetAdmins { get; set; } = null!;
+        [Inject] IRepository<GetCountriesRequestDto, GetCountriesResponseDto> _repoGetCountries { get; set; } = null!;
 
         [Inject] ShowDialogs ShowDialogs { get; set; } = null!;
 
@@ -34,6 +35,20 @@ namespace UI.Components.Pages.Events
 
         IDisposable? OnScheduleChangedHandler;
 
+        #region Фильтр региона
+        IEnumerable<RegionsForEventsViewDto> _selectedRegions = null!;
+        IEnumerable<RegionsForEventsViewDto> selectedRegions
+        {
+            get => _selectedRegions;
+            set
+            {
+                _selectedRegions = value;
+                request.RegionsIds = _selectedRegions.Select(s => s.Id);
+                dataGrid.ReloadServerData();
+            }
+        }
+        #endregion
+
         protected override async Task OnInitializedAsync()
         {
             var featuresResponse = await _repoGetFeatures.HttpPostAsync(new GetFeaturesForEventsRequestDto());
@@ -44,6 +59,17 @@ namespace UI.Components.Pages.Events
 
             var adminsResponse = await _repoGetAdmins.HttpPostAsync(new GetAdminsForEventsRequestDto());
             AdminsList = adminsResponse.Response.AdminsForEvents;
+        }
+
+        protected override void OnParametersSet()
+        {
+            // Установим фильтр региона согласно данным учётки пользователя
+            if (CurrentState.Account?.Country?.Region != null)
+            {
+                var accountRegion = RegionsList.FirstOrDefault(w => w.Id == CurrentState.Account.Country.Region.Id);
+                if (accountRegion != null)
+                    selectedRegions = new HashSet<RegionsForEventsViewDto>() { accountRegion };
+            }
         }
 
         protected override void OnAfterRender(bool firstRender)
@@ -93,12 +119,6 @@ namespace UI.Components.Pages.Events
         Task OnFeaturesSelected(IEnumerable<FeaturesDto> selectedItems)
         {
             request.FeaturesIds = selectedItems.Select(s => s.Id);
-            return dataGrid.ReloadServerData();
-        }
-
-        Task OnCountriesSelected(IEnumerable<RegionsForEventsViewDto> selectedItems)
-        {
-            request.RegionsIds = selectedItems.Select(s => s.Id);
             return dataGrid.ReloadServerData();
         }
 

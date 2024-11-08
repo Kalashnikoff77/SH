@@ -19,10 +19,14 @@
         /// </summary>
         public IEnumerable<int>? AdminsIds { get; set; }
 
+        // TODO REMOVE (OK)
         /// <summary>
         /// Мероприятия из каких регионов выводить
         /// </summary>
         public IEnumerable<int>? RegionsIds { get; set; }
+
+        public int? CountryId { get; set; }
+        public int? RegionId { get; set; }
 
         /// <summary>
         /// Мероприятия с какими тегами выводить

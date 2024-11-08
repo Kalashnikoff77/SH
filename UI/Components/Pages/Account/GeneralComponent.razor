@@ -25,12 +25,12 @@
         <MudGrid>
             <MudItem sm="6" xs="12">
                 <MudStack Spacing="0" Class="mt-2">
-                    <MudAutocomplete AdornmentIcon="@Icons.Material.Outlined.LocationOn" AdornmentColor="@Data.CountryIconColor" Validation="@(new Func<string, string?>(Data.CountryValidator))" T="string" Label="Страна" @bind-Value="Data.CountryText" SearchFunc="@Data.SearchCountryAsync" ResetValueOnEmptyText="true" CoerceText="true" CoerceValue="false" />
+                    <MudAutocomplete AdornmentIcon="@Icons.Material.Outlined.LocationOn" AdornmentColor="@Data.CountryIconColor" Validation="@(new Func<string, string?>(Data.CountryValidator))" T="string" Label="Страна" @bind-Value="Data.CountryText" SearchFunc="@Data.SearchCountryAsync" ResetValueOnEmptyText CoerceText CoerceValue="false" />
                 </MudStack>
             </MudItem>
             <MudItem sm="6" xs="12">
                 <MudStack Spacing="0" Class="mt-2">
-                    <MudAutocomplete AdornmentIcon="@Icons.Material.Outlined.LocationOn" AdornmentColor="@Data.RegionIconColor" Validation="@(new Func<string, string?>(Data.RegionValidator))" T="string" Label="Регион" @bind-Value="Data.RegionText" SearchFunc="@Data.SearchRegionAsync" ResetValueOnEmptyText="true" CoerceText="true" CoerceValue="false" Disabled="Data.CountryText == null ? true : false" />
+                    <MudAutocomplete AdornmentIcon="@Icons.Material.Outlined.LocationOn" AdornmentColor="@Data.RegionIconColor" Validation="@(new Func<string, string?>(Data.RegionValidator))" T="string" Label="Регион" @bind-Value="Data.RegionText" SearchFunc="@Data.SearchRegionAsync" ResetValueOnEmptyText CoerceText CoerceValue="false" Disabled="Data.CountryText == null ? true : false" />
                 </MudStack>
             </MudItem>
 

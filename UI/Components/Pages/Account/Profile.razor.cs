@@ -35,7 +35,7 @@ namespace UI.Components.Pages.Account
             };
 
             var apiCountriesResponse = await _repoGetCountries.HttpPostAsync(new GetCountriesRequestDto());
-            countries = apiCountriesResponse.Response.Countries;
+            Countries = apiCountriesResponse.Response.Countries;
 
             var apiHobbiesResponse = await _repoGetHobbies.HttpPostAsync(new GetHobbiesRequestDto());
             Hobbies = apiHobbiesResponse.Response.Hobbies;

@@ -44,8 +44,8 @@ namespace UI.Components.Pages.Account
 
         protected Dictionary<short, TabPanel> TabPanels = new Dictionary<short, TabPanel>();
 
-        protected List<CountriesViewDto> countries { get; set; } = null!;
-        protected List<RegionsDto>? regions { get; set; } = null;
+        protected List<CountriesViewDto> Countries { get; set; } = null!;
+        protected List<RegionsDto>? Regions { get; set; } = null;
 
         public AccountRequestDtoBase AccountRequestDto { get; set; } = null!;
         public List<HobbiesDto> Hobbies { get; set; } = null!;
@@ -66,13 +66,13 @@ namespace UI.Components.Pages.Account
             get => _countryText;
             set
             {
-                if (value != null && countries.Any())
+                if (value != null && Countries.Any())
                 {
-                    var country = countries.Where(c => c.Name == value).FirstOrDefault();
+                    var country = Countries.Where(c => c.Name == value).FirstOrDefault();
                     if (country != null)
                     {
                         AccountRequestDto.Country.Id = country.Id;
-                        regions = country.Regions;
+                        Regions = country.Regions;
                     }
                 }
                 _countryText = value;
@@ -86,9 +86,9 @@ namespace UI.Components.Pages.Account
             get => _regionText;
             set
             {
-                if (value != null && countries.Any() && regions != null)
+                if (value != null && Countries.Any() && Regions != null)
                 {
-                    var region = regions.Where(c => c.Name == value).FirstOrDefault();
+                    var region = Regions.Where(c => c.Name == value).FirstOrDefault();
                     if (region != null)
                         AccountRequestDto.Country.Region.Id = region.Id;
                 }
@@ -237,18 +237,18 @@ namespace UI.Components.Pages.Account
         public async Task<IEnumerable<string>?> SearchCountryAsync(string value, CancellationToken token)
         {
             if (string.IsNullOrWhiteSpace(value))
-                return countries.Select(s => s.Name);
+                return Countries.Select(s => s.Name);
 
-            return countries?.Select(s => s.Name)
+            return Countries?.Select(s => s.Name)
                 .Where(x => x.Contains(value, StringComparison.InvariantCultureIgnoreCase));
         }
 
         public async Task<IEnumerable<string>?> SearchRegionAsync(string value, CancellationToken token)
         {
             if (string.IsNullOrWhiteSpace(value))
-                return regions?.Select(s => s.Name);
+                return Regions?.Select(s => s.Name);
 
-            return regions?.Select(s => s.Name)
+            return Regions?.Select(s => s.Name)
                 .Where(x => x.Contains(value, StringComparison.InvariantCultureIgnoreCase));
         }
         #endregion

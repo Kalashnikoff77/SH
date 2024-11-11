@@ -84,9 +84,13 @@ namespace WebAPI.Controllers
             if (request.Email == null || request.Password == null)
                 return response;
 
-            var sql = $"SELECT TOP 1 * FROM AccountsView " +
-                $"WHERE {nameof(AccountsViewEntity.Email)} = @{nameof(AccountsViewEntity.Email)} AND {nameof(AccountsViewEntity.Password)} = @{nameof(AccountsViewEntity.Password)}";
-            var account = await _unitOfWork.SqlConnection.QueryFirstOrDefaultAsync<AccountsViewEntity>(sql, new { request.Email, request.Password }) ?? throw new NotFoundException("Неверный логин и пароль!");
+            var sql = $"SELECT TOP 1 Id FROM Identities " +
+                $"WHERE {nameof(IdentitiesEntity.Email)} = @{nameof(IdentitiesEntity.Email)} AND {nameof(IdentitiesEntity.Password)} = @{nameof(IdentitiesEntity.Password)}";
+            var id = await _unitOfWork.SqlConnection.QueryFirstOrDefaultAsync<int?>(sql, new { request.Email, request.Password })
+                ?? throw new NotFoundException("Неверный логин / пароль!");
+
+            sql = $"SELECT TOP 1 * FROM AccountsView WHERE Id = @Id";
+            var account = await _unitOfWork.SqlConnection.QueryFirstOrDefaultAsync<AccountsViewEntity>(sql, new { Id = id });
             response.Account = _mapper.Map<AccountsViewDto>(account);
 
             return response;
@@ -101,7 +105,8 @@ namespace WebAPI.Controllers
             var response = new AccountReloadResponseDto();
 
             var sql = $"SELECT TOP 1 * FROM AccountsView WHERE Id = @AccountId";
-            var result = await _unitOfWork.SqlConnection.QueryFirstOrDefaultAsync<AccountsViewEntity>(sql, new { _unitOfWork.AccountId }) ?? throw new NotFoundException($"Аккаунт с Id {_unitOfWork.AccountId} не найден!");
+            var result = await _unitOfWork.SqlConnection.QueryFirstOrDefaultAsync<AccountsViewEntity>(sql, new { _unitOfWork.AccountId }) 
+                ?? throw new NotFoundException($"Аккаунт с Id {_unitOfWork.AccountId} не найден!");
             response.Account = _mapper.Map<AccountsViewDto>(result);
 
             return response;
@@ -122,7 +127,7 @@ namespace WebAPI.Controllers
 
             if (request.AccountEmail != null)
             {
-                var sql = $"SELECT TOP 1 Id FROM Accounts WHERE Email = @AccountEmail";
+                var sql = $"SELECT TOP 1 Id FROM Identities WHERE Email = @AccountEmail";
                 var result = await _unitOfWork.SqlConnection.QueryFirstOrDefaultAsync<int?>(sql, new { request.AccountEmail });
                 response.AccountEmailExists = result == null ? false : true;
             }
@@ -146,7 +151,7 @@ namespace WebAPI.Controllers
 
             if (request.AccountEmail != null)
             {
-                var sql = $"SELECT TOP 1 Id FROM Accounts WHERE Email = @AccountEmail AND Id <> @AccountId";
+                var sql = $"SELECT TOP 1 Id FROM Identites WHERE Email = @AccountEmail AND Id <> @AccountId";
                 var result = await _unitOfWork.SqlConnection.QueryFirstOrDefaultAsync<int?>(sql, new { request.AccountEmail, _unitOfWork.AccountId });
                 response.AccountEmailExists = result == null ? false : true;
             }
@@ -352,7 +357,7 @@ namespace WebAPI.Controllers
 
             var response = new UpdateAccountResponseDto();
 
-            await request.ValidateAsync(_unitOfWork.AccountId!.Value, _unitOfWork.SqlConnection);
+            await request.ValidateAsync(_unitOfWork);
 
             await _unitOfWork.BeginTransactionAsync();
 

@@ -3,8 +3,6 @@ using Common.Models;
 using Dapper;
 using DataContext.Entities;
 using PhotoSauce.MagicScaler;
-using System.Data.Common;
-using System.Text.Json;
 using System.Text.RegularExpressions;
 using WebAPI.Exceptions;
 using WebAPI.Models;
@@ -13,7 +11,7 @@ namespace WebAPI.Extensions
 {
     public static partial class RequestsExtensions
     {
-        public static async Task ValidateAsync(this UpdateAccountRequestDto request, int _accountId, DbConnection conn)
+        public static async Task ValidateAsync(this UpdateAccountRequestDto request, UnitOfWork unitOfWork)
         {
             if (string.IsNullOrWhiteSpace(request.Email))
                 throw new BadRequestException("Укажите Ваш email!");
@@ -66,24 +64,29 @@ namespace WebAPI.Extensions
             if (request.Country == null || request.Country.Region == null || request.Country.Region.Id == 0)
                 throw new BadRequestException("Вы не указали регион проживания!");
 
-            var sql = $"SELECT TOP 1 Id FROM Accounts WHERE Email = @Email AND Id <> @_accountId";
-            if ((await conn.QueryFirstOrDefaultAsync<int?>(sql, new { request.Email, _accountId })) != null)
+            var sql = $"SELECT TOP 1 Id FROM Identities WHERE {nameof(IdentitiesEntity.Email)} = @{nameof(IdentitiesEntity.Email)} AND {nameof(IdentitiesEntity.AccountId)} <> @{nameof(IdentitiesEntity.AccountId)}";
+            if ((await unitOfWork.SqlConnection.QueryFirstOrDefaultAsync<int?>(sql, new { request.Email, unitOfWork.AccountId })) != null)
                 throw new BadRequestException($"Аккаунт с email {request.Email} уже зарегистрирован!");
 
-            sql = $"SELECT TOP 1 Id FROM Accounts WHERE Name = @Name AND Id <> @_accountId";
-            if ((await conn.QueryFirstOrDefaultAsync<int?>(sql, new { request.Name, _accountId })) != null)
+            sql = $"SELECT TOP 1 Id FROM Accounts WHERE {nameof(AccountsEntity.Name)} = @{nameof(AccountsEntity.Name)} AND Id <> @AccountId";
+            if ((await unitOfWork.SqlConnection.QueryFirstOrDefaultAsync<int?>(sql, new { request.Name, unitOfWork.AccountId })) != null)
                 throw new BadRequestException($"Аккаунт с именем {request.Name} уже зарегистрирован!");
         }
 
         public static async Task UpdateAccountAsync(this UpdateAccountRequestDto request, UnitOfWork unitOfWork)
         {
             var sql = $"UPDATE Accounts SET " +
-                $"{nameof(AccountsEntity.Email)} = @{nameof(request.Email)}, " +
                 $"{nameof(AccountsEntity.Name)} = @{nameof(request.Name)}, " +
                 $"{nameof(AccountsEntity.Informing)} = @{nameof(AccountsEntity.Informing)}, " +
                 $"{nameof(AccountsEntity.RegionId)} = @{nameof(AccountsEntity.RegionId)} " +
                 "WHERE Id = @AccountId";
             await unitOfWork.SqlConnection.ExecuteAsync(sql, new { request.Email, request.Name, request.Informing, RegionId = request.Country.Region.Id, unitOfWork.AccountId }, transaction: unitOfWork.SqlTransaction);
+
+            sql = $"UPDATE Identities SET " +
+                $"{nameof(IdentitiesEntity.Email)} = @{nameof(request.Email)}, " +
+                $"{nameof(IdentitiesEntity.Password)} = @{nameof(request.Password)} " +
+                "WHERE Id = @AccountId";
+            await unitOfWork.SqlConnection.ExecuteAsync(sql, new { request.Email, request.Password, unitOfWork.AccountId }, transaction: unitOfWork.SqlTransaction);
         }
 
         public static async Task UpdateUsersAsync(this UpdateAccountRequestDto request, UnitOfWork unitOfWork)
@@ -130,7 +133,7 @@ namespace WebAPI.Extensions
         {
             if (!string.IsNullOrWhiteSpace(request.Password))
             {
-                var sql = $"UPDATE Accounts SET {nameof(AccountsEntity.Password)} = @{nameof(AccountsEntity.Password)} WHERE {nameof(AccountsEntity.Id)} = @AccountId";
+                var sql = $"UPDATE Identities SET {nameof(IdentitiesEntity.Password)} = @{nameof(IdentitiesEntity.Password)} WHERE {nameof(IdentitiesEntity.Id)} = @AccountId";
                 await unitOfWork.SqlConnection.ExecuteAsync(sql, new { Password = request.Password2, unitOfWork.AccountId }, transaction: unitOfWork.SqlTransaction);
             }
         }

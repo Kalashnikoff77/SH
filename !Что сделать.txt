@@ -1,5 +1,10 @@
 Вынести пароль и email в отдельную таблицу
 
+Доделать UpdateAccount из-за вынесенных колонок password и email.
+
 Сохранять фильтры в браузере
 
 Добавить надпись "Не найдено мероприятий по указанным параметрам"
+
+Сделать теги не ручные, а Mud:
+https://mudblazor.com/components/chipset#binding-chips-in-a-selection

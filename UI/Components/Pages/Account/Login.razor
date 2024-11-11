@@ -18,6 +18,11 @@
             </MudStack>
         </MudStack>
 
+        @if (!string.IsNullOrWhiteSpace(errorLogin))
+        {
+            <MudAlert Dense ContentAlignment="HorizontalAlignment.Center" Severity="Severity.Error" Class="mt-3">@errorLogin</MudAlert>
+        }
+
         <MudDivider Class="mt-8" />
 
         <MudStack Row="true" Justify="Justify.SpaceBetween" Class="mt-2">

@@ -75,7 +75,7 @@ namespace WebAPI.Extensions
             var regionId = await unitOfWork.SqlConnection.QueryFirstOrDefaultAsync<int?>(sql, new { request.Country.Region.Id })
                 ?? throw new BadRequestException($"Указанный регион (id: {request.Country.Region.Id}) не найден в базе данных!");
 
-            sql = "SELECT TOP 1 Id FROM Accounts WHERE Email = @Email";
+            sql = "SELECT TOP 1 Id FROM Identities WHERE Email = @Email";
             var resultEmail = await unitOfWork.SqlConnection.QueryFirstOrDefaultAsync<int?>(sql, new { request.Email });
             if (resultEmail != null)
                 throw new BadRequestException($"Аккаунт с email {request.Email} уже зарегистрирован! Укажите другой адрес или запросите пароль на email.");
@@ -92,14 +92,21 @@ namespace WebAPI.Extensions
         public static async Task<int> AddAccountAsync(this RegisterAccountRequestDto request, UnitOfWork unitOfWork)
         {
             var sql = "INSERT INTO Accounts " +
-                $"({nameof(AccountsEntity.Email)}, {nameof(AccountsEntity.Name)}, {nameof(AccountsEntity.Password)}, {nameof(AccountsEntity.Informing)}, {nameof(AccountsEntity.RegionId)}) " +
+                $"({nameof(AccountsEntity.Name)}, {nameof(AccountsEntity.Informing)}, {nameof(AccountsEntity.RegionId)}) " +
                 "VALUES " +
-                $"(@{nameof(AccountsEntity.Email)}, @{nameof(AccountsEntity.Name)}, @{nameof(AccountsEntity.Password)}, @{nameof(AccountsEntity.Informing)}, @{nameof(AccountsEntity.RegionId)}) " +
+                $"(@{nameof(AccountsEntity.Name)}, @{nameof(AccountsEntity.Informing)}, @{nameof(AccountsEntity.RegionId)}) " +
                 "SELECT CAST(SCOPE_IDENTITY() AS INT)";
-            var newAccountId = await unitOfWork.SqlConnection.QuerySingleAsync<int>(sql, new { request.Email, request.Name, request.Password, request.Informing, RegionId = request.Country.Region.Id }, 
+            var AccountId = await unitOfWork.SqlConnection.QuerySingleAsync<int>(sql, new { request.Name, request.Informing, RegionId = request.Country.Region.Id }, 
                 transaction: unitOfWork.SqlTransaction);
 
-            return newAccountId;
+            sql = "INSERT INTO Identities " +
+                $"({nameof(IdentitiesEntity.AccountId)}, {nameof(IdentitiesEntity.Email)}, {nameof(IdentitiesEntity.Password)} " +
+                "VALUES " +
+                $"(@{nameof(IdentitiesEntity.AccountId)}, @{nameof(IdentitiesEntity.Email)}, @{nameof(IdentitiesEntity.Password)})";
+            await unitOfWork.SqlConnection.QuerySingleAsync<int>(sql, new { AccountId, request.Email, request.Password },
+                transaction: unitOfWork.SqlTransaction);
+
+            return AccountId;
         }
 
         public static async Task AddUsersAsync(this RegisterAccountRequestDto request, UnitOfWork unitOfWork)
@@ -116,7 +123,7 @@ namespace WebAPI.Extensions
 
         public static async Task AddHobbiesAsync(this RegisterAccountRequestDto request, UnitOfWork unitOfWork)
         {
-            foreach (var h in request.Hobbies)
+            foreach (var h in request.Hobbies!)
             {
                 var sql = "INSERT INTO HobbiesForAccounts " +
                     $"({nameof(HobbiesForAccountsEntity.AccountId)}, {nameof(HobbiesForAccountsEntity.HobbyId)}) " +

@@ -33,6 +33,9 @@ namespace UI.Components.Pages.Account
 
         async void OnLoginAsync()
         {
+            errorLogin = null;
+            StateHasChanged();
+
             var apiResponse = await _repoLogin.HttpPostAsync(loginRequestDto);
             if (apiResponse.StatusCode == HttpStatusCode.OK)
             {

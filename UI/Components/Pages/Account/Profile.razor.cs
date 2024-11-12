@@ -45,8 +45,12 @@ namespace UI.Components.Pages.Account
         {
             if (CurrentState.Account != null && isFirstSetParameters)
             {
+                var apiIdentityResponse = await _repoGetIdentity.HttpPostAsync(new GetIdentityRequestDto() { Token = CurrentState.Account.Token });
+
                 AccountRequestDto = CurrentState.Account.DeepCopy<UpdateAccountRequestDto>()!;
-                AccountRequestDto.Password2 = AccountRequestDto.Password; // Дубликат пароля для формы
+                AccountRequestDto.Email = apiIdentityResponse.Response.Identity.Email;
+                AccountRequestDto.Password = apiIdentityResponse.Response.Identity.Password;
+                AccountRequestDto.Password2 = apiIdentityResponse.Response.Identity.Password;
 
                 Informing = JsonSerializer.Deserialize<Informing>(AccountRequestDto.Informing)!;
 

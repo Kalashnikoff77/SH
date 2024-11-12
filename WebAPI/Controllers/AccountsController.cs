@@ -112,6 +112,21 @@ namespace WebAPI.Controllers
             return response;
         }
 
+        [Route("GetIdentity"), HttpPost, Authorize]
+        public async Task<GetIdentityResponseDto> GetIdentityAsync(GetIdentityRequestDto request)
+        {
+            AuthenticateUser();
+
+            var response = new GetIdentityResponseDto();
+
+            var sql = $"SELECT TOP 1 * FROM Identities WHERE Id = @AccountId";
+            var result = await _unitOfWork.SqlConnection.QueryFirstOrDefaultAsync<IdentitiesEntity>(sql, new { _unitOfWork.AccountId })
+                ?? throw new NotFoundException($"Аккаунт с Id {_unitOfWork.AccountId} не найден!");
+            response.Identity = _mapper.Map<IdentitiesDto>(result);
+
+            return response;
+        }
+
 
         [Route("CheckRegister"), HttpPost]
         public async Task<AccountCheckRegisterResponseDto> CheckRegisterAsync(AccountCheckRegisterRequestDto request)

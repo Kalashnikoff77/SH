@@ -25,6 +25,7 @@ namespace UI.Components.Pages.Account
         [Inject] protected IRepository<GetCountriesRequestDto, GetCountriesResponseDto> _repoGetCountries { get; set; } = null!;
         [Inject] protected IRepository<GetHobbiesRequestDto, GetHobbiesResponseDto> _repoGetHobbies { get; set; } = null!;
         [Inject] protected IRepository<LoginRequestDto, LoginResponseDto> _repoLogin { get; set; } = null!;
+        [Inject] protected IRepository<GetIdentityRequestDto, GetIdentityResponseDto> _repoGetIdentity { get; set; } = null!;
 
         [Inject] protected ProtectedLocalStorage _protectedLocalStore { get; set; } = null!;
         [Inject] protected ProtectedSessionStorage _protectedSessionStore { get; set; } = null!;

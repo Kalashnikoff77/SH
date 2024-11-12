@@ -84,13 +84,13 @@ namespace WebAPI.Controllers
             if (request.Email == null || request.Password == null)
                 return response;
 
-            var sql = $"SELECT TOP 1 Id FROM Identities " +
+            var sql = $"SELECT TOP 1 * FROM Identities " +
                 $"WHERE {nameof(IdentitiesEntity.Email)} = @{nameof(IdentitiesEntity.Email)} AND {nameof(IdentitiesEntity.Password)} = @{nameof(IdentitiesEntity.Password)}";
-            var id = await _unitOfWork.SqlConnection.QueryFirstOrDefaultAsync<int?>(sql, new { request.Email, request.Password })
+            var identity = await _unitOfWork.SqlConnection.QueryFirstOrDefaultAsync<IdentitiesEntity?>(sql, new { request.Email, request.Password })
                 ?? throw new NotFoundException("Неверный логин / пароль!");
 
-            sql = $"SELECT TOP 1 * FROM AccountsView WHERE Id = @Id";
-            var account = await _unitOfWork.SqlConnection.QueryFirstOrDefaultAsync<AccountsViewEntity>(sql, new { Id = id });
+            sql = $"SELECT TOP 1 * FROM AccountsView WHERE Id = @AccountId";
+            var account = await _unitOfWork.SqlConnection.QueryFirstOrDefaultAsync<AccountsViewEntity>(sql, new { identity.AccountId });
             response.Account = _mapper.Map<AccountsViewDto>(account);
 
             return response;
@@ -119,7 +119,7 @@ namespace WebAPI.Controllers
 
             var response = new GetIdentityResponseDto();
 
-            var sql = $"SELECT TOP 1 * FROM Identities WHERE Id = @AccountId";
+            var sql = $"SELECT TOP 1 * FROM Identities WHERE AccountId = @AccountId";
             var result = await _unitOfWork.SqlConnection.QueryFirstOrDefaultAsync<IdentitiesEntity>(sql, new { _unitOfWork.AccountId })
                 ?? throw new NotFoundException($"Аккаунт с Id {_unitOfWork.AccountId} не найден!");
             response.Identity = _mapper.Map<IdentitiesDto>(result);
@@ -166,7 +166,7 @@ namespace WebAPI.Controllers
 
             if (request.AccountEmail != null)
             {
-                var sql = $"SELECT TOP 1 Id FROM Identites WHERE Email = @AccountEmail AND Id <> @AccountId";
+                var sql = $"SELECT TOP 1 Id FROM Identities WHERE Email = @AccountEmail AND Id <> @AccountId";
                 var result = await _unitOfWork.SqlConnection.QueryFirstOrDefaultAsync<int?>(sql, new { request.AccountEmail, _unitOfWork.AccountId });
                 response.AccountEmailExists = result == null ? false : true;
             }
@@ -357,7 +357,7 @@ namespace WebAPI.Controllers
             await request.AddWishListAsync(_unitOfWork);
 
             // Добавление фото
-            await request.InsertPhotosAsync(_unitOfWork);
+            await request.AddPhotosAsync(_unitOfWork);
 
             await _unitOfWork.CommitTransactionAsync();
 

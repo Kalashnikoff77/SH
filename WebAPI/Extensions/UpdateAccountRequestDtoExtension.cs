@@ -85,7 +85,7 @@ namespace WebAPI.Extensions
             sql = $"UPDATE Identities SET " +
                 $"{nameof(IdentitiesEntity.Email)} = @{nameof(request.Email)}, " +
                 $"{nameof(IdentitiesEntity.Password)} = @{nameof(request.Password)} " +
-                "WHERE Id = @AccountId";
+                "WHERE AccountId = @AccountId";
             await unitOfWork.SqlConnection.ExecuteAsync(sql, new { request.Email, request.Password, unitOfWork.AccountId }, transaction: unitOfWork.SqlTransaction);
         }
 

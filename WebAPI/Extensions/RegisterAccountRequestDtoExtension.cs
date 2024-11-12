@@ -3,7 +3,6 @@ using Common.Models;
 using Dapper;
 using DataContext.Entities;
 using PhotoSauce.MagicScaler;
-using System.Text.Json;
 using System.Text.RegularExpressions;
 using WebAPI.Exceptions;
 using WebAPI.Models;
@@ -100,10 +99,10 @@ namespace WebAPI.Extensions
                 transaction: unitOfWork.SqlTransaction);
 
             sql = "INSERT INTO Identities " +
-                $"({nameof(IdentitiesEntity.AccountId)}, {nameof(IdentitiesEntity.Email)}, {nameof(IdentitiesEntity.Password)} " +
+                $"({nameof(IdentitiesEntity.AccountId)}, {nameof(IdentitiesEntity.Email)}, {nameof(IdentitiesEntity.Password)}) " +
                 "VALUES " +
                 $"(@{nameof(IdentitiesEntity.AccountId)}, @{nameof(IdentitiesEntity.Email)}, @{nameof(IdentitiesEntity.Password)})";
-            await unitOfWork.SqlConnection.QuerySingleAsync<int>(sql, new { AccountId, request.Email, request.Password },
+            await unitOfWork.SqlConnection.ExecuteAsync(sql, new { AccountId, request.Email, request.Password },
                 transaction: unitOfWork.SqlTransaction);
 
             return AccountId;
@@ -140,7 +139,7 @@ namespace WebAPI.Extensions
             await unitOfWork.SqlConnection.ExecuteAsync(sql, new { Comment = "Привет!", AccountId = request.Id }, transaction: unitOfWork.SqlTransaction);
         }
 
-        public static async Task InsertPhotosAsync(this RegisterAccountRequestDto request, UnitOfWork unitOfWork)
+        public static async Task AddPhotosAsync(this RegisterAccountRequestDto request, UnitOfWork unitOfWork)
         {
             string sql;
 

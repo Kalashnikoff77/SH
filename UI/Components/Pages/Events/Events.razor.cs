@@ -28,10 +28,8 @@ namespace UI.Components.Pages.Events
         List<SchedulesForEventsViewDto> EventsList = new List<SchedulesForEventsViewDto>();
 
         List<FeaturesForEventsViewDto> FeaturesList = new List<FeaturesForEventsViewDto>();
-        List<RegionsForEventsViewDto> RegionsList = new List<RegionsForEventsViewDto>();
         List<AdminsForEventsViewDto> AdminsList = new List<AdminsForEventsViewDto>();
-
-        MudCarousel<PhotosForEventsDto> Carousel = null!;
+        List<RegionsForEventsViewDto> RegionsList = new List<RegionsForEventsViewDto>();
 
         /// <summary>
         /// Для предотвращения повторного выполнения OnParametersSet (выполняется при переходе на другую ссылку)
@@ -40,7 +38,35 @@ namespace UI.Components.Pages.Events
 
         IDisposable? OnScheduleChangedHandler;
 
-        #region Фильтр региона
+        #region Фильтр услуг
+        IEnumerable<FeaturesForEventsViewDto> _selectedFeatures = null!;
+        IEnumerable<FeaturesForEventsViewDto> selectedFeatures
+        {
+            get => _selectedFeatures;
+            set
+            {
+                _selectedFeatures = value;
+                request.FeaturesIds = value.Select(s => s.Id);
+                dataGrid.ReloadServerData();
+            }
+        }
+        #endregion
+
+        #region Фильтр организаторов
+        IEnumerable<AdminsForEventsViewDto> _selectedAdmins = null!;
+        IEnumerable<AdminsForEventsViewDto> selectedAdmins
+        {
+            get => _selectedAdmins;
+            set
+            {
+                _selectedAdmins = value;
+                request.AdminsIds = value.Select(s => s.Id);
+                dataGrid.ReloadServerData();
+            }
+        }
+        #endregion
+
+        #region Фильтр регионов
         IEnumerable<RegionsForEventsViewDto> _selectedRegions = null!;
         IEnumerable<RegionsForEventsViewDto> selectedRegions
         {
@@ -48,19 +74,20 @@ namespace UI.Components.Pages.Events
             set
             {
                 _selectedRegions = value;
-                request.RegionsIds = _selectedRegions.Select(s => s.Id);
+                request.RegionsIds = value.Select(s => s.Id);
                 dataGrid.ReloadServerData();
             }
         }
         #endregion
 
-        #region Переключатель актуальных мероприятий
+        #region Фильтр актуальных мероприятий
         string actualEventsLabel = "Актуальные мероприятия";
         bool isActualEvents
         {
             get => request.IsActualEvents;
             set
             {
+                FeaturesList.Clear();
                 request.IsActualEvents = value;
                 actualEventsLabel = value ? "Актуальные мероприятия" : "Завершённые мероприятия";
                 dataGrid.ReloadServerData();
@@ -70,9 +97,6 @@ namespace UI.Components.Pages.Events
 
         protected override async Task OnInitializedAsync()
         {
-            var featuresResponse = await _repoGetFeatures.HttpPostAsync(new GetFeaturesForEventsRequestDto());
-            FeaturesList = featuresResponse.Response.FeaturesForEvents;
-
             var regionsResponse = await _repoGetRegions.HttpPostAsync(new GetRegionsForEventsRequestDto());
             RegionsList = regionsResponse.Response.RegionsForEvents;
 
@@ -114,6 +138,12 @@ namespace UI.Components.Pages.Events
 
         async Task<GridData<SchedulesForEventsViewDto>> ServerReload(GridState<SchedulesForEventsViewDto> state)
         {
+            if (FeaturesList.Count() == 0)
+            {
+                var featuresResponse = await _repoGetFeatures.HttpPostAsync(new GetFeaturesForEventsRequestDto { IsActualEvents = request.IsActualEvents });
+                FeaturesList = featuresResponse.Response.FeaturesForEvents;
+            }
+
             var items = new GridData<SchedulesForEventsViewDto>();
 
             var apiResponse = await _repoGetSchedules.HttpPostAsync(request);
@@ -133,18 +163,6 @@ namespace UI.Components.Pages.Events
         Task OnSearch(string text)
         {
             request.FilterFreeText = text;
-            return dataGrid.ReloadServerData();
-        }
-
-        Task OnFeaturesSelected(IEnumerable<FeaturesDto> selectedItems)
-        {
-            request.FeaturesIds = selectedItems.Select(s => s.Id);
-            return dataGrid.ReloadServerData();
-        }
-
-        Task OnAdminsSelected(IEnumerable<AccountsDto> selectedItems)
-        {
-            request.AdminsIds = selectedItems.Select(s => s.Id);
             return dataGrid.ReloadServerData();
         }
 

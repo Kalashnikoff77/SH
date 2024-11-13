@@ -83,6 +83,7 @@ namespace WebAPI.Controllers
                 if (response.Count > 0)
                 {
                     string sql;
+
                     if (request.IsActualEvents)
                         sql = $"SELECT {columns.Aggregate((a, b) => a + ", " + b)} " +
                             $"FROM SchedulesForEventsView " +
@@ -95,6 +96,7 @@ namespace WebAPI.Controllers
                             $"WHERE Id IN ({string.Join(",", ids)}) AND {nameof(SchedulesForEventsViewDto.EndDate)} < getdate() " +
                             $"ORDER BY {nameof(SchedulesForEventsViewDto.EndDate)} DESC " +
                             $"OFFSET {request.Skip} ROWS FETCH NEXT {request.Take} ROWS ONLY";
+
                     var result = await _unitOfWork.SqlConnection.QueryAsync<SchedulesForEventsViewEntity>(sql);
                     response.Schedules = _mapper.Map<List<SchedulesForEventsViewDto>>(result);
                 }

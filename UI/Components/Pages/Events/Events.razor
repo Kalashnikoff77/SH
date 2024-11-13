@@ -20,15 +20,15 @@
             <MudTextField Placeholder="Поиск" T="string" ValueChanged="@(s => OnSearch(s))" Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Clearable/>
         </MudItem>
         <MudItem xs="12" md="4">
-            <MudSelect Placeholder="Все услуги" SelectedValuesChanged="OnFeaturesSelected" T="FeaturesForEventsViewDto" Dense AnchorOrigin="Origin.BottomCenter" Adornment="Adornment.End" IconSize="Size.Medium" MultiSelection Clearable>
-                @foreach (var feature in FeaturesList.OrderBy(o => o.Name))
+            <MudSelect Placeholder="Все услуги" @bind-SelectedValues="selectedFeatures" T="FeaturesForEventsViewDto" Dense AnchorOrigin="Origin.BottomCenter" Adornment="Adornment.End" IconSize="Size.Medium" MultiSelection Clearable>
+                @foreach (var feature in FeaturesList)
                 {
                     <MudSelectItem Value="feature">@feature.Name</MudSelectItem>
                 }
             </MudSelect>
         </MudItem>
         <MudItem xs="12" md="4">
-            <MudSelect Placeholder="Все организаторы" SelectedValuesChanged="OnAdminsSelected" T="AdminsForEventsViewDto" Dense AnchorOrigin="Origin.BottomCenter" Adornment="Adornment.End" IconSize="Size.Medium" MultiSelection Clearable>
+            <MudSelect Placeholder="Все организаторы" @bind-SelectedValues="selectedAdmins" T="AdminsForEventsViewDto" Dense AnchorOrigin="Origin.BottomCenter" Adornment="Adornment.End" IconSize="Size.Medium" MultiSelection Clearable>
                 @foreach (var admin in AdminsList)
                 {
                     <MudSelectItem Value="admin">@admin.Name</MudSelectItem>

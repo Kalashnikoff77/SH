@@ -1,5 +1,4 @@
-﻿using Common.Dto;
-using Common.Dto.Requests;
+﻿using Common.Dto.Requests;
 using Common.Dto.Responses;
 using Common.Dto.Views;
 using Common.Models.SignalR;
@@ -27,8 +26,6 @@ namespace UI.Components.Pages.Events
 
         List<SchedulesForEventsViewDto> EventsList = new List<SchedulesForEventsViewDto>();
 
-        List<FeaturesForEventsViewDto> FeaturesList = new List<FeaturesForEventsViewDto>();
-        List<AdminsForEventsViewDto> AdminsList = new List<AdminsForEventsViewDto>();
         List<RegionsForEventsViewDto> RegionsList = new List<RegionsForEventsViewDto>();
 
         /// <summary>
@@ -39,29 +36,93 @@ namespace UI.Components.Pages.Events
         IDisposable? OnScheduleChangedHandler;
 
         #region Фильтр услуг
+        List<FeaturesForEventsViewDto> FeaturesList = new List<FeaturesForEventsViewDto>();
+
         IEnumerable<FeaturesForEventsViewDto> _selectedFeatures = null!;
         IEnumerable<FeaturesForEventsViewDto> selectedFeatures
         {
             get => _selectedFeatures;
-            set
+            set 
             {
                 _selectedFeatures = value;
                 request.FeaturesIds = value.Select(s => s.Id);
                 dataGrid.ReloadServerData();
             }
         }
+
+        List<FeaturesForEventsViewDto> _filteredFeatures = new List<FeaturesForEventsViewDto>();
+        List<FeaturesForEventsViewDto> filteredFeatures
+        {
+            get
+            {
+                if (_filteredFeatures.Count() > 0)
+                    return _filteredFeatures;
+
+                IEnumerable<FeaturesForEventsViewDto> linq = FeaturesList;
+
+                if (isActualEvents)
+                    linq = FeaturesList.Where(w => w.EndDate > DateTime.Now);
+                else
+                    linq = FeaturesList.Where(w => w.EndDate < DateTime.Now);
+
+                if (request.RegionsIds?.Count() > 0)
+                    linq = linq.Where(x => request.RegionsIds.Contains(x.RegionId));
+
+                if (request.AdminsIds?.Count() > 0)
+                    linq = linq.Where(x => request.AdminsIds.Contains(x.AdminId));
+
+                _filteredFeatures = linq
+                    .GroupBy(g => g.Id)
+                    .Select(s => new FeaturesForEventsViewDto { Id = s.Key, Name = s.First().Name, NumberOfEvents = s.Count() })
+                    .OrderBy(o => o.Name)
+                    .ToList();
+
+                return _filteredFeatures;
+            }
+        }
         #endregion
 
         #region Фильтр организаторов
+        List<AdminsForEventsViewDto> AdminsList = new List<AdminsForEventsViewDto>();
+
         IEnumerable<AdminsForEventsViewDto> _selectedAdmins = null!;
         IEnumerable<AdminsForEventsViewDto> selectedAdmins
         {
             get => _selectedAdmins;
             set
             {
+                filteredFeatures.Clear();
                 _selectedAdmins = value;
                 request.AdminsIds = value.Select(s => s.Id);
                 dataGrid.ReloadServerData();
+            }
+        }
+
+        List<AdminsForEventsViewDto> _filteredAdmins = new List<AdminsForEventsViewDto>();
+        List<AdminsForEventsViewDto> filteredAdmins
+        {
+            get
+            {
+                if (_filteredAdmins.Count() > 0)
+                    return _filteredAdmins;
+
+                IEnumerable<AdminsForEventsViewDto> linq = AdminsList;
+
+                if (isActualEvents)
+                    linq = AdminsList.Where(w => w.EndDate > DateTime.Now);
+                else
+                    linq = AdminsList.Where(w => w.EndDate < DateTime.Now);
+
+                if (request.RegionsIds?.Count() > 0)
+                    linq = linq.Where(x => request.RegionsIds.Contains(x.RegionId));
+
+                _filteredAdmins = linq
+                    .GroupBy(g => g.Id)
+                    .Select(s => new AdminsForEventsViewDto { Id = s.Key, Name = s.First().Name, NumberOfEvents = s.Count() })
+                    .OrderBy(o => o.Name)
+                    .ToList();
+
+                return _filteredAdmins;
             }
         }
         #endregion
@@ -73,6 +134,8 @@ namespace UI.Components.Pages.Events
             get => _selectedRegions;
             set
             {
+                filteredAdmins.Clear();
+                filteredFeatures.Clear();
                 _selectedRegions = value;
                 request.RegionsIds = value.Select(s => s.Id);
                 dataGrid.ReloadServerData();
@@ -87,7 +150,8 @@ namespace UI.Components.Pages.Events
             get => request.IsActualEvents;
             set
             {
-                FeaturesList.Clear();
+                filteredFeatures.Clear();
+                filteredAdmins.Clear();
                 request.IsActualEvents = value;
                 actualEventsLabel = value ? "Актуальные мероприятия" : "Завершённые мероприятия";
                 dataGrid.ReloadServerData();
@@ -99,9 +163,6 @@ namespace UI.Components.Pages.Events
         {
             var regionsResponse = await _repoGetRegions.HttpPostAsync(new GetRegionsForEventsRequestDto());
             RegionsList = regionsResponse.Response.RegionsForEvents;
-
-            var adminsResponse = await _repoGetAdmins.HttpPostAsync(new GetAdminsForEventsRequestDto());
-            AdminsList = adminsResponse.Response.AdminsForEvents;
         }
 
         protected override void OnParametersSet()
@@ -140,8 +201,14 @@ namespace UI.Components.Pages.Events
         {
             if (FeaturesList.Count() == 0)
             {
-                var featuresResponse = await _repoGetFeatures.HttpPostAsync(new GetFeaturesForEventsRequestDto { IsActualEvents = request.IsActualEvents });
+                var featuresResponse = await _repoGetFeatures.HttpPostAsync(new GetFeaturesForEventsRequestDto());
                 FeaturesList = featuresResponse.Response.FeaturesForEvents;
+            }
+
+            if (AdminsList.Count() == 0)
+            {
+                var adminsResponse = await _repoGetAdmins.HttpPostAsync(new GetAdminsForEventsRequestDto());
+                AdminsList = adminsResponse.Response.AdminsForEvents;
             }
 
             var items = new GridData<SchedulesForEventsViewDto>();

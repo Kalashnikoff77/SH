@@ -21,15 +21,15 @@
         </MudItem>
         <MudItem xs="12" md="4">
             <MudSelect Placeholder="Все услуги" @bind-SelectedValues="selectedFeatures" T="FeaturesForEventsViewDto" Dense AnchorOrigin="Origin.BottomCenter" Adornment="Adornment.End" IconSize="Size.Medium" MultiSelection Clearable>
-                @foreach (var feature in FeaturesList)
+                @foreach (var feature in filteredFeatures)
                 {
-                    <MudSelectItem Value="feature">@feature.Name</MudSelectItem>
+                    <MudSelectItem Value="feature">@feature.Name (@feature.NumberOfEvents)</MudSelectItem>
                 }
             </MudSelect>
         </MudItem>
         <MudItem xs="12" md="4">
             <MudSelect Placeholder="Все организаторы" @bind-SelectedValues="selectedAdmins" T="AdminsForEventsViewDto" Dense AnchorOrigin="Origin.BottomCenter" Adornment="Adornment.End" IconSize="Size.Medium" MultiSelection Clearable>
-                @foreach (var admin in AdminsList)
+                @foreach (var admin in filteredAdmins)
                 {
                     <MudSelectItem Value="admin">@admin.Name</MudSelectItem>
                 }

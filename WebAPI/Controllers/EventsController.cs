@@ -238,7 +238,7 @@ namespace WebAPI.Controllers
         {
             var response = new GetFeaturesForEventsResponseDto();
 
-            var sql = $"SELECT * FROM FeaturesForEventsView ORDER BY Name";
+            var sql = $"SELECT * FROM FeaturesForEventsView";
             var result = await _unitOfWork.SqlConnection.QueryAsync<FeaturesForEventsViewEntity>(sql);
             response.FeaturesForEvents = _mapper.Map<List<FeaturesForEventsViewDto>>(result);
 

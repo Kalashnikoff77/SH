@@ -1,7 +1,14 @@
 ﻿namespace Common.Dto.Views
 {
-    public class AdminsForEventsViewDto : AccountsDto
+    public class AdminsForEventsViewDto : DtoBase
     {
+        public string Name { get; set; } = null!;
+
+        public DateTime EndDate { get; set; }
+
+        public int RegionId { get; set; }
+
+        // TODO REMOVE (OK)
         public int NumberOfEvents { get; set; }
 
         /// <summary>

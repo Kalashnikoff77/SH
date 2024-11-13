@@ -23,7 +23,7 @@
             <MudSelect Placeholder="Все услуги" SelectedValuesChanged="OnFeaturesSelected" T="FeaturesForEventsViewDto" Dense AnchorOrigin="Origin.BottomCenter" Adornment="Adornment.End" IconSize="Size.Medium" MultiSelection Clearable>
                 @foreach (var feature in FeaturesList.OrderBy(o => o.Name))
                 {
-                    <MudSelectItem Value="feature">@feature.Name (@feature.NumberOfEvents)</MudSelectItem>
+                    <MudSelectItem Value="feature">@feature.Name</MudSelectItem>
                 }
             </MudSelect>
         </MudItem>
@@ -31,7 +31,7 @@
             <MudSelect Placeholder="Все организаторы" SelectedValuesChanged="OnAdminsSelected" T="AdminsForEventsViewDto" Dense AnchorOrigin="Origin.BottomCenter" Adornment="Adornment.End" IconSize="Size.Medium" MultiSelection Clearable>
                 @foreach (var admin in AdminsList)
                 {
-                    <MudSelectItem Value="admin">@admin.Name (@admin.NumberOfEvents)</MudSelectItem>
+                    <MudSelectItem Value="admin">@admin.Name</MudSelectItem>
                 }
             </MudSelect>
         </MudItem>
@@ -41,7 +41,7 @@
                 {
                     @foreach (var region in RegionsList)
                     {
-                        <MudSelectItem Value="region">@region.Name (@region.NumberOfEvents)</MudSelectItem>
+                        <MudSelectItem Value="region">@region.Name</MudSelectItem>
                     }
                 }
             </MudSelect>
@@ -49,7 +49,7 @@
 
         <MudItem xs="12" Style="padding-top:10px">
             <MudStack Spacing="0" AlignItems="AlignItems.End">
-                <MudSwitch Size="Size.Small" @bind-Value="isFinishedEvents" Label="@actualEventsLabel" Color="Color.Primary" />
+                <MudSwitch Size="Size.Small" @bind-Value="isActualEvents" Label="@actualEventsLabel" Color="Color.Primary" />
             </MudStack>
         </MudItem>
 

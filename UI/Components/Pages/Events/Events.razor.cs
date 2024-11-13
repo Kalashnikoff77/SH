@@ -56,7 +56,7 @@ namespace UI.Components.Pages.Events
 
         #region Переключатель актуальных мероприятий
         string actualEventsLabel = "Актуальные мероприятия";
-        bool isFinishedEvents
+        bool isActualEvents
         {
             get => request.IsActualEvents;
             set
@@ -70,8 +70,14 @@ namespace UI.Components.Pages.Events
 
         protected override async Task OnInitializedAsync()
         {
+            var featuresResponse = await _repoGetFeatures.HttpPostAsync(new GetFeaturesForEventsRequestDto());
+            FeaturesList = featuresResponse.Response.FeaturesForEvents;
+
             var regionsResponse = await _repoGetRegions.HttpPostAsync(new GetRegionsForEventsRequestDto());
             RegionsList = regionsResponse.Response.RegionsForEvents;
+
+            var adminsResponse = await _repoGetAdmins.HttpPostAsync(new GetAdminsForEventsRequestDto());
+            AdminsList = adminsResponse.Response.AdminsForEvents;
         }
 
         protected override void OnParametersSet()
@@ -108,12 +114,6 @@ namespace UI.Components.Pages.Events
 
         async Task<GridData<SchedulesForEventsViewDto>> ServerReload(GridState<SchedulesForEventsViewDto> state)
         {
-            var featuresResponse = await _repoGetFeatures.HttpPostAsync(new GetFeaturesForEventsRequestDto { IsActualEvents = request.IsActualEvents });
-            FeaturesList = featuresResponse.Response.FeaturesForEvents;
-
-            var adminsResponse = await _repoGetAdmins.HttpPostAsync(new GetAdminsForEventsRequestDto());
-            AdminsList = adminsResponse.Response.AdminsForEvents;
-
             var items = new GridData<SchedulesForEventsViewDto>();
 
             var apiResponse = await _repoGetSchedules.HttpPostAsync(request);

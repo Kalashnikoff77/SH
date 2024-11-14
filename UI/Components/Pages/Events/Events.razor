@@ -39,7 +39,7 @@
             <MudSelect Placeholder="Все регионы" @bind-SelectedValues="selectedRegions" T="RegionsForEventsViewDto" Dense AnchorOrigin="Origin.BottomCenter" Adornment="Adornment.End" IconSize="Size.Medium" MultiSelection Clearable>
                 @if (RegionsList != null) 
                 {
-                    @foreach (var region in RegionsList)
+                    @foreach (var region in filteredRegions)
                     {
                         <MudSelectItem Value="region">@region.Name</MudSelectItem>
                     }

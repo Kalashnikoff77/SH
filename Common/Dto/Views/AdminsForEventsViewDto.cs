@@ -8,7 +8,8 @@
 
         public int RegionId { get; set; }
 
-        // TODO REMOVE (OK)
+        public int FeatureId { get; set; }
+
         public int NumberOfEvents { get; set; }
 
         /// <summary>

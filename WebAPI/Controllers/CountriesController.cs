@@ -39,7 +39,7 @@ namespace WebAPI.Controllers
         {
             var response = new GetRegionsForEventsResponseDto();
 
-            var sql = "SELECT * FROM RegionsForEventsView ORDER BY [Order]";
+            var sql = "SELECT * FROM RegionsForEventsView";
             var result = await _unitOfWork.SqlConnection.QueryAsync<RegionsForEventsViewEntity>(sql);
             response.RegionsForEvents = _mapper.Map<List<RegionsForEventsViewDto>>(result);
 

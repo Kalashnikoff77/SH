@@ -1,7 +1,15 @@
 ﻿namespace DataContext.Entities.Views
 {
-    public class RegionsForEventsViewEntity : RegionsEntity
+    public class RegionsForEventsViewEntity : EntityBase
     {
-        public int NumberOfEvents { get; set; }
+        public string Name { get; set; } = null!;
+
+        public int Order { get; set; }
+
+        public DateTime EndDate { get; set; }
+
+        public int AdminId { get; set; }
+
+        public int FeatureId { get; set; }
     }
 }

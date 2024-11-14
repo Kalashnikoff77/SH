@@ -22,7 +22,6 @@ namespace UI.Components.Pages.Events
                     .Select(s => s.Id)
                     .Distinct();
 
-                //request.FeaturesIds = value.Select(s => s.Id);
                 dataGrid.ReloadServerData();
             }
         }
@@ -48,12 +47,6 @@ namespace UI.Components.Pages.Events
                 if (request.AdminsIds?.Count() > 0)
                     linq = linq.Where(x => request.AdminsIds.Contains(x.AdminId));
 
-                //_filteredFeatures = linq
-                //    .GroupBy(g => g.Id)
-                //    .Select(s => new FeaturesForEventsViewDto { Id = s.Key, Name = s.First().Name, NumberOfEvents = s.Count() })
-                //    .OrderBy(o => o.Name)
-                //    .ToList();
-
                 _filteredFeatures = linq
                     .Select(s => s.Name)
                     .Distinct()
@@ -68,8 +61,8 @@ namespace UI.Components.Pages.Events
         #region Фильтр организаторов
         List<AdminsForEventsViewDto> AdminsList = new List<AdminsForEventsViewDto>();
 
-        IEnumerable<AdminsForEventsViewDto> _selectedAdmins = null!;
-        IEnumerable<AdminsForEventsViewDto> selectedAdmins
+        IEnumerable<string> _selectedAdmins = null!;
+        IEnumerable<string> selectedAdmins
         {
             get => _selectedAdmins;
             set
@@ -77,13 +70,18 @@ namespace UI.Components.Pages.Events
                 filteredFeatures.Clear();
                 filteredRegions.Clear();
                 _selectedAdmins = value;
-                request.AdminsIds = value.Select(s => s.Id);
+
+                request.AdminsIds = AdminsList
+                    .Where(x => value.Contains(x.Name))
+                    .Select(s => s.Id)
+                    .Distinct();
+                
                 dataGrid.ReloadServerData();
             }
         }
 
-        List<AdminsForEventsViewDto> _filteredAdmins = new List<AdminsForEventsViewDto>();
-        List<AdminsForEventsViewDto> filteredAdmins
+        List<string> _filteredAdmins = new List<string>();
+        List<string> filteredAdmins
         {
             get
             {
@@ -104,9 +102,9 @@ namespace UI.Components.Pages.Events
                     linq = linq.Where(x => request.FeaturesIds.Contains(x.FeatureId));
 
                 _filteredAdmins = linq
-                    .GroupBy(g => g.Id)
-                    .Select(s => new AdminsForEventsViewDto { Id = s.Key, Name = s.First().Name, NumberOfEvents = s.Count() })
-                    .OrderBy(o => o.Name)
+                    .Select(s => s.Name)
+                    .Distinct()
+                    .OrderBy(o => o)
                     .ToList();
 
                 return _filteredAdmins;
@@ -115,8 +113,10 @@ namespace UI.Components.Pages.Events
         #endregion
 
         #region Фильтр регионов
-        IEnumerable<RegionsForEventsViewDto> _selectedRegions = null!;
-        IEnumerable<RegionsForEventsViewDto> selectedRegions
+        List<RegionsForEventsViewDto> RegionsList = new List<RegionsForEventsViewDto>();
+
+        IEnumerable<string> _selectedRegions = null!;
+        IEnumerable<string> selectedRegions
         {
             get => _selectedRegions;
             set
@@ -124,12 +124,17 @@ namespace UI.Components.Pages.Events
                 filteredAdmins.Clear();
                 filteredFeatures.Clear();
                 _selectedRegions = value;
-                request.RegionsIds = value.Select(s => s.Id);
+
+                request.RegionsIds = RegionsList
+                    .Where(x => value.Contains(x.Name))
+                    .Select(s => s.Id)
+                    .Distinct();
+
                 dataGrid.ReloadServerData();
             }
         }
-        List<RegionsForEventsViewDto> _filteredRegions = new List<RegionsForEventsViewDto>();
-        List<RegionsForEventsViewDto> filteredRegions
+        List<string> _filteredRegions = new List<string>();
+        List<string> filteredRegions
         {
             get
             {
@@ -150,9 +155,9 @@ namespace UI.Components.Pages.Events
                     linq = linq.Where(x => request.FeaturesIds.Contains(x.FeatureId));
 
                 _filteredRegions = linq
-                    .GroupBy(g => g.Id)
-                    .Select(s => new RegionsForEventsViewDto { Id = s.Key, Name = s.First().Name, NumberOfEvents = s.Count(), Order = s.First().Order })
-                    .OrderBy(o => o.Order)
+                    .Select(s => s.Name)
+                    .Distinct()
+                    .OrderBy(o => o)
                     .ToList();
 
                 return _filteredRegions;

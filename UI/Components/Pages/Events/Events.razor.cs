@@ -25,8 +25,6 @@ namespace UI.Components.Pages.Events
 
         List<SchedulesForEventsViewDto> EventsList = new List<SchedulesForEventsViewDto>();
 
-        List<RegionsForEventsViewDto> RegionsList = new List<RegionsForEventsViewDto>();
-
         /// <summary>
         /// Для предотвращения повторного выполнения OnParametersSet (выполняется при переходе на другую ссылку)
         /// </summary>
@@ -49,13 +47,13 @@ namespace UI.Components.Pages.Events
         protected override void OnParametersSet()
         {
             // Установим фильтр региона согласно данным учётки пользователя
-            //if (CurrentState.Account?.Country?.Region != null && isFirstSetParameters)
-            //{
-            //    var accountRegion = RegionsList.FirstOrDefault(w => w.Id == CurrentState.Account.Country.Region.Id);
-            //    if (accountRegion != null)
-            //        selectedRegions = new HashSet<RegionsForEventsViewDto>() { accountRegion };
-            //    isFirstSetParameters = false;
-            //}
+            if (CurrentState.Account?.Country?.Region != null && isFirstSetParameters)
+            {
+                var accountRegion = RegionsList.FirstOrDefault(w => w.Id == CurrentState.Account.Country.Region.Id);
+                if (accountRegion != null)
+                    selectedRegions = [accountRegion.Name];
+                isFirstSetParameters = false;
+            }
         }
 
         protected override void OnAfterRender(bool firstRender)

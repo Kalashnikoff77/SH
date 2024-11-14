@@ -28,20 +28,20 @@
             </MudSelect>
         </MudItem>
         <MudItem xs="12" md="4">
-            <MudSelect Placeholder="Все организаторы" @bind-SelectedValues="selectedAdmins" T="AdminsForEventsViewDto" Dense AnchorOrigin="Origin.BottomCenter" Adornment="Adornment.End" IconSize="Size.Medium" MultiSelection Clearable>
+            <MudSelect Placeholder="Все организаторы" @bind-SelectedValues="selectedAdmins" T="string" Dense AnchorOrigin="Origin.BottomCenter" Adornment="Adornment.End" IconSize="Size.Medium" MultiSelection Clearable>
                 @foreach (var admin in filteredAdmins)
                 {
-                    <MudSelectItem Value="admin">@admin.Name</MudSelectItem>
+                    <MudSelectItem Value="admin">@admin</MudSelectItem>
                 }
             </MudSelect>
         </MudItem>
         <MudItem xs="12" md="4">
-            <MudSelect Placeholder="Все регионы" @bind-SelectedValues="selectedRegions" T="RegionsForEventsViewDto" Dense AnchorOrigin="Origin.BottomCenter" Adornment="Adornment.End" IconSize="Size.Medium" MultiSelection Clearable>
+            <MudSelect Placeholder="Все регионы" @bind-SelectedValues="selectedRegions" T="string" Dense AnchorOrigin="Origin.BottomCenter" Adornment="Adornment.End" IconSize="Size.Medium" MultiSelection Clearable>
                 @if (RegionsList != null) 
                 {
                     @foreach (var region in filteredRegions)
                     {
-                        <MudSelectItem Value="region">@region.Name</MudSelectItem>
+                        <MudSelectItem Value="region">@region</MudSelectItem>
                     }
                 }
             </MudSelect>

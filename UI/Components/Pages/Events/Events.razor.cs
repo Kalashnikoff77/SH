@@ -36,6 +36,12 @@ namespace UI.Components.Pages.Events
 
         protected override async Task OnInitializedAsync()
         {
+            var featuresResponse = await _repoGetFeatures.HttpPostAsync(new GetFeaturesForEventsRequestDto());
+            FeaturesList = featuresResponse.Response.FeaturesForEvents;
+
+            var adminsResponse = await _repoGetAdmins.HttpPostAsync(new GetAdminsForEventsRequestDto());
+            AdminsList = adminsResponse.Response.AdminsForEvents;
+
             var regionsResponse = await _repoGetRegions.HttpPostAsync(new GetRegionsForEventsRequestDto());
             RegionsList = regionsResponse.Response.RegionsForEvents;
         }
@@ -74,18 +80,6 @@ namespace UI.Components.Pages.Events
 
         async Task<GridData<SchedulesForEventsViewDto>> ServerReload(GridState<SchedulesForEventsViewDto> state)
         {
-            if (FeaturesList.Count() == 0)
-            {
-                var featuresResponse = await _repoGetFeatures.HttpPostAsync(new GetFeaturesForEventsRequestDto());
-                FeaturesList = featuresResponse.Response.FeaturesForEvents;
-            }
-
-            if (AdminsList.Count() == 0)
-            {
-                var adminsResponse = await _repoGetAdmins.HttpPostAsync(new GetAdminsForEventsRequestDto());
-                AdminsList = adminsResponse.Response.AdminsForEvents;
-            }
-
             var items = new GridData<SchedulesForEventsViewDto>();
 
             var apiResponse = await _repoGetSchedules.HttpPostAsync(request);

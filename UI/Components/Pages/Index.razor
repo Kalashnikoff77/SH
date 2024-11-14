@@ -4,7 +4,7 @@
 
 
 <MudSelect Placeholder="Все услуги" @bind-SelectedValues="selectedItems" T="CItems" Dense AnchorOrigin="Origin.BottomCenter" Adornment="Adornment.End" IconSize="Size.Medium" MultiSelection Clearable>
-    @foreach (var item in items)
+    @foreach (var item in items.Where(x => x.IsDeleted == false))
     {
         <MudSelectItem Value="item">@item</MudSelectItem>
     }

@@ -13,20 +13,26 @@
 
         void OnAdded()
         {
-            items.Add(new CItems { Id = 3, Name = "Sasha" });
+            var item = new CItems { Id = 3, Name = "Sasha" };
+            items.Add(item);
+
+            item.Id = 4;
+            items.Add(item);
         }
 
         void OnDeleted()
         {
-            ((HashSet<CItems>)selectedItems).Remove(items[0]);
-            items.Remove(items[0]);
-            StateHasChanged();
+            items[0].IsDeleted = true;
+
+            //((HashSet<CItems>)selectedItems).Remove(items[0]);
+            //items.Remove(items[0]);
             //selectedItems = null;
         }
 
         void OnChanged()
         {
-            items[0].Name = "Oleg_changed";
+            items[0].IsDeleted = false;
+            //items[0].Name = "Oleg_changed";
         }
 
     }
@@ -35,7 +41,8 @@
     {
         public int Id { get; set; }
         public string Name { get; set; } = null!;
-
+        public bool IsDeleted { get; set; }
+        
         public override string ToString()
         {
             return Name;

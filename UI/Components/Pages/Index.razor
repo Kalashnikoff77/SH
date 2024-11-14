@@ -2,69 +2,17 @@
 
 <PageTitle>Главная страница</PageTitle>
 
-<p class="event-selected-date">Test</p>
 
-<MudDatePicker AdditionalDateClassesFunc="DateClass" />
-
-
-<MudDataGrid @ref="dataGrid" T="Item" ServerData="ServerReload" Filterable="false">
-    <ToolBarContent>
-        <MudText Typo="Typo.h6">Партнёры</MudText>
-        <MudSpacer />
-        <MudTextField T="string" ValueChanged="@(s => OnSearch(s))" Placeholder="Поиск"
-                      Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0">
-        </MudTextField>
-        <MudSpacer />
-    </ToolBarContent>
-    <Columns>
-        <HierarchyColumn T="Item" />
-        <PropertyColumn Property="x => x.Id" Title="Id" />
-
-        <PropertyColumn Property="x => x.Name" Title="Имя">
-        </PropertyColumn>
-
-        <PropertyColumn Property="x => x.Date">
-            <CellTemplate>
-                @context.Item.Date.ToString("dd.MM.yy")
-            </CellTemplate>
-        </PropertyColumn>
-    </Columns>
-
-    <ChildRowContent>
-        <MudCard>
-            <MudCardHeader>
-                <CardHeaderContent>
-                    <MudText Typo="Typo.h6">@context.Item.Name</MudText>
-                </CardHeaderContent>
-            </MudCardHeader>
-            <MudCardContent>
-                <MudText>Дата рождения @context.Item.Date</MudText>
-            </MudCardContent>
-        </MudCard>
-    </ChildRowContent>
-
-    <PagerContent>
-        <MudDataGridPager T="Item" />
-    </PagerContent>
-</MudDataGrid>
-
-
-<MudButton ButtonType="ButtonType.Button" Color="Color.Primary" Variant="Variant.Filled" OnClick="AddItem">Добавить</MudButton>
-
-
-@* <MudCarousel @ref="_carousel" ItemsSource="@_source" Style="width:150px; height:150px" ShowArrows="false" ShowBullets="false" AutoCycle="true">
-    <ItemTemplate>
-        <img src="@context" />
-    </ItemTemplate>
-</MudCarousel>
- *@
-@code {
-    MudCarousel<PhotosForEventsDto> _carousel = null!;
-
-    IList<string> _source = new List<string>
+<MudSelect Placeholder="Все услуги" @bind-SelectedValues="selectedItems" T="CItems" Dense AnchorOrigin="Origin.BottomCenter" Adornment="Adornment.End" IconSize="Size.Medium" MultiSelection Clearable>
+    @foreach (var item in items)
     {
-        "/images/EventsPhotos/1/51f12539-9aa3-469e-b383-654195bb9cbe/s150x150.jpg",
-        "/images/EventsPhotos/2/974cf18d-1a56-4762-a2b7-8bda6c43606c/s150x150.jpg",
-        "/images/EventsPhotos/3/b122a522-0d36-4517-9748-c5cc1bdfd8f9/s150x150.jpg"
-    };
-}
+        <MudSelectItem Value="item">@item</MudSelectItem>
+    }
+</MudSelect>
+
+
+<MudButton OnClick="OnAdded" Variant="Variant.Outlined" Class="mt-5">Добавить</MudButton>
+
+<MudButton OnClick="OnChanged" Variant="Variant.Outlined" Class="mt-5">Изменить</MudButton>
+
+<MudButton OnClick="OnDeleted" Variant="Variant.Outlined" Class="mt-5">Удалить</MudButton>

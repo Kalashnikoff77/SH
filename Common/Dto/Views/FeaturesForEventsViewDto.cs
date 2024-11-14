@@ -8,8 +8,9 @@
 
         public int RegionId { get; set; }
 
-        // TODO Можно удалить (OK)
         public int NumberOfEvents { get; set; }
+
+        public bool IsDeleted { get; set; }
 
         /// <summary>
         /// Для корректного вывода названия услуги в выпадающем меню в Events.razor.cs

@@ -7,8 +7,8 @@ namespace UI.Components.Pages.Events
         #region Фильтр услуг
         List<FeaturesForEventsViewDto> FeaturesList = new List<FeaturesForEventsViewDto>();
 
-        IEnumerable<FeaturesForEventsViewDto> _selectedFeatures = null!;
-        IEnumerable<FeaturesForEventsViewDto> selectedFeatures
+        IEnumerable<string> _selectedFeatures = null!;
+        IEnumerable<string> selectedFeatures
         {
             get => _selectedFeatures;
             set
@@ -16,13 +16,19 @@ namespace UI.Components.Pages.Events
                 filteredAdmins.Clear();
                 filteredRegions.Clear();
                 _selectedFeatures = value;
-                request.FeaturesIds = value.Select(s => s.Id);
+
+                request.FeaturesIds = FeaturesList
+                    .Where(x => value.Contains(x.Name))
+                    .Select(s => s.Id)
+                    .Distinct();
+
+                //request.FeaturesIds = value.Select(s => s.Id);
                 dataGrid.ReloadServerData();
             }
         }
 
-        List<FeaturesForEventsViewDto> _filteredFeatures = new List<FeaturesForEventsViewDto>();
-        List<FeaturesForEventsViewDto> filteredFeatures
+        List<string> _filteredFeatures = new List<string>();
+        List<string> filteredFeatures
         {
             get
             {
@@ -42,10 +48,16 @@ namespace UI.Components.Pages.Events
                 if (request.AdminsIds?.Count() > 0)
                     linq = linq.Where(x => request.AdminsIds.Contains(x.AdminId));
 
+                //_filteredFeatures = linq
+                //    .GroupBy(g => g.Id)
+                //    .Select(s => new FeaturesForEventsViewDto { Id = s.Key, Name = s.First().Name, NumberOfEvents = s.Count() })
+                //    .OrderBy(o => o.Name)
+                //    .ToList();
+
                 _filteredFeatures = linq
-                    .GroupBy(g => g.Id)
-                    .Select(s => new FeaturesForEventsViewDto { Id = s.Key, Name = s.First().Name, NumberOfEvents = s.Count() })
-                    .OrderBy(o => o.Name)
+                    .Select(s => s.Name)
+                    .Distinct()
+                    .OrderBy(o => o)
                     .ToList();
 
                 return _filteredFeatures;

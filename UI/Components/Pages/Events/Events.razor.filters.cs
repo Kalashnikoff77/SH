@@ -17,10 +17,11 @@ namespace UI.Components.Pages.Events
                 filteredRegions.Clear();
                 _selectedFeatures = value;
 
-                request.FeaturesIds = FeaturesList
-                    .Where(x => value.Contains(x.Name))
-                    .Select(s => s.Id)
-                    .Distinct();
+                if (value != null)
+                    request.FeaturesIds = FeaturesList
+                        .Where(x => value.Contains(x.Name))
+                        .Select(s => s.Id)
+                        .Distinct();
 
                 dataGrid.ReloadServerData();
             }
@@ -53,10 +54,20 @@ namespace UI.Components.Pages.Events
                     .OrderBy(o => o)
                     .ToList();
 
+                if (selectedFeatures?.Count() > 0)
+                {
+                    if (!selectedFeatures.All(x => _filteredFeatures.Contains(x)))
+                    {
+                        selectedFeatures = null!;
+                        StateHasChanged();
+                    }
+                }
+
                 return _filteredFeatures;
             }
         }
         #endregion
+
 
         #region Фильтр организаторов
         List<AdminsForEventsViewDto> AdminsList = new List<AdminsForEventsViewDto>();
@@ -70,11 +81,11 @@ namespace UI.Components.Pages.Events
                 filteredFeatures.Clear();
                 filteredRegions.Clear();
                 _selectedAdmins = value;
-
-                request.AdminsIds = AdminsList
-                    .Where(x => value.Contains(x.Name))
-                    .Select(s => s.Id)
-                    .Distinct();
+                if (value != null)
+                    request.AdminsIds = AdminsList
+                        .Where(x => value.Contains(x.Name))
+                        .Select(s => s.Id)
+                        .Distinct();
                 
                 dataGrid.ReloadServerData();
             }
@@ -107,10 +118,20 @@ namespace UI.Components.Pages.Events
                     .OrderBy(o => o)
                     .ToList();
 
+                if (selectedAdmins?.Count() > 0)
+                {
+                    if (!selectedAdmins.All(x => _filteredAdmins.Contains(x)))
+                    {
+                        selectedAdmins = null!;
+                        StateHasChanged();
+                    }
+                }
+
                 return _filteredAdmins;
             }
         }
         #endregion
+
 
         #region Фильтр регионов
         List<RegionsForEventsViewDto> RegionsList = new List<RegionsForEventsViewDto>();
@@ -125,10 +146,11 @@ namespace UI.Components.Pages.Events
                 filteredFeatures.Clear();
                 _selectedRegions = value;
 
-                request.RegionsIds = RegionsList
-                    .Where(x => value.Contains(x.Name))
-                    .Select(s => s.Id)
-                    .Distinct();
+                if (value != null)
+                    request.RegionsIds = RegionsList
+                        .Where(x => value.Contains(x.Name))
+                        .Select(s => s.Id)
+                        .Distinct();
 
                 dataGrid.ReloadServerData();
             }
@@ -155,15 +177,25 @@ namespace UI.Components.Pages.Events
                     linq = linq.Where(x => request.FeaturesIds.Contains(x.FeatureId));
 
                 _filteredRegions = linq
+                    .OrderBy(o => o.Order)
                     .Select(s => s.Name)
                     .Distinct()
-                    .OrderBy(o => o)
                     .ToList();
+
+                if (selectedRegions?.Count() > 0)
+                {
+                    if (!selectedRegions.All(x => _filteredRegions.Contains(x)))
+                    {
+                        selectedRegions = null!;
+                        StateHasChanged();
+                    }
+                }
 
                 return _filteredRegions;
             }
         }
         #endregion
+
 
         #region Фильтр актуальных мероприятий
         string actualEventsLabel = "Актуальные мероприятия";

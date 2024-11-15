@@ -6,25 +6,21 @@ namespace UI.Components.Pages.Events
     {
         #region Фильтр услуг
         List<FeaturesForEventsViewDto> FeaturesList = new List<FeaturesForEventsViewDto>();
+        IEnumerable<string>? selectedFeatures { get; set; }
 
-        IEnumerable<string> _selectedFeatures = null!;
-        IEnumerable<string> selectedFeatures
+        async Task FeaturesChanged(IEnumerable<string> values)
         {
-            get => _selectedFeatures;
-            set
-            {
-                filteredAdmins.Clear();
-                filteredRegions.Clear();
-                _selectedFeatures = value;
+            selectedFeatures = values;
+            
+            filteredAdmins.Clear();
+            filteredRegions.Clear();
 
-                if (value != null)
-                    request.FeaturesIds = FeaturesList
-                        .Where(x => value.Contains(x.Name))
-                        .Select(s => s.Id)
-                        .Distinct();
+            request.FeaturesIds = FeaturesList
+                .Where(x => values.Contains(x.Name))
+                .Select(s => s.Id)
+                .Distinct();
 
-                dataGrid.ReloadServerData();
-            }
+            await dataGrid.ReloadServerData();
         }
 
         List<string> _filteredFeatures = new List<string>();
@@ -54,15 +50,6 @@ namespace UI.Components.Pages.Events
                     .OrderBy(o => o)
                     .ToList();
 
-                if (selectedFeatures?.Count() > 0)
-                {
-                    if (!selectedFeatures.All(x => _filteredFeatures.Contains(x)))
-                    {
-                        selectedFeatures = null!;
-                        StateHasChanged();
-                    }
-                }
-
                 return _filteredFeatures;
             }
         }
@@ -71,24 +58,21 @@ namespace UI.Components.Pages.Events
 
         #region Фильтр организаторов
         List<AdminsForEventsViewDto> AdminsList = new List<AdminsForEventsViewDto>();
+        IEnumerable<string>? selectedAdmins { get; set; }
 
-        IEnumerable<string> _selectedAdmins = null!;
-        IEnumerable<string> selectedAdmins
+        async Task AdminsChanged(IEnumerable<string> values)
         {
-            get => _selectedAdmins;
-            set
-            {
-                filteredFeatures.Clear();
-                filteredRegions.Clear();
-                _selectedAdmins = value;
-                if (value != null)
-                    request.AdminsIds = AdminsList
-                        .Where(x => value.Contains(x.Name))
-                        .Select(s => s.Id)
-                        .Distinct();
-                
-                dataGrid.ReloadServerData();
-            }
+            selectedAdmins = values;
+
+            filteredFeatures.Clear();
+            filteredRegions.Clear();
+
+            request.AdminsIds = AdminsList
+                .Where(x => values.Contains(x.Name))
+                .Select(s => s.Id)
+                .Distinct();
+
+            await dataGrid.ReloadServerData();
         }
 
         List<string> _filteredAdmins = new List<string>();
@@ -118,15 +102,6 @@ namespace UI.Components.Pages.Events
                     .OrderBy(o => o)
                     .ToList();
 
-                if (selectedAdmins?.Count() > 0)
-                {
-                    if (!selectedAdmins.All(x => _filteredAdmins.Contains(x)))
-                    {
-                        selectedAdmins = null!;
-                        StateHasChanged();
-                    }
-                }
-
                 return _filteredAdmins;
             }
         }
@@ -135,26 +110,23 @@ namespace UI.Components.Pages.Events
 
         #region Фильтр регионов
         List<RegionsForEventsViewDto> RegionsList = new List<RegionsForEventsViewDto>();
+        IEnumerable<string>? selectedRegions { get; set; }
 
-        IEnumerable<string> _selectedRegions = null!;
-        IEnumerable<string> selectedRegions
+        async Task RegionsChanged(IEnumerable<string> values)
         {
-            get => _selectedRegions;
-            set
-            {
-                filteredAdmins.Clear();
-                filteredFeatures.Clear();
-                _selectedRegions = value;
+            selectedRegions = values;
 
-                if (value != null)
-                    request.RegionsIds = RegionsList
-                        .Where(x => value.Contains(x.Name))
-                        .Select(s => s.Id)
-                        .Distinct();
+            filteredFeatures.Clear();
+            filteredAdmins.Clear();
 
-                dataGrid.ReloadServerData();
-            }
+            request.RegionsIds = RegionsList
+                .Where(x => values.Contains(x.Name))
+                .Select(s => s.Id)
+                .Distinct();
+
+            await dataGrid.ReloadServerData();
         }
+
         List<string> _filteredRegions = new List<string>();
         List<string> filteredRegions
         {
@@ -182,15 +154,6 @@ namespace UI.Components.Pages.Events
                     .Distinct()
                     .ToList();
 
-                if (selectedRegions?.Count() > 0)
-                {
-                    if (!selectedRegions.All(x => _filteredRegions.Contains(x)))
-                    {
-                        selectedRegions = null!;
-                        StateHasChanged();
-                    }
-                }
-
                 return _filteredRegions;
             }
         }
@@ -199,18 +162,28 @@ namespace UI.Components.Pages.Events
 
         #region Фильтр актуальных мероприятий
         string actualEventsLabel = "Актуальные мероприятия";
-        bool isActualEvents
+        bool isActualEvents = true;
+
+        async Task ActualEventsChanged(bool value)
         {
-            get => request.IsActualEvents;
-            set
-            {
-                filteredFeatures.Clear();
-                filteredAdmins.Clear();
-                filteredRegions.Clear();
-                request.IsActualEvents = value;
-                actualEventsLabel = value ? "Актуальные мероприятия" : "Завершённые мероприятия";
-                dataGrid.ReloadServerData();
-            }
+            isActualEvents = value;
+
+            request.IsActualEvents = value;
+            actualEventsLabel = value ? "Актуальные мероприятия" : "Завершённые мероприятия";
+
+            filteredFeatures.Clear();
+            selectedFeatures = null;
+            request.FeaturesIds = null;
+
+            filteredAdmins.Clear();
+            selectedAdmins = null;
+            request.AdminsIds = null;
+
+            filteredRegions.Clear();
+            selectedRegions = null;
+            request.RegionsIds = null;
+
+            await dataGrid.ReloadServerData();
         }
         #endregion
     }

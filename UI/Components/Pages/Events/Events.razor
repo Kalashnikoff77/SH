@@ -20,7 +20,7 @@
             <MudTextField Placeholder="Поиск" T="string" ValueChanged="@(s => OnSearch(s))" Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Clearable/>
         </MudItem>
         <MudItem xs="12" md="4">
-            <MudSelect Placeholder="Все услуги" @bind-SelectedValues="selectedFeatures" T="string" Dense AnchorOrigin="Origin.BottomCenter" Adornment="Adornment.End" IconSize="Size.Medium" MultiSelection Clearable>
+            <MudSelect Placeholder="Все услуги" SelectedValues="selectedFeatures" SelectedValuesChanged="FeaturesChanged" T="string" Dense AnchorOrigin="Origin.BottomCenter" Adornment="Adornment.End" IconSize="Size.Medium" MultiSelection Clearable>
                 @foreach (var feature in filteredFeatures)
                 {
                     <MudSelectItem Value="feature">@feature</MudSelectItem>
@@ -28,7 +28,7 @@
             </MudSelect>
         </MudItem>
         <MudItem xs="12" md="4">
-            <MudSelect Placeholder="Все организаторы" @bind-SelectedValues="selectedAdmins" T="string" Dense AnchorOrigin="Origin.BottomCenter" Adornment="Adornment.End" IconSize="Size.Medium" MultiSelection Clearable>
+            <MudSelect Placeholder="Все организаторы" SelectedValues="selectedAdmins" SelectedValuesChanged="AdminsChanged" T="string" Dense AnchorOrigin="Origin.BottomCenter" Adornment="Adornment.End" IconSize="Size.Medium" MultiSelection Clearable>
                 @foreach (var admin in filteredAdmins)
                 {
                     <MudSelectItem Value="admin">@admin</MudSelectItem>
@@ -36,7 +36,7 @@
             </MudSelect>
         </MudItem>
         <MudItem xs="12" md="4">
-            <MudSelect Placeholder="Все регионы" @bind-SelectedValues="selectedRegions" T="string" Dense AnchorOrigin="Origin.BottomCenter" Adornment="Adornment.End" IconSize="Size.Medium" MultiSelection Clearable>
+            <MudSelect Placeholder="Все регионы" SelectedValues="selectedRegions" SelectedValuesChanged="RegionsChanged" T="string" Dense AnchorOrigin="Origin.BottomCenter" Adornment="Adornment.End" IconSize="Size.Medium" MultiSelection Clearable>
                 @if (RegionsList != null) 
                 {
                     @foreach (var region in filteredRegions)
@@ -49,7 +49,7 @@
 
         <MudItem xs="12" Style="padding-top:10px">
             <MudStack Spacing="0" AlignItems="AlignItems.End">
-                <MudSwitch Size="Size.Small" @bind-Value="isActualEvents" Label="@actualEventsLabel" Color="Color.Primary" />
+                <MudSwitch Size="Size.Small" Value="isActualEvents" ValueChanged="ActualEventsChanged" T="bool" Label="@actualEventsLabel" Color="Color.Primary" />
             </MudStack>
         </MudItem>
 

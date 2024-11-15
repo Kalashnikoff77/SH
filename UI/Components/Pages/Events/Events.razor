@@ -56,6 +56,13 @@
     </MudGrid>
 
 
+    @if (EventsList == null) 
+    {
+        <MudAlert ContentAlignment="HorizontalAlignment.Center" Severity="Severity.Info" Variant="Variant.Outlined" Class="mb-5">
+            По Вашему запросу ничего не найдено...
+        </MudAlert>
+    }
+
     @* Список мероприятий *@
     <MudDataGrid @ref="dataGrid" Elevation="0" Virtualize Hover T="SchedulesForEventsViewDto" ServerData="ServerReload" Loading="false" Style="min-width:300px; max-width:800px" HeaderClass="dataGridHideTHead" Filterable="false">
         <Columns>

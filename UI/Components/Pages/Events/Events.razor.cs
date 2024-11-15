@@ -90,6 +90,10 @@ namespace UI.Components.Pages.Events
                     Items = EventsList,
                     TotalItems = EventsList.Count
                 };
+            } 
+            else
+            {
+                EventsList = null;
             }
             return items;
         }

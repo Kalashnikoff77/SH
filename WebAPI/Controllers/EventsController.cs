@@ -80,23 +80,26 @@ namespace WebAPI.Controllers
                 var ids = await _unitOfWork.SqlConnection.QueryAsync<int>("EventsFilter_sp", p, commandType: System.Data.CommandType.StoredProcedure);
                 response.Count = ids.Count();
 
-                string sql;
+                if (response.Count > 0)
+                {
+                    string sql;
 
-                if (request.IsActualEvents)
-                    sql = $"SELECT {columns.Aggregate((a, b) => a + ", " + b)} " +
-                        $"FROM SchedulesForEventsView " +
-                        $"WHERE Id IN ({string.Join(",", ids)}) AND {nameof(SchedulesForEventsViewDto.EndDate)} > getdate() " +
-                        $"ORDER BY {nameof(SchedulesForEventsViewDto.StartDate)} " +
-                        $"OFFSET {request.Skip} ROWS FETCH NEXT {request.Take} ROWS ONLY";
-                else
-                    sql = $"SELECT {columns.Aggregate((a, b) => a + ", " + b)} " +
-                        $"FROM SchedulesForEventsView " +
-                        $"WHERE Id IN ({string.Join(",", ids)}) AND {nameof(SchedulesForEventsViewDto.EndDate)} < getdate() " +
-                        $"ORDER BY {nameof(SchedulesForEventsViewDto.EndDate)} DESC " +
-                        $"OFFSET {request.Skip} ROWS FETCH NEXT {request.Take} ROWS ONLY";
+                    if (request.IsActualEvents)
+                        sql = $"SELECT {columns.Aggregate((a, b) => a + ", " + b)} " +
+                            $"FROM SchedulesForEventsView " +
+                            $"WHERE Id IN ({string.Join(",", ids)}) AND {nameof(SchedulesForEventsViewDto.EndDate)} > getdate() " +
+                            $"ORDER BY {nameof(SchedulesForEventsViewDto.StartDate)} " +
+                            $"OFFSET {request.Skip} ROWS FETCH NEXT {request.Take} ROWS ONLY";
+                    else
+                        sql = $"SELECT {columns.Aggregate((a, b) => a + ", " + b)} " +
+                            $"FROM SchedulesForEventsView " +
+                            $"WHERE Id IN ({string.Join(",", ids)}) AND {nameof(SchedulesForEventsViewDto.EndDate)} < getdate() " +
+                            $"ORDER BY {nameof(SchedulesForEventsViewDto.EndDate)} DESC " +
+                            $"OFFSET {request.Skip} ROWS FETCH NEXT {request.Take} ROWS ONLY";
 
-                var result = await _unitOfWork.SqlConnection.QueryAsync<SchedulesForEventsViewEntity>(sql);
-                response.Schedules = _mapper.Map<List<SchedulesForEventsViewDto>>(result);
+                    var result = await _unitOfWork.SqlConnection.QueryAsync<SchedulesForEventsViewEntity>(sql);
+                    response.Schedules = _mapper.Map<List<SchedulesForEventsViewDto>>(result);
+                }
             }
             return response;
         }

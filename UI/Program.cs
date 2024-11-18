@@ -1,5 +1,4 @@
 using Common.JSProcessor;
-using Common.Mapping;
 using Common.Models;
 using Common.Models.States;
 using Common.Repository;
@@ -20,7 +19,6 @@ builder.Services.AddRazorComponents()
 
 builder.Services.AddHttpClient();
 builder.Services.AddJwtToken(builder);
-builder.Services.AddAutoMapper(typeof(Mapping));
 
 builder.Services.AddScoped<CurrentState>();
 builder.Services.AddScoped(typeof(IRepository<,>), typeof(Repository<,>));

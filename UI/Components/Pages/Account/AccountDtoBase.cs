@@ -50,9 +50,8 @@ namespace UI.Components.Pages.Account
 
         public AccountRequestDtoBase AccountRequestDto { get; set; } = null!;
         public List<HobbiesDto> Hobbies { get; set; } = null!;
-        public bool ProcessingAccount, ProcessingPhoto, IsDataSaved = false;
 
-        public Informing Informing = new Informing();
+        public bool ProcessingAccount, ProcessingPhoto, IsDataSaved = false;
 
         public bool IsPanel1Valid => TabPanels[1].Items.All(x => x.Value == true);
         public bool IsPanel2Valid => TabPanels[2].Items.All(x => x.Value == true);

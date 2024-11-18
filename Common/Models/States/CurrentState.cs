@@ -13,6 +13,19 @@ namespace Common.Models.States
 {
     public partial class CurrentState
     {
+        public CurrentState(ProtectedLocalStorage protectedLocalStore, ProtectedSessionStorage protectedSessionStore,
+            NavigationManager navigationManager, IConfiguration configuration, IJSProcessor JSProcessor, IJSRuntime JS,
+            IRepository<AccountReloadRequestDto, AccountReloadResponseDto> repoReload)
+        {
+            _protectedLocalStore = protectedLocalStore;
+            _protectedSessionStore = protectedSessionStore;
+            _navigationManager = navigationManager;
+            _config = configuration;
+            _repoReload = repoReload;
+            _JSProcessor = JSProcessor;
+            this.JS = JS;
+        }
+
         /// <summary>
         /// Данные о залогиненном пользователе
         /// </summary>
@@ -38,19 +51,6 @@ namespace Common.Models.States
         IJSProcessor _JSProcessor { get; set; } = null!;
 
         IRepository<AccountReloadRequestDto, AccountReloadResponseDto> _repoReload { get; set; } = null!;
-
-        public CurrentState(ProtectedLocalStorage protectedLocalStore, ProtectedSessionStorage protectedSessionStore,
-            NavigationManager navigationManager, IConfiguration configuration, IJSProcessor JSProcessor, IJSRuntime JS,
-            IRepository<AccountReloadRequestDto, AccountReloadResponseDto> repoReload)
-        {
-            _protectedLocalStore = protectedLocalStore;
-            _protectedSessionStore = protectedSessionStore;
-            _navigationManager = navigationManager;
-            _config = configuration;
-            _repoReload = repoReload;
-            _JSProcessor = JSProcessor;
-            this.JS = JS;
-        }
 
         /// <summary>
         /// Вызывает StateHasChanged по всему сайту

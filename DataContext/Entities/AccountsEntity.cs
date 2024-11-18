@@ -10,8 +10,6 @@ namespace DataContext.Entities
         [Required]
         public string Name { get; set; } = null!;
 
-        public string Informing { get; set; } = null!;
-
         [Required]
         public bool IsConfirmed { get; set; }
 

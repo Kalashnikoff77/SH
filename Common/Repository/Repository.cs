@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using Common.Dto.Requests;
+﻿using Common.Dto.Requests;
 using Common.Dto.Responses;
 using Microsoft.Extensions.Configuration;
 using System.Net;
@@ -15,13 +14,11 @@ namespace Common.Repository
 
         readonly HttpClient _httpClient;
         readonly IConfiguration _config;
-        readonly IMapper _mapper;
 
-        public Repository(HttpClient httpClient, IConfiguration config, IMapper mapper)
+        public Repository(HttpClient httpClient, IConfiguration config)
         {
             _httpClient = httpClient;
             _config = config;
-            _mapper = mapper;
         }
 
 

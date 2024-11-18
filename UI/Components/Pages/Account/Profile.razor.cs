@@ -52,8 +52,6 @@ namespace UI.Components.Pages.Account
                 AccountRequestDto.Password = apiIdentityResponse.Response.Identity.Password;
                 AccountRequestDto.Password2 = apiIdentityResponse.Response.Identity.Password;
 
-                Informing = JsonSerializer.Deserialize<Informing>(AccountRequestDto.Informing)!;
-
                 CountryText = CurrentState.Account.Country!.Name;
                 RegionText = CurrentState.Account.Country!.Region.Name;
 
@@ -73,8 +71,6 @@ namespace UI.Components.Pages.Account
             AccountRequestDto.ErrorMessage = null;
             ProcessingAccount = true;
             StateHasChanged();
-
-            AccountRequestDto.Informing = JsonSerializer.Serialize(Informing);
 
             var response = await _repoUpdate.HttpPostAsync((UpdateAccountRequestDto)AccountRequestDto);
 

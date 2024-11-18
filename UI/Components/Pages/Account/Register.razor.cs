@@ -3,7 +3,6 @@ using Common.Dto.Requests;
 using Common.Models;
 using Common.Models.States;
 using System.Net;
-using System.Text.Json;
 using UI.Models;
 
 namespace UI.Components.Pages.Account
@@ -59,8 +58,6 @@ namespace UI.Components.Pages.Account
             AccountRequestDto.ErrorMessage = null;
             ProcessingAccount = true;
             StateHasChanged();
-
-            AccountRequestDto.Informing = JsonSerializer.Serialize(Informing);
 
             var response = await _repoRegister.HttpPostAsync((RegisterAccountRequestDto)AccountRequestDto);
 

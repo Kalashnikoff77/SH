@@ -36,13 +36,13 @@
 
             <MudItem sm="6" xs="12">
                 <MudStack Spacing="0" Class="mt-1" AlignItems="AlignItems.Center" title="Сообщать о новых уведомлениях на сайте">
-                    <MudSwitch @bind-Value="Data.Informing.IsNotification" Label="Получать уведомления" Color="Color.Primary" />
+                    <MudSwitch @bind-Value="Data.AccountRequestDto.Informings.IsNewNotification" Label="Получать уведомления" Color="Color.Primary" />
                 </MudStack>
             </MudItem>
 
             <MudItem sm="6" xs="12">
                 <MudStack Spacing="0" Class="mt-1" AlignItems="AlignItems.Center" title="Уведомлять о новых личных сообщениях на сайте">
-                    <MudSwitch @bind-Value="Data.Informing.IsMessage" Label="Получать сообщения" Color="Color.Primary" />
+                    <MudSwitch @bind-Value="Data.AccountRequestDto.Informings.IsNewMessage" Label="Получать сообщения" Color="Color.Primary" />
                 </MudStack>
             </MudItem>
 

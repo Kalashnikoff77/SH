@@ -77,16 +77,21 @@ namespace WebAPI.Extensions
         {
             var sql = $"UPDATE Accounts SET " +
                 $"{nameof(AccountsEntity.Name)} = @{nameof(request.Name)}, " +
-                $"{nameof(AccountsEntity.Informing)} = @{nameof(AccountsEntity.Informing)}, " +
                 $"{nameof(AccountsEntity.RegionId)} = @{nameof(AccountsEntity.RegionId)} " +
                 "WHERE Id = @AccountId";
-            await unitOfWork.SqlConnection.ExecuteAsync(sql, new { request.Email, request.Name, request.Informing, RegionId = request.Country.Region.Id, unitOfWork.AccountId }, transaction: unitOfWork.SqlTransaction);
+            await unitOfWork.SqlConnection.ExecuteAsync(sql, new { request.Email, request.Name, RegionId = request.Country.Region.Id, unitOfWork.AccountId }, transaction: unitOfWork.SqlTransaction);
 
             sql = $"UPDATE Identities SET " +
                 $"{nameof(IdentitiesEntity.Email)} = @{nameof(request.Email)}, " +
                 $"{nameof(IdentitiesEntity.Password)} = @{nameof(request.Password)} " +
                 "WHERE AccountId = @AccountId";
             await unitOfWork.SqlConnection.ExecuteAsync(sql, new { request.Email, request.Password, unitOfWork.AccountId }, transaction: unitOfWork.SqlTransaction);
+
+            sql = $"UPDATE Informings SET " +
+                $"{nameof(InformingsEntity.IsNewNotification)} = @{nameof(request.Informings.IsNewNotification)}, " +
+                $"{nameof(InformingsEntity.IsNewMessage)} = @{nameof(request.Informings.IsNewMessage)} " +
+                "WHERE AccountId = @AccountId";
+            await unitOfWork.SqlConnection.ExecuteAsync(sql, new { request.Informings.IsNewNotification, request.Informings.IsNewMessage, unitOfWork.AccountId }, transaction: unitOfWork.SqlTransaction);
         }
 
         public static async Task UpdateUsersAsync(this UpdateAccountRequestDto request, UnitOfWork unitOfWork)

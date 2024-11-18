@@ -91,11 +91,11 @@ namespace WebAPI.Extensions
         public static async Task<int> AddAccountAsync(this RegisterAccountRequestDto request, UnitOfWork unitOfWork)
         {
             var sql = "INSERT INTO Accounts " +
-                $"({nameof(AccountsEntity.Name)}, {nameof(AccountsEntity.Informing)}, {nameof(AccountsEntity.RegionId)}) " +
+                $"({nameof(AccountsEntity.Name)}, {nameof(AccountsEntity.RegionId)}) " +
                 "VALUES " +
-                $"(@{nameof(AccountsEntity.Name)}, @{nameof(AccountsEntity.Informing)}, @{nameof(AccountsEntity.RegionId)}) " +
+                $"(@{nameof(AccountsEntity.Name)}, @{nameof(AccountsEntity.RegionId)}) " +
                 "SELECT CAST(SCOPE_IDENTITY() AS INT)";
-            var AccountId = await unitOfWork.SqlConnection.QuerySingleAsync<int>(sql, new { request.Name, request.Informing, RegionId = request.Country.Region.Id }, 
+            var AccountId = await unitOfWork.SqlConnection.QuerySingleAsync<int>(sql, new { request.Name, RegionId = request.Country.Region.Id }, 
                 transaction: unitOfWork.SqlTransaction);
 
             sql = "INSERT INTO Identities " +
@@ -103,6 +103,13 @@ namespace WebAPI.Extensions
                 "VALUES " +
                 $"(@{nameof(IdentitiesEntity.AccountId)}, @{nameof(IdentitiesEntity.Email)}, @{nameof(IdentitiesEntity.Password)})";
             await unitOfWork.SqlConnection.ExecuteAsync(sql, new { AccountId, request.Email, request.Password },
+                transaction: unitOfWork.SqlTransaction);
+
+            sql = "INSERT INTO Informings " +
+                $"({nameof(InformingsEntity.AccountId)}, {nameof(InformingsEntity.IsNewNotification)}, {nameof(InformingsEntity.IsNewMessage)}) " +
+                "VALUES " +
+                $"(@{nameof(InformingsEntity.AccountId)}, @{nameof(InformingsEntity.IsNewNotification)}, @{nameof(InformingsEntity.IsNewMessage)})";
+            await unitOfWork.SqlConnection.ExecuteAsync(sql, new { AccountId, request.Informings.IsNewNotification, request.Informings.IsNewMessage },
                 transaction: unitOfWork.SqlTransaction);
 
             return AccountId;

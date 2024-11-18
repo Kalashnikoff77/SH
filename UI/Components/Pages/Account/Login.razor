@@ -29,7 +29,7 @@
             <MudButton OnClick="@(() => Navigation.NavigateTo("/register"))" ButtonType="ButtonType.Button" Color="Color.Primary" Size="Size.Small" Variant="Variant.Text">
                 <MudText Typo="Typo.body2"><b>РЕГИСТРАЦИЯ</b></MudText>
             </MudButton>
-            <MudButton ButtonType="ButtonType.Button" Color="Color.Secondary" Size="Size.Small" Variant="Variant.Text">
+            <MudButton OnClick="@(() => Navigation.NavigateTo("/remember"))" ButtonType="ButtonType.Button" Color="Color.Secondary" Size="Size.Small" Variant="Variant.Text">
                 <MudText Typo="Typo.body2">ЗАБЫЛИ ПАРОЛЬ?</MudText>
             </MudButton>
         </MudStack>

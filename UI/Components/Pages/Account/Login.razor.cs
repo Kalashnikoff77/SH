@@ -56,10 +56,6 @@ namespace UI.Components.Pages.Account
             }
         }
 
-        void OnResetPassword(string email)
-        {
-        }
-
 
         Color EmailIconColor = Color.Default;
         string? EmailValidator(string email)

@@ -101,6 +101,23 @@ namespace WebAPI.Controllers
             return response;
         }
 
+        [Route("Remember"), HttpPost]
+        public async Task<ResponseDtoBase> RememberAsync(RememberRequestDto request)
+        {
+            var response = new ResponseDtoBase();
+
+            if (string.IsNullOrWhiteSpace(request.Email))
+                throw new BadRequestException("Не указан email!");
+
+            var sql = $"SELECT TOP 1 * FROM Identities " +
+                $"WHERE {nameof(IdentitiesEntity.Email)} = @{nameof(IdentitiesEntity.Email)} ";
+            var identity = await _unitOfWork.SqlConnection.QueryFirstOrDefaultAsync<IdentitiesEntity?>(sql, new { request.Email })
+                ?? throw new NotFoundException("Данный email не зарегистрирован в системе!");
+
+            return response;
+        }
+
+
 
         [Route("Reload"), HttpPost, Authorize]
         public async Task<AccountReloadResponseDto> ReloadAsync(AccountReloadRequestDto request)

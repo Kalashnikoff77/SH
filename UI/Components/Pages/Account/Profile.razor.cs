@@ -1,11 +1,9 @@
-﻿using Common.Dto;
-using Common.Dto.Requests;
+﻿using Common.Dto.Requests;
 using Common.Extensions;
 using Common.Models;
 using Common.Models.States;
 using MudBlazor;
 using System.Net;
-using System.Text.Json;
 using UI.Models;
 
 namespace UI.Components.Pages.Account

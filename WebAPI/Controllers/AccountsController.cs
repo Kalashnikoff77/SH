@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Mvc;
 using WebAPI.Exceptions;
 using WebAPI.Extensions;
 using WebAPI.Models;
+using static Dapper.SqlMapper;
 
 namespace WebAPI.Controllers
 {
@@ -81,8 +82,8 @@ namespace WebAPI.Controllers
         {
             var response = new LoginResponseDto();
 
-            if (request.Email == null || request.Password == null)
-                return response;
+            if (string.IsNullOrWhiteSpace(request.Email) || string.IsNullOrWhiteSpace(request.Password))
+                throw new NotFoundException("Неверный логин / пароль!");
 
             var sql = $"SELECT TOP 1 * FROM Identities " +
                 $"WHERE {nameof(IdentitiesEntity.Email)} = @{nameof(IdentitiesEntity.Email)} AND {nameof(IdentitiesEntity.Password)} = @{nameof(IdentitiesEntity.Password)}";
@@ -112,6 +113,10 @@ namespace WebAPI.Controllers
             var result = await _unitOfWork.SqlConnection.QueryFirstOrDefaultAsync<AccountsViewEntity>(sql, new { _unitOfWork.AccountId }) 
                 ?? throw new NotFoundException($"Аккаунт с Id {_unitOfWork.AccountId} не найден!");
             response.Account = _mapper.Map<AccountsViewDto>(result);
+
+            sql = $"SELECT TOP 1 * FROM Informings WHERE Id = @AccountId";
+            var informings = await _unitOfWork.SqlConnection.QueryFirstOrDefaultAsync<InformingsEntity?>(sql, new { _unitOfWork.AccountId });
+            response.Account.Informings = _mapper.Map<InformingsDto>(informings);
 
             return response;
         }

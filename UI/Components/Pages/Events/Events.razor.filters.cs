@@ -4,13 +4,14 @@ namespace UI.Components.Pages.Events
 {
     public partial class Events
     {
+        Filters Filters { get; set; } = new Filters();
+
         #region Фильтр услуг
         List<FeaturesForEventsViewDto> FeaturesList = new List<FeaturesForEventsViewDto>();
-        IEnumerable<string>? selectedFeatures { get; set; }
 
         async Task FeaturesChanged(IEnumerable<string> values)
         {
-            selectedFeatures = values;
+            Filters.SelectedFeatures = values;
             
             filteredAdmins.Clear();
             filteredRegions.Clear();
@@ -58,11 +59,10 @@ namespace UI.Components.Pages.Events
 
         #region Фильтр организаторов
         List<AdminsForEventsViewDto> AdminsList = new List<AdminsForEventsViewDto>();
-        IEnumerable<string>? selectedAdmins { get; set; }
 
         async Task AdminsChanged(IEnumerable<string> values)
         {
-            selectedAdmins = values;
+            Filters.SelectedAdmins = values;
 
             filteredFeatures.Clear();
             filteredRegions.Clear();
@@ -110,11 +110,10 @@ namespace UI.Components.Pages.Events
 
         #region Фильтр регионов
         List<RegionsForEventsViewDto> RegionsList = new List<RegionsForEventsViewDto>();
-        IEnumerable<string>? selectedRegions { get; set; }
 
         async Task RegionsChanged(IEnumerable<string> values)
         {
-            selectedRegions = values;
+            Filters.SelectedRegions = values;
 
             filteredFeatures.Clear();
             filteredAdmins.Clear();
@@ -172,19 +171,27 @@ namespace UI.Components.Pages.Events
             actualEventsLabel = value ? "Актуальные мероприятия" : "Завершённые мероприятия";
 
             filteredFeatures.Clear();
-            selectedFeatures = null;
+            Filters.SelectedFeatures = null;
             request.FeaturesIds = null;
 
             filteredAdmins.Clear();
-            selectedAdmins = null;
+            Filters.SelectedAdmins = null;
             request.AdminsIds = null;
 
             filteredRegions.Clear();
-            selectedRegions = null;
+            Filters.SelectedRegions = null;
             request.RegionsIds = null;
 
             await dataGrid.ReloadServerData();
         }
         #endregion
+    }
+
+
+    class Filters
+    {
+        public IEnumerable<string>? SelectedFeatures { get; set; }
+        public IEnumerable<string>? SelectedAdmins { get; set; }
+        public IEnumerable<string>? SelectedRegions { get; set; }
     }
 }

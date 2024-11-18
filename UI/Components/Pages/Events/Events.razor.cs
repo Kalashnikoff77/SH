@@ -5,6 +5,7 @@ using Common.Models.SignalR;
 using Common.Models.States;
 using Common.Repository;
 using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
 using MudBlazor;
 using UI.Components.Dialogs;
 
@@ -18,6 +19,7 @@ namespace UI.Components.Pages.Events
         [Inject] IRepository<GetRegionsForEventsRequestDto, GetRegionsForEventsResponseDto> _repoGetRegions { get; set; } = null!;
         [Inject] IRepository<GetAdminsForEventsRequestDto, GetAdminsForEventsResponseDto> _repoGetAdmins { get; set; } = null!;
 
+        [Inject] ProtectedSessionStorage _protectedSessionStore { get; set; } = null!;
         [Inject] ShowDialogs ShowDialogs { get; set; } = null!;
 
         MudDataGrid<SchedulesForEventsViewDto> dataGrid = null!;
@@ -51,7 +53,8 @@ namespace UI.Components.Pages.Events
             {
                 var accountRegion = RegionsList.FirstOrDefault(w => w.Id == CurrentState.Account.Country.Region.Id);
                 if (accountRegion != null)
-                    selectedRegions = [accountRegion.Name];
+                    Filters.SelectedRegions = [accountRegion.Name];
+
                 isFirstSetParameters = false;
             }
         }
@@ -74,7 +77,6 @@ namespace UI.Components.Pages.Events
                 }
             }));
         }
-
 
         async Task<GridData<SchedulesForEventsViewDto>> ServerReload(GridState<SchedulesForEventsViewDto> state)
         {

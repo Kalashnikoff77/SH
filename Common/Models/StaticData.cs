@@ -84,7 +84,7 @@ namespace Common.Models
         public const short DB_USERS_HEIGHT_MIN = 100;
         public const short DB_USERS_HEIGHT_MAX = 230;
         public const short DB_EVENT_NAME_MIN = 10;
-        public const short DB_EVENT_NAME_MAX = 50;
+        public const short DB_EVENT_NAME_MAX = 80;
         public const short DB_EVENT_DESCRIPTION_MIN = 50;
         public const short DB_EVENT_DESCRIPTION_MAX = 2048;
         public const short DB_EVENT_ADDRESS_MIN = 10;

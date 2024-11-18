@@ -84,8 +84,8 @@
                             bool disabled = false;
                             foreach (var feature in AllFeatures.OrderBy(o => o.Name))
                             {
-                                btnColor = schedule.Features.Any(x => x.Id == feature.Id) ? Color.Info : Color.Default;
-                                disabled = schedule.Features.Count >= 5 && btnColor == Color.Default ? true : false;
+                                btnColor = schedule.Features!.Any(x => x.Id == feature.Id) ? Color.Info : Color.Default;
+                                disabled = schedule.Features!.Count >= 5 && btnColor == Color.Default ? true : false;
                                 <MudButton OnClick="() => OnFeatureChanged(feature)" Color="@btnColor" Disabled="@disabled" Variant="Variant.Outlined" Size="Size.Small" Style="padding: 0 5px 0 5px; font-size:12px; text-transform:none;">@feature.Name</MudButton>
                             }
                         }
@@ -93,7 +93,7 @@
                 </MudItem>
 
                 <MudItem xs="12">
-                    <MudTextField T="string" Label="Описание" Variant="Variant.Text" @bind-Value="@schedule.Description" Lines="2" />
+                    <MudTextField T="string" Label="Описание" Lines="3" MaxLines="8" AutoGrow Variant="Variant.Text" @bind-Value="@schedule.Description" />
                 </MudItem>
 
             </MudGrid>

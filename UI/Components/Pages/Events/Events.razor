@@ -69,20 +69,14 @@
                     <CellTemplate>
                         @if (context.Item.Event != null)
                         {
-                            <MudStack Wrap="Wrap.Wrap" Row AlignItems="AlignItems.Center" StretchItems="StretchItems.Middle">
+                            <MudStack Wrap="Wrap.NoWrap" Row StretchItems="StretchItems.Middle" AlignItems="AlignItems.Center">
 
-                                <ImageEvent Event="context.Item.Event" Size="EnumImageSize.s150x150" Title="@context.Item.Event.Name" Style="border-radius:5%; width:135px; height:135px; margin-right:8px" />
+                                <ImageEvent Event="context.Item.Event" Size="EnumImageSize.s150x150" Title="@context.Item.Event.Name" Style="border-radius:5%; width:140px; height:140px; margin-right:8px" />
 
                                 <MudStack Spacing="1">
-                                    <MudStack Row>
-                                        <MudButton OnClick="() => ShowDialogs.EventCardDialogAsync(context.Item)" Size="Size.Medium" Color="Color.Primary" Variant="Variant.Text" Class="px-1 py-1">
-                                            <MudText Typo="Typo.body1"><b>@context.Item.Event.Name</b></MudText>
-                                        </MudButton>
-                                        @if (CurrentState.Account?.Id == context.Item.Event.Admin?.Id)
-                                        {
-                                            <MudIconButton Href="@($"/events/update/{context.Item.EventId}")" Style="opacity:.4" Icon="@Icons.Material.Outlined.Edit" title="Редактировать" Color="Color.Primary" Size="Size.Small" />
-                                        }
-                                    </MudStack>
+                                    <MudText @onclick="() => ShowDialogs.EventCardDialogAsync(context.Item)" Typo="Typo.body1" Color="Color.Primary" Class="px-1 py-1" Style="cursor:pointer">
+                                        <b>@context.Item.Event.Name</b>
+                                    </MudText>
                                     <MudStack Row AlignItems="AlignItems.Center" Spacing="1">
                                         <MudIcon Icon="@Icons.Material.Outlined.LocationOn" Style="font-size:20px" />
                                         <MudText Typo="Typo.body2">@context.Item.Event.ToRegionString()</MudText>
@@ -130,11 +124,15 @@
                                     }
                                 </MudStack>
 
-                                <MudStack AlignItems="AlignItems.Center" Spacing="2" Style="width:100px">
-                                    <MudButton OnClick="() => ShowDialogs.AccountCardDialogAsync(context.Item.Event.Admin!)">
+                                <MudStack AlignItems="AlignItems.Center" Spacing="2">
+                                    <MudButton OnClick="() => ShowDialogs.AccountCardDialogAsync(context.Item.Event.Admin!)" Style="width:100px">
                                         <MudStack AlignItems="AlignItems.Center">
                                             <ImageAvatar Account="context.Item.Event.Admin" Size="EnumImageSize.s64x64" Title="Организатор" class="s45" Style="border-radius:50%" />
                                             <ColorizedAccountName Account="@context.Item.Event.Admin" Typo="Typo.body2" Style="font-size:12px; text-align:center" />
+                                            @if (CurrentState.Account?.Id == context.Item.Event.Admin?.Id)
+                                            {
+                                                <MudIconButton Href="@($"/events/update/{context.Item.EventId}")" Style="opacity:.4" Icon="@Icons.Material.Outlined.Edit" title="Редактировать" Color="Color.Primary" Size="Size.Small" />
+                                            }
                                         </MudStack>
                                     </MudButton>
                                 </MudStack>

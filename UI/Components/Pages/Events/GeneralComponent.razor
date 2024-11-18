@@ -18,7 +18,7 @@
                                 Validation="@(new Func<string?, string?>(Data.DescriptionValidator))"
                                 HelperText="Правила, программа и особенности встречи"
                                 Label="Описание мероприятия"
-                                Lines="3" MaxLines="5"
+                                Lines="3" MaxLines="8" AutoGrow
                                 AdornmentIcon="@Icons.Material.Outlined.Info" AdornmentColor="@Data.DescriptionIconColor" Adornment="Adornment.End"
                                 Class="mt-7"
                                 Typo="Typo.body1" Margin="Margin.Normal" Variant="Variant.Outlined" MaxLength="StaticData.DB_EVENT_DESCRIPTION_MAX" />

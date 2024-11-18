@@ -17,5 +17,7 @@
         public List<RelationsForAccountsDto>? Relations { get; set; }
 
         public List<SchedulesForAccountsDto>? Schedules { get; set; }
+
+        public InformingsDto? Informings { get; set; }
     }
 }

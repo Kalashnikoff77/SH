@@ -93,6 +93,10 @@ namespace WebAPI.Controllers
             var account = await _unitOfWork.SqlConnection.QueryFirstOrDefaultAsync<AccountsViewEntity>(sql, new { identity.AccountId });
             response.Account = _mapper.Map<AccountsViewDto>(account);
 
+            sql = $"SELECT TOP 1 * FROM Informings WHERE Id = @AccountId";
+            var informings = await _unitOfWork.SqlConnection.QueryFirstOrDefaultAsync<InformingsEntity?>(sql, new { identity.AccountId });
+            response.Account.Informings = _mapper.Map<InformingsDto>(informings);
+
             return response;
         }
 

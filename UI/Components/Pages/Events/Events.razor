@@ -65,15 +65,15 @@
         @* Список мероприятий *@
         <MudDataGrid @ref="dataGrid" Elevation="0" Virtualize Hover T="SchedulesForEventsViewDto" ServerData="ServerReload" Loading="false" Style="min-width:300px; max-width:800px" HeaderClass="dataGridHideTHead" Filterable="false">
             <Columns>
-                <TemplateColumn CellClass="py-6">
+                <TemplateColumn CellClass="py-5">
                     <CellTemplate>
                         @if (context.Item.Event != null)
                         {
-                            <MudStack Wrap="Wrap.NoWrap" Row StretchItems="StretchItems.Middle" AlignItems="AlignItems.Center">
+                           <MudStack Wrap="Wrap.NoWrap" Class="flex-sm-row" Style="width:100%" StretchItems="StretchItems.Middle" AlignItems="AlignItems.Center">
 
                                 <ImageEvent Event="context.Item.Event" Size="EnumImageSize.s150x150" Title="@context.Item.Event.Name" Style="border-radius:5%; width:140px; height:140px; margin-right:8px" />
 
-                                <MudStack Spacing="1">
+                                <MudStack Spacing="1" Style="width:100%">
                                     <MudText @onclick="() => ShowDialogs.EventCardDialogAsync(context.Item)" Typo="Typo.body1" Color="Color.Primary" Class="px-1 py-1" Style="cursor:pointer">
                                         <b>@context.Item.Event.Name</b>
                                     </MudText>
@@ -124,18 +124,18 @@
                                     }
                                 </MudStack>
 
-                                <MudStack AlignItems="AlignItems.Center" Spacing="2">
+                                <div class="d-none d-sm-flex">
                                     <MudButton OnClick="() => ShowDialogs.AccountCardDialogAsync(context.Item.Event.Admin!)" Style="width:100px">
-                                        <MudStack AlignItems="AlignItems.Center">
+                                        <div>
                                             <ImageAvatar Account="context.Item.Event.Admin" Size="EnumImageSize.s64x64" Title="Организатор" class="s45" Style="border-radius:50%" />
                                             <ColorizedAccountName Account="@context.Item.Event.Admin" Typo="Typo.body2" Style="font-size:12px; text-align:center" />
                                             @if (CurrentState.Account?.Id == context.Item.Event.Admin?.Id)
                                             {
                                                 <MudIconButton Href="@($"/events/update/{context.Item.EventId}")" Style="opacity:.4" Icon="@Icons.Material.Outlined.Edit" title="Редактировать" Color="Color.Primary" Size="Size.Small" />
                                             }
-                                        </MudStack>
+                                        </div>
                                     </MudButton>
-                                </MudStack>
+                                </div>
 
                             </MudStack>
                         }

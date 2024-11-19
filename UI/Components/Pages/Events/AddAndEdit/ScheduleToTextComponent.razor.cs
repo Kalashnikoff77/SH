@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Components;
 using System.Text;
 
-namespace UI.Components.Pages.Events
+namespace UI.Components.Pages.Events.AddAndEdit
 {
     public partial class ScheduleToTextComponent
     {
@@ -18,7 +18,7 @@ namespace UI.Components.Pages.Events
         {
             result.Clear();
 
-            if (IsOneTimeEvent) 
+            if (IsOneTimeEvent)
             {
                 if (StartDate.HasValue)
                 {
@@ -33,7 +33,7 @@ namespace UI.Components.Pages.Events
                     if (EndTime.HasValue)
                         result.Append($" в {string.Format("{0:D2}:{1:D2}", EndTime.Value.Hours, EndTime.Value.Minutes)}");
                 }
-            } 
+            }
             else
             {
                 if (StartDate.HasValue)

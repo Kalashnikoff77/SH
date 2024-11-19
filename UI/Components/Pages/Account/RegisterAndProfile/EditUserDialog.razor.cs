@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Components;
 using MudBlazor;
 using UI.Models;
 
-namespace UI.Components.Dialogs
+namespace UI.Components.Pages.Account.RegisterAndProfile
 {
     public partial class EditUserDialog
     {
@@ -40,7 +40,7 @@ namespace UI.Components.Dialogs
             }
             else
             {
-                Title = $"Редактирование партнёра - { User.Name }";
+                Title = $"Редактирование партнёра - {User.Name}";
                 StartIcon = Icons.Material.Outlined.Check;
                 ButtonSubmitText = "Сохранить";
                 UserCopy = User.DeepCopy<UsersDto>()!;

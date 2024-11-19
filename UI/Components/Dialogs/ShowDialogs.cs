@@ -1,5 +1,8 @@
 ﻿using Common.Dto.Views;
 using MudBlazor;
+using UI.Components.Pages.Account;
+using UI.Components.Pages.Events;
+using UI.Components.Pages.Events.EventInfoCardDialog;
 
 namespace UI.Components.Dialogs
 {
@@ -16,25 +19,25 @@ namespace UI.Components.Dialogs
         {
             DialogOptions dialogOptions = new() { CloseOnEscapeKey = true, CloseButton = true };
 
-            var dialogParams = new DialogParameters<AccountCardDialog>
+            var dialogParams = new DialogParameters<AccountInfoCardDialog>
             {
                 { x => x.Account, account }
             };
-            return _dialog.ShowAsync<AccountCardDialog>(account.Name, dialogParams, dialogOptions);
+            return _dialog.ShowAsync<AccountInfoCardDialog>(account.Name, dialogParams, dialogOptions);
         }
 
         /// <summary>
         /// Карточка мероприятия
         /// </summary>
-        public Task EventCardDialogAsync(SchedulesForEventsViewDto schedule)
+        public async Task EventCardDialogAsync(SchedulesForEventsViewDto schedule)
         {
             DialogOptions dialogOptions = new() { CloseOnEscapeKey = true, CloseButton = true };
 
-            var dialogParams = new DialogParameters<EventCardDialog.EventCardDialog>
+            var dialogParams = new DialogParameters<EventInfoCardDialog>
             {
                 { x => x.ScheduleForEventView, schedule }
             };
-            return _dialog.ShowAsync<EventCardDialog.EventCardDialog>(schedule.Event?.Name, dialogParams, dialogOptions);
+            await _dialog.ShowAsync<EventInfoCardDialog>(schedule.Event?.Name, dialogParams, dialogOptions);
         }
 
 

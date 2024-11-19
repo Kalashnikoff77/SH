@@ -52,6 +52,10 @@
         </DialogContent>
 
         <DialogActions>
+            @if (CurrentState.Account?.Id == ScheduleForEventView.Event.Admin?.Id)
+            {
+                <MudButton Href="@($"/events/update/{ScheduleForEventView.EventId}")" Color="Color.Primary">Редактировать</MudButton>
+            }
             <MudButton Color="Color.Error" OnClick="() => MudDialog.Close(DialogResult.Ok(true))">Закрыть</MudButton>
         </DialogActions>
     </MudDialog>

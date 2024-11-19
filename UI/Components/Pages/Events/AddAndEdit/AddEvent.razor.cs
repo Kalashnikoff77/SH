@@ -3,7 +3,7 @@ using Common.Dto.Views;
 using Common.Models.States;
 using UI.Models;
 
-namespace UI.Components.Pages.Events
+namespace UI.Components.Pages.Events.AddAndEdit
 {
     public partial class AddEvent : EventDtoBase, IDisposable
     {

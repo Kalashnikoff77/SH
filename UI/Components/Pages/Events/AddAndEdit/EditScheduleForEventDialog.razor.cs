@@ -7,7 +7,7 @@ using Common.Repository;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
 
-namespace UI.Components.Dialogs
+namespace UI.Components.Pages.Events.AddAndEdit
 {
     public partial class EditScheduleForEventDialog
     {
@@ -26,19 +26,20 @@ namespace UI.Components.Dialogs
 
         protected async override Task OnInitializedAsync()
         {
-            var featuresResponse = await _repoGetFeatures.HttpPostAsync(new GetFeaturesRequestDto());
-            AllFeatures = featuresResponse.Response.Features;
-
-            startTime = new TimeSpan(ScheduleCopy.StartDate.Hour, ScheduleCopy.StartDate.Minute, ScheduleCopy.StartDate.Second);
-            endTime = new TimeSpan(ScheduleCopy.EndDate.Hour, ScheduleCopy.EndDate.Minute, ScheduleCopy.EndDate.Second);
-        }
-
-        protected override void OnParametersSet()
-        {
             ScheduleCopy = Schedule.DeepCopy<SchedulesForEventsViewDto>()!;
 
             if (ScheduleCopy.Features == null)
                 ScheduleCopy.Features = new List<FeaturesDto>();
+
+            startTime = new TimeSpan(ScheduleCopy.StartDate.Hour, ScheduleCopy.StartDate.Minute, ScheduleCopy.StartDate.Second);
+            endTime = new TimeSpan(ScheduleCopy.EndDate.Hour, ScheduleCopy.EndDate.Minute, ScheduleCopy.EndDate.Second);
+
+            var featuresResponse = await _repoGetFeatures.HttpPostAsync(new GetFeaturesRequestDto());
+            AllFeatures = featuresResponse.Response.Features;
+        }
+
+        protected override void OnParametersSet()
+        {
         }
 
         DateTime? startDate
@@ -49,13 +50,13 @@ namespace UI.Components.Dialogs
         TimeSpan? _startTime;
         TimeSpan? startTime
         {
-            get => _startTime; 
+            get => _startTime;
             set { _startTime = value!.Value; CheckProperties(); }
         }
 
         DateTime? endDate
         {
-            get => ScheduleCopy.EndDate == DateTime.MinValue ? null : ScheduleCopy.EndDate; 
+            get => ScheduleCopy.EndDate == DateTime.MinValue ? null : ScheduleCopy.EndDate;
             set { ScheduleCopy.EndDate = value!.Value; CheckProperties(); }
         }
         TimeSpan? _endTime;

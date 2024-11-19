@@ -4,9 +4,9 @@ using MudBlazor;
 using System.Net;
 using UI.Models;
 
-namespace UI.Components.Pages.Events
+namespace UI.Components.Pages.Events.AddAndEdit
 {
-    public partial class UpdateEvent : EventDtoBase, IDisposable
+    public partial class EditEvent : EventDtoBase, IDisposable
     {
         protected override async Task OnInitializedAsync()
         {

@@ -5,7 +5,7 @@ using Common.Models.States;
 using System.Net;
 using UI.Models;
 
-namespace UI.Components.Pages.Account
+namespace UI.Components.Pages.Account.RegisterAndProfile
 {
     public partial class Register : AccountDtoBase, IDisposable
     {

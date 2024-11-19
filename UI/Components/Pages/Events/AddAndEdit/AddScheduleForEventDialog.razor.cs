@@ -6,7 +6,7 @@ using Common.Repository;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
 
-namespace UI.Components.Pages.Events
+namespace UI.Components.Pages.Events.AddAndEdit
 {
     public partial class AddScheduleForEventDialog
     {

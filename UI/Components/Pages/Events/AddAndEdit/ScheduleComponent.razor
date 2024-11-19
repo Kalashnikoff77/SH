@@ -40,8 +40,8 @@
                 <TemplateColumn CellStyle="width:90px">
                     <CellTemplate>
                         <MudStack Row Spacing="2">
-                            <MudIconButton Size="@Size.Small" title="Редактировать расписание" Icon="@Icons.Material.Outlined.Edit" Color="Color.Primary" OnClick="async () => await Data.EditScheduleDialogAsync(context.Item)" />
-                            <MudIconButton Size="@Size.Small" title="Удалить расписание" Icon="@Icons.Material.Outlined.Delete" Color="Color.Error" OnClick="async () => await Data.DeleteScheduleDialogAsync(context.Item)" />
+                            <MudIconButton Size="@Size.Small" title="Редактировать расписание" Icon="@Icons.Material.Outlined.Edit" Color="Color.Primary" OnClick="async () => await Data.EditScheduleForEventDialogAsync(context.Item)" />
+                            <MudIconButton Size="@Size.Small" title="Удалить расписание" Icon="@Icons.Material.Outlined.Delete" Color="Color.Error" OnClick="async () => await Data.DeleteScheduleForEventDialogAsync(context.Item)" />
                         </MudStack>
                     </CellTemplate>
                 </TemplateColumn>

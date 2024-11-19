@@ -16,7 +16,7 @@ using System.Text.RegularExpressions;
 using UI.Components.Dialogs;
 using UI.Models;
 
-namespace UI.Components.Pages.Account
+namespace UI.Components.Pages.Account.RegisterAndProfile
 {
     public abstract class AccountDtoBase : ComponentBase
     {

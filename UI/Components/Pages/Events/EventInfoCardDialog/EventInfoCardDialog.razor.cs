@@ -7,10 +7,11 @@ using Common.Models.States;
 using Common.Repository;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
+using UI.Components.Dialogs;
 
-namespace UI.Components.Dialogs.EventCardDialog
+namespace UI.Components.Pages.Events.EventInfoCardDialog
 {
-    public partial class EventCardDialog : IDisposable
+    public partial class EventInfoCardDialog : IDisposable
     {
         [CascadingParameter] CurrentState CurrentState { get; set; } = null!;
         [CascadingParameter] MudDialogInstance MudDialog { get; set; } = null!;

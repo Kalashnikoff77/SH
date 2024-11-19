@@ -7,15 +7,15 @@ using Common.Repository;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
 
-namespace UI.Components.Dialogs
+namespace UI.Components.Pages.Events
 {
-    public partial class UnregisterForEventDialog
+    public partial class RegisterForEventDialog
     {
         [CascadingParameter] MudDialogInstance MudDialog { get; set; } = null!;
         [CascadingParameter] CurrentState CurrentState { get; set; } = null!;
         [Parameter, EditorRequired] public SchedulesForEventsViewDto ScheduleForEventView { get; set; } = null!;
 
-        [Inject] IRepository<EventRegistrationRequestDto, EventRegistrationResponseDto> _repoUpdateRegistration { get; set; } = null!;
+        [Inject] IRepository<EventRegistrationRequestDto, EventRegistrationResponseDto> _repoEventRegistration { get; set; } = null!;
 
         async Task Submit()
         {
@@ -23,7 +23,7 @@ namespace UI.Components.Dialogs
             {
                 MudDialog.Close(DialogResult.Ok(true));
 
-                var apiResponse = await _repoUpdateRegistration.HttpPostAsync(new EventRegistrationRequestDto
+                var apiResponse = await _repoEventRegistration.HttpPostAsync(new EventRegistrationRequestDto
                 {
                     Token = CurrentState.Account.Token,
                     ScheduleId = ScheduleForEventView.Id

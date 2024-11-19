@@ -12,7 +12,7 @@ using MudBlazor;
 using UI.Components.Dialogs;
 using UI.Models;
 
-namespace UI.Components.Pages.Events
+namespace UI.Components.Pages.Events.AddAndEdit
 {
     public abstract class EventDtoBase : ComponentBase
     {
@@ -244,7 +244,7 @@ namespace UI.Components.Pages.Events
             CheckPanel2Properties();
         }
 
-        public async Task EditScheduleDialogAsync(SchedulesForEventsViewDto Schedule)
+        public async Task EditScheduleForEventDialogAsync(SchedulesForEventsViewDto Schedule)
         {
             var parameters = new DialogParameters<EditScheduleForEventDialog>
             {
@@ -264,7 +264,7 @@ namespace UI.Components.Pages.Events
             }
         }
 
-        public async Task DeleteScheduleDialogAsync(SchedulesForEventsViewDto schedule)
+        public async Task DeleteScheduleForEventDialogAsync(SchedulesForEventsViewDto schedule)
         {
             var parameters = new DialogParameters<ConfirmDialog>
             {

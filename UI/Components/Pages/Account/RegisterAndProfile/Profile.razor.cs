@@ -6,13 +6,13 @@ using MudBlazor;
 using System.Net;
 using UI.Models;
 
-namespace UI.Components.Pages.Account
+namespace UI.Components.Pages.Account.RegisterAndProfile
 {
     public partial class Profile : AccountDtoBase, IDisposable
     {
         protected override async Task OnInitializedAsync()
         {
-            TabPanels = new Dictionary<short, TabPanel>() 
+            TabPanels = new Dictionary<short, TabPanel>()
             {
                 { 1, new TabPanel
                     {

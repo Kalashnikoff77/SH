@@ -8,9 +8,9 @@ using Common.Repository;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
 
-namespace UI.Components.Dialogs
+namespace UI.Components.Pages.Account
 {
-    public partial class AccountCardDialog : IDisposable
+    public partial class AccountInfoCardDialog : IDisposable
     {
         [CascadingParameter] CurrentState CurrentState { get; set; } = null!;
         [CascadingParameter] MudDialogInstance MudDialog { get; set; } = null!;
@@ -26,7 +26,7 @@ namespace UI.Components.Dialogs
         {
             if (Account != null)
             {
-                var apiResponse = await _repoGetAccount.HttpPostAsync(new GetAccountsRequestDto 
+                var apiResponse = await _repoGetAccount.HttpPostAsync(new GetAccountsRequestDto
                 {
                     Id = Account.Id,
                     IsHobbiesIncluded = true,

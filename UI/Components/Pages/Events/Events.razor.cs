@@ -1,11 +1,11 @@
 ﻿using Common.Dto.Requests;
 using Common.Dto.Responses;
 using Common.Dto.Views;
+using Common.JSProcessor;
 using Common.Models.SignalR;
 using Common.Models.States;
 using Common.Repository;
 using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
 using MudBlazor;
 using UI.Components.Dialogs;
 
@@ -18,8 +18,8 @@ namespace UI.Components.Pages.Events
         [Inject] IRepository<GetFeaturesForEventsRequestDto, GetFeaturesForEventsResponseDto> _repoGetFeatures { get; set; } = null!;
         [Inject] IRepository<GetRegionsForEventsRequestDto, GetRegionsForEventsResponseDto> _repoGetRegions { get; set; } = null!;
         [Inject] IRepository<GetAdminsForEventsRequestDto, GetAdminsForEventsResponseDto> _repoGetAdmins { get; set; } = null!;
+        [Inject] IJSProcessor _JSProcessor { get; set; } = null!;
 
-        [Inject] ProtectedSessionStorage _protectedSessionStore { get; set; } = null!;
         [Inject] ShowDialogs ShowDialogs { get; set; } = null!;
 
         MudDataGrid<SchedulesForEventsViewDto> dataGrid = null!;
@@ -31,6 +31,11 @@ namespace UI.Components.Pages.Events
         /// Для предотвращения повторного выполнения OnParametersSet (выполняется при переходе на другую ссылку)
         /// </summary>
         protected bool isFirstSetParameters = true;
+
+        // Текущая отображаемая страница с мероприятиями
+        int currentPage = 0;
+        // Текущее кол-во отображаемых мероприятий на странице
+        int currentPageSize = 10;
 
         IDisposable? OnScheduleChangedHandler;
 
@@ -95,7 +100,17 @@ namespace UI.Components.Pages.Events
                     Items = EventsList,
                     TotalItems = apiResponse.Response.Count ?? 0
                 };
-            } 
+            }
+
+            // Проверка, нужно ли прокручивать страницу вверх при переключении на другую страницу
+            // или изменении кол-ва мероприятий на странице
+            if (state.Page != currentPage || state.PageSize != currentPageSize)
+            {
+                await _JSProcessor.ScrollToElement("top");
+                currentPage = state.Page;
+                currentPageSize = state.PageSize;
+            }
+
             return items;
         }
 

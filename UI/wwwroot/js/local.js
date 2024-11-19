@@ -69,7 +69,7 @@ function ScrollDivToBottom(divId) {
     $('#' + divId).scrollTop($('#' + divId)[0].scrollHeight);
 }
 
-function ScrollToElement(divId, elementId) {
+function ScrollToElement(elementId) {
     var element = document.getElementById(elementId);
     element.scrollIntoView();
 }

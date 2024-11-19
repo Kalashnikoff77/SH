@@ -82,6 +82,9 @@ namespace UI.Components.Pages.Events
         {
             var items = new GridData<SchedulesForEventsViewDto>();
 
+            request.Skip = state.Page * state.PageSize;
+            request.Take = state.PageSize;
+
             var apiResponse = await _repoGetSchedules.HttpPostAsync(request);
             if (apiResponse.Response.Schedules != null)
             {
@@ -90,7 +93,7 @@ namespace UI.Components.Pages.Events
                 items = new GridData<SchedulesForEventsViewDto>
                 {
                     Items = EventsList,
-                    TotalItems = EventsList.Count
+                    TotalItems = apiResponse.Response.Count ?? 0
                 };
             } 
             return items;

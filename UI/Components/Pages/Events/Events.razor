@@ -71,12 +71,18 @@
                         {
                            <MudStack Wrap="Wrap.NoWrap" Class="flex-sm-row" Style="width:100%" StretchItems="StretchItems.Middle" AlignItems="AlignItems.Center">
 
-                                <ImageEvent Event="context.Item.Event" Size="EnumImageSize.s150x150" Title="@context.Item.Event.Name" Style="border-radius:5%; width:140px; height:140px; margin-right:8px" />
+                                <ImageEvent Event="context.Item.Event" Size="EnumImageSize.s150x150" Title="@context.Item.Event.Name" Class="d-none d-sm-block" Style="border-radius:3%; width:140px; height:140px; margin-right:8px" />
+                                <ImageEvent Event="context.Item.Event" Size="EnumImageSize.s150x150" Title="@context.Item.Event.Name" Class="d-xs-block d-sm-none" Style="border-radius:4%; width:190px; height:190px" />
 
                                 <MudStack Spacing="1" Style="width:100%">
                                     <MudText @onclick="() => ShowDialogs.EventCardDialogAsync(context.Item)" Typo="Typo.body1" Color="Color.Primary" Class="px-1 py-1" Style="cursor:pointer">
                                         <b>@context.Item.Event.Name</b>
                                     </MudText>
+                                    <MudStack Row AlignItems="AlignItems.Center" Spacing="1" Class="d-sm-none">
+                                        <MudIcon Icon="@Icons.Material.Outlined.Person" Style="font-size:20px" />
+                                        <MudText Typo="Typo.body2" title="Организатор"><b>@context.Item.Event.Admin?.Name</b></MudText>
+                                    </MudStack>
+
                                     <MudStack Row AlignItems="AlignItems.Center" Spacing="1">
                                         <MudIcon Icon="@Icons.Material.Outlined.LocationOn" Style="font-size:20px" />
                                         <MudText Typo="Typo.body2">@context.Item.Event.ToRegionString()</MudText>

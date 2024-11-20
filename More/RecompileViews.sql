@@ -18,6 +18,8 @@ sp_refreshview 'PhotosForAccountsView'
 go
 sp_refreshview 'RegionsForEventsView'
 go
+sp_refreshview 'SchedulesDatesView'
+go
 sp_refreshview 'SchedulesForAccountsView'
 go
 sp_refreshview 'SchedulesForEventsView'

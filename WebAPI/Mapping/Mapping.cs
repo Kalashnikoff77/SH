@@ -60,6 +60,8 @@ namespace WebAPI.Mapping
             CreateMap<PhotosForAccountsViewEntity, PhotosForAccountsViewDto>()
                 .ForMember(to => to.Account, from => from.ConvertUsing<JsonToClassConverter<AccountsViewDto>, string?>(from => from.Account));
 
+            CreateMap<SchedulesDatesViewEntity, SchedulesDatesViewDto>();
+
             CreateMap<IdentitiesEntity, IdentitiesDto>();
             CreateMap<InformingsEntity, InformingsDto>();
             CreateMap<MessagesEntity, MessagesDto>();

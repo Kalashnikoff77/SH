@@ -92,10 +92,26 @@ namespace WebAPI.Controllers
                         order +
                         $"OFFSET {request.Skip} ROWS FETCH NEXT {request.Take} ROWS ONLY";
 
-                    var result = await _unitOfWork.SqlConnection.QueryAsync<SchedulesForEventsViewEntity>(sql);
+                    var result = await _unitOfWork.SqlConnection.QueryAsync<SchedulesForEventsViewEntity>(sql, new { request.EventId });
                     response.Schedules = _mapper.Map<List<SchedulesForEventsViewDto>>(result);
                 }
             }
+            return response;
+        }
+
+
+        // Получает список всех дат расписания указанного мероприятия
+        [Route("GetSchedulesDates"), HttpPost]
+        public async Task<GetSchedulesDatesResponseDto?> GetSchedulesDatesAsync(GetSchedulesDatesRequestDto request)
+        {
+            var response = new GetSchedulesDatesResponseDto();
+
+            string sql = $"SELECT Id, {nameof(SchedulesDatesViewEntity.StartDate)}, {nameof(SchedulesDatesViewEntity.EndDate)} " +
+                $"FROM SchedulesDatesView " +
+                $"WHERE {nameof(SchedulesDatesViewEntity.EventId)} = @{nameof(SchedulesDatesViewEntity.EventId)}";
+            var result = await _unitOfWork.SqlConnection.QueryAsync<SchedulesDatesViewEntity>(sql, new {request.EventId});
+            response.SchedulesDates = _mapper.Map<List<SchedulesDatesViewDto>>(result);
+
             return response;
         }
 

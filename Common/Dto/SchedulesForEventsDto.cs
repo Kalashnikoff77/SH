@@ -1,6 +1,4 @@
-﻿using Common.Extensions;
-
-namespace Common.Dto
+﻿namespace Common.Dto
 {
     public class SchedulesForEventsDto : DtoBase
     {
@@ -13,10 +11,5 @@ namespace Common.Dto
         public int CostWoman { get; set; }
         public int CostPair { get; set; }
         public bool IsDeleted { get; set; }
-
-        /// <summary>
-        /// Используется в Tab_About.razor для корректного вывода даты и времени
-        /// </summary>
-        public override string ToString() => StartDate.ToMyString();
     }
 }

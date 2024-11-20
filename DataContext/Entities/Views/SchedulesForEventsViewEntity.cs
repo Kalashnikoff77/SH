@@ -9,11 +9,8 @@ namespace DataContext.Entities.Views
         
         [Required]
         public string? Features { get; set; }
-        
-        [Required]
-        public string? RegisteredAccounts { get; set; }
 
         [Required]
-        public int NumberOfDiscussions { get; set; }
+        public string? Statistic { get; set; }
     }
 }

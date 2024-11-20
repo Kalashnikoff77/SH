@@ -40,15 +40,15 @@
         <MudGrid Style="text-align:center">
             <MudItem xs="4" title="Зарегистрировано пар / Свободных мест для пар">
                 <MudIcon Icon="@Icons.Material.Filled.PeopleAlt" Color="Color.Tertiary" /><br />
-                @ScheduleForEventView.NumberOfRegisteredPairs()/@ScheduleForEventView.Event.MaxPairs
+                @ScheduleForEventView.Statistic?.NumOfRegPairs/@ScheduleForEventView.Event.MaxPairs
             </MudItem>
             <MudItem xs="4" title="Зарегистрировано мужчин / Свободных мест для мужчин">
                 <MudIcon Icon="@Icons.Material.Outlined.Face5" Color="Color.Primary" /><br />
-                @ScheduleForEventView.NumberOfRegisteredMen()/@ScheduleForEventView.Event.MaxMen
+                @ScheduleForEventView.Statistic?.NumOfRegMen/@ScheduleForEventView.Event.MaxMen
             </MudItem>
             <MudItem xs="4" title="Зарегистрировано женщин / Свободных мест для женщин">
                 <MudIcon Icon="@Icons.Material.Outlined.Face3" Color="Color.Error" /><br />
-                @ScheduleForEventView.NumberOfRegisteredWomen()/@ScheduleForEventView.Event.MaxWomen
+                @ScheduleForEventView.Statistic?.NumOfRegWomen/@ScheduleForEventView.Event.MaxWomen
             </MudItem>
         </MudGrid>
         <MudGrid Style="text-align:center">

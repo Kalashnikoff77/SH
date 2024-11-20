@@ -37,7 +37,7 @@ namespace WebAPI.Controllers
                     $"FROM EventsView " +
                     $"WHERE Id = @EventId";
                 var result = await _unitOfWork.SqlConnection.QueryFirstOrDefaultAsync<EventsViewEntity>(sql, new { request.EventId }) 
-                    ?? throw new NotFoundException("Встреча не найдена!");
+                    ?? throw new NotFoundException("Мероприятие не найдено!");
                 response.Event = _mapper.Map<EventsViewDto>(result);
             }
             return response;
@@ -51,13 +51,14 @@ namespace WebAPI.Controllers
 
             var columns = GetRequiredColumns<SchedulesForEventsViewEntity>();
 
-            // Получить одну запись
+            // Получить одно расписание определённого мероприятия
             if (request.ScheduleId.HasValue && request.ScheduleId > 0)
             {
                 var sql = $"SELECT {columns.Aggregate((a, b) => a + ", " + b)} " +
                     $"FROM SchedulesForEventsView " +
                     $"WHERE Id = @ScheduleId";
-                var result = await _unitOfWork.SqlConnection.QueryFirstOrDefaultAsync<SchedulesForEventsViewEntity>(sql, new { request.ScheduleId }) ?? throw new NotFoundException("Встреча не найдена!");
+                var result = await _unitOfWork.SqlConnection.QueryFirstOrDefaultAsync<SchedulesForEventsViewEntity>(sql, new { request.ScheduleId }) 
+                    ?? throw new NotFoundException("Мероприятие не найдено!");
                 response.Schedule = _mapper.Map<SchedulesForEventsViewDto>(result);
             }
 
@@ -71,7 +72,7 @@ namespace WebAPI.Controllers
                 response.Schedules = _mapper.Map<List<SchedulesForEventsViewDto>>(result);
             }
 
-            // Получить несколько записей
+            // Получить несколько расписаний разных мероприятий
             else
             {
                 var jsonRequest = JsonSerializer.Serialize(request);

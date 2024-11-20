@@ -5,9 +5,6 @@ namespace DataContext.Entities.Views
     public class EventsViewEntity : EventsEntity
     {
         [Required]
-        public string? Schedule { get; set; }
-
-        [Required]
         public string Admin { get; set; } = null!;
 
         [Required]
@@ -19,6 +16,6 @@ namespace DataContext.Entities.Views
         public string? Photos { get; set; }
 
         [Required]
-        public int? NumOfDiscussions { get; set; }
+        public string? Statistic { get; set; }
     }
 }

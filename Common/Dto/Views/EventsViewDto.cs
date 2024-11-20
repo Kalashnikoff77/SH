@@ -1,4 +1,6 @@
-﻿namespace Common.Dto.Views
+﻿using Common.Dto.Functions;
+
+namespace Common.Dto.Views
 {
     public class EventsViewDto : EventsDto
     {
@@ -12,6 +14,6 @@
 
         public List<PhotosForEventsDto>? Photos { get; set; }
 
-        public int? NumOfDiscussions { get; set; }
+        public GetEventStatisticFunctionDto? Statistic { get; set; }
     }
 }

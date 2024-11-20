@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Common.Dto;
+using Common.Dto.Functions;
 using Common.Dto.Views;
 using DataContext.Entities;
 using DataContext.Entities.Views;
@@ -29,15 +30,15 @@ namespace WebAPI.Mapping
 
             CreateMap<EventsViewEntity, EventsViewDto>()
                 .ForMember(to => to.Admin, from => from.ConvertUsing<JsonToClassConverter<AccountsViewDto>, string?>(from => from.Admin))
-                .ForMember(to => to.Schedule, from => from.ConvertUsing<JsonToClassConverter<List<SchedulesForEventsViewDto>>, string?>(from => from.Schedule))
                 .ForMember(to => to.Country, from => from.ConvertUsing<JsonToClassConverter<CountriesDto>, string?>(from => from.Country))
                 .ForMember(to => to.Avatar, from => from.ConvertUsing<JsonToClassConverter<PhotosForEventsDto>, string?>(from => from.Avatar))
-                .ForMember(to => to.Photos, from => from.ConvertUsing<JsonToClassConverter<List<PhotosForEventsDto>>, string?>(from => from.Photos));
+                .ForMember(to => to.Photos, from => from.ConvertUsing<JsonToClassConverter<List<PhotosForEventsDto>>, string?>(from => from.Photos))
+                .ForMember(to => to.Statistic, from => from.ConvertUsing<JsonToClassConverter<GetEventStatisticFunctionDto>, string?>(from => from.Statistic));
 
             CreateMap<SchedulesForEventsViewEntity, SchedulesForEventsViewDto>()
                 .ForMember(to => to.Event, from => from.ConvertUsing<JsonToClassConverter<EventsViewDto>, string?>(from => from.Event))
-                .ForMember(to => to.RegisteredAccounts, from => from.ConvertUsing<JsonToClassConverter<List<SchedulesForAccountsViewDto>>, string?>(from => from.RegisteredAccounts))
-                .ForMember(to => to.Features, from => from.ConvertUsing<JsonToClassConverter<List<FeaturesDto>>, string?>(from => from.Features));
+                .ForMember(to => to.Features, from => from.ConvertUsing<JsonToClassConverter<List<FeaturesDto>>, string?>(from => from.Features))
+                .ForMember(to => to.Statistic, from => from.ConvertUsing<JsonToClassConverter<GetScheduleStatisticFunctionDto>, string?>(from => from.Statistic));
 
             CreateMap<DiscussionsForEventsViewEntity, DiscussionsForEventsViewDto>()
                 .ForMember(to => to.Sender, from => from.ConvertUsing<JsonToClassConverter<AccountsViewDto>, string?>(from => from.Sender))

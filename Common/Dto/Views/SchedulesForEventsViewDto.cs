@@ -1,4 +1,6 @@
-﻿namespace Common.Dto.Views
+﻿using Common.Dto.Functions;
+
+namespace Common.Dto.Views
 {
     public class SchedulesForEventsViewDto : SchedulesForEventsDto
     {
@@ -6,8 +8,6 @@
 
         public List<FeaturesDto>? Features { get; set; } = new List<FeaturesDto>();
 
-        public List<SchedulesForAccountsViewDto>? RegisteredAccounts { get; set; }
-
-        public int NumberOfDiscussions { get; set; }
+        public GetScheduleStatisticFunctionDto? Statistic { get; set; }
     }
 }

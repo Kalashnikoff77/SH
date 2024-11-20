@@ -1,6 +1,7 @@
-﻿@if (ScheduleForEventView.RegisteredAccounts != null)
+﻿@if (ScheduleForEventView.Statistic?.NumOfRegAccounts > 0)
 {
-    <MudDataGrid Items="ScheduleForEventView.RegisteredAccounts" T="SchedulesForAccountsViewDto" Elevation="0" Striped HeaderClass="dataGridHideTHead">
+    // TODO ДОРАБОТАТЬ (OK)
+@*     <MudDataGrid Items="ScheduleForEventView.RegisteredAccounts" T="SchedulesForAccountsViewDto" Elevation="0" Striped HeaderClass="dataGridHideTHead">
         <Columns>
             <TemplateColumn CellClass="pa-0">
                 <CellTemplate>
@@ -23,7 +24,7 @@
             </TemplateColumn>
         </Columns>
     </MudDataGrid>
-}
+ *@}
 
 @code {
     [Parameter, EditorRequired] public SchedulesForEventsViewDto ScheduleForEventView { get; set; } = null!;

@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Components;
 using MudBlazor;
 using UI.Components.Dialogs;
 
-namespace UI.Components.Pages.Events.EventInfoCardDialog
+namespace UI.Components.Pages.Events.EventInfo
 {
     public partial class EventInfoCardDialog : IDisposable
     {

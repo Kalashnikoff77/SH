@@ -2,7 +2,7 @@
 using MudBlazor;
 using UI.Components.Pages.Account;
 using UI.Components.Pages.Events;
-using UI.Components.Pages.Events.EventInfoCardDialog;
+using UI.Components.Pages.Events.EventInfo;
 
 namespace UI.Components.Dialogs
 {

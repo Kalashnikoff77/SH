@@ -36,7 +36,8 @@ namespace WebAPI.Controllers
                 var sql = $"SELECT {columns.Aggregate((a, b) => a + ", " + b)} " +
                     $"FROM EventsView " +
                     $"WHERE Id = @EventId";
-                var result = await _unitOfWork.SqlConnection.QueryFirstOrDefaultAsync<EventsViewEntity>(sql, new { request.EventId }) ?? throw new NotFoundException("Встреча не найдена!");
+                var result = await _unitOfWork.SqlConnection.QueryFirstOrDefaultAsync<EventsViewEntity>(sql, new { request.EventId }) 
+                    ?? throw new NotFoundException("Встреча не найдена!");
                 response.Event = _mapper.Map<EventsViewDto>(result);
             }
             return response;

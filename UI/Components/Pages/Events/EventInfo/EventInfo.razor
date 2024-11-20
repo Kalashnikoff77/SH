@@ -1,0 +1,14 @@
+﻿@page "/event/{EventId:int}"
+
+@if (Event != null) 
+{
+    <PageTitle>@Event.Name</PageTitle>
+
+    <MudStack Style="min-width:300px; max-width:750px" Class="ml-3">
+
+        <MudText Align="Align.Left" Typo="Typo.h6" Class="mb-3">@Event.Name</MudText>
+        <MudDivider DividerType="DividerType.FullWidth" Light="false" Class="mb-5" />
+
+
+    </MudStack>
+}

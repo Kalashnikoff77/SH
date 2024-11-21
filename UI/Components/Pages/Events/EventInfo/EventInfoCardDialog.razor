@@ -1,8 +1,9 @@
 ﻿@if (ScheduleForEventView?.Event != null)
 {
-    <MudDialog Style="width:550px; min-width:360px">
+    <MudDialog Style="width:550px; min-width:300px">
         <DialogContent>
-            <MudStack AlignItems="AlignItems.Center" Class="mb-3">
+            <div id="top" />
+            <MudStack AlignItems="AlignItems.Center" Class="mb-3" Style="overflow-y:visible">
                 <MudCarousel @ref="Carousel" TData="PhotosForEventsDto" ShowArrows ShowBullets="false" AutoCycle Style="width:300px; height:400px">
                     @if (ScheduleForEventView.Event.Photos != null)
                     {
@@ -38,23 +39,23 @@
                         }
                     }
                 </MudStack>
+
+                @* Закладки *@
+                <MudTabs Centered PanelClass="mt-6 px-2" Style="width:100%; min-height:280px">
+                    <MudTabPanel Text="Общее">
+                        <Tab_About ScheduleForEventView="@ScheduleForEventView" />
+                    </MudTabPanel>
+
+                    <MudTabPanel Text="Обсуждение" BadgeData="@ScheduleForEventView.Event.Statistic?.NumOfDiscussions" BadgeColor="Color.Transparent">
+                        <Tab_Discussions ScheduleForEventView="@ScheduleForEventView" />
+                    </MudTabPanel>
+
+                    <MudTabPanel Text="Участники" Disabled="@(ScheduleForEventView.Statistic?.NumOfRegAccounts == 0)" BadgeData="@ScheduleForEventView.Statistic?.NumOfRegAccounts" BadgeColor="Color.Transparent">
+                        <Tab_Accounts ScheduleForEventView="@ScheduleForEventView" />
+                    </MudTabPanel>
+                </MudTabs>
+
             </MudStack>
-
-            @* Закладки *@
-            <MudTabs Centered ApplyEffectsToContainer PanelClass="mt-6 px-2">
-                <MudTabPanel Text="Общее">
-                    <Tab_About ScheduleForEventView="@ScheduleForEventView" />
-                </MudTabPanel>
-
-                <MudTabPanel Text="Обсуждение" BadgeData="@ScheduleForEventView.Event.Statistic?.NumOfDiscussions" BadgeColor="Color.Transparent">
-                    <Tab_Discussions ScheduleForEventView="@ScheduleForEventView" />
-                </MudTabPanel>
-
-                <MudTabPanel Text="Участники" Disabled="@(ScheduleForEventView.Statistic?.NumOfRegAccounts == 0)" BadgeData="@ScheduleForEventView.Statistic?.NumOfRegAccounts" BadgeColor="Color.Transparent">
-                    <Tab_Accounts ScheduleForEventView="@ScheduleForEventView" />
-                </MudTabPanel>
-            </MudTabs>
-
         </DialogContent>
 
         <DialogActions>

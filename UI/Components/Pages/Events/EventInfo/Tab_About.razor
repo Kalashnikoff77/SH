@@ -62,8 +62,3 @@
         <MudText Typo="Typo.body2"><b>Общее описание:</b><br />@ScheduleForEventView.Event.Description</MudText>
     </MudStack>
 }
-
-@code {
-    [Parameter, EditorRequired] public SchedulesForEventsViewDto ScheduleForEventView { get; set; } = null!;
-    [Inject] ShowDialogs ShowDialogs { get; set; } = null!;
-}

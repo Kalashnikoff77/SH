@@ -32,7 +32,7 @@ namespace UI.Components.Pages.Events.EventInfo
         protected override async Task OnAfterRenderAsync(bool firstRender)
         {
             if (!firstRender)
-                await _JSProcessor.ScrollToElement($"id_{_currentElementId}");
+                await _JSProcessor.ScrollToElementWithinDiv($"id_{_currentElementId}", "DiscussionsFrame");
 
             OnEventDiscussionAddedHandler = OnEventDiscussionAddedHandler.SignalRClient<OnScheduleChangedResponse>(CurrentState, async (response) =>
             {

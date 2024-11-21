@@ -23,6 +23,9 @@ namespace Common.JSProcessor
         public async Task ScrollToElement(string elementId) =>
             await RunJSAsync(nameof(ScrollToElement), elementId);
 
+        public async Task ScrollToElementWithinDiv(string elementWithinDivId, string divElement) =>
+            await RunJSAsync(nameof(ScrollToElementWithinDiv), elementWithinDivId, divElement);
+
         public async Task UpdateOnlineAccountsClient(HashSet<string> ConnectedAccounts) =>
             await RunJSAsync(nameof(UpdateOnlineAccountsClient), ConnectedAccounts);
 

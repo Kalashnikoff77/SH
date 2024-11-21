@@ -23,6 +23,13 @@
         Task ScrollDivToBottom(string divId);
         Task ScrollToElement(string elementId);
 
+        /// <summary>
+        /// Прокрутка до элемента в div контейнере (применяется в обсуждениях мероприятия)
+        /// </summary>
+        /// <param name="elementWithiDivId">Элемент внутри div</param>
+        /// <param name="divElement">Div элемент, в котором производить прокрутку</param>
+        Task ScrollToElementWithinDiv(string elementWithiDivId, string divElement);
+
         Task UpdateOnlineAccountsClient(HashSet<string> ConnectedAccounts);
     }
 }

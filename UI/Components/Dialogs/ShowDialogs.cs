@@ -17,7 +17,7 @@ namespace UI.Components.Dialogs
         /// </summary>
         public Task AccountCardDialogAsync(AccountsViewDto account)
         {
-            DialogOptions dialogOptions = new() { CloseOnEscapeKey = true, CloseButton = true };
+            DialogOptions dialogOptions = new() { CloseOnEscapeKey = true, CloseButton = true, BackdropClick = true };
 
             var dialogParams = new DialogParameters<AccountInfoCardDialog>
             {
@@ -31,7 +31,7 @@ namespace UI.Components.Dialogs
         /// </summary>
         public async Task EventCardDialogAsync(SchedulesForEventsViewDto schedule)
         {
-            DialogOptions dialogOptions = new() { CloseOnEscapeKey = true, CloseButton = true };
+            DialogOptions dialogOptions = new() { CloseOnEscapeKey = true, CloseButton = true, BackdropClick = true };
 
             var dialogParams = new DialogParameters<EventInfoCardDialog>
             {

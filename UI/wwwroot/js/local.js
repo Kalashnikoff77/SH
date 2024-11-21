@@ -70,8 +70,13 @@ function ScrollDivToBottom(divId) {
 }
 
 function ScrollToElement(elementId) {
-    var element = document.getElementById(elementId);
-    element.scrollIntoView();
+    document.getElementById(elementId).scrollIntoView();
+}
+
+function ScrollToElementWithinDiv(elementWithinDivId, divElement) {
+    var myElement = document.getElementById(elementWithinDivId);
+    var topPos = myElement.offsetTop;
+    document.getElementById(divElement).scrollTop = topPos;
 }
 
 

@@ -115,10 +115,10 @@
                                             <MudIcon Icon="@Icons.Material.Outlined.Face3" Color="Color.Error" Style="font-size:15px" Class="mr-1" />
                                             <MudText Typo="Typo.body2">@context.Item.Statistic?.NumOfRegWomen</MudText>
                                         </MudStack>
-                                        @if (context.Item.Statistic?.AvgYear > 0) 
+                                        @if (context.Item.Statistic?.AvgAge > 0) 
                                         {
                                             <MudStack Row Spacing="0">
-                                                <MudText Typo="Typo.body2" Class="ml-2" title="Средний возраст гостей">~@context.Item.Statistic.AvgYear</MudText>
+                                                <MudText Typo="Typo.body2" Class="ml-2" title="Средний возраст гостей">~@context.Item.Statistic.AvgAge</MudText>
                                             </MudStack>
                                         }
                                     </MudStack>

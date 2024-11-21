@@ -2,6 +2,6 @@
 {
     public class SchedulesForAccountsViewDto : SchedulesForAccountsDto
     {
-        public AccountsViewDto Account { get; set; } = null!;
+        public AccountsViewDto? Account { get; set; } = null!;
     }
 }

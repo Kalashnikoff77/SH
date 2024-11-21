@@ -16,10 +16,10 @@
                 </MudCarousel>
 
                 <MudStack Spacing="2" Row Style="width:100%" StretchItems="StretchItems.Start" Justify="Justify.Center" AlignItems="AlignItems.Center">
-                    @if (schedulesDates != null)
+                    @if (scheduleDates != null)
                     {
                         <MudSelect T="SchedulesDatesViewDto" Value="selectedSchedule" ValueChanged="ScheduleChangedAsync" Variant="Variant.Outlined" Dense AnchorOrigin="Origin.BottomCenter" Margin="Margin.Dense" Label="Расписание" AdornmentIcon="@Icons.Material.Outlined.CalendarMonth">
-                            @foreach (var schedule in schedulesDates)
+                            @foreach (var schedule in scheduleDates)
                             {
                                 <MudSelectItem Value="@schedule" />
                             }

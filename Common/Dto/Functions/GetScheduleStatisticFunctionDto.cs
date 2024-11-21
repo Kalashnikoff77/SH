@@ -9,6 +9,6 @@
         public int NumOfRegMen { get; set; }
         public int NumOfRegWomen { get; set; }
 
-        public int AvgYear { get; set; }
+        public int AvgAge { get; set; }
     }
 }

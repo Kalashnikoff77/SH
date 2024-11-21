@@ -15,7 +15,6 @@ namespace UI.Components.Pages.Events.EventInfo
     {
         [CascadingParameter] CurrentState CurrentState { get; set; } = null!;
         [CascadingParameter] MudDialogInstance MudDialog { get; set; } = null!;
-        [Parameter, EditorRequired] public SchedulesForEventsViewDto? ScheduleForEventView { get; set; }
         [Parameter, EditorRequired] public int ScheduleId { get; set; }
 
         [Inject] IRepository<GetSchedulesRequestDto, GetSchedulesResponseDto> _repoGetSchedules { get; set; } = null!;
@@ -23,31 +22,18 @@ namespace UI.Components.Pages.Events.EventInfo
         [Inject] ShowDialogs ShowDialogs { get; set; } = null!;
 
         MudCarousel<PhotosForEventsDto> Carousel = null!;
+
+        SchedulesForEventsViewDto ScheduleForEventView { get; set; } = null!;
         SchedulesDatesViewDto selectedSchedule { get; set; } = null!;
-        IEnumerable<SchedulesDatesViewDto>? schedulesDates { get; set; } = null!;
+        IEnumerable<SchedulesDatesViewDto> scheduleDates { get; set; } = null!;
 
         IDisposable? OnEventDiscussionAddedHandler;
 
         protected override async Task OnInitializedAsync()
         {
-            var response = await _repoGetSchedules.HttpPostAsync(new GetSchedulesRequestDto { ScheduleId = ScheduleId });
-            ScheduleForEventView = response.Response.Schedule;
-            if (ScheduleForEventView == null)
-                throw new Exception("Не найдено расписание!");
-
-            var responseSchedulesDates = await _repoGetSchedulesDates.HttpPostAsync(new GetSchedulesDatesRequestDto { EventId = ScheduleForEventView.EventId });
-            schedulesDates = responseSchedulesDates.Response.SchedulesDates;
-            if (schedulesDates == null)
-                throw new Exception("Не найдено на одного расписания у мероприятия!");
-
-            //    selectedSchedule = schedules.First(s => s.Id == ScheduleForEventView.Id);   // Из массива получим конкретное расписание передаваемой встречи
-
-            // TODO REMOVE (OK)
-            //if (ScheduleForEventView.Event?.Schedule != null)
-            //{
-            //    schedules = ScheduleForEventView.Event.Schedule.Select(s => s);     // Получим массив расписания по событию
-            //    selectedSchedule = schedules.First(s => s.Id == ScheduleForEventView.Id);   // Из массива получим конкретное расписание передаваемой встречи
-            //}
+            ScheduleForEventView = await GetScheduleForEvent(ScheduleId);
+            scheduleDates = await GetScheduleDates(ScheduleForEventView.EventId);
+            selectedSchedule = scheduleDates.First(s => s.Id == ScheduleForEventView.Id);   // Установим текущую дату мероприятия в выпадающем меню дат
         }
 
         protected override void OnAfterRender(bool firstRender)
@@ -65,12 +51,24 @@ namespace UI.Components.Pages.Events.EventInfo
 
         async Task ScheduleChangedAsync(SchedulesDatesViewDto schedule)
         {
-            var eventResponse = await _repoGetSchedules.HttpPostAsync(new GetSchedulesRequestDto() { ScheduleId = schedule.Id });
-            if (eventResponse.Response.Schedule != null)
-            {
-                ScheduleForEventView = eventResponse.Response.Schedule;
-                selectedSchedule = schedule;
-            }
+            ScheduleForEventView = await GetScheduleForEvent(schedule.Id);
+            selectedSchedule = scheduleDates.First(s => s.Id == ScheduleForEventView.Id);   // Установим текущую дату мероприятия в выпадающем меню дат
+        }
+
+        async Task<SchedulesForEventsViewDto> GetScheduleForEvent(int scheduleId)
+        {
+            var response = await _repoGetSchedules.HttpPostAsync(new GetSchedulesRequestDto { ScheduleId = scheduleId });
+            if (response.Response.Schedule == null)
+                throw new Exception("Не найдено мероприятие!");
+            return response.Response.Schedule;
+        }
+
+        async Task<IEnumerable<SchedulesDatesViewDto>> GetScheduleDates(int eventId)
+        {
+            var responseSchedulesDates = await _repoGetSchedulesDates.HttpPostAsync(new GetSchedulesDatesRequestDto { EventId = eventId });
+            if (responseSchedulesDates.Response.SchedulesDates == null)
+                throw new Exception("Не найдено на одного расписания у мероприятия!");
+            return responseSchedulesDates.Response.SchedulesDates;
         }
 
         public void Dispose() =>

@@ -1,33 +1,30 @@
-﻿@if (ScheduleForEventView.Statistic?.NumOfRegAccounts > 0)
+﻿@if (registeredAccounts != null)
 {
-    // TODO ДОРАБОТАТЬ (OK)
-@*     <MudDataGrid Items="ScheduleForEventView.RegisteredAccounts" T="SchedulesForAccountsViewDto" Elevation="0" Striped HeaderClass="dataGridHideTHead">
+    <MudDataGrid Items="registeredAccounts" T="SchedulesForAccountsViewDto" Elevation="0" Striped HeaderClass="dataGridHideTHead">
         <Columns>
             <TemplateColumn CellClass="pa-0">
                 <CellTemplate>
-                    <MudButton OnClick="() => ShowDialogs.AccountCardDialogAsync(context.Item.Account)" FullWidth Class="py-3">
-                        <MudStack StretchItems="StretchItems.Start" AlignItems="AlignItems.Center" Spacing="0" Row Style="width:100%">
-                            <MudStack Row>
-                                <ImageAvatar Account="context.Item.Account" Size="EnumImageSize.s64x64" Class="avatar s60 mr-3" />
-                                <MudStack Spacing="0">
-                                    <MudText Typo="Typo.subtitle2" Align="Align.Left">@context.Item.Account.Name</MudText>
-                                    <MudText Typo="Typo.body2" Align="Align.Left">
-                                        @context.Item.Account.ToGendersAgesString()<br />
-                                        @context.Item.Account.ToRegionString()
-                                    </MudText>
+                    @if (context.Item.Account != null) 
+                    {
+                        <MudButton OnClick="() => ShowDialogs.AccountCardDialogAsync(context.Item.Account)" FullWidth Class="py-3">
+                            <MudStack StretchItems="StretchItems.Start" AlignItems="AlignItems.Center" Spacing="0" Row Style="width:100%">
+                                <MudStack Row>
+                                    <ImageAvatar Account="context.Item.Account" Size="EnumImageSize.s64x64" Class="avatar s60 mr-3" />
+                                    <MudStack Spacing="0">
+                                        <MudText Typo="Typo.subtitle2" Align="Align.Left">@context.Item.Account.Name</MudText>
+                                        <MudText Typo="Typo.body2" Align="Align.Left">
+                                            @context.Item.Account.ToGendersAgesString()<br />
+                                            @context.Item.Account.ToRegionString()
+                                        </MudText>
+                                    </MudStack>
                                 </MudStack>
+                                <AccountGenderIcon Account="@context.Item.Account" />
                             </MudStack>
-                            <AccountGenderIcon Account="@context.Item.Account" />
-                        </MudStack>
-                    </MudButton>
+                        </MudButton>
+                    }
                 </CellTemplate>
             </TemplateColumn>
         </Columns>
     </MudDataGrid>
- *@}
-
-@code {
-    [Parameter, EditorRequired] public SchedulesForEventsViewDto ScheduleForEventView { get; set; } = null!;
-    [Inject] ShowDialogs ShowDialogs { get; set; } = null!;
 }
 

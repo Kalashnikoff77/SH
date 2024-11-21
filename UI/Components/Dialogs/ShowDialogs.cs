@@ -35,7 +35,6 @@ namespace UI.Components.Dialogs
 
             var dialogParams = new DialogParameters<EventInfoCardDialog>
             {
-                { x => x.ScheduleForEventView, schedule },
                 { x => x.ScheduleId, schedule.Id }
             };
             await _dialog.ShowAsync<EventInfoCardDialog>(schedule.Event?.Name, dialogParams, dialogOptions);

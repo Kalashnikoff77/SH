@@ -40,6 +40,9 @@ namespace WebAPI.Mapping
                 .ForMember(to => to.Features, from => from.ConvertUsing<JsonToClassConverter<List<FeaturesDto>>, string?>(from => from.Features))
                 .ForMember(to => to.Statistic, from => from.ConvertUsing<JsonToClassConverter<GetScheduleStatisticFunctionDto>, string?>(from => from.Statistic));
 
+            CreateMap<SchedulesForAccountsViewEntity, SchedulesForAccountsViewDto>()
+                .ForMember(to => to.Account, from => from.ConvertUsing<JsonToClassConverter<AccountsViewDto>, string?>(from => from.Account));
+
             CreateMap<DiscussionsForEventsViewEntity, DiscussionsForEventsViewDto>()
                 .ForMember(to => to.Sender, from => from.ConvertUsing<JsonToClassConverter<AccountsViewDto>, string?>(from => from.Sender))
                 .ForMember(to => to.Recipient, from => from.ConvertUsing<JsonToClassConverter<AccountsViewDto>, string?>(from => from.Recipient));

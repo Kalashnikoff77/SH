@@ -101,6 +101,7 @@ namespace WebAPI.Controllers
             return response;
         }
 
+
         [Route("Remember"), HttpPost]
         public async Task<ResponseDtoBase> RememberAsync(RememberRequestDto request)
         {
@@ -116,7 +117,6 @@ namespace WebAPI.Controllers
 
             return response;
         }
-
 
 
         [Route("Reload"), HttpPost, Authorize]
@@ -137,6 +137,7 @@ namespace WebAPI.Controllers
 
             return response;
         }
+
 
         [Route("GetIdentity"), HttpPost, Authorize]
         public async Task<GetIdentityResponseDto> GetIdentityAsync(GetIdentityRequestDto request)

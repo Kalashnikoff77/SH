@@ -19,6 +19,9 @@ namespace UI.Components.Pages.Events.AddAndEdit
                 Event = apiResponse.Response.Event;
                 CountryText = Event.Country!.Name;
                 RegionText = Event.Country.Region.Name;
+
+                var apiSchedulesResponse = await _repoGetSchedules.HttpPostAsync(new GetSchedulesRequestDto { EventId = EventId });
+                Event.Schedule = apiSchedulesResponse.Response.Schedules;
             }
 
             TabPanels = new Dictionary<short, TabPanel>

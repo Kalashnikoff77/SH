@@ -41,7 +41,7 @@
                 </MudStack>
 
                 @* Закладки *@
-                <MudTabs Centered PanelClass="mt-6 px-2" Style="width:100%; min-height:280px">
+                <MudTabs Centered PanelClass="mt-6 px-2" Style="width:100%">
                     <MudTabPanel Text="Общее">
                         <Tab_About ScheduleForEventView="@ScheduleForEventView" />
                     </MudTabPanel>
@@ -61,7 +61,7 @@
         <DialogActions>
             @if (CurrentState.Account?.Id == ScheduleForEventView.Event.Admin?.Id)
             {
-                <MudButton Href="@($"/events/update/{ScheduleForEventView.EventId}")" Color="Color.Primary">Редактировать</MudButton>
+                <MudButton Href="@($"/events/edit/{ScheduleForEventView.EventId}")" Color="Color.Primary">Редактировать</MudButton>
             }
             <MudButton Color="Color.Error" OnClick="() => MudDialog.Close(DialogResult.Ok(true))">Закрыть</MudButton>
         </DialogActions>

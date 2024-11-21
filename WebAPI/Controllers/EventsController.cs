@@ -8,6 +8,7 @@ using DataContext.Entities;
 using DataContext.Entities.Views;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Caching.Memory;
 using WebAPI.Exceptions;
 using WebAPI.Extensions;
 

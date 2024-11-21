@@ -16,8 +16,6 @@ builder.Services.AddControllers()
         opt.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
     });
 
-//builder.Services.AddDbContext<SwContext>(options => { options.UseSqlServer(builder.Configuration.GetConnectionString("DbConnection")); });
-
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
@@ -52,6 +50,8 @@ builder.Services.Configure<KestrelServerOptions>(options =>
 {
     options.Limits.MaxRequestBodySize = 35 * 1024 * 1024;
 });
+
+builder.Services.AddMemoryCache();
 
 builder.Services.AddCors(o => o.AddPolicy("CorsPolicy", builder =>
 {

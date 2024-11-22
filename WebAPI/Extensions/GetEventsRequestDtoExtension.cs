@@ -11,7 +11,7 @@ namespace WebAPI.Extensions
 {
     public static partial class GetEventsRequestDtoExtension
     {
-        public static async Task GetEventsAsync(this GetEventsRequestDto request, UnitOfWork unitOfWork, List<string> columns, GetEventsResponseDto response, IMapper mapper)
+        public static async Task GetEventsAsync(this GetEventsRequestDto request, UnitOfWork unitOfWork, List<string> columns, GetEventsResponseDto response)
         {
             if (request.IsPhotosIncluded)
                 columns.Add(nameof(EventsViewEntity.Photos));
@@ -23,7 +23,7 @@ namespace WebAPI.Extensions
                     $"WHERE Id = @EventId";
                 var result = await unitOfWork.SqlConnection.QueryFirstOrDefaultAsync<EventsViewEntity>(sql, new { request.EventId })
                     ?? throw new NotFoundException("Мероприятие не найдено!");
-                response.Event = mapper.Map<EventsViewDto>(result);
+                response.Event = unitOfWork.Mapper.Map<EventsViewDto>(result);
             }
         }
     }

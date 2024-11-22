@@ -18,7 +18,7 @@ namespace WebAPI.Controllers
     [Route("api/[controller]")]
     public class EventsController : MyControllerBase
     {
-        public EventsController(IMapper mapper, IConfiguration configuration) : base(mapper, configuration) { }
+        public EventsController(IMapper mapper, IConfiguration configuration, IMemoryCache cache) : base(configuration, mapper, cache) { }
 
 
         [Route("Get"), HttpPost]
@@ -26,7 +26,7 @@ namespace WebAPI.Controllers
         {
             var response = new GetEventsResponseDto();
             var columns = GetRequiredColumns<EventsViewEntity>();
-            await request.GetEventsAsync(_unitOfWork, columns, response, _mapper);
+            await request.GetEventsAsync(_unitOfWork, columns, response);
             return response;
         }
 
@@ -35,17 +35,19 @@ namespace WebAPI.Controllers
         public async Task<GetSchedulesResponseDto?> GetSchedulesAsync(GetSchedulesRequestDto request)
         {
             var response = new GetSchedulesResponseDto();
+
             var columns = GetRequiredColumns<SchedulesForEventsViewEntity>();
 
             // Получить одно расписание определённого мероприятия
             if (request.ScheduleId.HasValue && request.ScheduleId > 0)
-                await request.GetOneScheduleAsync(_unitOfWork, columns, response, _mapper);
+                await request.GetOneScheduleForEventAsync(_unitOfWork, columns, response);
             // Получить все расписания определённого мероприятия
             else if (request.EventId.HasValue && request.EventId > 0)
-                await request.GetAllSchedulesForEventAsync(_unitOfWork, columns, response, _mapper);
-            // Получить несколько расписаний разных мероприятий
+                await request.GetAllSchedulesForEventAsync(_unitOfWork, columns, response);
+            // Получить несколько расписаний разных мероприятий (по фильтрам) (кэшируется)
             else
-                await request.GetSelectedSchedulesForEventAsync(_unitOfWork, columns, response, _mapper);
+                await request.GetFilteredSchedulesForEventAsync(_unitOfWork, columns, response);
+
             return response;
         }
 
@@ -57,7 +59,7 @@ namespace WebAPI.Controllers
         public async Task<GetSchedulesDatesResponseDto?> GetSchedulesDatesAsync(GetSchedulesDatesRequestDto request)
         {
             var response = new GetSchedulesDatesResponseDto();
-            await request.GetSchedulesDatesAsync(_unitOfWork, response, _mapper);
+            await request.GetSchedulesDatesAsync(_unitOfWork, response);
             return response;
         }
 
@@ -105,7 +107,7 @@ namespace WebAPI.Controllers
                     result = (await _unitOfWork.SqlConnection.QueryAsync<DiscussionsForEventsViewEntity>(sql, new { request.EventId, request.Take })).Reverse();
                 }
 
-            response.Discussions = _mapper.Map<List<DiscussionsForEventsViewDto>>(result);
+            response.Discussions = _unitOfWork.Mapper.Map<List<DiscussionsForEventsViewDto>>(result);
             return response;
         }
 
@@ -139,7 +141,7 @@ namespace WebAPI.Controllers
         public async Task<EventCheckResponseDto> CheckAsync(EventCheckRequestDto request)
         {
             var response = new EventCheckResponseDto();
-
+           
             if (request.EventName != null)
             {
                 string sql;
@@ -162,9 +164,18 @@ namespace WebAPI.Controllers
         {
             var response = new GetAdminsForEventsResponseDto();
 
-            var sql = "SELECT * FROM AdminsForEventsView ORDER BY Name";
-            var result = await _unitOfWork.SqlConnection.QueryAsync<AdminsForEventsViewEntity>(sql);
-            response.AdminsForEvents = _mapper.Map<List<AdminsForEventsViewDto>>(result);
+            _unitOfWork.Cache.TryGetValue(request.GetCacheKey(), out GetAdminsForEventsResponseDto? data);
+            if (data == null)
+            {
+                var sql = "SELECT * FROM AdminsForEventsView ORDER BY Name";
+                var result = await _unitOfWork.SqlConnection.QueryAsync<AdminsForEventsViewEntity>(sql);
+                response.AdminsForEvents = _unitOfWork.Mapper.Map<List<AdminsForEventsViewDto>>(result);
+
+                _unitOfWork.Cache.Set(request.GetCacheKey(), response, new MemoryCacheEntryOptions().SetAbsoluteExpiration(TimeSpan.FromMinutes(30)));
+            }
+            else
+                response = data;
+
             return response;
         }
 
@@ -172,15 +183,22 @@ namespace WebAPI.Controllers
         /// <summary>
         /// Получить список всех features мероприятий
         /// </summary>
-        /// <param name="request"></param>
         [Route("GetFeatures"), HttpPost]
         public async Task<GetFeaturesResponseDto> GetFeaturesAsync(GetFeaturesRequestDto request)
         {
             var response = new GetFeaturesResponseDto();
 
-            var sql = $"SELECT * FROM Features ORDER BY Name";
-            var result = await _unitOfWork.SqlConnection.QueryAsync<FeaturesEntity>(sql);
-            response.Features = _mapper.Map<List<FeaturesDto>>(result);
+            _unitOfWork.Cache.TryGetValue(request.GetCacheKey(), out GetFeaturesResponseDto? data);
+            if (data == null)
+            {
+                var sql = $"SELECT * FROM Features ORDER BY Name";
+                var result = await _unitOfWork.SqlConnection.QueryAsync<FeaturesEntity>(sql);
+                response.Features = _unitOfWork.Mapper.Map<List<FeaturesDto>>(result);
+                _unitOfWork.Cache.Set(request.GetCacheKey(), response, new MemoryCacheEntryOptions().SetAbsoluteExpiration(TimeSpan.FromDays(1)));
+            }
+            else
+                response = data;
+
             return response;
         }
 
@@ -193,9 +211,16 @@ namespace WebAPI.Controllers
         {
             var response = new GetFeaturesForEventsResponseDto();
 
-            var sql = $"SELECT * FROM FeaturesForEventsView";
-            var result = await _unitOfWork.SqlConnection.QueryAsync<FeaturesForEventsViewEntity>(sql);
-            response.FeaturesForEvents = _mapper.Map<List<FeaturesForEventsViewDto>>(result);
+            _unitOfWork.Cache.TryGetValue(request.GetCacheKey(), out GetFeaturesForEventsResponseDto? data);
+            if (data == null)
+            {
+                var sql = $"SELECT * FROM FeaturesForEventsView";
+                var result = await _unitOfWork.SqlConnection.QueryAsync<FeaturesForEventsViewEntity>(sql);
+                response.FeaturesForEvents = _unitOfWork.Mapper.Map<List<FeaturesForEventsViewDto>>(result);
+                _unitOfWork.Cache.Set(request.GetCacheKey(), response, new MemoryCacheEntryOptions().SetAbsoluteExpiration(TimeSpan.FromMinutes(10)));
+            }
+            else
+                response = data;
 
             return response;
         }
@@ -213,7 +238,7 @@ namespace WebAPI.Controllers
                 $"WHERE {nameof(SchedulesForAccountsEntity.ScheduleId)} = @{nameof(SchedulesForAccountsEntity.ScheduleId)} " +
                 $"ORDER BY {nameof(SchedulesForAccountsEntity.PurchaseDate)} DESC";
             var result = await _unitOfWork.SqlConnection.QueryAsync<SchedulesForAccountsViewEntity>(sql, new { request.ScheduleId });
-            response.Accounts = _mapper.Map<List<SchedulesForAccountsViewDto>>(result);
+            response.Accounts = _unitOfWork.Mapper.Map<List<SchedulesForAccountsViewDto>>(result);
 
             return response;
         }

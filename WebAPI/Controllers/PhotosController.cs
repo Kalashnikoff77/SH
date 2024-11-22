@@ -11,6 +11,7 @@ using DataContext.Entities.Views;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Memory;
 using PhotoSauce.MagicScaler;
 using WebAPI.Exceptions;
 
@@ -20,7 +21,7 @@ namespace WebAPI.Controllers
     [Route("api/[controller]")]
     public class PhotosController : MyControllerBase
     {
-        public PhotosController(IMapper mapper, IConfiguration configuration) : base(mapper, configuration) { }
+        public PhotosController(IMapper mapper, IConfiguration configuration, IMemoryCache cache) : base(configuration, mapper, cache) { }
 
         [Route("Get"), HttpPost, Authorize]
         public async Task<GetPhotosForAccountsResponseDto> GetAsync(GetPhotosForAccountRequestDto request)
@@ -39,7 +40,7 @@ namespace WebAPI.Controllers
                 $"FROM AccountsPhotosView WHERE {nameof(PhotosForAccountsViewEntity.RelatedId)} = @accountId " +
                 "ORDER BY Id DESC";
             var result = await _unitOfWork.SqlConnection.QueryAsync<PhotosForAccountsViewEntity>(sql, new { accountId, request.Take });
-            response.Photos = _mapper.Map<List<PhotosForAccountsViewDto>>(result);
+            response.Photos = _unitOfWork.Mapper.Map<List<PhotosForAccountsViewDto>>(result);
 
             return response;
         }

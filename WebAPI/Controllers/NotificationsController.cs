@@ -8,6 +8,7 @@ using DataContext.Entities.Views;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Memory;
 using WebAPI.Exceptions;
 
 namespace WebAPI.Controllers
@@ -16,7 +17,7 @@ namespace WebAPI.Controllers
     [Route("api/[controller]")]
     public class NotificationsController : MyControllerBase
     {
-        public NotificationsController(IMapper mapper, IConfiguration configuration) : base(mapper, configuration) { }
+        public NotificationsController(IMapper mapper, IConfiguration configuration, IMemoryCache cache) : base(configuration, mapper, cache) { }
 
         [Route("Count"), HttpPost, Authorize]
         public async Task<GetNotificationsCountResponseDto> GetCountAsync(GetNotificationsCountRequestDto request)
@@ -48,7 +49,7 @@ namespace WebAPI.Controllers
                 $"ORDER BY {nameof(NotificationsViewEntity.CreateDate)} DESC " +
                 $"OFFSET {request.Skip} ROWS FETCH NEXT {request.Take} ROWS ONLY";
             var notifications = await _unitOfWork.SqlConnection.QueryAsync<NotificationsViewEntity>(sql, new { _unitOfWork.AccountId });
-            response.Notifications = _mapper.Map<List<NotificationsViewDto>>(notifications);
+            response.Notifications = _unitOfWork.Mapper.Map<List<NotificationsViewDto>>(notifications);
 
             // Подсчитаем кол-во уведомлений (с фильтром)
             sql = "SELECT COUNT(*) FROM NotificationsView " +

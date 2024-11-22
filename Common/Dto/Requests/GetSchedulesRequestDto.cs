@@ -1,4 +1,6 @@
-﻿namespace Common.Dto.Requests
+﻿using System.Text.Json;
+
+namespace Common.Dto.Requests
 {
     public class GetSchedulesRequestDto : RequestDtoBase
     {
@@ -35,5 +37,8 @@
         public bool IsActualEvents { get; set; } = true;
 
         public bool IsPhotosIncluded { get; set; }
+
+        public int GetCacheKey() =>
+            JsonSerializer.Serialize(this).GetHashCode();
     }
 }

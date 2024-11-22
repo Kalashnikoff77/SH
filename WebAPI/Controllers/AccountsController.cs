@@ -9,6 +9,7 @@ using DataContext.Entities;
 using DataContext.Entities.Views;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Caching.Memory;
 using WebAPI.Exceptions;
 using WebAPI.Extensions;
 using WebAPI.Models;
@@ -20,7 +21,7 @@ namespace WebAPI.Controllers
     [Route("api/[controller]")]
     public class AccountsController : MyControllerBase
     {
-        public AccountsController(IMapper mapper, IConfiguration configuration) : base(mapper, configuration) { }
+        public AccountsController(IMapper mapper, IConfiguration configuration, IMemoryCache cache) : base(configuration, mapper, cache) { }
 
         [Route("Get"), HttpPost]
         public async Task<GetAccountsResponseDto> GetAsync(GetAccountsRequestDto request)
@@ -53,7 +54,7 @@ namespace WebAPI.Controllers
 
                 var sql = $"SELECT {columns.Aggregate((a, b) => a + ", " + b)} FROM AccountsView {where}";
                 var result = await _unitOfWork.SqlConnection.QueryFirstOrDefaultAsync<AccountsViewEntity>(sql);
-                response.Account = _mapper.Map<AccountsViewDto>(result);
+                response.Account = _unitOfWork.Mapper.Map<AccountsViewDto>(result);
             }
             // Получить несколько пользователей
             else
@@ -70,7 +71,7 @@ namespace WebAPI.Controllers
 
                 var sql = $"SELECT {columns.Aggregate((a, b) => a + ", " + b)} FROM AccountsView {where} {order} {limit}";
                 var result = await _unitOfWork.SqlConnection.QueryAsync<AccountsViewEntity>(sql);
-                response.Accounts = _mapper.Map<List<AccountsViewDto>>(result);
+                response.Accounts = _unitOfWork.Mapper.Map<List<AccountsViewDto>>(result);
             }
 
             return response;
@@ -92,11 +93,11 @@ namespace WebAPI.Controllers
 
             sql = $"SELECT TOP 1 * FROM AccountsView WHERE Id = @AccountId";
             var account = await _unitOfWork.SqlConnection.QueryFirstOrDefaultAsync<AccountsViewEntity>(sql, new { identity.AccountId });
-            response.Account = _mapper.Map<AccountsViewDto>(account);
+            response.Account = _unitOfWork.Mapper.Map<AccountsViewDto>(account);
 
             sql = $"SELECT TOP 1 * FROM Informings WHERE Id = @AccountId";
             var informings = await _unitOfWork.SqlConnection.QueryFirstOrDefaultAsync<InformingsEntity?>(sql, new { identity.AccountId });
-            response.Account.Informings = _mapper.Map<InformingsDto>(informings);
+            response.Account.Informings = _unitOfWork.Mapper.Map<InformingsDto>(informings);
 
             return response;
         }
@@ -129,11 +130,11 @@ namespace WebAPI.Controllers
             var sql = $"SELECT TOP 1 * FROM AccountsView WHERE Id = @AccountId";
             var result = await _unitOfWork.SqlConnection.QueryFirstOrDefaultAsync<AccountsViewEntity>(sql, new { _unitOfWork.AccountId }) 
                 ?? throw new NotFoundException($"Аккаунт с Id {_unitOfWork.AccountId} не найден!");
-            response.Account = _mapper.Map<AccountsViewDto>(result);
+            response.Account = _unitOfWork.Mapper.Map<AccountsViewDto>(result);
 
             sql = $"SELECT TOP 1 * FROM Informings WHERE Id = @AccountId";
             var informings = await _unitOfWork.SqlConnection.QueryFirstOrDefaultAsync<InformingsEntity?>(sql, new { _unitOfWork.AccountId });
-            response.Account.Informings = _mapper.Map<InformingsDto>(informings);
+            response.Account.Informings = _unitOfWork.Mapper.Map<InformingsDto>(informings);
 
             return response;
         }
@@ -149,7 +150,7 @@ namespace WebAPI.Controllers
             var sql = $"SELECT TOP 1 * FROM Identities WHERE AccountId = @AccountId";
             var result = await _unitOfWork.SqlConnection.QueryFirstOrDefaultAsync<IdentitiesEntity>(sql, new { _unitOfWork.AccountId })
                 ?? throw new NotFoundException($"Аккаунт с Id {_unitOfWork.AccountId} не найден!");
-            response.Identity = _mapper.Map<IdentitiesDto>(result);
+            response.Identity = _unitOfWork.Mapper.Map<IdentitiesDto>(result);
 
             return response;
         }
@@ -306,7 +307,7 @@ namespace WebAPI.Controllers
             var response = new GetHobbiesResponseDto();
 
             var result = await _unitOfWork.SqlConnection.QueryAsync<HobbiesEntity>("SELECT * FROM Hobbies ORDER BY Name ASC");
-            response.Hobbies = _mapper.Map<List<HobbiesDto>>(result);
+            response.Hobbies = _unitOfWork.Mapper.Map<List<HobbiesDto>>(result);
 
             return response;
         }
@@ -344,7 +345,7 @@ namespace WebAPI.Controllers
             }
 
             var result = await _unitOfWork.SqlConnection.QueryAsync<AccountsViewEntity>(sql, new { request.AccountId, Relation = (int)request.Relation });
-            response.Accounts = _mapper.Map<List<AccountsViewDto>>(result);
+            response.Accounts = _unitOfWork.Mapper.Map<List<AccountsViewDto>>(result);
 
             return response;
         }
@@ -356,7 +357,7 @@ namespace WebAPI.Controllers
             var response = new GetWishListResponseDto();
 
             var result = await _unitOfWork.SqlConnection.QueryAsync<WishListViewEntity>("SELECT * FROM WishListView");
-            response.WishList = _mapper.Map<List<WishListViewDto>>(result);
+            response.WishList = _unitOfWork.Mapper.Map<List<WishListViewDto>>(result);
 
             return response;
         }

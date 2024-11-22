@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Caching.Memory;
 using System.ComponentModel.DataAnnotations;
 using System.Security.Claims;
 using WebAPI.Models;
@@ -10,15 +11,14 @@ namespace WebAPI.Controllers
     {
         protected UnitOfWork _unitOfWork;
 
-        protected readonly IMapper _mapper;
         protected readonly IConfiguration _configuration;
+
         protected ClaimsIdentity? _identity;
 
-        public MyControllerBase(IMapper mapper, IConfiguration configuration)
+        public MyControllerBase(IConfiguration configuration, IMapper mapper, IMemoryCache cache)
         {
-            _mapper = mapper;
             _configuration = configuration;
-            _unitOfWork = new UnitOfWork(_configuration.GetConnectionString("DefaultConnection")!);
+            _unitOfWork = new UnitOfWork(_configuration.GetConnectionString("DefaultConnection")!, mapper, cache);
         }
 
         protected bool AuthenticateUser()

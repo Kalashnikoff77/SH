@@ -10,6 +10,7 @@ using DataContext.Entities.Views;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Memory;
 using WebAPI.Exceptions;
 
 namespace WebAPI.Controllers
@@ -18,7 +19,7 @@ namespace WebAPI.Controllers
     [Route("api/[controller]")]
     public class MessagesController : MyControllerBase
     {
-        public MessagesController(IMapper mapper, IConfiguration configuration) : base(mapper, configuration) { }
+        public MessagesController(IMapper mapper, IConfiguration configuration, IMemoryCache cache) : base(configuration, mapper, cache) { }
 
 
         [Route("Count"), HttpPost, Authorize]
@@ -88,14 +89,14 @@ namespace WebAPI.Controllers
                 result = await _unitOfWork.SqlConnection.QueryAsync<MessagesEntity>(sql, new { _unitOfWork.AccountId, request.RecipientId });
             }
 
-            response.Messages = _mapper.Map<List<MessagesDto>>(result);
+            response.Messages = _unitOfWork.Mapper.Map<List<MessagesDto>>(result);
 
             // Получим отправителя и получателя
             var columns = GetRequiredColumns<AccountsViewEntity>();
             sql = $"SELECT TOP 2 {columns.Aggregate((a, b) => a + ", " + b)} FROM AccountsView WHERE Id = @AccountId OR Id = @RecipientId";
             var accounts = await _unitOfWork.SqlConnection.QueryAsync<AccountsViewEntity>(sql, new { _unitOfWork.AccountId, request.RecipientId });
-            response.Sender = _mapper.Map<AccountsViewDto>(accounts.FirstOrDefault(x => x.Id == _unitOfWork.AccountId));
-            response.Recipient = _mapper.Map<AccountsViewDto>(accounts.FirstOrDefault(x => x.Id == request.RecipientId));
+            response.Sender = _unitOfWork.Mapper.Map<AccountsViewDto>(accounts.FirstOrDefault(x => x.Id == _unitOfWork.AccountId));
+            response.Recipient = _unitOfWork.Mapper.Map<AccountsViewDto>(accounts.FirstOrDefault(x => x.Id == request.RecipientId));
 
             // Будем отмечать сообщения, как прочитанные?
             if (request.MarkAsRead)
@@ -129,7 +130,7 @@ namespace WebAPI.Controllers
                 .Union(result.Where(x => x.SenderId == _unitOfWork.AccountId))
                 .ToList();
 
-            response.LastMessagesList = _mapper.Map<List<LastMessagesListViewDto>>(sortedResult);
+            response.LastMessagesList = _unitOfWork.Mapper.Map<List<LastMessagesListViewDto>>(sortedResult);
 
             return response;
         }

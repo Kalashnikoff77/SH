@@ -296,6 +296,8 @@ namespace WebAPI.Controllers
                 await _unitOfWork.SqlConnection.ExecuteAsync(sql, new { request.ScheduleId, _unitOfWork.AccountId });
             }
 
+            _unitOfWork.CacheClear();
+
             var response = new EventRegistrationResponseDto { ScheduleId = request.ScheduleId };
             return response;
         }
@@ -424,6 +426,8 @@ namespace WebAPI.Controllers
             // Вернём для дальнейшего вызова AccountLogin, чтобы в UI Storage обновить данные пользователя
             response.Email = request.Email;
             response.Password = request.Password; // Вернёт null, если новый пароль не был указан в запросе
+
+            _unitOfWork.CacheClear();
 
             return response;
         }

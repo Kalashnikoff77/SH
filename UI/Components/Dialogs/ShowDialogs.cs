@@ -3,6 +3,7 @@ using MudBlazor;
 using UI.Components.Pages.Account;
 using UI.Components.Pages.Events;
 using UI.Components.Pages.Events.EventInfo;
+using UI.Components.Pages.Events.ScheduleInfo;
 
 namespace UI.Components.Dialogs
 {
@@ -33,11 +34,11 @@ namespace UI.Components.Dialogs
         {
             DialogOptions dialogOptions = new() { CloseOnEscapeKey = true, CloseButton = true, BackdropClick = true };
 
-            var dialogParams = new DialogParameters<EventInfoCardDialog>
+            var dialogParams = new DialogParameters<ScheduleInfoCardDialog>
             {
                 { x => x.ScheduleId, schedule.Id }
             };
-            await _dialog.ShowAsync<EventInfoCardDialog>(schedule.Event?.Name, dialogParams, dialogOptions);
+            await _dialog.ShowAsync<ScheduleInfoCardDialog>(schedule.Event?.Name, dialogParams, dialogOptions);
         }
 
 
@@ -48,11 +49,11 @@ namespace UI.Components.Dialogs
         {
             DialogOptions dialogOptions = new() { CloseOnEscapeKey = true, CloseButton = true };
 
-            var dialogParams = new DialogParameters<RegisterForEventDialog>
+            var dialogParams = new DialogParameters<RegisterForScheduleDialog>
             {
                 { x => x.ScheduleForEventView, schedule }
             };
-            return _dialog.ShowAsync<RegisterForEventDialog>($"Подтверждение регистрации", dialogParams, dialogOptions);
+            return _dialog.ShowAsync<RegisterForScheduleDialog>($"Подтверждение регистрации", dialogParams, dialogOptions);
         }
 
         /// <summary>
@@ -62,11 +63,11 @@ namespace UI.Components.Dialogs
         {
             DialogOptions dialogOptions = new() { CloseOnEscapeKey = true, CloseButton = true };
 
-            var dialogParams = new DialogParameters<RegisterForEventDialog>
+            var dialogParams = new DialogParameters<RegisterForScheduleDialog>
             {
                 { x => x.ScheduleForEventView, schedule }
             };
-            return _dialog.ShowAsync<UnregisterForEventDialog>($"Отмена регистрации", dialogParams, dialogOptions);
+            return _dialog.ShowAsync<UnregisterForScheduleDialog>($"Отмена регистрации", dialogParams, dialogOptions);
         }
 
     }

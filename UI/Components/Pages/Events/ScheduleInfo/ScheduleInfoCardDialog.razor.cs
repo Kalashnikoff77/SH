@@ -9,9 +9,9 @@ using Microsoft.AspNetCore.Components;
 using MudBlazor;
 using UI.Components.Dialogs;
 
-namespace UI.Components.Pages.Events.EventInfo
+namespace UI.Components.Pages.Events.ScheduleInfo
 {
-    public partial class EventInfoCardDialog : IDisposable
+    public partial class ScheduleInfoCardDialog : IDisposable
     {
         [CascadingParameter] CurrentState CurrentState { get; set; } = null!;
         [CascadingParameter] MudDialogInstance MudDialog { get; set; } = null!;

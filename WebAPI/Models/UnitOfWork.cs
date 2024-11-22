@@ -1,4 +1,6 @@
 ﻿using AutoMapper;
+using Common.Dto.Requests;
+using Common.Dto.Responses;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Caching.Memory;
 using System.Data.Common;
@@ -34,6 +36,23 @@ namespace WebAPI.Models
             if (SqlTransaction != null)
                 await SqlTransaction.CommitAsync();
         }
+
+        public TResponse? CacheTryGet<TRequest, TResponse>(TRequest request, TResponse response) where TRequest : RequestDtoBase where TResponse : ResponseDtoBase
+        {
+            Cache.TryGetValue(request.GetCacheKey(request), out TResponse? data);
+            return data;
+        }
+
+        public void CacheSet<TRequest, TResponse>(TRequest request, TResponse response) where TRequest : RequestDtoBase where TResponse : ResponseDtoBase
+        {
+            Cache.Set(request.GetCacheKey(request), response, new MemoryCacheEntryOptions().SetAbsoluteExpiration(TimeSpan.FromDays(1)));
+        }
+
+        /// <summary>
+        /// Очистить весь кэш
+        /// </summary>
+        public void CacheClear() =>
+            ((MemoryCache)Cache).Clear();
 
         public async ValueTask DisposeAsync()
         {

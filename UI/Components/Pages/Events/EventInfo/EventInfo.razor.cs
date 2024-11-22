@@ -22,6 +22,5 @@ namespace UI.Components.Pages.Events.EventInfo
             if (response.Response.Event != null)
                 Event = response.Response.Event;
         }
-
     }
 }

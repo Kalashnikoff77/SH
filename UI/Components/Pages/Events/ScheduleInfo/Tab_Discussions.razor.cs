@@ -8,7 +8,7 @@ using Common.Models.States;
 using Common.Repository;
 using Microsoft.AspNetCore.Components;
 
-namespace UI.Components.Pages.Events.EventInfo
+namespace UI.Components.Pages.Events.ScheduleInfo
 {
     public partial class Tab_Discussions : IDisposable
     {

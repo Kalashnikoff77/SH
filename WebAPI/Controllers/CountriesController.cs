@@ -20,7 +20,7 @@ namespace WebAPI.Controllers
         {
             var response = new GetCountriesResponseDto();
 
-            _unitOfWork.Cache.TryGetValue(request.GetCacheKey(), out GetCountriesResponseDto? data);
+            var data = _unitOfWork.CacheTryGet(request, response);
             if (data == null)
             {
                 IEnumerable<CountriesViewEntity> result;
@@ -30,7 +30,7 @@ namespace WebAPI.Controllers
                 else
                     result = await _unitOfWork.SqlConnection.QueryAsync<CountriesViewEntity>($"SELECT TOP 1 * FROM CountriesView WHERE Id = @Id", new { Id = request.CountryId.Value });
                 response.Countries = _unitOfWork.Mapper.Map<List<CountriesViewDto>>(result);
-                _unitOfWork.Cache.Set(request.GetCacheKey(), response, new MemoryCacheEntryOptions().SetAbsoluteExpiration(TimeSpan.FromDays(1)));
+                _unitOfWork.CacheSet(request, response);
             }
             else
                 response = data;
@@ -47,13 +47,13 @@ namespace WebAPI.Controllers
         {
             var response = new GetRegionsForEventsResponseDto();
 
-            _unitOfWork.Cache.TryGetValue(request.GetCacheKey(), out GetRegionsForEventsResponseDto? data);
+            var data = _unitOfWork.CacheTryGet(request, response);
             if (data == null)
             {
                 var sql = "SELECT * FROM RegionsForEventsView";
                 var result = await _unitOfWork.SqlConnection.QueryAsync<RegionsForEventsViewEntity>(sql);
                 response.RegionsForEvents = _unitOfWork.Mapper.Map<List<RegionsForEventsViewDto>>(result);
-                _unitOfWork.Cache.Set(request.GetCacheKey(), response, new MemoryCacheEntryOptions().SetAbsoluteExpiration(TimeSpan.FromMinutes(5)));
+                _unitOfWork.CacheSet(request, response);
             }
             else
                 response = data;

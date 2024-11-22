@@ -1,4 +1,6 @@
-﻿namespace Common.Dto.Requests
+﻿using System.Text.Json;
+
+namespace Common.Dto.Requests
 {
     public class GetSchedulesForAccountsRequestDto : RequestDtoBase
     {

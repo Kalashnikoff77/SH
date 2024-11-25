@@ -281,7 +281,7 @@ namespace WebAPI.Controllers
             //// Добавление расписаний мероприятия
             await request.AddSchedulesAsync(_unitOfWork);
 
-            //// Добавление фото меропириятия
+            //// Добавление фото мероприятия
             await request.AddPhotosAsync(_unitOfWork);
 
             await _unitOfWork.CommitTransactionAsync();

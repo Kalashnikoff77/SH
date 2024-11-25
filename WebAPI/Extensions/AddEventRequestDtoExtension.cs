@@ -1,4 +1,5 @@
 ﻿using Common.Dto.Requests;
+using Common.Extensions;
 using Common.Models;
 using Dapper;
 using DataContext.Entities;
@@ -45,6 +46,8 @@ namespace WebAPI.Extensions
         /// </summary>
         public static async Task<int> AddEventAsync(this AddEventRequestDto request, UnitOfWork unitOfWork)
         {
+            request.Event.Description = request.Event.Description.RemoveEmptyLines();
+
             var sql = $"INSERT INTO Events " +
                 $"({nameof(EventsEntity.Name)}, " +
                 $"{nameof(EventsEntity.Description)}, " +
@@ -95,6 +98,8 @@ namespace WebAPI.Extensions
                 {
                     if (schedule.Features == null)
                         throw new BadRequestException($"Не выбрана ни одна услуга!");
+
+                    request.Event.Description = request.Event.Description.RemoveEmptyLines();
 
                     sql = $"INSERT INTO SchedulesForEvents (" +
                         $"{nameof(SchedulesForEventsEntity.EventId)}, " +

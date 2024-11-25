@@ -13,16 +13,7 @@ namespace UI.Components.Pages.Events.AddAndEdit
             var apiCountriesResponse = await _repoGetCountries.HttpPostAsync(new GetCountriesRequestDto());
             countries = apiCountriesResponse.Response.Countries;
 
-            var apiResponse = await _repoGetEvent.HttpPostAsync(new GetEventsRequestDto { EventId = EventId, IsPhotosIncluded = true });
-            if (apiResponse.StatusCode == HttpStatusCode.OK && apiResponse.Response.Event != null)
-            {
-                Event = apiResponse.Response.Event;
-                CountryText = Event.Country!.Name;
-                RegionText = Event.Country.Region.Name;
-
-                var apiSchedulesResponse = await _repoGetSchedules.HttpPostAsync(new GetSchedulesRequestDto { EventId = EventId });
-                Event.Schedule = apiSchedulesResponse.Response.Schedules;
-            }
+            await ReloadEvent(EventId);
 
             TabPanels = new Dictionary<short, TabPanel>
             {
@@ -58,13 +49,29 @@ namespace UI.Components.Pages.Events.AddAndEdit
             var apiUpdateResponse = await _repoUpdateEvent.HttpPostAsync(request);
 
             // Перезагрузка мероприятия
-            var apiReloadResponse = await _repoGetEvent.HttpPostAsync(new GetEventsRequestDto { EventId = EventId, IsPhotosIncluded = true });
-            Event = apiReloadResponse.Response.Event!;
+            await ReloadEvent(EventId);
 
             isDataSaved = true;
             processingEvent = false;
             StateHasChanged();
         }
 
+
+        async Task ReloadEvent(int? eventId)
+        {
+            if (eventId.HasValue && eventId > 0)
+            {
+                var apiResponse = await _repoGetEvent.HttpPostAsync(new GetEventsRequestDto { EventId = EventId, IsPhotosIncluded = true });
+                if (apiResponse.StatusCode == HttpStatusCode.OK && apiResponse.Response.Event != null)
+                {
+                    Event = apiResponse.Response.Event;
+                    CountryText = Event.Country!.Name;
+                    RegionText = Event.Country.Region.Name;
+
+                    var apiSchedulesResponse = await _repoGetSchedules.HttpPostAsync(new GetSchedulesRequestDto { EventId = EventId });
+                    Event.Schedule = apiSchedulesResponse.Response.Schedules;
+                }
+            }
+        }
     }
 }

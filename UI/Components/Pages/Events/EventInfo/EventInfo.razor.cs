@@ -52,6 +52,7 @@ namespace UI.Components.Pages.Events.EventInfo
         async Task ScheduleChangedAsync(SchedulesDatesViewDto schedule)
         {
             ScheduleForEventView = await GetScheduleForEvent(schedule.Id);
+            selectedSchedule = scheduleDates.First(s => s.Id == ScheduleForEventView.Id);   // Установим текущую дату мероприятия в выпадающем меню дат
         }
 
 

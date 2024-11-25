@@ -2,9 +2,8 @@
 {
     <MudDialog Style="width:550px; min-width:300px">
         <DialogContent>
-            <div id="top" />
-            <MudStack AlignItems="AlignItems.Center" Class="mb-3" Style="overflow-y:visible">
-                <MudCarousel @ref="Carousel" TData="PhotosForEventsDto" ShowArrows ShowBullets="false" AutoCycle Style="width:300px; height:400px">
+            <div id="top" class="d-flex flex-column mb-3 align-center" style="overflow-y:visible">
+                <MudCarousel @ref="Carousel" TData="PhotosForEventsDto" ShowArrows ShowBullets="false" AutoCycle Style="width:300px; height:400px" Class="mb-3">
                     @if (ScheduleForEventView.Event.Photos != null)
                     {
                         @foreach (var photo in ScheduleForEventView.Event.Photos.OrderByDescending(o => o.IsAvatar).ThenByDescending(o => o.CreateDate))
@@ -54,8 +53,7 @@
                         <Tab_Accounts ScheduleForEventView="@ScheduleForEventView" />
                     </MudTabPanel>
                 </MudTabs>
-
-            </MudStack>
+            </div>
         </DialogContent>
 
         <DialogActions>

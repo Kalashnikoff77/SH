@@ -72,6 +72,20 @@
 
             <MudDivider />
 
+            @if (!string.IsNullOrWhiteSpace(ScheduleForEventView.Description))
+            {
+                <MudText Typo="Typo.body2" Class="mt-2">
+                    <b>Описание мероприятия:</b><br />
+                    <ShowLongTextComponent Text="@ScheduleForEventView.Description" IsShortText="@isShortScheduleDescriptionText" />
+                    @if (ScheduleForEventView.Description.Length > 260)
+                    {
+                        <span @onclick="() => isShortScheduleDescriptionText = !isShortScheduleDescriptionText"><a href="javascript:void" class="mud-primary-text"><b>@(isShortScheduleDescriptionText ? " Развернуть" : " Свернуть")</b></a></span>
+                    }
+                </MudText>
+            }
+
+            <MudDivider />
+
             <MudGrid Style="text-align:center">
                 <MudItem xs="4" title="Зарегистрировано пар / Свободных мест для пар">
                     <MudIcon Icon="@Icons.Material.Filled.PeopleAlt" Color="Color.Tertiary" /><br />
@@ -94,15 +108,14 @@
 
             <MudDivider />
 
-            @if (!string.IsNullOrWhiteSpace(ScheduleForEventView.Description))
-            {
-                <MudText Typo="Typo.body2">@ScheduleForEventView.Description.ReplaceNewLineWithBR()</MudText>
-            }
-
-            <MudDivider />
+            <MudText Typo="Typo.body2" Class="mt-2">
+                <b>Общее описание:</b><br />
+                <ShowLongTextComponent Text="@Event.Description" IsShortText="@isShortEventDescriptionText" />
+                @if (Event.Description.Length > 260)
+                {
+                    <span @onclick="() => isShortEventDescriptionText = !isShortEventDescriptionText"><a href="javascript:void" class="mud-primary-text"><b>@(isShortEventDescriptionText ? " Развернуть" : " Свернуть")</b></a></span>
+                }
+            </MudText>
         </div>
-
-        <MudText Typo="Typo.body2" Class="mt-2"><b>Общее описание:</b><br />@Event.Description.ReplaceNewLineWithBR()</MudText>
-
     </div>
 }

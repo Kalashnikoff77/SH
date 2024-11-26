@@ -23,6 +23,9 @@ namespace UI.Components.Pages.Events.EventInfo
         EventsViewDto Event { get; set; } = null!;
         SchedulesForEventsViewDto ScheduleForEventView { get; set; } = null!;
         SchedulesDatesViewDto? selectedSchedule { get; set; } = null!;
+        
+        bool isShortEventDescriptionText = true;
+        bool isShortScheduleDescriptionText = true;
 
         IEnumerable<SchedulesDatesViewDto> scheduleDates { get; set; } = null!;
         
@@ -54,7 +57,6 @@ namespace UI.Components.Pages.Events.EventInfo
             ScheduleForEventView = await GetScheduleForEvent(schedule.Id);
             selectedSchedule = scheduleDates.First(s => s.Id == ScheduleForEventView.Id);   // Установим текущую дату мероприятия в выпадающем меню дат
         }
-
 
         async Task<SchedulesForEventsViewDto> GetScheduleForEvent(int scheduleId)
         {

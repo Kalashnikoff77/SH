@@ -4,7 +4,9 @@
     
     @if (!string.IsNullOrWhiteSpace(Text) && Text.Length > maxTextLength)
     {
-        <span @onclick="OnWrap"><a href="javascript:void" class="mud-primary-text" style="font-size:14px; font-weight: 500">@(isShortText ? new MarkupString(" Далее &raquo;") : new MarkupString(" &laquo; Скрыть"))</a></span>
+        <span @onclick="OnWrap" class="mud-primary-text" style="font-size:14px; font-weight:500; cursor:pointer">
+            @(isShortText ? " далее »" : " « скрыть")
+        </span>
     }
 
 </span>

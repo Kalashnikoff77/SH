@@ -90,6 +90,9 @@ namespace WebAPI.Extensions
                     if (schedule.Features == null)
                         throw new BadRequestException($"Не выбрана ни одна услуга!");
 
+                    if (string.IsNullOrWhiteSpace(schedule.Description) || schedule.Description.Length < StaticData.DB_EVENT_DESCRIPTION_MIN)
+                        throw new BadRequestException($"Кол-во символов в описании расписания должно быть минимум {StaticData.DB_EVENT_DESCRIPTION_MIN}!");
+
                     schedule.Description = schedule.Description?.RemoveEmptyLines();
 
                     // Добавление нового расписания с услугами

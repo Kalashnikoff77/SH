@@ -93,7 +93,7 @@
                 </MudItem>
 
                 <MudItem xs="12">
-                    <MudTextField T="string" Label="Описание" Lines="3" MaxLines="8" AutoGrow Variant="Variant.Text" @bind-Value="@schedule.Description" />
+                    <MudTextField T="string" Label="Описание" Lines="3" MaxLines="8" AutoGrow Variant="Variant.Text" Validation="@(new Func<string?, string?>(DescriptionValidator))" @bind-Value="@schedule.Description" />
                 </MudItem>
 
             </MudGrid>
@@ -182,7 +182,7 @@
                 </MudItem>
 
                 <MudItem xs="12">
-                    <MudTextField T="string" Label="Описание" Variant="Variant.Text" @bind-Value="schedule.Description" Lines="2" />
+                    <MudTextField T="string" Label="Описание" Variant="Variant.Text" Validation="@(new Func<string?, string?>(DescriptionValidator))" @bind-Value="schedule.Description" Lines="2" />
                 </MudItem>
 
             </MudGrid>

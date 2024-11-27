@@ -3,6 +3,7 @@ using Common.Dto.Requests;
 using Common.Dto.Responses;
 using Common.Dto.Views;
 using Common.Extensions;
+using Common.Models;
 using Common.Repository;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
@@ -36,10 +37,6 @@ namespace UI.Components.Pages.Events.AddAndEdit
 
             var featuresResponse = await _repoGetFeatures.HttpPostAsync(new GetFeaturesRequestDto());
             AllFeatures = featuresResponse.Response.Features;
-        }
-
-        protected override void OnParametersSet()
-        {
         }
 
         DateTime? startDate
@@ -84,6 +81,9 @@ namespace UI.Components.Pages.Events.AddAndEdit
             if (ScheduleCopy.Features!.Count == 0)
                 return;
 
+            if (string.IsNullOrWhiteSpace(ScheduleCopy.Description) || ScheduleCopy.Description.Length < StaticData.DB_EVENT_DESCRIPTION_MIN)
+                return;
+
             if (startDate.HasValue && startTime.HasValue && endDate.HasValue && endTime.HasValue)
             {
                 if (startDate.Value.Date + startTime.Value >= endDate.Value.Date + endTime.Value)
@@ -91,6 +91,7 @@ namespace UI.Components.Pages.Events.AddAndEdit
                 else
                     isFormValid = true;
             }
+
             StateHasChanged();
         }
 
@@ -103,5 +104,18 @@ namespace UI.Components.Pages.Events.AddAndEdit
                 MudDialog.Close(DialogResult.Ok(ScheduleCopy));
         }
         void Cancel() => MudDialog.Cancel();
+
+
+        public Color DescriptionIconColor = Color.Default;
+        public string? DescriptionValidator(string? text)
+        {
+            string? errorMessage = null;
+            if (string.IsNullOrWhiteSpace(text) || text.Length < StaticData.DB_EVENT_DESCRIPTION_MIN)
+                errorMessage = $"Введите не менее {StaticData.DB_EVENT_DESCRIPTION_MIN} символов";
+
+            CheckProperties();
+            return errorMessage;
+        }
+
     }
 }

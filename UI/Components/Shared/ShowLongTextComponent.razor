@@ -2,7 +2,7 @@
     
     @htmlText
     
-    @if (Text.Length > maxTextLength)
+    @if (!string.IsNullOrWhiteSpace(Text) && Text.Length > maxTextLength)
     {
         <span @onclick="OnWrap"><a href="javascript:void" class="mud-primary-text"><b>@(isShortText ? new MarkupString(" <font size='4'>&raquo;&raquo;&raquo;</font>") : new MarkupString(" <font size='4'>&laquo;&laquo;&laquo;</font>"))</b></a></span>
     }

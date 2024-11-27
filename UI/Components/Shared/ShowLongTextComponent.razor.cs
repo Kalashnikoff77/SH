@@ -24,10 +24,13 @@ namespace UI.Components.Shared
 
         void CheckText()
         {
-            if (Text.Length > maxTextLength && isShortText)
-                htmlText = new MarkupString(formattedText.Clear().Append(Text.Substring(0, maxTextLength)).Append("...").ToString());
-            else
-                htmlText = Text.ReplaceNewLineWithBR();
+            if (!string.IsNullOrEmpty(Text))
+            {
+                if (Text.Length > maxTextLength && isShortText)
+                    htmlText = new MarkupString(formattedText.Clear().Append(Text.Substring(0, maxTextLength)).Append("...").ToString());
+                else
+                    htmlText = Text.ReplaceNewLineWithBR();
+            }
         }
     }
 }

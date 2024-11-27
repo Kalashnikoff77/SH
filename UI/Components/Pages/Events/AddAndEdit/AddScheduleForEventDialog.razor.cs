@@ -2,6 +2,7 @@
 using Common.Dto.Requests;
 using Common.Dto.Responses;
 using Common.Dto.Views;
+using Common.Models;
 using Common.Repository;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
@@ -96,6 +97,9 @@ namespace UI.Components.Pages.Events.AddAndEdit
             if (schedule.Features!.Count == 0)
                 return;
 
+            if (string.IsNullOrWhiteSpace(schedule.Description) || schedule.Description.Length < StaticData.DB_EVENT_DESCRIPTION_MIN)
+                return;
+
             if (startDate.HasValue && startTime.HasValue && endDate.HasValue && endTime.HasValue)
             {
                 if (startDate.Value + startTime.Value >= endDate.Value + endTime.Value)
@@ -169,6 +173,17 @@ namespace UI.Components.Pages.Events.AddAndEdit
                 }
             }
             return schedules;
+        }
+
+        public Color DescriptionIconColor = Color.Default;
+        public string? DescriptionValidator(string? text)
+        {
+            string? errorMessage = null;
+            if (string.IsNullOrWhiteSpace(text) || text.Length < StaticData.DB_EVENT_DESCRIPTION_MIN)
+                errorMessage = $"Введите не менее {StaticData.DB_EVENT_DESCRIPTION_MIN} символов";
+
+            CheckProperties();
+            return errorMessage;
         }
     }
 }

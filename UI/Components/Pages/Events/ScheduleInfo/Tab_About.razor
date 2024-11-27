@@ -31,11 +31,12 @@
             </div>
         }
 
-        @if (!string.IsNullOrWhiteSpace(ScheduleForEventView.Description))
-        {
-            <MudText Typo="Typo.body2">@ScheduleForEventView.Description.ReplaceNewLineWithBR()</MudText>
-            <MudDivider />
-        }
+        <MudText Typo="Typo.body2" Class="mt-2">
+            <b>Описание мероприятия:</b><br />
+            <ShowLongTextComponent Text="@ScheduleForEventView.Description" />
+        </MudText>
+
+        <MudDivider />
 
         <MudGrid Style="text-align:center">
             <MudItem xs="4" title="Зарегистрировано пар / Свободных мест для пар">
@@ -59,6 +60,9 @@
 
         <MudDivider />
 
-        <MudText Typo="Typo.body2"><b>Общее описание:</b><br />@ScheduleForEventView.Event.Description.ReplaceNewLineWithBR()</MudText>
+        <MudText Typo="Typo.body2">
+            <b>Общее описание:</b><br />
+            <ShowLongTextComponent Text="@ScheduleForEventView.Event.Description" />
+        </MudText>
     </MudStack>
 }

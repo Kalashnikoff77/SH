@@ -24,9 +24,6 @@ namespace UI.Components.Pages.Events.EventInfo
         SchedulesForEventsViewDto ScheduleForEventView { get; set; } = null!;
         SchedulesDatesViewDto? selectedSchedule { get; set; } = null!;
         
-        bool isShortEventDescriptionText = true;
-        bool isShortScheduleDescriptionText = true;
-
         IEnumerable<SchedulesDatesViewDto> scheduleDates { get; set; } = null!;
         
         MudCarousel<PhotosForEventsDto> Carousel = null!;
@@ -73,6 +70,5 @@ namespace UI.Components.Pages.Events.EventInfo
                 throw new Exception("Не найдено на одного расписания у мероприятия!");
             return responseSchedulesDates.Response.SchedulesDates;
         }
-
     }
 }

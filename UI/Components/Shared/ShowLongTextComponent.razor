@@ -1,3 +1,10 @@
-﻿<span class="@Class" style="@Style">
+﻿<span>
+    
     @htmlText
+    
+    @if (Text.Length > maxTextLength)
+    {
+        <span @onclick="OnWrap"><a href="javascript:void" class="mud-primary-text"><b>@(isShortText ? new MarkupString(" <font size='4'>&raquo;&raquo;&raquo;</font>") : new MarkupString(" <font size='4'>&laquo;&laquo;&laquo;</font>"))</b></a></span>
+    }
+
 </span>

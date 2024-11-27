@@ -76,11 +76,7 @@
             {
                 <MudText Typo="Typo.body2" Class="mt-2">
                     <b>Описание мероприятия:</b><br />
-                    <ShowLongTextComponent Text="@ScheduleForEventView.Description" IsShortText="@isShortScheduleDescriptionText" />
-                    @if (ScheduleForEventView.Description.Length > 260)
-                    {
-                        <span @onclick="() => isShortScheduleDescriptionText = !isShortScheduleDescriptionText"><a href="javascript:void" class="mud-primary-text"><b>@(isShortScheduleDescriptionText ? " Развернуть" : " Свернуть")</b></a></span>
-                    }
+                    <ShowLongTextComponent Text="@ScheduleForEventView.Description" />
                 </MudText>
             }
 
@@ -110,11 +106,7 @@
 
             <MudText Typo="Typo.body2" Class="mt-2">
                 <b>Общее описание:</b><br />
-                <ShowLongTextComponent Text="@Event.Description" IsShortText="@isShortEventDescriptionText" />
-                @if (Event.Description.Length > 260)
-                {
-                    <span @onclick="() => isShortEventDescriptionText = !isShortEventDescriptionText"><a href="javascript:void" class="mud-primary-text"><b>@(isShortEventDescriptionText ? " Развернуть" : " Свернуть")</b></a></span>
-                }
+                <ShowLongTextComponent Text="@Event.Description" />
             </MudText>
         </div>
     </div>

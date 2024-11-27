@@ -7,25 +7,25 @@ namespace UI.Components.Shared
     public partial class ShowLongTextComponent
     {
         [Parameter, EditorRequired] public string Text { get; set; } = null!;
-        [Parameter] public bool IsShortText { get; set; } = false;
-        [Parameter] public string? Class { get; set; }
-        [Parameter] public string? Style { get; set; }
 
+        int maxTextLength = 260;
         MarkupString htmlText = new MarkupString();
+        StringBuilder formattedText = new StringBuilder(260);
+        bool isShortText = true;
 
-        int length = 260;
+        protected override void OnParametersSet() =>
+            CheckText();
 
-        protected override void OnParametersSet()
+        void OnWrap()
         {
-            var formattedText = new StringBuilder(260);
+            isShortText = !isShortText;
+            CheckText();
+        }
 
-            if (IsShortText)
-            {
-                if (Text.Length > length)
-                    htmlText = new MarkupString(formattedText.Append(Text.Substring(0, length)).Append("...").ToString());
-                else
-                    htmlText = Text.ReplaceNewLineWithBR();
-            }
+        void CheckText()
+        {
+            if (Text.Length > maxTextLength && isShortText)
+                htmlText = new MarkupString(formattedText.Clear().Append(Text.Substring(0, maxTextLength)).Append("...").ToString());
             else
                 htmlText = Text.ReplaceNewLineWithBR();
         }

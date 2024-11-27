@@ -3,7 +3,7 @@ using Common.JSProcessor;
 using Microsoft.AspNetCore.Components;
 using UI.Components.Dialogs;
 
-namespace UI.Components.Pages.Events.ScheduleInfo
+namespace UI.Components.Pages.Events.Shared
 {
     public partial class Tab_About
     {
@@ -11,9 +11,7 @@ namespace UI.Components.Pages.Events.ScheduleInfo
         [Inject] ShowDialogs ShowDialogs { get; set; } = null!;
         [Inject] IJSProcessor _JSProcessor { get; set; } = null!;
 
-        protected override async Task OnAfterRenderAsync(bool firstRender)
-        {
+        protected override async Task OnAfterRenderAsync(bool firstRender) =>
             await _JSProcessor.ScrollToElement("top");
-        }
     }
 }

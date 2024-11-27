@@ -70,7 +70,10 @@ function ScrollDivToBottom(divId) {
 }
 
 function ScrollToElement(elementId) {
-    document.getElementById(elementId).scrollIntoView();
+    var element = document.getElementById(elementId);
+    if (element != null) {
+        element.scrollIntoView();
+    }
 }
 
 function ScrollToElementWithinDiv(elementWithinDivId, divElement) {

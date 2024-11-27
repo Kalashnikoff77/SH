@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Components;
 using MudBlazor;
 using UI.Components.Dialogs;
 
-namespace UI.Components.Pages.Events.EventInfo
+namespace UI.Components.Pages.Events
 {
     public partial class EventInfo
     {

@@ -8,7 +8,7 @@ using Common.Models.States;
 using Common.Repository;
 using Microsoft.AspNetCore.Components;
 
-namespace UI.Components.Pages.Events.ScheduleInfo
+namespace UI.Components.Pages.Events.Shared
 {
     public partial class Tab_Discussions : IDisposable
     {
@@ -94,18 +94,5 @@ namespace UI.Components.Pages.Events.ScheduleInfo
 
         public void Dispose() =>
             OnEventDiscussionAddedHandler?.Dispose();
-
-        //async ValueTask<ItemsProviderResult<DiscussionsForEventsViewDto>> LoadDiscussions(ItemsProviderRequest request)
-        //{
-        //    var response = await _repoGetDiscussions.HttpPostAsync(new GetDiscussionsForEventsRequestDto()
-        //    {
-        //        EventId = ScheduleForEventView.EventId,
-        //        Skip = request.StartIndex,
-        //        Take = request.Count
-        //    });
-        //    discussions = response.Response.Discussions;
-
-        //    return new ItemsProviderResult<DiscussionsForEventsViewDto>(discussions, response.Response.NumOfDiscussions);
-        //}
     }
 }

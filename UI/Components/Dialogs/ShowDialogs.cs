@@ -2,8 +2,6 @@
 using MudBlazor;
 using UI.Components.Pages.Account;
 using UI.Components.Pages.Events;
-using UI.Components.Pages.Events.EventInfo;
-using UI.Components.Pages.Events.ScheduleInfo;
 
 namespace UI.Components.Dialogs
 {

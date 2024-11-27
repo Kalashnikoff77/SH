@@ -1,0 +1,58 @@
+﻿@page "/events/{EventId:int}"
+
+@if (Event != null && ScheduleForEventView != null)
+{
+    <PageTitle>@Event.Name</PageTitle>
+
+    <div class="d-flex flex-column ml-3" style="min-width:300px; max-width:750px">
+
+        <MudText Align="Align.Center" Typo="Typo.h6">@Event.Name</MudText>
+        <MudDivider DividerType="DividerType.FullWidth" Light="false" Class="mb-5" />
+
+        <div class="d-flex flex-column mb-1 align-center">
+            <MudCarousel @ref="Carousel" TData="PhotosForEventsDto" ShowArrows ShowBullets="false" AutoCycle Style="width:300px; height:400px">
+                @foreach (var photo in Event.Photos!.OrderByDescending(o => o.IsAvatar).ThenByDescending(o => o.CreateDate))
+                {
+                    <MudCarouselItem Transition="Transition.Slide">
+                        <MudImage Src=@($"/images/EventsPhotos/{photo.RelatedId}/{photo.Guid}/{EnumImageSize.s450x600}.jpg") Fluid Style="border-radius:2%; width:300px; height:400px" />
+                    </MudCarouselItem>
+                }
+            </MudCarousel>
+            <div class="d-flex flex-row flex-wrap gap-2 align-center justify-center mt-3">
+                @if (scheduleDates != null)
+                {
+                    <MudSelect T="SchedulesDatesViewDto" Value="selectedSchedule" ValueChanged="ScheduleChangedAsync" Variant="Variant.Outlined" Dense AnchorOrigin="Origin.BottomCenter" Margin="Margin.Dense" Label="Расписание" AdornmentIcon="@Icons.Material.Outlined.CalendarMonth">
+                        @foreach (var schedule in scheduleDates)
+                        {
+                            <MudSelectItem Value="@schedule" />
+                        }
+                    </MudSelect>
+                }
+                @if (CurrentState.Account != null && ScheduleForEventView != null)
+                {
+                    @if (CurrentState.Account.Schedules != null && CurrentState.Account.Schedules.Any(a => a.ScheduleId == ScheduleForEventView.Id))
+                    {
+                        <MudButton OnClick="() => ShowDialogs.CancelRegistrationForEventDialogAsync(ScheduleForEventView)" Style="height:39px; margin:2px 3px 0 0; padding: 0 20px" Color="Color.Primary" IconSize="Size.Large" Size="Size.Small" StartIcon="@Icons.Material.Outlined.GroupRemove" Variant="Variant.Filled" title="Отменить регистрацию">Отменить</MudButton>
+                    }
+                    else
+                    {
+                        <MudButton OnClick="() => ShowDialogs.RegistrationForEventDialogAsync(ScheduleForEventView)" Style="height:39px; margin:2px 3px 0 0; padding: 0 20px" Color="Color.Primary" IconSize="Size.Large" Size="Size.Small" StartIcon="@Icons.Material.Outlined.GroupAdd" Variant="Variant.Outlined" title="Зарегистрироваться на мероприятие">Регистрация</MudButton>
+                    }
+                }
+            </div>
+        </div>
+
+        <MudTabs Centered PanelClass="mt-6 px-2" Style="width:100%">
+            <MudTabPanel Text="Общее">
+                <UI.Components.Pages.Events.Shared.Tab_About ScheduleForEventView="@ScheduleForEventView" />
+            </MudTabPanel>
+            <MudTabPanel Text="Обсуждение" BadgeData="@ScheduleForEventView!.Event!.Statistic?.NumOfDiscussions" BadgeColor="Color.Transparent">
+                <UI.Components.Pages.Events.Shared.Tab_Discussions ScheduleForEventView="@ScheduleForEventView" />
+            </MudTabPanel>
+
+            <MudTabPanel Text="Участники" Disabled="@(ScheduleForEventView.Statistic?.NumOfRegAccounts == 0)" BadgeData="@ScheduleForEventView.Statistic?.NumOfRegAccounts" BadgeColor="Color.Transparent">
+                <UI.Components.Pages.Events.Shared.Tab_Accounts ScheduleForEventView="@ScheduleForEventView" />
+            </MudTabPanel>
+        </MudTabs>
+    </div>
+}

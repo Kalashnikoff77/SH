@@ -6,7 +6,7 @@ using Common.Repository;
 using Microsoft.AspNetCore.Components;
 using UI.Components.Dialogs;
 
-namespace UI.Components.Pages.Events.ScheduleInfo
+namespace UI.Components.Pages.Events.Shared
 {
     public partial class Tab_Accounts
     {

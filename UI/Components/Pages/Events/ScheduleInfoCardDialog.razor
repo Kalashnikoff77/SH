@@ -15,7 +15,7 @@
                     }
                 </MudCarousel>
 
-                <MudStack Spacing="2" Row Style="width:100%" StretchItems="StretchItems.Start" Justify="Justify.Center" AlignItems="AlignItems.Center">
+                <div class="d-flex gap-2 align-center" style="width:100%">
                     @if (scheduleDates != null)
                     {
                         <MudSelect T="SchedulesDatesViewDto" Value="selectedSchedule" ValueChanged="ScheduleChangedAsync" Variant="Variant.Outlined" Dense AnchorOrigin="Origin.BottomCenter" Margin="Margin.Dense" Label="Расписание" AdornmentIcon="@Icons.Material.Outlined.CalendarMonth">
@@ -37,7 +37,7 @@
                             <MudButton OnClick="() => ShowDialogs.RegistrationForEventDialogAsync(ScheduleForEventView)" Style="height:39px; margin:2px 3px 0 0; padding: 0 20px" Color="Color.Primary" IconSize="Size.Large" Size="Size.Small" StartIcon="@Icons.Material.Outlined.GroupAdd" Variant="Variant.Outlined" title="Зарегистрироваться на мероприятие">Регистрация</MudButton>
                         }
                     }
-                </MudStack>
+                </div>
 
                 @* Закладки *@
                 <MudTabs Centered PanelClass="mt-6 px-2" Style="width:100%">

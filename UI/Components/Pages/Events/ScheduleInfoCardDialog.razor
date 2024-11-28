@@ -3,19 +3,10 @@
     <MudDialog Style="width:550px; min-width:300px">
         <DialogContent>
             <div id="top" class="d-flex flex-column mb-3 align-center" style="overflow-y:visible">
-                <MudCarousel @ref="Carousel" TData="PhotosForEventsDto" ShowArrows ShowBullets="false" AutoCycle Style="width:300px; height:400px" Class="mb-3">
-                    @if (ScheduleForEventView.Event.Photos != null)
-                    {
-                        @foreach (var photo in ScheduleForEventView.Event.Photos.OrderByDescending(o => o.IsAvatar).ThenByDescending(o => o.CreateDate))
-                        {
-                            <MudCarouselItem Transition="Transition.Slide">
-                                <MudImage Src=@($"/images/EventsPhotos/{photo.RelatedId}/{photo.Guid}/{EnumImageSize.s450x600}.jpg") Fluid="true" Style="border-radius:2%" />
-                            </MudCarouselItem>
-                        }
-                    }
-                </MudCarousel>
 
-                <div class="d-flex gap-2 align-center" style="width:100%">
+                <CarouselPhotosComponent Photos="ScheduleForEventView.Event.Photos" />
+
+                <div class="d-flex gap-2 flex-wrap align-center justify-center mb-3">
                     @if (scheduleDates != null)
                     {
                         <MudSelect T="SchedulesDatesViewDto" Value="selectedSchedule" ValueChanged="ScheduleChangedAsync" Variant="Variant.Outlined" Dense AnchorOrigin="Origin.BottomCenter" Margin="Margin.Dense" Label="Расписание" AdornmentIcon="@Icons.Material.Outlined.CalendarMonth">
@@ -43,15 +34,13 @@
                 @* Закладки *@
                 <MudTabs Centered PanelClass="mt-6 px-2" Style="width:100%">
                     <MudTabPanel Text="Общее">
-                        <UI.Components.Pages.Events.Shared.Tab_About ScheduleForEventView="@ScheduleForEventView" />
+                        <Tab_About ScheduleForEventView="@ScheduleForEventView" />
                     </MudTabPanel>
-
                     <MudTabPanel Text="Обсуждение" BadgeData="@ScheduleForEventView.Event.Statistic?.NumOfDiscussions" BadgeColor="Color.Transparent">
-                        <UI.Components.Pages.Events.Shared.Tab_Discussions ScheduleForEventView="@ScheduleForEventView" />
+                        <Tab_Discussions ScheduleForEventView="@ScheduleForEventView" />
                     </MudTabPanel>
-
                     <MudTabPanel Text="Участники" Disabled="@(ScheduleForEventView.Statistic?.NumOfRegAccounts == 0)" BadgeData="@ScheduleForEventView.Statistic?.NumOfRegAccounts" BadgeColor="Color.Transparent">
-                        <UI.Components.Pages.Events.Shared.Tab_Accounts ScheduleForEventView="@ScheduleForEventView" />
+                        <Tab_Accounts ScheduleForEventView="@ScheduleForEventView" />
                     </MudTabPanel>
                 </MudTabs>
             </div>

@@ -21,8 +21,6 @@ namespace UI.Components.Pages.Events
         [Inject] IRepository<GetSchedulesDatesRequestDto, GetSchedulesDatesResponseDto> _repoGetSchedulesDates { get; set; } = null!;
         [Inject] ShowDialogs ShowDialogs { get; set; } = null!;
 
-        MudCarousel<PhotosForEventsDto> Carousel = null!;
-
         SchedulesForEventsViewDto ScheduleForEventView { get; set; } = null!;
         SchedulesDatesViewDto selectedSchedule { get; set; } = null!;
         IEnumerable<SchedulesDatesViewDto> scheduleDates { get; set; } = null!;

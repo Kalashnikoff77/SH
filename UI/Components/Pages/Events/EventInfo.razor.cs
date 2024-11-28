@@ -27,8 +27,6 @@ namespace UI.Components.Pages.Events
         
         IEnumerable<SchedulesDatesViewDto> scheduleDates { get; set; } = null!;
         
-        MudCarousel<PhotosForEventsDto> Carousel = null!;
-
         IDisposable? OnScheduleChangedHandler;
 
         protected override async Task OnInitializedAsync()

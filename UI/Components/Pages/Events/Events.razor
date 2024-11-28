@@ -8,9 +8,7 @@
         <MudText Typo="Typo.h6" Class="mr-2">Клубы и мероприятия</MudText>
         @if (CurrentState.Account != null) 
         {
-            <MudButton Href="/events/add" StartIcon="@Icons.Material.Filled.Add" Variant="Variant.Outlined" Color="Color.Primary" Size="Size.Small" title="Добавить мероприятие">
-                <MudText Typo="Typo.body2">Добавить</MudText>
-            </MudButton>
+            <MudButton Href="/events/add" StartIcon="@Icons.Material.Filled.PlaylistAdd" Color="Color.Primary" Size="Size.Small" title="Добавить мероприятие">Добавить</MudButton>
         }
     </div>
 

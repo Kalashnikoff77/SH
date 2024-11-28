@@ -41,7 +41,7 @@ namespace UI.Components.Dialogs
 
 
         /// <summary>
-        /// Подвтерждение регистрация на клубное мероприятие
+        /// Подтверждение регистрация на клубное мероприятие
         /// </summary>
         public Task RegistrationForEventDialogAsync(SchedulesForEventsViewDto schedule)
         {
@@ -61,7 +61,7 @@ namespace UI.Components.Dialogs
         {
             DialogOptions dialogOptions = new() { CloseOnEscapeKey = true, CloseButton = true };
 
-            var dialogParams = new DialogParameters<RegisterForScheduleDialog>
+            var dialogParams = new DialogParameters<UnregisterForScheduleDialog>
             {
                 { x => x.ScheduleForEventView, schedule }
             };

@@ -2,6 +2,7 @@
 using Common.Dto.Requests;
 using Common.Dto.Responses;
 using Common.Dto.Views;
+using Common.Models.SignalR;
 using Common.Models.States;
 using Common.Repository;
 using Microsoft.AspNetCore.Components;
@@ -28,6 +29,8 @@ namespace UI.Components.Pages.Events
         
         MudCarousel<PhotosForEventsDto> Carousel = null!;
 
+        IDisposable? OnScheduleChangedHandler;
+
         protected override async Task OnInitializedAsync()
         {
             var response = await _repoGetEvent.HttpPostAsync(new GetEventsRequestDto { EventId = EventId, IsPhotosIncluded = true });
@@ -36,17 +39,19 @@ namespace UI.Components.Pages.Events
                 Event = response.Response.Event;
                 scheduleDates = await GetScheduleDates(EventId);
 
-                selectedSchedule = scheduleDates.Where(x => x.StartDate > DateTime.Now).FirstOrDefault();
-                if (selectedSchedule != null)
-                {
-                    ScheduleForEventView = await GetScheduleForEvent(selectedSchedule.Id);
-                }
-                else
-                {
-                    selectedSchedule = scheduleDates.First();
-                    ScheduleForEventView = await GetScheduleForEvent(selectedSchedule.Id);
-                }
+                // Ищем ближайшее к текущей дате активное расписание мероприятия, если все мероприятия закончены, то берём первое из них
+                selectedSchedule = scheduleDates.Where(x => x.StartDate > DateTime.Now).FirstOrDefault() ?? scheduleDates.First();
+                ScheduleForEventView = await GetScheduleForEvent(selectedSchedule.Id);
             }
+        }
+
+        protected override void OnAfterRender(bool firstRender)
+        {
+            OnScheduleChangedHandler = OnScheduleChangedHandler.SignalRClient<OnScheduleChangedResponse>(CurrentState, async (response) =>
+            {
+                ScheduleForEventView = await GetScheduleForEvent(response.ScheduleId);
+                await InvokeAsync(StateHasChanged);
+            });
         }
 
         async Task ScheduleChangedAsync(SchedulesDatesViewDto schedule)

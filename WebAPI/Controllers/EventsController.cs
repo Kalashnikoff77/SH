@@ -138,6 +138,8 @@ namespace WebAPI.Controllers
                 $"(@{nameof(DiscussionsForEventsEntity.EventId)}, @AccountId, @{nameof(DiscussionsForEventsEntity.RecipientId)}, @{nameof(DiscussionsForEventsEntity.DiscussionId)}, @{nameof(DiscussionsForEventsEntity.Text)})";
             var newId = await _unitOfWork.SqlConnection.QuerySingleAsync<int>(sql, new { request.EventId, _unitOfWork.AccountId, request.RecipientId, request.DiscussionId, request.Text });
 
+            _unitOfWork.CacheClear();
+
             return new AddDiscussionsForEventsResponseDto { NewDiscussionId = newId };
         }
 

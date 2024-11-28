@@ -24,7 +24,7 @@ namespace UI.Components.Pages.Events.Shared
         int _currentElementId = 0;
         bool moreDiscussionsButton = false;
 
-        IDisposable? OnEventDiscussionAddedHandler;
+        IDisposable? OnScheduleChangedHandler;
 
         protected override async Task OnInitializedAsync() =>
             await GetDiscussionsAsync();
@@ -34,7 +34,7 @@ namespace UI.Components.Pages.Events.Shared
             if (!firstRender)
                 await _JSProcessor.ScrollToElementWithinDiv($"id_{_currentElementId}", "DiscussionsFrame");
 
-            OnEventDiscussionAddedHandler = OnEventDiscussionAddedHandler.SignalRClient<OnScheduleChangedResponse>(CurrentState, async (response) =>
+            OnScheduleChangedHandler = OnScheduleChangedHandler.SignalRClient<OnScheduleChangedResponse>(CurrentState, async (response) =>
             {
                 var responseApi = await _repoGetDiscussions.HttpPostAsync(new GetDiscussionsForEventsRequestDto()
                 {
@@ -93,6 +93,6 @@ namespace UI.Components.Pages.Events.Shared
         }
 
         public void Dispose() =>
-            OnEventDiscussionAddedHandler?.Dispose();
+            OnScheduleChangedHandler?.Dispose();
     }
 }

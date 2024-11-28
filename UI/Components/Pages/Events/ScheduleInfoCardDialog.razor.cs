@@ -27,7 +27,7 @@ namespace UI.Components.Pages.Events
         SchedulesDatesViewDto selectedSchedule { get; set; } = null!;
         IEnumerable<SchedulesDatesViewDto> scheduleDates { get; set; } = null!;
 
-        IDisposable? OnEventDiscussionAddedHandler;
+        IDisposable? OnScheduleChangedHandler;
 
         protected override async Task OnInitializedAsync()
         {
@@ -38,7 +38,7 @@ namespace UI.Components.Pages.Events
 
         protected override void OnAfterRender(bool firstRender)
         {
-            OnEventDiscussionAddedHandler = OnEventDiscussionAddedHandler.SignalRClient<OnScheduleChangedResponse>(CurrentState, async (response) =>
+            OnScheduleChangedHandler = OnScheduleChangedHandler.SignalRClient<OnScheduleChangedResponse>(CurrentState, async (response) =>
             {
                 var apiResponse = await _repoGetSchedules.HttpPostAsync(new GetSchedulesRequestDto { ScheduleId = response.ScheduleId });
                 if (apiResponse.Response.Schedule != null)
@@ -72,6 +72,6 @@ namespace UI.Components.Pages.Events
         }
 
         public void Dispose() =>
-            OnEventDiscussionAddedHandler?.Dispose();
+            OnScheduleChangedHandler?.Dispose();
     }
 }

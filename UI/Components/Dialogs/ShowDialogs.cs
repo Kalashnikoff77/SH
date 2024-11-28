@@ -43,30 +43,16 @@ namespace UI.Components.Dialogs
         /// <summary>
         /// Подтверждение регистрация на клубное мероприятие
         /// </summary>
-        public Task RegistrationForEventDialogAsync(SchedulesForEventsViewDto schedule)
+        public Task RegistrationForEventDialogAsync(SchedulesForEventsViewDto schedule, bool isRegistered)
         {
             DialogOptions dialogOptions = new() { CloseOnEscapeKey = true, CloseButton = true };
 
             var dialogParams = new DialogParameters<RegisterForScheduleDialog>
             {
-                { x => x.ScheduleForEventView, schedule }
+                { x => x.ScheduleForEventView, schedule },
+                { x => x.IsRegistered, isRegistered }
             };
             return _dialog.ShowAsync<RegisterForScheduleDialog>($"Подтверждение регистрации", dialogParams, dialogOptions);
         }
-
-        /// <summary>
-        /// Отмена регистрации на клубное мероприятие
-        /// </summary>
-        public Task CancelRegistrationForEventDialogAsync(SchedulesForEventsViewDto schedule)
-        {
-            DialogOptions dialogOptions = new() { CloseOnEscapeKey = true, CloseButton = true };
-
-            var dialogParams = new DialogParameters<UnregisterForScheduleDialog>
-            {
-                { x => x.ScheduleForEventView, schedule }
-            };
-            return _dialog.ShowAsync<UnregisterForScheduleDialog>($"Отмена регистрации", dialogParams, dialogOptions);
-        }
-
     }
 }

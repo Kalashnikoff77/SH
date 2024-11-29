@@ -97,8 +97,6 @@ namespace Common.Models
         // Префикс (метка) для кэширования запросов, связанных с мероприятиями
         public const string CachePrefixEvents = "events";
 
-        public const string CachePrefixEventDiscussions = "eventdiscussions";
-
 
         /// <summary>
         /// Генерация токена JWT

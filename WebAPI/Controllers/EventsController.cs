@@ -32,7 +32,7 @@ namespace WebAPI.Controllers
             {
                 var columns = GetRequiredColumns<EventsViewEntity>();
                 await request.GetEventsAsync(_unitOfWork, columns, response);
-                _unitOfWork.CacheSet(request, response, StaticData.CachePrefixEvents, expiration: 60);
+                _unitOfWork.CacheSet(request, response, StaticData.CachePrefixEvents);
             }
             else
                 response = data;
@@ -61,7 +61,7 @@ namespace WebAPI.Controllers
                 else
                     await request.GetFilteredSchedulesForEventAsync(_unitOfWork, columns, response);
 
-                _unitOfWork.CacheSet(request, response, StaticData.CachePrefixEvents, expiration: 60);
+                _unitOfWork.CacheSet(request, response, StaticData.CachePrefixEvents);
             }
             else
                 response = data;
@@ -82,7 +82,7 @@ namespace WebAPI.Controllers
             if (data == null)
             {
                 await request.GetSchedulesDatesAsync(_unitOfWork, response);
-                _unitOfWork.CacheSet(request, response, StaticData.CachePrefixEvents, expiration: 60);
+                _unitOfWork.CacheSet(request, response, StaticData.CachePrefixEvents);
             }
             else
                 response = data;
@@ -99,7 +99,7 @@ namespace WebAPI.Controllers
 
             var response = new GetDiscussionsForEventsResponseDto();
 
-            var data = _unitOfWork.CacheTryGet(request, response, StaticData.CachePrefixEventDiscussions);
+            var data = _unitOfWork.CacheTryGet(request, response, StaticData.CachePrefixEvents);
             if (data == null)
             {
                 IEnumerable<DiscussionsForEventsEntity> result;
@@ -140,7 +140,7 @@ namespace WebAPI.Controllers
 
                 response.Discussions = _unitOfWork.Mapper.Map<List<DiscussionsForEventsViewDto>>(result);
                 
-                _unitOfWork.CacheSet(request, response, StaticData.CachePrefixEventDiscussions, expiration: 300);
+                _unitOfWork.CacheSet(request, response, StaticData.CachePrefixEvents);
             }
             else
                 response = data;
@@ -167,7 +167,7 @@ namespace WebAPI.Controllers
                 $"(@{nameof(DiscussionsForEventsEntity.EventId)}, @AccountId, @{nameof(DiscussionsForEventsEntity.RecipientId)}, @{nameof(DiscussionsForEventsEntity.DiscussionId)}, @{nameof(DiscussionsForEventsEntity.Text)})";
             var newId = await _unitOfWork.SqlConnection.QuerySingleAsync<int>(sql, new { request.EventId, _unitOfWork.AccountId, request.RecipientId, request.DiscussionId, request.Text });
 
-            _unitOfWork.CacheClear(StaticData.CachePrefixEventDiscussions);
+            _unitOfWork.CacheClear(StaticData.CachePrefixEvents);
 
             return new AddDiscussionsForEventsResponseDto { NewDiscussionId = newId };
         }
@@ -210,7 +210,7 @@ namespace WebAPI.Controllers
                 var result = await _unitOfWork.SqlConnection.QueryAsync<AdminsForEventsViewEntity>(sql);
                 response.AdminsForEvents = _unitOfWork.Mapper.Map<List<AdminsForEventsViewDto>>(result);
 
-                _unitOfWork.CacheSet(request, response, StaticData.CachePrefixEvents, expiration: 60);
+                _unitOfWork.CacheSet(request, response, StaticData.CachePrefixEvents);
             }
             else
                 response = data;
@@ -256,7 +256,7 @@ namespace WebAPI.Controllers
                 var sql = $"SELECT * FROM FeaturesForEventsView";
                 var result = await _unitOfWork.SqlConnection.QueryAsync<FeaturesForEventsViewEntity>(sql);
                 response.FeaturesForEvents = _unitOfWork.Mapper.Map<List<FeaturesForEventsViewDto>>(result);
-                _unitOfWork.CacheSet(request, response, StaticData.CachePrefixEvents, expiration: 60);
+                _unitOfWork.CacheSet(request, response, StaticData.CachePrefixEvents);
             }
             else
                 response = data;
@@ -282,7 +282,7 @@ namespace WebAPI.Controllers
                 var result = await _unitOfWork.SqlConnection.QueryAsync<SchedulesForAccountsViewEntity>(sql, new { request.ScheduleId });
                 response.Accounts = _unitOfWork.Mapper.Map<List<SchedulesForAccountsViewDto>>(result);
                 
-                _unitOfWork.CacheSet(request, response, StaticData.CachePrefixEvents, expiration: 60);
+                _unitOfWork.CacheSet(request, response, StaticData.CachePrefixEvents);
             }
             else
                 response = data;

@@ -3,7 +3,7 @@
     <div class="d-flex flex-column">
         @if (@ScheduleForEventView.Event.Admin != null)
         {
-            <MudButton OnClick="() => ShowDialogs.AccountCardDialogAsync(ScheduleForEventView.Event.Admin)" FullWidth Class="px-1 mb-1">
+            <MudButton OnClick="() => ShowDialogs.AccountCardDialogAsync(ScheduleForEventView.Event.Admin)" FullWidth Class="px-1 mb-3">
                 <div class="d-flex align-center gap-0" style="width:100%">
                     <ImageAvatar Account="ScheduleForEventView.Event.Admin" Size="EnumImageSize.s64x64" Class="avatar s45 mr-3" Title="Организатор" />
                     <MudText Typo="Typo.body2" Align="Align.Left"><b>Организатор:</b><br />@ScheduleForEventView.Event.Admin.Name (@ScheduleForEventView.Event.Admin.ToGendersAgesString())</MudText>
@@ -33,7 +33,7 @@
             <ShowLongTextComponent Text="@ScheduleForEventView.Description" />
         </MudText>
 
-        <MudDivider />
+        <MudDivider Class="my-3" />
 
         <MudGrid Style="text-align:center">
             <MudItem xs="4" title="Зарегистрировано пар / Свободных мест для пар">
@@ -55,7 +55,7 @@
             <MudItem xs="4">@(ScheduleForEventView.CostWoman == 0 ? "Бесплатно" : ScheduleForEventView.CostWoman.ToString() + " руб.")</MudItem>
         </MudGrid>
 
-        <MudDivider />
+        <MudDivider Class="my-3" />
 
         <MudText Typo="Typo.body2">
             <b>Общее описание:</b><br />

@@ -1,12 +1,16 @@
 ﻿using Common.Dto.Requests;
 using Common.Dto.Views;
+using Common.JSProcessor;
 using Common.Models.States;
+using Microsoft.AspNetCore.Components;
 using UI.Models;
 
 namespace UI.Components.Pages.Events.AddAndEdit
 {
     public partial class AddEvent : EventDtoBase, IDisposable
     {
+        [Inject] public IJSProcessor _JSProcessor { get; set; } = null!;
+
         protected override async Task OnInitializedAsync()
         {
             // TODO Убрать заполнение тестовыми данными (OK)
@@ -50,19 +54,15 @@ namespace UI.Components.Pages.Events.AddAndEdit
             processingEvent = true;
             StateHasChanged();
 
-            // Добавление мероприятия
             var request = new AddEventRequestDto { Event = Event, Token = CurrentState.Account?.Token };
             var apiAddResponse = await _repoAddEvent.HttpPostAsync(request);
             EventId = apiAddResponse.Response.NewEventId;
 
-            // TODO Сделать переадресацию на страницу мероприятия после успешного добавления (OK)
-
-            // Перезагрузка мероприятия
-            var apiReloadResponse = await _repoGetEvent.HttpPostAsync(new GetEventsRequestDto { EventId = EventId, IsPhotosIncluded = true });
-            Event = apiReloadResponse.Response.Event!;
-
             processingEvent = false;
             StateHasChanged();
+
+            // Переадресация на страницу с только что созданным мероприятием
+            await _JSProcessor.Redirect($"/events/{EventId}");
         }
     }
 }

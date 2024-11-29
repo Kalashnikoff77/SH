@@ -50,7 +50,7 @@ namespace WebAPI.Models
         /// <param name="data">Данные для занесения в кэш</param>
         /// <param name="prefix">Префикс для категорий кэша</param>
         /// <param name="expiration">Время хранения кэша в памяти в минутах</param>
-        public void CacheSet<TRequest, TResponse>(TRequest key, TResponse data, string? prefix = null, double expiration = 15) where TRequest : RequestDtoBase where TResponse : ResponseDtoBase
+        public void CacheSet<TRequest, TResponse>(TRequest key, TResponse data, string? prefix = null, double expiration = 30) where TRequest : RequestDtoBase where TResponse : ResponseDtoBase
         {
             var cacheKey = key.GetCacheKey(key, prefix);
             Cache.Set(cacheKey, data, new MemoryCacheEntryOptions().SetAbsoluteExpiration(TimeSpan.FromMinutes(expiration)));

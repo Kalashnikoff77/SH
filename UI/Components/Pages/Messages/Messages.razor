@@ -1,0 +1,22 @@
+﻿@page "/messages"
+
+<PageTitle>Общение</PageTitle>
+
+@if (CurrentState.IsAccountLoggedIn) 
+{
+    <div class="d-flex flex-column ml-3" Style="min-width:300px; max-width:750px">
+
+        <MudText Align="Align.Left" Typo="Typo.h6" Class="mb-3">Общение</MudText>
+        <MudDivider DividerType="DividerType.FullWidth" Light="false" Class="mb-5" />
+
+        @if (lastMessagesList != null)
+        {
+            foreach (var lastMessage in lastMessagesList)
+            {
+                <p>@lastMessage.Text</p>
+            }
+        }
+
+    </div>
+}
+

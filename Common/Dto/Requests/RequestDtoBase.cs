@@ -13,7 +13,10 @@ namespace Common.Dto.Requests
 
         public string? FilterFreeText { get; set; }
 
-        public int GetCacheKey<T>(T request) =>
-            JsonSerializer.Serialize(request).GetHashCode();
+        public string GetCacheKey<T>(T request, string? prefix = null)
+        {
+            var hashCode = JsonSerializer.Serialize(request).GetHashCode().ToString();
+            return prefix == null ? hashCode : prefix + "_" + hashCode;
+        }
     }
 }

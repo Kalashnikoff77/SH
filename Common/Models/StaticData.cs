@@ -94,6 +94,12 @@ namespace Common.Models
         public const string AccountsPhotosDir = "../UI/wwwroot/images/AccountsPhotos";
         public const string EventsPhotosDir = "../UI/wwwroot/images/EventsPhotos";
 
+        // Префикс (метка) для кэширования запросов, связанных с мероприятиями
+        public const string CachePrefixEvents = "events";
+
+        public const string CachePrefixEventDiscussions = "eventdiscussions";
+
+
         /// <summary>
         /// Генерация токена JWT
         /// </summary>

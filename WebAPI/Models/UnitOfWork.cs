@@ -37,22 +37,39 @@ namespace WebAPI.Models
                 await SqlTransaction.CommitAsync();
         }
 
-        public TResponse? CacheTryGet<TRequest, TResponse>(TRequest request, TResponse response) where TRequest : RequestDtoBase where TResponse : ResponseDtoBase
+        public TResponse? CacheTryGet<TRequest, TResponse>(TRequest request, TResponse response, string? prefix = null) where TRequest : RequestDtoBase where TResponse : ResponseDtoBase
         {
-            Cache.TryGetValue(request.GetCacheKey(request), out TResponse? data);
+            Cache.TryGetValue(request.GetCacheKey(request, prefix), out TResponse? data);
             return data;
         }
 
-        public void CacheSet<TRequest, TResponse>(TRequest request, TResponse response) where TRequest : RequestDtoBase where TResponse : ResponseDtoBase
+        /// <summary>
+        /// Установка кэша
+        /// </summary>
+        /// <param name="key">Request для формирования ключа</param>
+        /// <param name="data">Данные для занесения в кэш</param>
+        /// <param name="prefix">Префикс для категорий кэша</param>
+        /// <param name="expiration">Время хранения кэша в памяти в минутах</param>
+        public void CacheSet<TRequest, TResponse>(TRequest key, TResponse data, string? prefix = null, double expiration = 15) where TRequest : RequestDtoBase where TResponse : ResponseDtoBase
         {
-            Cache.Set(request.GetCacheKey(request), response, new MemoryCacheEntryOptions().SetAbsoluteExpiration(TimeSpan.FromDays(1)));
+            var cacheKey = key.GetCacheKey(key, prefix);
+            Cache.Set(cacheKey, data, new MemoryCacheEntryOptions().SetAbsoluteExpiration(TimeSpan.FromMinutes(expiration)));
         }
 
         /// <summary>
         /// Очистить весь кэш
         /// </summary>
-        public void CacheClear() =>
-            ((MemoryCache)Cache).Clear();
+        public void CacheClear(string? prefix = null)
+        {
+            if (prefix != null)
+            {
+                var keys = ((MemoryCache)Cache).Keys;
+                foreach (var key in keys.Where(x => x.ToString()!.StartsWith(prefix + "_")))
+                    ((MemoryCache)Cache).Remove(key);
+            }
+            else
+                ((MemoryCache)Cache).Clear();
+        }
 
         public async ValueTask DisposeAsync()
         {

@@ -1,35 +1,32 @@
 ﻿@if (ScheduleForEventView?.Event != null)
 {
-    <MudStack>
+    <div class="d-flex flex-column">
         @if (@ScheduleForEventView.Event.Admin != null)
         {
-            <MudButton OnClick="() => ShowDialogs.AccountCardDialogAsync(ScheduleForEventView.Event.Admin)" FullWidth Class="px-1">
-                <MudStack AlignItems="AlignItems.Center" Spacing="0" Row Style="width:100%">
+            <MudButton OnClick="() => ShowDialogs.AccountCardDialogAsync(ScheduleForEventView.Event.Admin)" FullWidth Class="px-1 mb-1">
+                <div class="d-flex align-center gap-0" style="width:100%">
                     <ImageAvatar Account="ScheduleForEventView.Event.Admin" Size="EnumImageSize.s64x64" Class="avatar s45 mr-3" Title="Организатор" />
                     <MudText Typo="Typo.body2" Align="Align.Left"><b>Организатор:</b><br />@ScheduleForEventView.Event.Admin.Name (@ScheduleForEventView.Event.Admin.ToGendersAgesString())</MudText>
-                </MudStack>
+                </div>
             </MudButton>
         }
 
-        <MudStack Row AlignItems="AlignItems.Center" Spacing="1">
+        <div class="d-flex align-center gap-1 mb-1">
             <MudIcon Icon="@Icons.Material.Outlined.LocationOn" Style="font-size:19px" />
             <MudText Typo="Typo.body2">@ScheduleForEventView.Event.ToRegionString() (@ScheduleForEventView.Event.Address)</MudText>
-        </MudStack>
+        </div>
 
-        <MudStack Row AlignItems="AlignItems.Center" Spacing="1">
+        <div class="d-flex align-center gap-1 mb-1">
             <MudIcon Icon="@Icons.Material.Outlined.CalendarToday" Class="@ScheduleForEventView.ToDateClass()" Style="font-size:18px" />
             <MudText Typo="Typo.body2"><b>@ScheduleForEventView.ToStartEndString()</b></MudText>
-        </MudStack>
+        </div>
 
-        @if (ScheduleForEventView.Features != null)
-        {
-            <div class="d-flex flex-wrap gap-2 mb-1">
-                @foreach (var feature in ScheduleForEventView.Features.OrderBy(o => o.Name))
-                {
-                    <span style="padding: 0 5px 0 5px; font-size:12px; font-weight:500; opacity:0.6; border-width:1px; border-style:dotted">@feature.Name</span>
-                }
-            </div>
-        }
+        <div class="d-flex flex-wrap gap-2 mb-1">
+            @foreach (var feature in ScheduleForEventView.Features!.OrderBy(o => o.Name))
+            {
+                <span style="padding: 0 5px 0 5px; font-size:12px; font-weight:500; opacity:0.6; border-width:1px; border-style:dotted">@feature.Name</span>
+            }
+        </div>
 
         <MudText Typo="Typo.body2" Class="mt-2">
             <b>Описание мероприятия:</b><br />
@@ -64,5 +61,5 @@
             <b>Общее описание:</b><br />
             <ShowLongTextComponent Text="@ScheduleForEventView.Event.Description" />
         </MudText>
-    </MudStack>
+    </div>
 }

@@ -2,31 +2,31 @@
 {
     <MudDialog Style="width:550px; min-width:360px">
         <DialogContent>
-            <MudStack AlignItems="AlignItems.Center" Class="mb-3">
                 @if (Account.Photos != null)
                 {
-                    <MudCarousel @ref="Carousel" TData="PhotosForEventsDto" ShowArrows ShowBullets="false" AutoCycle Style="width:300px; height:400px">
-                        @foreach (var photo in Account.Photos.OrderByDescending(o => o.IsAvatar).ThenByDescending(o => o.CreateDate))
-                        {
-                            <MudCarouselItem Transition="Transition.Slide">
-                                <MudImage Src=@($"/images/AccountsPhotos/{photo.RelatedId}/{photo.Guid}/{EnumImageSize.s450x600}.jpg") Fluid Style="border-radius:2%" />
-                            </MudCarouselItem>
-                        }
-                    </MudCarousel>
+                    <div class="d-flex justify-center mb-3">
+                        <MudCarousel @ref="Carousel" TData="PhotosForEventsDto" ShowArrows ShowBullets="false" AutoCycle Style="width:300px; height:400px">
+                            @foreach (var photo in Account.Photos.OrderByDescending(o => o.IsAvatar).ThenByDescending(o => o.CreateDate))
+                            {
+                                <MudCarouselItem Transition="Transition.Fade">
+                                    <MudImage Src=@($"/images/AccountsPhotos/{photo.RelatedId}/{photo.Guid}/{EnumImageSize.s450x600}.jpg") Fluid Style="border-radius:2%; width:300px; height:400px" />
+                                </MudCarouselItem>
+                            }
+                        </MudCarousel>
+                    </div>
                 }
-            </MudStack>
 
-            <MudStack Spacing="1" AlignItems="AlignItems.Center">
-                <MudStack AlignItems="AlignItems.Center" Row>
+            <div class="d-flex gap-1 flex-column align-center">
+                <div class="d-flex align-center gap-2">
                     <AccountGenderIcon Account="@Account" />
                     <MudText Typo="Typo.h6">@Account.Name</MudText>
-                </MudStack>
+                </div>
                 <MudText Typo="Typo.body2">@Account.ToGendersAgesString()</MudText>
-                <MudStack Row AlignItems="AlignItems.Center" Spacing="1">
+                <div class="d-flex align-center gap-1">
                     <MudIcon Icon="@Icons.Material.Outlined.LocationOn" Style="font-size:20px" />
                     <MudText Typo="Typo.body2">@Account.ToRegionString()</MudText>
-                </MudStack>
-            </MudStack>
+                </div>
+            </div>
 
             <MudDivider Class="mt-4" />
 
@@ -34,10 +34,10 @@
                 <Columns>
                     <TemplateColumn>
                         <CellTemplate>
-                            <MudStack Spacing="3" Row AlignItems="AlignItems.Center">
+                            <div class="d-flex gap-3 align-center">
                                 <UserGenderIcon User="@context.Item" />
                                 <MudText Typo="Typo.body2"><b>@context.Item.Name</b></MudText>
-                            </MudStack>
+                            </div>
                         </CellTemplate>
                     </TemplateColumn>
 

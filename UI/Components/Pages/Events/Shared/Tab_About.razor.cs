@@ -11,7 +11,7 @@ namespace UI.Components.Pages.Events.Shared
         [Inject] ShowDialogs ShowDialogs { get; set; } = null!;
         [Inject] IJSProcessor _JSProcessor { get; set; } = null!;
 
-        protected override async Task OnAfterRenderAsync(bool firstRender) =>
-            await _JSProcessor.ScrollToElement("top");
+        //protected override async Task OnAfterRenderAsync(bool firstRender) =>
+        //    await _JSProcessor.ScrollToElement("top");
     }
 }

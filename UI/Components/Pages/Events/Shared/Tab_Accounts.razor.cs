@@ -20,8 +20,8 @@ namespace UI.Components.Pages.Events.Shared
 
         protected override async Task OnAfterRenderAsync(bool firstRender)
         {
-            if (!firstRender)
-                await _JSProcessor.ScrollToElement("top");
+            //if (!firstRender)
+            //    await _JSProcessor.ScrollToElement("top");
         }
 
         protected override async Task OnParametersSetAsync()

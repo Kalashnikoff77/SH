@@ -8,16 +8,16 @@
                     {
                         <MudButton OnClick="() => ShowDialogs.AccountCardDialogAsync(context.Item.Account)" FullWidth Class="py-3">
                             <MudStack StretchItems="StretchItems.Start" AlignItems="AlignItems.Center" Spacing="0" Row Style="width:100%">
-                                <MudStack Row>
+                                <div class="d-flex">
                                     <ImageAvatar Account="context.Item.Account" Size="EnumImageSize.s64x64" Class="avatar s60 mr-3" />
-                                    <MudStack Spacing="0">
+                                    <div class="d-flex flex-column gap-0">
                                         <MudText Typo="Typo.subtitle2" Align="Align.Left">@context.Item.Account.Name</MudText>
                                         <MudText Typo="Typo.body2" Align="Align.Left">
                                             @context.Item.Account.ToGendersAgesString()<br />
                                             @context.Item.Account.ToRegionString()
                                         </MudText>
-                                    </MudStack>
-                                </MudStack>
+                                    </div>
+                                </div>
                                 <AccountGenderIcon Account="@context.Item.Account" />
                             </MudStack>
                         </MudButton>

@@ -20,6 +20,7 @@ namespace UI.Components.Pages.Events.Shared
 
         List<DiscussionsForEventsViewDto> discussions = new List<DiscussionsForEventsViewDto>();
         string? _text { get; set; } = null!;
+        bool isDiscussionsLoaded;
         bool _sending;
         int _currentElementId = 0;
         bool moreDiscussionsButton = false;
@@ -32,7 +33,7 @@ namespace UI.Components.Pages.Events.Shared
         protected override async Task OnAfterRenderAsync(bool firstRender)
         {
             if (!firstRender)
-                await _JSProcessor.ScrollToElementWithinDiv($"id_{_currentElementId}", "DiscussionsFrame");
+                await _JSProcessor.ScrollToElementWithinDiv($"id_{_currentElementId}", "DivDiscussionsFrame");
 
             OnScheduleChangedHandler = OnScheduleChangedHandler.SignalRClient<OnScheduleChangedResponse>(CurrentState, async (response) =>
             {
@@ -61,9 +62,9 @@ namespace UI.Components.Pages.Events.Shared
                 Take = StaticData.EVENT_DISCUSSIONS_PER_BLOCK
             });
             discussions.InsertRange(0, response.Response.Discussions);
-
+            
+            isDiscussionsLoaded = true;
             _currentElementId = response.Response.Discussions.Any() ? response.Response.Discussions.Max(m => m.Id) : 0;
-
             moreDiscussionsButton = discussions.Count < response.Response.NumOfDiscussions;
         }
 

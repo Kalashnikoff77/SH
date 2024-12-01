@@ -6,14 +6,14 @@
         </div>
     </TitleContent>
     <ChildContent>
-        <MudStack Row Wrap="Wrap.Wrap" Spacing="4" Justify="Justify.Center">
+        <div class="d-flex flex-wrap gap-4 justify-center">
             @foreach (var hobby in Data.Hobbies)
             {
                 var btnColor = Data.AccountRequestDto.Hobbies != null && Data.AccountRequestDto.Hobbies.Any(x => x.Id == hobby.Id) ? Color.Info : Color.Default;
                 var disabled = Data.AccountRequestDto.Hobbies != null && Data.AccountRequestDto.Hobbies.Count >= 5 && btnColor == Color.Default ? true : false;
                 <MudButton OnClick="() => Data.OnHobbyChanged(hobby)" Disabled="@disabled" Variant="Variant.Filled" Size="Size.Small" Color="btnColor">@hobby.Name</MudButton>
             }
-        </MudStack>
+        </div>
     </ChildContent>
 </MudExpansionPanel>
 

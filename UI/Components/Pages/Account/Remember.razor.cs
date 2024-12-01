@@ -44,9 +44,10 @@ namespace UI.Components.Pages.Account
             {
                 errorMessage = $"Укажите email";
                 EmailIconColor = Color.Error;
+                return errorMessage;
             }
 
-            if (string.IsNullOrWhiteSpace(email) || email.Length < StaticData.DB_ACCOUNTS_EMAIL_MIN)
+            if (email.Length < StaticData.DB_ACCOUNTS_EMAIL_MIN)
             {
                 errorMessage = $"Email может содержать {StaticData.DB_ACCOUNTS_EMAIL_MIN}-{StaticData.DB_ACCOUNTS_EMAIL_MAX} символов";
                 EmailIconColor = Color.Error;

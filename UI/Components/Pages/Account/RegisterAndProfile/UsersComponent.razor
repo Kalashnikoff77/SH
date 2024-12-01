@@ -11,10 +11,10 @@
             <Columns>
                 <TemplateColumn Title="Общее" Context="user">
                     <CellTemplate>
-                        <MudStack AlignItems="AlignItems.Center" Row="true">
+                        <div class="d-flex gap-2 align-center">
                             <UserGenderIcon User="@user.Item" />
                             <MudText Typo="Typo.body2"><b>@user.Item.Name</b><br />@user.Item.ToGenderAgeString()</MudText>
-                        </MudStack>
+                        </div>
                     </CellTemplate>
                 </TemplateColumn>
 
@@ -26,19 +26,19 @@
 
                 <TemplateColumn HeaderStyle="width:90px">
                     <CellTemplate>
-                        <MudStack Row="true" Spacing="2">
+                        <div class="d-flex gap-2">
                             <MudIconButton Size="@Size.Small" Icon="@Icons.Material.Outlined.Edit" Color="Color.Primary" OnClick="async () => await Data.UpdateUserDialogAsync(context.Item)" />
                             <MudIconButton Size="@Size.Small" Icon="@Icons.Material.Outlined.Delete" Color="Color.Error" OnClick="async () => await Data.DeleteUserDialogAsync(context.Item)" />
-                        </MudStack>
+                        </div>
                     </CellTemplate>
                 </TemplateColumn>
 
             </Columns>
         </MudDataGrid>
 
-        <MudStack AlignItems="AlignItems.End">
+        <div class="d-flex flex-column align-end">
             <MudButton StartIcon="@Icons.Material.Outlined.Add" ButtonType="ButtonType.Button" Color="Color.Primary" Size="Size.Small" Variant="Variant.Filled" OnClick="Data.AddUserDialogAsync" Disabled="Data.AccountRequestDto.Users.Count < 2 ? false : true" Class="mt-5">Добавить</MudButton>
-        </MudStack>
+        </div>
     </ChildContent>
 </MudExpansionPanel>
 

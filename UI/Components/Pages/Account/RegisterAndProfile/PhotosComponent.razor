@@ -6,7 +6,7 @@
         </div>
     </TitleContent>
     <ChildContent>
-        <MudStack Row Justify="Justify.Center" class="mb-5">
+        <div class="d-flex justify-center mb-5">
             @if (Data.AccountRequestDto.Photos?.Count(x => x.IsDeleted == false) >= 20)
             {
                 <MudButton Disabled Size="Size.Small" Variant="Variant.Outlined" Color="Color.Primary" StartIcon="@Icons.Material.Sharp.Upload">
@@ -31,9 +31,9 @@
                     </ActivatorContent>
                 </MudFileUpload>
             }
-        </MudStack>
+        </div>
 
-        <MudStack Row Wrap="Wrap.Wrap" Spacing="0" Justify="Justify.SpaceEvenly">
+        <div class="d-flex flex-wrap gap-0 justify-space-evenly">
             @if (Data.AccountRequestDto.Photos != null)
             {
                 @foreach (var photo in Data.AccountRequestDto.Photos.Where(w => w.IsDeleted == false).OrderByDescending(o => o.IsAvatar).ThenByDescending(o => o.CreateDate))
@@ -47,17 +47,17 @@
                         {
                             <MudImage Width="250" Height="250" Src="@($"/images/temp/{photo.Guid}/{EnumImageSize.s250x250}.jpg")" Class="mb-2" />
                         }
-                        <MudStack Row>
+                        <div class="d-flex">
                             <MudTextField T="string" Value="@photo.Comment" ValueChanged="@((c) => Data.UpdateCommentPhoto(photo, c))" Label="Описание" Variant="Variant.Text" />
                             <MudMenu Icon="@Icons.Material.Filled.MoreVert" Size="Size.Small" AnchorOrigin="Origin.BottomLeft" TransformOrigin="Origin.TopCenter" Dense>
                                 <MudMenuItem Disabled="@photo.IsAvatar" OnClick="@(() => Data.SetAsAvatarPhoto(photo))" Icon="@Icons.Material.Filled.Portrait">Установить как аватар</MudMenuItem>
                                 <MudMenuItem Disabled="@photo.IsAvatar" OnClick="@(() => photo.IsDeleted = true)" IconColor="Color.Error" Icon="@Icons.Material.Outlined.Delete">Удалить</MudMenuItem>
                             </MudMenu>
-                        </MudStack>
+                        </div>
                     </MudPaper>
                 }
             }
-        </MudStack>
+        </div>
     </ChildContent>
 </MudExpansionPanel>
 

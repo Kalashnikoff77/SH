@@ -24,28 +24,25 @@
         </MudGrid>
         <MudGrid>
             <MudItem sm="6" xs="12">
-                <MudStack Spacing="0" Class="mt-2">
+                <div class="d-flex mt-2 gap-0">
                     <MudAutocomplete AdornmentIcon="@Icons.Material.Outlined.LocationOn" AdornmentColor="@Data.CountryIconColor" Validation="@(new Func<string, string?>(Data.CountryValidator))" T="string" Label="Страна" @bind-Value="Data.CountryText" SearchFunc="@Data.SearchCountryAsync" ResetValueOnEmptyText CoerceText CoerceValue="false" />
-                </MudStack>
+                </div>
             </MudItem>
             <MudItem sm="6" xs="12">
-                <MudStack Spacing="0" Class="mt-2">
+                <div class="d-flex gap-0 mt-2">
                     <MudAutocomplete AdornmentIcon="@Icons.Material.Outlined.LocationOn" AdornmentColor="@Data.RegionIconColor" Validation="@(new Func<string, string?>(Data.RegionValidator))" T="string" Label="Регион" @bind-Value="Data.RegionText" SearchFunc="@Data.SearchRegionAsync" ResetValueOnEmptyText CoerceText CoerceValue="false" Disabled="Data.CountryText == null ? true : false" />
-                </MudStack>
+                </div>
             </MudItem>
-
             <MudItem sm="6" xs="12">
-                <MudStack Spacing="0" Class="mt-1" AlignItems="AlignItems.Center" title="Сообщать о новых уведомлениях на сайте">
+                <div class="d-flex gap-0 align-center mt-1" title="Сообщать о новых уведомлениях на сайте">
                     <MudSwitch @bind-Value="Data.AccountRequestDto.Informings.IsNewNotification" Label="Получать уведомления" Color="Color.Primary" />
-                </MudStack>
+                </div>
             </MudItem>
-
             <MudItem sm="6" xs="12">
-                <MudStack Spacing="0" Class="mt-1" AlignItems="AlignItems.Center" title="Уведомлять о новых личных сообщениях на сайте">
+                <div class="d-flex gap-0 align-center mt-1" title="Уведомлять о новых личных сообщениях на сайте">
                     <MudSwitch @bind-Value="Data.AccountRequestDto.Informings.IsNewMessage" Label="Получать сообщения" Color="Color.Primary" />
-                </MudStack>
+                </div>
             </MudItem>
-
         </MudGrid>
     </ChildContent>
 </MudExpansionPanel>

@@ -2,20 +2,44 @@
 
 <PageTitle>Общение</PageTitle>
 
-@if (CurrentState.IsAccountLoggedIn) 
+@if (CurrentState.Account != null) 
 {
-    <div class="d-flex flex-column ml-3" Style="min-width:300px; max-width:750px">
+    <div id="top" class="d-flex flex-column ml-3" style="min-width:300px; max-width:750px">
 
         <MudText Align="Align.Left" Typo="Typo.h6" Class="mb-3">Общение</MudText>
         <MudDivider DividerType="DividerType.FullWidth" Light="false" Class="mb-5" />
 
-        @if (lastMessagesList != null)
-        {
-            foreach (var lastMessage in lastMessagesList)
-            {
-                <p>@lastMessage.Text</p>
-            }
-        }
+        <MudDataGrid @ref="dataGrid" Elevation="0" Virtualize Hover T="LastMessagesListViewDto" ServerData="ServerReload" Striped Loading="false" Style="min-width:300px; max-width:800px" HeaderClass="dataGridHideTHead" Filterable="false">
+            <Columns>
+                <TemplateColumn CellClass="py-3">
+                    <CellTemplate>
+                        <MudGrid>
+                            <MudItem xs="4" Class="d-flex align-center gap-3 pl-4 pt-5">
+                                @{
+                                    AccountsViewDto? accountsViewDto = CurrentState.Account.Id == context.Item.Sender?.Id ? context.Item.Recipient : context.Item.Sender;
+                                    if (accountsViewDto != null) 
+                                    {
+                                        <ImageAvatar Account="@accountsViewDto" Size="EnumImageSize.s64x64" Class="d-none d-sm-block avatar" />
+                                        <div class="d-flex flex-column">
+                                            <p class="mud-primary-text" style="cursor:pointer"><b>@accountsViewDto.Name</b></p>
+                                            <p class="d-none d-sm-block" style="font-weight:300; font-size:12px">@accountsViewDto.ToGendersAgesString()</p>
+                                            <p class="d-none d-sm-block" style="font-weight:300; font-size:12px">@accountsViewDto.ToRegionString()</p>
+                                        </div>
+                                    }
+                                }
+                            </MudItem>
+                            <MudItem xs="8" Class="d-flex align-center pl-3 pt-5">
+                                @context.Item.Text
+                            </MudItem>
+                        </MudGrid>
+                    </CellTemplate>
+                </TemplateColumn>
+            </Columns>
+
+            <PagerContent>
+                <MudDataGridPager RowsPerPageString="Показывать по:" ShowPageNumber="false" T="LastMessagesListViewDto" />
+            </PagerContent>
+        </MudDataGrid>
 
     </div>
 }

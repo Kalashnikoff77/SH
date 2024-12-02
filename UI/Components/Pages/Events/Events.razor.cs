@@ -25,7 +25,7 @@ namespace UI.Components.Pages.Events
         MudDataGrid<SchedulesForEventsViewDto> dataGrid = null!;
         GetSchedulesRequestDto request = new GetSchedulesRequestDto { IsPhotosIncluded = true };
 
-        List<SchedulesForEventsViewDto> EventsList = new List<SchedulesForEventsViewDto>();
+        List<SchedulesForEventsViewDto> eventsList = new List<SchedulesForEventsViewDto>();
 
         /// <summary>
         /// Для предотвращения повторного выполнения OnParametersSet (выполняется при переходе на другую ссылку)
@@ -74,9 +74,9 @@ namespace UI.Components.Pages.Events
                     int index;
                     foreach (var sch in apiResponse.Response.Schedules)
                     {
-                        index = EventsList.FindIndex(s => s.Id == sch.Id);
+                        index = eventsList.FindIndex(s => s.Id == sch.Id);
                         if (index >= 0) // Есть ли в области видимости браузера такое расписание?
-                            EventsList[index] = sch;
+                            eventsList[index] = sch;
                     }
                     await InvokeAsync(StateHasChanged);
                 }
@@ -93,11 +93,11 @@ namespace UI.Components.Pages.Events
             var apiResponse = await _repoGetSchedules.HttpPostAsync(request);
             if (apiResponse.Response.Schedules != null)
             {
-                EventsList = apiResponse.Response.Schedules;
+                eventsList = apiResponse.Response.Schedules;
 
                 items = new GridData<SchedulesForEventsViewDto>
                 {
-                    Items = EventsList,
+                    Items = eventsList,
                     TotalItems = apiResponse.Response.Count ?? 0
                 };
             }

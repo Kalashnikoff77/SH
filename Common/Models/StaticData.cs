@@ -75,9 +75,9 @@ namespace Common.Models
         public const short DB_ACCOUNTS_PASSWORD_MIN = 4;
         public const short DB_ACCOUNTS_PASSWORD_MAX = 35;
         public const short DB_ACCOUNTS_NAME_MIN = 3;
-        public const short DB_ACCOUNTS_NAME_MAX = 40;
+        public const short DB_ACCOUNTS_NAME_MAX = 25;
         public const short DB_USERS_NAME_MIN = 3;
-        public const short DB_USERS_NAME_MAX = 40;
+        public const short DB_USERS_NAME_MAX = 25;
         public const short DB_USERS_ABOUT_MAX = 255;
         public const short DB_USERS_WEIGHT_MIN = 40;
         public const short DB_USERS_WEIGHT_MAX = 200;

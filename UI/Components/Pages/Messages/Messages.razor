@@ -25,17 +25,27 @@
 
                                     <div class="d-flex flex-column gap-0" style="width:100%">
                                         <div style="text-align:end">
-                                            <MudMenu Dense Icon="@Icons.Material.Filled.MoreVert" Size="Size.Small" AnchorOrigin="Origin.BottomLeft" TransformOrigin="Origin.TopLeft">
+                                            <MudMenu Dense Icon="@Icons.Material.Filled.MoreVert" Size="Size.Small" AnchorOrigin="Origin.TopLeft" TransformOrigin="Origin.TopRight">
                                                 <MudMenuItem Icon="@Icons.Material.Filled.Block" IconColor="Color.Error" OnClick="async() => { await BlockAccountAsync(); }">Заблокировать</MudMenuItem>
                                             </MudMenu>
                                         </div>
                                         
                                         <ShowLongTextComponent Text="@context.Item.Text" MaxTextLength="120" />
 
-                                        <div class="d-flex justify-end align-center" style="font-size:12px; height:29px; color:black">
+                                        <div class="d-flex justify-end align-center" style="font-size:12px; height:29px">
                                             <p style="color:darkgrey">@context.Item.CreateDate.ToMyString()</p>
                                             <p class="ml-2 mr-1"><MudIcon Icon="@(CurrentState.Account.Id == context.Item.Sender?.Id ? @Icons.Material.Filled.ArrowForward : @Icons.Material.Filled.ArrowBack)" Style="font-size:11px; margin-top:3px" /></p>
-                                            <p>@accountsViewDto.Name</p>
+                                            <p @onclick="@(() => ShowDialogs.AccountCardDialogAsync(accountsViewDto))" class="mud-primary-text" style="cursor:pointer; font-weight:500">@accountsViewDto.Name</p>
+                                            <p>
+                                                @if (context.Item.ReadDate == null) 
+                                                {
+                                                    <MudIcon Icon="@Icons.Material.Filled.Done" Color="Color.Default" Style="font-size:15px; margin: 3px 0 0 5px" />
+                                                }
+                                                else 
+                                                {
+                                                    <MudIcon Icon="@Icons.Material.Filled.DoneAll" Color="Color.Primary" Style="font-size:15px; margin: 3px 0 0 5px" />
+                                                }
+                                            </p>
                                         </div>
                                     </div>
                                 }

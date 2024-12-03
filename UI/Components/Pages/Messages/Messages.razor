@@ -9,6 +9,8 @@
         <MudText Align="Align.Left" Typo="Typo.h6" Class="mb-3">Общение</MudText>
         <MudDivider DividerType="DividerType.FullWidth" Light="false" Class="mb-5" />
 
+        <MudTextField Placeholder="Поиск" T="string" ValueChanged="@(s => OnSearch(s))" Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Clearable Class="mb-4" />
+
         <MudDataGrid @ref="dataGrid" Dense Elevation="0" Virtualize Hover T="LastMessagesListViewDto" ServerData="ServerReload" Striped Loading="false" Style="min-width:300px; max-width:800px" HeaderClass="dataGridHideTHead" Filterable="false">
             <Columns>
                 <TemplateColumn CellClass="px-2 py-1 mud-table-cell-for-messages">

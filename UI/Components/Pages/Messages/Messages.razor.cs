@@ -64,6 +64,12 @@ namespace UI.Components.Pages.Messages
 
         }
 
+        Task OnSearch(string text)
+        {
+            request.FilterFreeText = text;
+            return dataGrid.ReloadServerData();
+        }
+
         public void Dispose()
         {
         }

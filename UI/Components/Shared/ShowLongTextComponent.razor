@@ -4,7 +4,7 @@
     
     @if (!string.IsNullOrWhiteSpace(Text) && Text.Length > MaxTextLength)
     {
-        <span @onclick="OnWrap" class="mud-primary-text" style="font-size:14px; font-weight:500; cursor:pointer">
+        <span @onclick="OnWrap" @onclick:stopPropagation="true" class="mud-primary-text" style="font-size:14px; font-weight:500; cursor:pointer">
             @(isShortText ? " далее »" : " « скрыть")
         </span>
     }

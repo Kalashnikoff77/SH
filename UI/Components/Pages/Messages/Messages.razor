@@ -20,7 +20,7 @@
                                 AccountsViewDto? accountsViewDto = CurrentState.Account.Id == context.Item.Sender?.Id ? context.Item.Recipient : context.Item.Sender;
                                 if (accountsViewDto != null)
                                 {
-                                    <div onclick ="@(() => ShowDialogs.AccountCardDialogAsync(accountsViewDto))" style="cursor:pointer">
+                                    <div @onclick ="@(() => ShowDialogs.AccountCardDialogAsync(accountsViewDto))" style="cursor:pointer">
                                         <ImageAvatar Account="@accountsViewDto" Class="d-none d-sm-block avatar" Size="EnumImageSize.s64x64" />
                                         <ImageAvatar Account="@accountsViewDto" Class="d-xs-block d-sm-none avatar" Style="width:45px; height:45px" Size="EnumImageSize.s64x64" />
                                     </div>
@@ -32,7 +32,9 @@
                                             </MudMenu>
                                         </div>
                                         
-                                        <ShowLongTextComponent Text="@context.Item.Text" MaxTextLength="120" />
+                                        <div @onclick ="@(() => ShowDialogs.AccountCardDialogAsync(accountsViewDto))" style="cursor:pointer">
+                                            <ShowLongTextComponent Text="@context.Item.Text" MaxTextLength="120" />
+                                        </div>
 
                                         <div class="d-flex justify-end align-center" style="font-size:12px; height:29px">
                                             <p style="color:darkgrey">@context.Item.CreateDate.ToMyString()</p>

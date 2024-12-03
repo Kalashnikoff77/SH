@@ -6,6 +6,7 @@ using Common.Models.States;
 using Common.Repository;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
+using UI.Components.Dialogs;
 
 namespace UI.Components.Pages.Messages
 {
@@ -13,6 +14,7 @@ namespace UI.Components.Pages.Messages
     {
         [CascadingParameter] public CurrentState CurrentState { get; set; } = null!;
         [Inject] IRepository<GetLastMessagesListRequestDto, GetLastMessagesListResponseDto> _repoGetLastMessagesList { get; set; } = null!;
+        [Inject] ShowDialogs ShowDialogs { get; set; } = null!;
 
         MudDataGrid<LastMessagesListViewDto> dataGrid = null!;
         GetLastMessagesListRequestDto request = new GetLastMessagesListRequestDto();
@@ -23,11 +25,6 @@ namespace UI.Components.Pages.Messages
         int currentPage = 0;
         // Текущее кол-во отображаемых мероприятий на странице
         int currentPageSize = 10;
-
-
-        protected override async Task OnParametersSetAsync()
-        {
-        }
 
         async Task<GridData<LastMessagesListViewDto>> ServerReload(GridState<LastMessagesListViewDto> state)
         {
@@ -61,6 +58,11 @@ namespace UI.Components.Pages.Messages
             return items;
         }
 
+
+        async Task BlockAccountAsync()
+        {
+
+        }
 
         public void Dispose()
         {

@@ -9,34 +9,38 @@
         <MudText Align="Align.Left" Typo="Typo.h6" Class="mb-3">Общение</MudText>
         <MudDivider DividerType="DividerType.FullWidth" Light="false" Class="mb-5" />
 
-        <MudDataGrid @ref="dataGrid" Elevation="0" Virtualize Hover T="LastMessagesListViewDto" ServerData="ServerReload" Striped Loading="false" Style="min-width:300px; max-width:800px" HeaderClass="dataGridHideTHead" Filterable="false">
+        <MudDataGrid @ref="dataGrid" Dense Elevation="0" Virtualize Hover T="LastMessagesListViewDto" ServerData="ServerReload" Striped Loading="false" Style="min-width:300px; max-width:800px" HeaderClass="dataGridHideTHead" Filterable="false">
             <Columns>
-                <TemplateColumn CellClass="pl-0 pl-sm-4">
+                <TemplateColumn CellClass="px-2 py-1 mud-table-cell-for-messages">
                     <CellTemplate>
-                        <MudGrid>
-                            <MudItem xs="3" md="4" Class="d-flex gap-3 align-center" Style="cursor:pointer">
-                                @{
-                                    AccountsViewDto? accountsViewDto = CurrentState.Account.Id == context.Item.Sender?.Id ? context.Item.Recipient : context.Item.Sender;
-                                    if (accountsViewDto != null) 
-                                    {
-                                        <ImageAvatar Account="@accountsViewDto" Size="EnumImageSize.s64x64" Class="d-none d-md-block avatar" />
-                                        <div class="d-flex flex-column gap-0 align-center align-md-start" style="width:100%">
-                                            <ImageAvatar Account="@accountsViewDto" Size="EnumImageSize.s64x64" Class="d-xs-block d-md-none avatar" />
-                                            <p class="mud-primary-text d-none d-sm-block d-md-none" style="text-align:center"><b>@accountsViewDto.Name</b></p>
-                                            <p class="mud-primary-text d-none d-md-block"><b>@accountsViewDto.Name</b></p>
-                                            <p class="d-none d-md-block" style="font-weight:300; font-size:11px">@accountsViewDto.ToGendersAgesString()</p>
-                                            <p class="d-none d-md-block" style="font-weight:300; font-size:11px">@accountsViewDto.ToRegionString()</p>
+                        <div class="d-flex align-center gap-3">
+                            @{
+                                AccountsViewDto? accountsViewDto = CurrentState.Account.Id == context.Item.Sender?.Id ? context.Item.Recipient : context.Item.Sender;
+                                if (accountsViewDto != null)
+                                {
+                                    <div onclick ="@(() => ShowDialogs.AccountCardDialogAsync(accountsViewDto))" style="cursor:pointer">
+                                        <ImageAvatar Account="@accountsViewDto" Class="d-none d-sm-block avatar" Size="EnumImageSize.s64x64" />
+                                        <ImageAvatar Account="@accountsViewDto" Class="d-xs-block d-sm-none avatar" Style="width:45px; height:45px" Size="EnumImageSize.s64x64" />
+                                    </div>
+
+                                    <div class="d-flex flex-column gap-0" style="width:100%">
+                                        <div style="text-align:end">
+                                            <MudMenu Dense Icon="@Icons.Material.Filled.MoreVert" Size="Size.Small" AnchorOrigin="Origin.BottomLeft" TransformOrigin="Origin.TopLeft">
+                                                <MudMenuItem Icon="@Icons.Material.Filled.Block" IconColor="Color.Error" OnClick="async() => { await BlockAccountAsync(); }">Заблокировать</MudMenuItem>
+                                            </MudMenu>
                                         </div>
-                                    }
+                                        
+                                        <ShowLongTextComponent Text="@context.Item.Text" MaxTextLength="120" />
+
+                                        <div class="d-flex justify-end align-center" style="font-size:12px; height:29px; color:black">
+                                            <p style="color:darkgrey">@context.Item.CreateDate.ToMyString()</p>
+                                            <p class="ml-2 mr-1"><MudIcon Icon="@(CurrentState.Account.Id == context.Item.Sender?.Id ? @Icons.Material.Filled.ArrowForward : @Icons.Material.Filled.ArrowBack)" Style="font-size:11px; margin-top:3px" /></p>
+                                            <p>@accountsViewDto.Name</p>
+                                        </div>
+                                    </div>
                                 }
-                            </MudItem>
-                            <MudItem xs="9" md="8" Class="d-flex align-center">
-                                <div class="d-flex align-end" style="width:100%">
-                                    <p class="flex-grow-1">@context.Item.Text</p>
-                                    <p class="flex-grow-0" style="font-size:11px; color:gray; text-align:end; text-wrap:nowrap">@context.Item.CreateDate.ToMyPastShortString()</p>
-                                </div>
-                            </MudItem>
-                        </MudGrid>
+                            }
+                        </div>
                     </CellTemplate>
                 </TemplateColumn>
             </Columns>

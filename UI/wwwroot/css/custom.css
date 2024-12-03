@@ -2,11 +2,11 @@
     display: none;
 }
 
-.event-selected-date {
-    background-color: lightcoral; 
-    color: #FFFFFF;
-}
-
 .dataGridHideTHead {
     display: none !important;
+}
+
+/* Костыль для страницы Messages.cs */
+.mud-table-cell-for-messages::before {
+    content: none !important;
 }

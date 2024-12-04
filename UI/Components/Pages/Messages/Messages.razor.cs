@@ -27,6 +27,7 @@ namespace UI.Components.Pages.Messages
         // Текущее кол-во отображаемых мероприятий на странице
         int currentPageSize = 10;
 
+
         async Task<GridData<LastMessagesListViewDto>> ServerReload(GridState<LastMessagesListViewDto> state)
         {
             var items = new GridData<LastMessagesListViewDto>();
@@ -66,8 +67,9 @@ namespace UI.Components.Pages.Messages
             var index = LastMessagesList.FindIndex(x => x.Id == markAsReadId);
             if (index >= 0 && apiResponse.Response.UpdatedMessage != null)
             {
-                LastMessagesList[index].ReadDate = apiResponse.Response.UpdatedMessage.ReadDate;
-                LastMessagesList[index].UnreadMessages = apiResponse.Response.UpdatedMessage.UnreadMessages;
+                //LastMessagesList[index].ReadDate = apiResponse.Response.UpdatedMessage.ReadDate;
+                //LastMessagesList[index].UnreadMessages = apiResponse.Response.UpdatedMessage.UnreadMessages;
+                LastMessagesList[index] = apiResponse.Response.UpdatedMessage;
             }
         }
 

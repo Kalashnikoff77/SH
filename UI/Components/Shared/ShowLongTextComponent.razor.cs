@@ -8,6 +8,8 @@ namespace UI.Components.Shared
     {
         [Parameter, EditorRequired] public string Text { get; set; } = null!;
         [Parameter] public int MaxTextLength { get; set; } = 260;
+        [Parameter] public EventCallback<int> MarkAsReadCallback { get; set; }
+        [Parameter] public int? MarkAsReadId { get; set; }
 
         MarkupString htmlText = new MarkupString();
         StringBuilder formattedText = null!;
@@ -16,10 +18,12 @@ namespace UI.Components.Shared
         protected override void OnParametersSet() =>
             CheckText();
 
-        void OnWrap()
+        async Task OnWrap()
         {
             isShortText = !isShortText;
             CheckText();
+            if (MarkAsReadCallback.HasDelegate && MarkAsReadId.HasValue)
+                await MarkAsReadCallback.InvokeAsync(MarkAsReadId.Value);
         }
 
         void CheckText()

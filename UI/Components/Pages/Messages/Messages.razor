@@ -11,7 +11,7 @@
 
         <MudTextField Placeholder="Поиск" T="string" ValueChanged="@(s => OnSearch(s))" Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Clearable Class="mb-4" />
 
-        <MudDataGrid @ref="dataGrid" Dense Elevation="0" Virtualize Hover T="LastMessagesListViewDto" ServerData="ServerReload" Striped Loading="false" Style="min-width:300px; max-width:800px" HeaderClass="dataGridHideTHead" Filterable="false">
+        <MudDataGrid @ref="dataGrid" Dense Elevation="0" Hover T="LastMessagesListViewDto" ServerData="ServerReload" Striped Loading="false" Style="min-width:300px; max-width:800px" HeaderClass="dataGridHideTHead" Filterable="false">
             <Columns>
                 <TemplateColumn CellClass="px-2 py-1 mud-table-cell-for-messages">
                     <CellTemplate>
@@ -28,13 +28,17 @@
                                     <div class="d-flex flex-column gap-0" style="width:100%">
                                         <div style="text-align:end">
                                             <MudMenu Dense Icon="@Icons.Material.Filled.MoreVert" Size="Size.Small" AnchorOrigin="Origin.TopLeft" TransformOrigin="Origin.TopRight">
-                                                <MudMenuItem Icon="@Icons.Material.Filled.Block" IconColor="Color.Error" OnClick="async() => { await BlockAccountAsync(); }">Заблокировать</MudMenuItem>
+                                                <MudMenuItem Icon="@Icons.Material.Filled.Block" IconColor="Color.Error" OnClick="BlockAccountAsync">Заблокировать</MudMenuItem>
+                                                <MudMenuItem Icon="@Icons.Material.Filled.ChecklistRtl" IconColor="Color.Primary" Disabled="@(context.Item.UnreadMessages == 0)" OnClick="MarkAllAsReadAsync">Пометить все как прочитанные</MudMenuItem>
                                             </MudMenu>
                                         </div>
 
                                         <div class="d-flex align-center" @onclick="@(() => ShowDialogs.AccountCardDialogAsync(accountsViewDto))" style="cursor:pointer">
-                                            <div class="flex-grow-1"><ShowLongTextComponent Text="@context.Item.Text" MaxTextLength="120" /></div>
-                                            @if (context.Item.UnreadMessages > 0) 
+
+                                            <div class="d-none d-sm-block flex-grow-1"><ShowLongTextComponent Text="@context.Item.Text" MaxTextLength="120" MarkAsReadCallback="MarkAsReadCallback" MarkAsReadId="@context.Item.Id" /></div>
+                                            <div class="d-xs-block d-sm-none flex-grow-1"><ShowLongTextComponent Text="@context.Item.Text" MaxTextLength="50" MarkAsReadCallback="MarkAsReadCallback" MarkAsReadId="@context.Item.Id" /></div>
+
+                                            @if (context.Item.UnreadMessages > 0)
                                             {
                                                 <div class="flex-grow-0" title="Непрочитанные сообщения"><MudAvatar Size="Size.Small" Color="Color.Primary">@context.Item.UnreadMessages</MudAvatar></div>
                                             }

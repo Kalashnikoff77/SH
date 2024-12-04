@@ -22,6 +22,7 @@ namespace WebAPI.Controllers
         public MessagesController(IMapper mapper, IConfiguration configuration, IMemoryCache cache) : base(configuration, mapper, cache) { }
 
 
+        // Считает кол-во прочитанных и непрочитанных сообщений
         [Route("Count"), HttpPost, Authorize]
         public async Task<GetMessagesCountResponseDto> GetCountAsync(GetMessagesCountRequestDto request)
         {
@@ -109,6 +110,28 @@ namespace WebAPI.Controllers
                     await _unitOfWork.SqlConnection.ExecuteAsync($"UPDATE Messages SET {nameof(MessagesEntity.ReadDate)} = getdate() " +
                         $"WHERE Id IN ({ids.Aggregate((a, b) => a + ", " + b)})");
             }
+
+            return response;
+        }
+
+
+        [Route("MarkAsRead"), HttpPost, Authorize]
+        public async Task<MarkMessageAsReadResponseDto> MarkAsReadAsync(MarkMessageAsReadRequestDto request)
+        {
+            AuthenticateUser();
+
+            var response = new MarkMessageAsReadResponseDto();
+
+            var sql = $"UPDATE Messages SET {nameof(MessagesEntity.ReadDate)} = @CurrentDate " +
+                $"WHERE Id = @MessageId AND {nameof(MessagesEntity.RecipientId)} = @AccountId AND {nameof(MessagesEntity.ReadDate)} IS NULL";
+            await _unitOfWork.SqlConnection.ExecuteAsync(sql, new { CurrentDate = DateTime.Now, request.MessageId, _unitOfWork.AccountId });
+
+            var p = new DynamicParameters();
+            p.Add("@AccountId", _unitOfWork.AccountId);
+            var result = await _unitOfWork.SqlConnection.QueryAsync<LastMessagesListViewEntity>("GetLastMessagesForAccountList_sp", p, commandType: System.Data.CommandType.StoredProcedure);
+
+            var updatedMessage = result.FirstOrDefault(x => x.Id == request.MessageId);
+            response.UpdatedMessage = _unitOfWork.Mapper.Map<LastMessagesListViewDto>(updatedMessage);
 
             return response;
         }

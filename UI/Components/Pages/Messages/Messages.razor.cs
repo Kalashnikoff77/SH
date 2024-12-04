@@ -14,12 +14,13 @@ namespace UI.Components.Pages.Messages
     {
         [CascadingParameter] public CurrentState CurrentState { get; set; } = null!;
         [Inject] IRepository<GetLastMessagesListRequestDto, GetLastMessagesListResponseDto> _repoGetLastMessagesList { get; set; } = null!;
+        [Inject] IRepository<MarkMessageAsReadRequestDto, MarkMessageAsReadResponseDto> _markMessageAsRead { get; set; } = null!;
         [Inject] ShowDialogs ShowDialogs { get; set; } = null!;
+        [Inject] IJSProcessor _JSProcessor { get; set; } = null!;
 
         MudDataGrid<LastMessagesListViewDto> dataGrid = null!;
         GetLastMessagesListRequestDto request = new GetLastMessagesListRequestDto();
         List<LastMessagesListViewDto> LastMessagesList = new List<LastMessagesListViewDto>();
-        [Inject] IJSProcessor _JSProcessor { get; set; } = null!;
 
         // Текущая отображаемая страница с мероприятиями
         int currentPage = 0;
@@ -58,10 +59,24 @@ namespace UI.Components.Pages.Messages
             return items;
         }
 
+        async Task MarkAsReadCallback(int markAsReadId)
+        {
+            var apiResponse = await _markMessageAsRead.HttpPostAsync(new MarkMessageAsReadRequestDto { MessageId = markAsReadId, Token = CurrentState.Account?.Token });
+
+            var index = LastMessagesList.FindIndex(x => x.Id == markAsReadId);
+            if (index >= 0 && apiResponse.Response.UpdatedMessage != null)
+            {
+                LastMessagesList[index].ReadDate = apiResponse.Response.UpdatedMessage.ReadDate;
+                LastMessagesList[index].UnreadMessages = apiResponse.Response.UpdatedMessage.UnreadMessages;
+            }
+        }
+
+        async Task MarkAllAsReadAsync()
+        {
+        }
 
         async Task BlockAccountAsync()
         {
-
         }
 
         Task OnSearch(string text)

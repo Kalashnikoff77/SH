@@ -31,9 +31,13 @@
                                                 <MudMenuItem Icon="@Icons.Material.Filled.Block" IconColor="Color.Error" OnClick="async() => { await BlockAccountAsync(); }">Заблокировать</MudMenuItem>
                                             </MudMenu>
                                         </div>
-                                        
-                                        <div @onclick ="@(() => ShowDialogs.AccountCardDialogAsync(accountsViewDto))" style="cursor:pointer">
-                                            <ShowLongTextComponent Text="@context.Item.Text" MaxTextLength="120" />
+
+                                        <div class="d-flex align-center" @onclick="@(() => ShowDialogs.AccountCardDialogAsync(accountsViewDto))" style="cursor:pointer">
+                                            <div class="flex-grow-1"><ShowLongTextComponent Text="@context.Item.Text" MaxTextLength="120" /></div>
+                                            @if (context.Item.UnreadMessages > 0) 
+                                            {
+                                                <div class="flex-grow-0" title="Непрочитанные сообщения"><MudAvatar Size="Size.Small" Color="Color.Primary">@context.Item.UnreadMessages</MudAvatar></div>
+                                            }
                                         </div>
 
                                         <div class="d-flex justify-end align-center" style="font-size:12px; height:29px">

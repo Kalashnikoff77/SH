@@ -9,5 +9,7 @@
 
         public AccountsViewDto? Sender { get; set; }
         public AccountsViewDto? Recipient { get; set; }
+
+        public int? UnreadMessages { get; set; }
     }
 }

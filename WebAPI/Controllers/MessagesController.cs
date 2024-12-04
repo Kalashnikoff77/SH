@@ -121,16 +121,10 @@ namespace WebAPI.Controllers
 
             var response = new GetLastMessagesListResponseDto();
 
-            var sql = $"SELECT TOP (@Take) * FROM LastMessagesListView " +
-                $"WHERE {nameof(LastMessagesListViewEntity.SenderId)} = @AccountId " +
-                $"OR {nameof(LastMessagesListViewEntity.RecipientId)} = @AccountId";
-            var result = await _unitOfWork.SqlConnection.QueryAsync<LastMessagesListViewEntity>(sql, new { _unitOfWork.AccountId, request.Take });
-
-            var sortedResult = result.Where(x => x.RecipientId == _unitOfWork.AccountId)
-                .Union(result.Where(x => x.SenderId == _unitOfWork.AccountId))
-                .ToList();
-
-            response.LastMessagesList = _unitOfWork.Mapper.Map<List<LastMessagesListViewDto>>(sortedResult);
+            var p = new DynamicParameters();
+            p.Add("@AccountId", _unitOfWork.AccountId);
+            var result = await _unitOfWork.SqlConnection.QueryAsync<LastMessagesListViewEntity>("GetLastMessagesForAccountList_sp", p, commandType: System.Data.CommandType.StoredProcedure);
+            response.LastMessagesList = _unitOfWork.Mapper.Map<List<LastMessagesListViewDto>>(result);
 
             return response;
         }

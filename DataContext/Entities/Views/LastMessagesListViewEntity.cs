@@ -12,5 +12,7 @@
 
         public string? Sender { get; set; }
         public string? Recipient { get; set; }
+
+        public int? UnreadMessages { get; set; }
     }
 }

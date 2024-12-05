@@ -1,6 +1,6 @@
 ﻿using Common.Dto.Requests;
 using Common.Dto.Responses;
-using Common.Dto.Views;
+using Common.Dto.Sp;
 using Common.Models.States;
 using Common.Repository;
 using Microsoft.AspNetCore.Components;
@@ -15,7 +15,7 @@ namespace UI.Components.Pages.Messages
         [Inject] IRepository<MarkMessageAsReadRequestDto, MarkMessageAsReadResponseDto> _markMessageAsRead { get; set; } = null!;
         [Inject] ShowDialogs ShowDialogs { get; set; } = null!;
 
-        List<LastMessagesListViewDto> LastMessagesList = new List<LastMessagesListViewDto>();
+        List<LastMessagesForAccountSpDto> LastMessagesList = new List<LastMessagesForAccountSpDto>();
 
         protected override async Task OnParametersSetAsync()
         {
@@ -23,10 +23,7 @@ namespace UI.Components.Pages.Messages
             {
                 var request = new GetLastMessagesListRequestDto() { Token = CurrentState.Account.Token };
                 var apiResponse = await _repoGetLastMessagesList.HttpPostAsync(request);
-                if (apiResponse.Response.LastMessagesList != null)
-                {
-                    LastMessagesList = apiResponse.Response.LastMessagesList;
-                }
+                LastMessagesList = apiResponse.Response.LastMessagesList ?? new List<LastMessagesForAccountSpDto>();
             }
         }
 

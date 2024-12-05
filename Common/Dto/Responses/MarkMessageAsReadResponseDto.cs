@@ -1,9 +1,9 @@
-﻿using Common.Dto.Views;
+﻿using Common.Dto.Sp;
 
 namespace Common.Dto.Responses
 {
     public class MarkMessageAsReadResponseDto : ResponseDtoBase
     {
-        public LastMessagesListViewDto? UpdatedMessage { get; set; }
+        public LastMessagesForAccountSpDto? UpdatedMessage { get; set; }
     }
 }

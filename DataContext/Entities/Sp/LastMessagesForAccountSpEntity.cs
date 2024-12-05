@@ -1,6 +1,6 @@
-﻿namespace DataContext.Entities.Views
+﻿namespace DataContext.Entities.Sp
 {
-    public class LastMessagesListViewEntity : EntityBase
+    public class LastMessagesForAccountSpEntity : EntityBase
     {
         public DateTime CreateDate { get; set; }
         public DateTime? ReadDate { get; set; }

@@ -2,10 +2,12 @@
 using Common.Dto;
 using Common.Dto.Requests;
 using Common.Dto.Responses;
+using Common.Dto.Sp;
 using Common.Dto.Views;
 using Common.Models;
 using Dapper;
 using DataContext.Entities;
+using DataContext.Entities.Sp;
 using DataContext.Entities.Views;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -128,10 +130,10 @@ namespace WebAPI.Controllers
 
             var p = new DynamicParameters();
             p.Add("@AccountId", _unitOfWork.AccountId);
-            var result = await _unitOfWork.SqlConnection.QueryAsync<LastMessagesListViewEntity>("GetLastMessagesForAccountList_sp", p, commandType: System.Data.CommandType.StoredProcedure);
+            var result = await _unitOfWork.SqlConnection.QueryAsync<LastMessagesForAccountSpEntity>("GetLastMessagesForAccount_sp", p, commandType: System.Data.CommandType.StoredProcedure);
 
             var updatedMessage = result.FirstOrDefault(x => x.Id == request.MessageId);
-            response.UpdatedMessage = _unitOfWork.Mapper.Map<LastMessagesListViewDto>(updatedMessage);
+            response.UpdatedMessage = _unitOfWork.Mapper.Map<LastMessagesForAccountSpDto>(updatedMessage);
 
             return response;
         }
@@ -146,8 +148,8 @@ namespace WebAPI.Controllers
 
             var p = new DynamicParameters();
             p.Add("@AccountId", _unitOfWork.AccountId);
-            var result = await _unitOfWork.SqlConnection.QueryAsync<LastMessagesListViewEntity>("GetLastMessagesForAccountList_sp", p, commandType: System.Data.CommandType.StoredProcedure);
-            response.LastMessagesList = _unitOfWork.Mapper.Map<List<LastMessagesListViewDto>>(result);
+            var result = await _unitOfWork.SqlConnection.QueryAsync<LastMessagesForAccountSpEntity>("GetLastMessagesForAccount_sp", p, commandType: System.Data.CommandType.StoredProcedure);
+            response.LastMessagesList = _unitOfWork.Mapper.Map<List<LastMessagesForAccountSpDto>>(result);
 
             return response;
         }

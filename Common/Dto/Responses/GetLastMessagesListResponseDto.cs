@@ -1,9 +1,9 @@
-﻿using Common.Dto.Views;
+﻿using Common.Dto.Sp;
 
 namespace Common.Dto.Responses
 {
     public class GetLastMessagesListResponseDto : ResponseDtoBase
     {
-        public List<LastMessagesListViewDto>? LastMessagesList { get; set; }
+        public List<LastMessagesForAccountSpDto>? LastMessagesList { get; set; }
     }
 }

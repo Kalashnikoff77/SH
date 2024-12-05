@@ -1,6 +1,8 @@
-﻿namespace Common.Dto.Views
+﻿using Common.Dto.Views;
+
+namespace Common.Dto.Sp
 {
-    public class LastMessagesListViewDto : DtoBase
+    public class LastMessagesForAccountSpDto : DtoBase
     {
         public DateTime CreateDate { get; set; }
         public DateTime? ReadDate { get; set; }

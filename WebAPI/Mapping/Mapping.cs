@@ -1,8 +1,10 @@
 ﻿using AutoMapper;
 using Common.Dto;
 using Common.Dto.Functions;
+using Common.Dto.Sp;
 using Common.Dto.Views;
 using DataContext.Entities;
+using DataContext.Entities.Sp;
 using DataContext.Entities.Views;
 using WebAPI.Mapping.Converters;
 
@@ -53,7 +55,7 @@ namespace WebAPI.Mapping
                 .ForMember(to => to.Avatar, from => from.ConvertUsing<JsonToClassConverter<PhotosForAccountsDto>, string?>(from => from.Avatar))
                 .ForMember(to => to.Relations, from => from.ConvertUsing<JsonToClassConverter<List<RelationsForAccountsDto>>, string?>(from => from.Relations));
 
-            CreateMap<LastMessagesListViewEntity, LastMessagesListViewDto>()
+            CreateMap<LastMessagesForAccountSpEntity, LastMessagesForAccountSpDto>()
                 .ForMember(to => to.Sender, from => from.ConvertUsing<JsonToClassConverter<AccountsViewDto>, string?>(from => from.Sender))
                 .ForMember(to => to.Recipient, from => from.ConvertUsing<JsonToClassConverter<AccountsViewDto>, string?>(from => from.Recipient));
 

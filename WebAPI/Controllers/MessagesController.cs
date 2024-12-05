@@ -130,10 +130,9 @@ namespace WebAPI.Controllers
 
             var p = new DynamicParameters();
             p.Add("@AccountId", _unitOfWork.AccountId);
-            var result = await _unitOfWork.SqlConnection.QueryAsync<LastMessagesForAccountSpEntity>("GetLastMessagesForAccount_sp", p, commandType: System.Data.CommandType.StoredProcedure);
-
-            var updatedMessage = result.FirstOrDefault(x => x.Id == request.MessageId);
-            response.UpdatedMessage = _unitOfWork.Mapper.Map<LastMessagesForAccountSpDto>(updatedMessage);
+            p.Add("@MessageId", request.MessageId);
+            var result = await _unitOfWork.SqlConnection.QuerySingleAsync<LastMessagesForAccountSpEntity>("GetLastMessagesForAccount_sp", p, commandType: System.Data.CommandType.StoredProcedure);
+            response.UpdatedMessage = _unitOfWork.Mapper.Map<LastMessagesForAccountSpDto>(result);
 
             return response;
         }

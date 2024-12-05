@@ -29,11 +29,14 @@ namespace UI.Components.Pages.Messages
 
         async Task MarkAsReadCallback(int markAsReadId)
         {
-            var apiResponse = await _markMessageAsRead.HttpPostAsync(new MarkMessageAsReadRequestDto { MessageId = markAsReadId, Token = CurrentState.Account?.Token });
-
             var index = LastMessagesList.FindIndex(x => x.Id == markAsReadId);
-            if (index >= 0 && apiResponse.Response.UpdatedMessage != null)
-                LastMessagesList[index] = apiResponse.Response.UpdatedMessage;
+            // Проверим, помечено ли сообщение как прочитанное и адресовано ли нам?
+            if (index >= 0 && LastMessagesList[index].Recipient?.Id == CurrentState.Account?.Id && LastMessagesList[index].ReadDate == null)
+            {
+                var apiResponse = await _markMessageAsRead.HttpPostAsync(new MarkMessageAsReadRequestDto { MessageId = markAsReadId, Token = CurrentState.Account?.Token });
+                if (apiResponse.Response.UpdatedMessage != null)
+                    LastMessagesList[index] = apiResponse.Response.UpdatedMessage;
+            }
         }
 
         async Task MarkAllAsReadAsync()

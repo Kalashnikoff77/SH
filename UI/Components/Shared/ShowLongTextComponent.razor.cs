@@ -15,8 +15,7 @@ namespace UI.Components.Shared
         StringBuilder formattedText = null!;
         bool isShortText = true;
 
-        protected override void OnInitialized() =>
-            CheckText();
+        protected override void OnInitialized() => CheckText();
 
         async Task OnWrap()
         {

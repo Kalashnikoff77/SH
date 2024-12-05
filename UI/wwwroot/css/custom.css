@@ -5,8 +5,3 @@
 .dataGridHideTHead {
     display: none !important;
 }
-
-/* Костыль для страницы Messages.cs */
-.mud-table-cell-for-messages::before {
-    content: none !important;
-}

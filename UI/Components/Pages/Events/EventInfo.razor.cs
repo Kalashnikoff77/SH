@@ -9,7 +9,7 @@ using MudBlazor;
 
 namespace UI.Components.Pages.Events
 {
-    public partial class EventInfo : InfoBase, IDisposable
+    public partial class EventInfo : ScheduleInfoBase, IDisposable
     {
         [Parameter, EditorRequired] public int EventId { get; set; }
 

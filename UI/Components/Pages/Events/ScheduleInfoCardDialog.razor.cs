@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Components;
 
 namespace UI.Components.Pages.Events
 {
-    public partial class ScheduleInfoCardDialog : InfoBase, IDisposable
+    public partial class ScheduleInfoCardDialog : ScheduleInfoBase, IDisposable
     {
         [Parameter, EditorRequired] public int ScheduleId { get; set; }
 

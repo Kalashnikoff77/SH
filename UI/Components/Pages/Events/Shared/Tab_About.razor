@@ -3,7 +3,7 @@
     <div class="d-flex flex-column">
         @if (@ScheduleForEventView.Event.Admin != null)
         {
-            <MudButton OnClick="() => ShowDialogs.AccountCardDialogAsync(ScheduleForEventView.Event.Admin)" FullWidth Class="px-1 mb-3">
+            <MudButton OnClick="() => ShowDialogs.AccountInfoCardDialogAsync(ScheduleForEventView.Event.Admin)" FullWidth Class="px-1 mb-3">
                 <div class="d-flex align-center gap-0" style="width:100%">
                     <ImageAvatar Account="ScheduleForEventView.Event.Admin" Size="EnumImageSize.s64x64" Class="avatar s45 mr-3" Title="Организатор" />
                     <MudText Typo="Typo.body2" Align="Align.Left"><b>Организатор:</b><br />@ScheduleForEventView.Event.Admin.Name (@ScheduleForEventView.Event.Admin.ToGendersAgesString())</MudText>

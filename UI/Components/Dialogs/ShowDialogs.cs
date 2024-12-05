@@ -14,7 +14,7 @@ namespace UI.Components.Dialogs
         /// <summary>
         /// Карточка аккаунта
         /// </summary>
-        public Task AccountCardDialogAsync(AccountsViewDto account)
+        public Task AccountInfoCardDialogAsync(AccountsViewDto account)
         {
             DialogOptions dialogOptions = new() { CloseOnEscapeKey = true, CloseButton = true, BackdropClick = true };
 
@@ -28,7 +28,7 @@ namespace UI.Components.Dialogs
         /// <summary>
         /// Карточка мероприятия
         /// </summary>
-        public async Task EventCardDialogAsync(SchedulesForEventsViewDto schedule)
+        public async Task ScheduleInfoCardDialogAsync(SchedulesForEventsViewDto schedule)
         {
             DialogOptions dialogOptions = new() { CloseOnEscapeKey = true, CloseButton = true, BackdropClick = true };
 

@@ -2,19 +2,19 @@
 {
     <MudDialog Style="width:550px; min-width:360px">
         <DialogContent>
-                @if (Account.Photos != null)
-                {
-                    <div class="d-flex justify-center mb-3">
-                        <MudCarousel @ref="Carousel" TData="PhotosForEventsDto" ShowArrows ShowBullets="false" AutoCycle Style="width:300px; height:400px">
-                            @foreach (var photo in Account.Photos.OrderByDescending(o => o.IsAvatar).ThenByDescending(o => o.CreateDate))
-                            {
-                                <MudCarouselItem Transition="Transition.Fade">
-                                    <MudImage Src=@($"/images/AccountsPhotos/{photo.RelatedId}/{photo.Guid}/{EnumImageSize.s450x600}.jpg") Fluid Style="border-radius:2%; width:300px; height:400px" />
-                                </MudCarouselItem>
-                            }
-                        </MudCarousel>
-                    </div>
-                }
+            @if (Account.Photos != null)
+            {
+                <div class="d-flex justify-center mb-3">
+                    <MudCarousel @ref="Carousel" TData="PhotosForEventsDto" ShowArrows ShowBullets="false" AutoCycle Style="width:300px; height:400px">
+                        @foreach (var photo in Account.Photos.OrderByDescending(o => o.IsAvatar).ThenByDescending(o => o.CreateDate))
+                        {
+                            <MudCarouselItem Transition="Transition.Fade">
+                                <MudImage Src=@($"/images/AccountsPhotos/{photo.RelatedId}/{photo.Guid}/{EnumImageSize.s450x600}.jpg") Fluid Style="border-radius:2%; width:300px; height:400px" />
+                            </MudCarouselItem>
+                        }
+                    </MudCarousel>
+                </div>
+            }
 
             <div class="d-flex gap-1 flex-column align-center">
                 <div class="d-flex align-center gap-2">

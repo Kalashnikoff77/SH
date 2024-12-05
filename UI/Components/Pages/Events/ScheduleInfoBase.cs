@@ -8,7 +8,7 @@ using MudBlazor;
 
 namespace UI.Components.Pages.Events
 {
-    public class InfoBase :ComponentBase
+    public class ScheduleInfoBase : ComponentBase
     {
         [CascadingParameter] protected CurrentState CurrentState { get; set; } = null!;
         [CascadingParameter] protected MudDialogInstance MudDialog { get; set; } = null!;

@@ -4,19 +4,19 @@
         <DialogContent>
             @if (Account.Photos != null)
             {
-                <div class="d-flex justify-center mb-3">
-                    <MudCarousel @ref="Carousel" TData="PhotosForEventsDto" ShowArrows ShowBullets="false" AutoCycle Style="width:300px; height:400px">
+                <div class="d-flex flex-column align-center mb-3">
+                    <MudCarousel Class="d-flex" @ref="Carousel" TData="PhotosForEventsDto" ShowArrows ShowBullets="false" AutoCycle Style="width:300px; height:400px">
                         @foreach (var photo in Account.Photos.OrderByDescending(o => o.IsAvatar).ThenByDescending(o => o.CreateDate))
                         {
                             <MudCarouselItem Transition="Transition.Fade">
-                                <MudImage Src=@($"/images/AccountsPhotos/{photo.RelatedId}/{photo.Guid}/{EnumImageSize.s450x600}.jpg") Fluid Style="border-radius:2%; width:300px; height:400px" />
+                                <MudImage Src=@($"/images/AccountsPhotos/{photo.RelatedId}/{photo.Guid}/{EnumImageSize.s450x600}.jpg") Style="border-radius:2%; width:300px; height:400px" />
                             </MudCarouselItem>
                         }
                     </MudCarousel>
                 </div>
             }
 
-            <div class="d-flex gap-1 flex-column align-center">
+            <div class="d-flex flex-column align-center gap-1">
                 <div class="d-flex align-center gap-2">
                     <AccountGenderIcon Account="@Account" />
                     <MudText Typo="Typo.h6">@Account.Name</MudText>
@@ -31,7 +31,7 @@
             <MudDivider Class="mt-4" />
 
             <div class="d-flex flex-column">
-                @if (Account?.Users != null) 
+                @if (Account?.Users != null)
                 {
                     <MudSimpleTable Hover Elevation="0" Style="overflow:hidden">
                         <tbody>

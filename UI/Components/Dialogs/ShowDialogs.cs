@@ -14,7 +14,7 @@ namespace UI.Components.Dialogs
         /// <summary>
         /// Карточка аккаунта
         /// </summary>
-        public Task AccountInfoCardDialogAsync(AccountsViewDto account)
+        public async Task AccountInfoCardDialogAsync(AccountsViewDto account)
         {
             DialogOptions dialogOptions = new() { CloseOnEscapeKey = true, CloseButton = true, BackdropClick = true };
 
@@ -22,7 +22,7 @@ namespace UI.Components.Dialogs
             {
                 { x => x.Account, account }
             };
-            return _dialog.ShowAsync<AccountInfoCardDialog>(account.Name, dialogParams, dialogOptions);
+            await _dialog.ShowAsync<AccountInfoCardDialog>(account.Name, dialogParams, dialogOptions);
         }
 
         /// <summary>
@@ -43,7 +43,7 @@ namespace UI.Components.Dialogs
         /// <summary>
         /// Подтверждение регистрация на клубное мероприятие
         /// </summary>
-        public Task RegistrationForEventDialogAsync(SchedulesForEventsViewDto schedule, bool isRegistered)
+        public async Task RegistrationForEventDialogAsync(SchedulesForEventsViewDto schedule, bool isRegistered)
         {
             DialogOptions dialogOptions = new() { CloseOnEscapeKey = true, CloseButton = true };
 
@@ -52,7 +52,7 @@ namespace UI.Components.Dialogs
                 { x => x.ScheduleForEventView, schedule },
                 { x => x.IsRegistered, isRegistered }
             };
-            return _dialog.ShowAsync<RegisterForScheduleDialog>($"Подтверждение регистрации", dialogParams, dialogOptions);
+            await _dialog.ShowAsync<RegisterForScheduleDialog>($"Подтверждение регистрации", dialogParams, dialogOptions);
         }
     }
 }

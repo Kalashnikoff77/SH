@@ -43,8 +43,9 @@
                             </div>
 
                             <div class="d-flex justify-end align-center" style="font-size:12px; height:29px">
-                                <p style="color:darkgrey">@message.CreateDate.ToMyString()</p>
-                                <p class="ml-2 mr-1"><MudIcon Icon="@(CurrentState.Account.Id == accountsViewDto?.Id ? @Icons.Material.Filled.ArrowForward : @Icons.Material.Filled.ArrowBack)" Style="font-size:11px; margin-top:3px" /></p>
+                                <p class="d-none d-sm-block" style="color:darkgrey">@message.CreateDate.ToMyString()</p>
+                                <p class="d-sx-block d-sm-none" style="color:darkgrey" title="Отправлено: @message.CreateDate.ToMyString()">@message.CreateDate.ToMyPastShortString()</p>
+                                <p class="ml-2 mr-1"><MudIcon Icon="@(CurrentState.Account.Id == accountsViewDto.Id ? @Icons.Material.Filled.ArrowForward : @Icons.Material.Filled.ArrowBack)" Style="font-size:11px; margin-top:3px" /></p>
                                 <p @onclick="@(() => ShowDialogs.AccountCardDialogAsync(accountsViewDto))" class="mud-primary-text" style="cursor:pointer; font-weight:500">@accountsViewDto.Name</p>
                                 <p>
                                     @if (message.ReadDate == null)

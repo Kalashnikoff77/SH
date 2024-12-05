@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Components;
+﻿using Common.Dto;
+using Microsoft.AspNetCore.Components;
+using System.Text;
 using System.Text.Json;
 using System.Text.RegularExpressions;
 
@@ -29,5 +31,25 @@ namespace Common.Extensions
         /// </summary>
         public static string RemoveEmptyLines(this string text) =>
             Regex.Replace(text, @"^\s+$[\r\n]*", string.Empty, RegexOptions.Multiline);
+
+
+        /// <summary>
+        /// Урезает коротку строку до определённой длины
+        /// </summary>
+        /// <param name="text">Сам текст</param>
+        /// <param name="length">Максимальная длина</param>
+        /// <param name="finish">Добавить в конец обрезаемого текста</param>
+        /// <returns>Это пример обреза...</returns>
+        public static string? ToShortString(this string text, int length, string finish = "...")
+        {
+            var sb = new StringBuilder(text);
+            if (text != null && text.Length > length)
+            {
+                sb.Clear().Append(text.Substring(0, length));
+                if (!string.IsNullOrEmpty(finish))
+                    sb.Append(finish);
+            }
+            return sb.ToString();
+        }
     }
 }

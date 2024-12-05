@@ -19,15 +19,17 @@ namespace UI.Components.Shared
 
         async Task OnWrap()
         {
-            isShortText = !isShortText;
-            CheckText();
+            // Вызовем сперва функцию обратного вызова, если есть
             if (MarkAsReadCallback.HasDelegate && MarkAsReadId.HasValue)
                 await MarkAsReadCallback.InvokeAsync(MarkAsReadId.Value);
+
+            isShortText = !isShortText;
+            CheckText();
         }
 
         void CheckText()
         {
-            if (!string.IsNullOrEmpty(Text))
+            if (!string.IsNullOrWhiteSpace(Text))
             {
                 formattedText = new StringBuilder(MaxTextLength);
                 if (Text.Length > MaxTextLength && isShortText)

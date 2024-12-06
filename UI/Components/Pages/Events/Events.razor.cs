@@ -25,7 +25,7 @@ namespace UI.Components.Pages.Events
         MudDataGrid<SchedulesForEventsViewDto> dataGrid = null!;
         GetSchedulesRequestDto request = new GetSchedulesRequestDto { IsPhotosIncluded = true };
 
-        List<SchedulesForEventsViewDto> eventsList = new List<SchedulesForEventsViewDto>();
+        List<SchedulesForEventsViewDto> schedulesList = new List<SchedulesForEventsViewDto>();
 
         /// <summary>
         /// Для предотвращения повторного выполнения OnParametersSet (выполняется при переходе на другую ссылку)
@@ -68,16 +68,13 @@ namespace UI.Components.Pages.Events
         {
             OnScheduleChangedHandler = OnScheduleChangedHandler.SignalRClient(CurrentState, (Func<OnScheduleChangedResponse, Task>)(async (response) =>
             {
-                var apiResponse = await _repoGetSchedules.HttpPostAsync(new GetSchedulesRequestDto { EventId = response.EventId });
-                if (apiResponse.Response.Schedules != null)
+                if (response.UpdatedSchedule != null)
                 {
-                    int index;
-                    foreach (var sch in apiResponse.Response.Schedules)
-                    {
-                        index = eventsList.FindIndex(s => s.Id == sch.Id);
-                        if (index >= 0) // Есть ли в области видимости браузера такое расписание?
-                            eventsList[index] = sch;
-                    }
+                    // Есть ли в области видимости браузера такое расписание?
+                    var index = schedulesList.FindIndex(i => i.Id == response.UpdatedSchedule.Id);
+                    if (index >= 0)
+                        schedulesList[index] = response.UpdatedSchedule;
+
                     await InvokeAsync(StateHasChanged);
                 }
             }));
@@ -93,11 +90,11 @@ namespace UI.Components.Pages.Events
             var apiResponse = await _repoGetSchedules.HttpPostAsync(request);
             if (apiResponse.Response.Schedules != null)
             {
-                eventsList = apiResponse.Response.Schedules;
+                schedulesList = apiResponse.Response.Schedules;
 
                 items = new GridData<SchedulesForEventsViewDto>
                 {
-                    Items = eventsList,
+                    Items = schedulesList,
                     TotalItems = apiResponse.Response.Count ?? 0
                 };
             }

@@ -1,5 +1,4 @@
-﻿using Common.Dto.Requests;
-using Common.Models.SignalR;
+﻿using Common.Models.SignalR;
 using Common.Models.States;
 using Microsoft.AspNetCore.Components;
 
@@ -20,10 +19,9 @@ namespace UI.Components.Pages.Events
         {
             OnScheduleChangedHandler = OnScheduleChangedHandler.SignalRClient<OnScheduleChangedResponse>(CurrentState, async (response) =>
             {
-                var apiResponse = await _repoGetSchedules.HttpPostAsync(new GetSchedulesRequestDto { ScheduleId = response.ScheduleId });
-                if (apiResponse.Response.Schedule != null)
+                if (response.UpdatedSchedule != null)
                 {
-                    ScheduleForEventView = apiResponse.Response.Schedule;
+                    ScheduleForEventView = response.UpdatedSchedule;
                     await InvokeAsync(StateHasChanged);
                 }
             });

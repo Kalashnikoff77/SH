@@ -1,4 +1,5 @@
-﻿using Common.Enums;
+﻿using Common.Dto.Views;
+using Common.Enums;
 
 namespace Common.Models.SignalR
 {
@@ -6,7 +7,6 @@ namespace Common.Models.SignalR
     {
         public override EnumSignalRHandlers EnumSignalRHandlersClient => EnumSignalRHandlers.OnScheduleChangedClient;
 
-        public int? EventId { get; set; }
-        public int ScheduleId { get; set; }
+        public SchedulesForEventsViewDto? UpdatedSchedule { get; set; }
     }
 }

@@ -3,7 +3,6 @@ using Common.Dto.Responses;
 using Common.Models.SignalR;
 using Common.Repository;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.SignalR;
 using SignalR.Models;
 
@@ -17,17 +16,12 @@ namespace SignalR
         Accounts Accounts { get; set; } = null!;
 
         IConfiguration _configuration;
+        IServiceProvider _serviceProvider;
         ILogger<SignalRHub> _logger;
 
-        [Inject] IRepository<VisitsForAccountsUpdateRequestDto, ResponseDtoBase> _repoUpdateVisits { get; set; } = null!;
-
-
-        public SignalRHub(
-            IRepository<VisitsForAccountsUpdateRequestDto, ResponseDtoBase> repoUpdateVisits,
-            Accounts connectedAccounts, IConfiguration configuration, ILogger<SignalRHub> logger)
+        public SignalRHub(IServiceProvider serviceProvider, Accounts connectedAccounts, IConfiguration configuration, ILogger<SignalRHub> logger)
         {
-            _repoUpdateVisits = repoUpdateVisits;
-
+            _serviceProvider = serviceProvider;
             _configuration = configuration;
             _logger = logger;
             Accounts = connectedAccounts;
@@ -53,7 +47,9 @@ namespace SignalR
         /// </summary>
         async Task OnScheduleChanged(OnScheduleChanged request)
         {
-            var response = new OnScheduleChangedResponse { EventId = request.EventId, ScheduleId = request.ScheduleId };
+            var service = _serviceProvider.GetService<IRepository<GetSchedulesRequestDto, GetSchedulesResponseDto>>()!;
+            var apiResponse = await service.HttpPostAsync(new GetSchedulesRequestDto { ScheduleId = request.ScheduleId });
+            var response = new OnScheduleChangedResponse { UpdatedSchedule = apiResponse.Response.Schedule };
             await Clients.All.SendAsync(response.EnumSignalRHandlersClient.ToString(), response);
         }
 

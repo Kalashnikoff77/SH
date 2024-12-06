@@ -35,7 +35,8 @@ namespace UI.Components.Pages.Events
         {
             OnScheduleChangedHandler = OnScheduleChangedHandler.SignalRClient<OnScheduleChangedResponse>(CurrentState, async (response) =>
             {
-                ScheduleForEventView = await GetScheduleForEvent(response.ScheduleId);
+                if (response.UpdatedSchedule != null)
+                    ScheduleForEventView = response.UpdatedSchedule;
                 await InvokeAsync(StateHasChanged);
             });
         }

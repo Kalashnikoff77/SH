@@ -66,16 +66,14 @@
                 @foreach (var schedule in SchedulesList)
                 {
                     <tr>
-                        <td class="px-1 py-5" style="cursor:pointer" @onclick="() => ShowDialogs.ScheduleInfoCardDialogAsync(schedule)">
+                        <td style="cursor:pointer" @onclick="() => ShowDialogs.ScheduleInfoCardDialogAsync(schedule)">
                             <MudStack Wrap="Wrap.NoWrap" Class="flex-sm-row" StretchItems="StretchItems.Middle" Spacing="1" AlignItems="AlignItems.Center">
-
                                 <ImageEvent Event="schedule.Event" Size="EnumImageSize.s150x150" Title="@schedule.Event!.Name" Class="d-none d-sm-block mr-2" Style="border-radius:3%; border:solid; border-width:1px; border-color:lightgray; width:140px; height:140px" />
-                                <ImageEvent Event="schedule.Event" Size="EnumImageSize.s150x150" Title="@schedule.Event.Name" Class="d-xs-block d-sm-none" Style="border-radius:4%; border:solid; border-width:1px; border-color:lightgray; width:190px; height:190px" />
+                                <ImageEvent Event="schedule.Event" Size="EnumImageSize.s150x150" Title="@schedule.Event.Name" Class="d-xs-block d-sm-none" Style="border-radius:4%; border:solid; border-width:1px; border-color:lightgray; width:210px; height:210px" />
 
                                 <div class="d-flex flex-column gap-1">
-                                    <MudText Typo="Typo.body1" Color="Color.Primary" Class="ma-1" Style="cursor:pointer">
-                                        <b>@schedule.Event.Name</b>
-                                    </MudText>
+                                    <MudText Typo="Typo.body1" Color="Color.Primary" Class="d-none d-sm-flex ma-1"><b>@schedule.Event.Name</b></MudText>
+                                    <MudText Typo="Typo.body1" Color="Color.Primary" Class="d-sm-none ma-1" Style="text-align:center"><b>@schedule.Event.Name</b></MudText>
                                     <div class="d-flex align-center gap-1 d-sm-none">
                                         <MudIcon Icon="@Icons.Material.Outlined.Person" Style="font-size:20px" />
                                         <MudText Typo="Typo.body2"><b>@schedule.Event.Admin?.Name</b></MudText>
@@ -131,15 +129,10 @@
                                     }
                                 </div>
 
-                                <div class="d-none d-sm-flex">
-                                    <MudButton OnClick="() => ShowDialogs.AccountInfoCardDialogAsync(schedule.Event.Admin!)" Style="width:100px">
-                                        <div>
-                                            <ImageAvatar Account="schedule.Event.Admin" Size="EnumImageSize.s64x64" Title="Организатор" class="s45" Style="border-radius:50%" />
-                                            <ColorizedAccountName Account="@schedule.Event.Admin" Typo="Typo.body2" Style="font-size:12px; text-align:center" />
-                                        </div>
-                                    </MudButton>
+                                <div class="d-none d-sm-flex flex-column align-center gap-2" @onclick="() => ShowDialogs.AccountInfoCardDialogAsync(schedule.Event.Admin!)" @onclick:stopPropagation="true" style="width:100px; min-width:100px">
+                                    <ImageAvatar Account="schedule.Event.Admin" Size="EnumImageSize.s64x64" Title="Организатор" class="s45" Style="border-radius:50%" />
+                                    <ColorizedAccountName Account="@schedule.Event.Admin" Typo="Typo.body2" Style="font-size:12px; text-align:center" />
                                 </div>
-
                             </MudStack>
                         </td>
                     </tr>

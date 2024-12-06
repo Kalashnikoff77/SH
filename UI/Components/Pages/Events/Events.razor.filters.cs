@@ -21,7 +21,7 @@ namespace UI.Components.Pages.Events
                 .Select(s => s.Id)
                 .Distinct();
 
-            await dataGrid.ReloadServerData();
+            //await dataGrid.ReloadServerData();
         }
 
         List<string> _filteredFeatures = new List<string>();
@@ -72,7 +72,7 @@ namespace UI.Components.Pages.Events
                 .Select(s => s.Id)
                 .Distinct();
 
-            await dataGrid.ReloadServerData();
+            //await dataGrid.ReloadServerData();
         }
 
         List<string> _filteredAdmins = new List<string>();
@@ -123,7 +123,7 @@ namespace UI.Components.Pages.Events
                 .Select(s => s.Id)
                 .Distinct();
 
-            await dataGrid.ReloadServerData();
+            //await dataGrid.ReloadServerData();
         }
 
         List<string> _filteredRegions = new List<string>();
@@ -182,7 +182,7 @@ namespace UI.Components.Pages.Events
             Filters.SelectedRegions = null;
             request.RegionsIds = null;
 
-            await dataGrid.ReloadServerData();
+            //await dataGrid.ReloadServerData();
         }
         #endregion
     }

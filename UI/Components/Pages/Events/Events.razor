@@ -2,11 +2,11 @@
 
 <PageTitle>Клубы и мероприятия</PageTitle>
 
-<div id="top" class="d-flex flex-column ml-3" Style="min-width:300px; max-width:750px">
-    
+<div id="top" class="d-flex flex-column ml-sx-0 ml-sm-3" Style="min-width:300px; max-width:750px">
+
     <div class="d-flex gap-0 align-center justify-space-between mb-5">
         <MudText Typo="Typo.h6" Class="mr-2">Клубы и мероприятия</MudText>
-        @if (CurrentState.Account != null) 
+        @if (CurrentState.Account != null)
         {
             <MudButton Href="/events/add" StartIcon="@Icons.Material.Filled.PlaylistAdd" Color="Color.Primary" Size="Size.Small" title="Добавить мероприятие">Добавить</MudButton>
         }
@@ -15,7 +15,7 @@
     @* Фильтры запроса *@
     <MudGrid Style="min-width:300px" Class="mb-4">
         <MudItem xs="12">
-            <MudTextField Placeholder="Поиск" T="string" ValueChanged="@(s => OnSearch(s))" Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Clearable/>
+            <MudTextField Placeholder="Поиск" T="string" ValueChanged="@(s => OnSearch(s))" Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Clearable />
         </MudItem>
         <MudItem xs="12" md="4">
             <MudSelect Placeholder="Все услуги" SelectedValues="Filters.SelectedFeatures" SelectedValuesChanged="FeaturesChanged" T="string" Dense AnchorOrigin="Origin.BottomCenter" Adornment="Adornment.End" IconSize="Size.Medium" MultiSelection Clearable>
@@ -35,7 +35,7 @@
         </MudItem>
         <MudItem xs="12" md="4">
             <MudSelect Placeholder="Все регионы" SelectedValues="Filters.SelectedRegions" SelectedValuesChanged="RegionsChanged" T="string" Dense AnchorOrigin="Origin.BottomCenter" Adornment="Adornment.End" IconSize="Size.Medium" MultiSelection Clearable>
-                @if (RegionsList != null) 
+                @if (RegionsList != null)
                 {
                     @foreach (var region in filteredRegions)
                     {
@@ -52,104 +52,95 @@
         </MudItem>
     </MudGrid>
 
-    @if (schedulesList == null) 
+    @if (SchedulesList == null)
     {
         <MudAlert ContentAlignment="HorizontalAlignment.Center" Severity="Severity.Info" Variant="Variant.Outlined" Class="mb-5">
             По Вашему запросу ничего не найдено...
         </MudAlert>
     }
-    else 
+    else
     {
         @* Список мероприятий *@
-        <MudDataGrid @ref="dataGrid" Elevation="0" Hover T="SchedulesForEventsViewDto" ServerData="ServerReload" Loading="false" Style="min-width:300px; max-width:800px" HeaderClass="dataGridHideTHead" Filterable="false">
-            <Columns>
-                <TemplateColumn CellClass="py-5">
-                    <CellTemplate>
-                        @if (context.Item.Event != null)
+        <div class="d-flex flex-column">
+            @foreach (var schedule in SchedulesList) 
+            {
+                <MudStack Wrap="Wrap.NoWrap" Class="flex-sm-row" StretchItems="StretchItems.Middle" Spacing="1" AlignItems="AlignItems.Center">
+
+                    <ImageEvent Event="schedule.Event" Size="EnumImageSize.s150x150" Title="@schedule.Event!.Name" Class="d-none d-sm-block mr-2" Style="border-radius:3%; border:solid; border-width:1px; border-color:lightgray; width:140px; height:140px" />
+                    <ImageEvent Event="schedule.Event" Size="EnumImageSize.s150x150" Title="@schedule.Event.Name" Class="d-xs-block d-sm-none" Style="border-radius:4%; border:solid; border-width:1px; border-color:lightgray; width:190px; height:190px" />
+
+                    <div class="d-flex flex-column gap-1">
+                        <MudText @onclick="() => ShowDialogs.ScheduleInfoCardDialogAsync(schedule)" Typo="Typo.body1" Color="Color.Primary" Class="px-1 py-1" Style="cursor:pointer">
+                            <b>@schedule.Event.Name</b>
+                        </MudText>
+                        <div class="d-flex align-center gap-1 d-sm-none">
+                            <MudIcon Icon="@Icons.Material.Outlined.Person" Style="font-size:20px" />
+                            <MudText @onclick="() => ShowDialogs.AccountInfoCardDialogAsync(schedule.Event.Admin!)" Typo="Typo.body2"><b>@schedule.Event.Admin?.Name</b></MudText>
+                        </div>
+
+                        <div class="d-flex align-center gap-1">
+                            <MudIcon Icon="@Icons.Material.Outlined.LocationOn" Style="font-size:20px" />
+                            <MudText Typo="Typo.body2">@schedule.Event.ToRegionString()</MudText>
+                        </div>
+
+                        <div class="d-flex gap-0 align-center">
+                            <div class="d-flex align-center gap-0" title="Дата и время начала">
+                                <MudIcon Icon="@Icons.Material.Outlined.CalendarToday" Class="@schedule.ToDateClass()" Style="font-size:17px;margin-left:1px" />
+                                <MudText Typo="Typo.body2" Class="ml-1" Style="margin-top:2px">@schedule.StartDate.ToMyString()</MudText>
+                            </div>
+                            @if (schedule.Event.Statistic?.NumOfDiscussions > 0)
+                            {
+                                <div class="d-flex align-center gap-0" title="@("Обсуждений: " + schedule.Event.Statistic.NumOfDiscussions.ToString())">
+                                    <MudIcon Icon="@Icons.Material.Outlined.Chat" Color="Color.Info" Class="ml-4 mr-1" Style="font-size:18px" />
+                                    <MudText Typo="Typo.body2" Style="margin-top:1px">@schedule.Event.Statistic.NumOfDiscussions</MudText>
+                                </div>
+                            }
+                        </div>
+
+                        <div class="d-flex gap-0">
+                            <div class="d-flex gap-0 align-center mr-3" style="margin-left:1px" title="Кол-во пар">
+                                <MudIcon Icon="@Icons.Material.Filled.PeopleAlt" Color="Color.Tertiary" Style="font-size:17px" Class="mr-1" />
+                                <MudText Typo="Typo.body2">@schedule.Statistic?.NumOfRegPairs</MudText>
+                            </div>
+                            <div class="d-flex gap-0 align-center mr-3" title="Кол-во мужчин">
+                                <MudIcon Icon="@Icons.Material.Outlined.Face5" Color="Color.Primary" Style="font-size:16px" Class="mr-1" />
+                                <MudText Typo="Typo.body2">@schedule.Statistic?.NumOfRegMen</MudText>
+                            </div>
+                            <div class="d-flex gap-0 align-center mr-3" title="Кол-во женщин">
+                                <MudIcon Icon="@Icons.Material.Outlined.Face3" Color="Color.Error" Style="font-size:15px" Class="mr-1" />
+                                <MudText Typo="Typo.body2">@schedule.Statistic?.NumOfRegWomen</MudText>
+                            </div>
+                            @if (schedule.Statistic?.AvgAge > 0)
+                            {
+                                <div class="d-flex gap-0">
+                                    <MudText Typo="Typo.body2" Class="ml-2" title="Средний возраст гостей">~@schedule.Statistic.AvgAge</MudText>
+                                </div>
+                            }
+                        </div>
+                        @if (schedule.Features != null)
                         {
-                           <MudStack Wrap="Wrap.NoWrap" Class="flex-sm-row" Style="width:100%" StretchItems="StretchItems.Middle" AlignItems="AlignItems.Center">
-
-                                <ImageEvent Event="context.Item.Event" Size="EnumImageSize.s150x150" Title="@context.Item.Event.Name" Class="d-none d-sm-block" Style="border-radius:3%; width:140px; height:140px; margin-right:8px" />
-                                <ImageEvent Event="context.Item.Event" Size="EnumImageSize.s150x150" Title="@context.Item.Event.Name" Class="d-xs-block d-sm-none" Style="border-radius:4%; width:190px; height:190px" />
-
-                                <div class="d-flex flex-column gap-1">
-                                    <MudText @onclick="() => ShowDialogs.ScheduleInfoCardDialogAsync(context.Item)" Typo="Typo.body1" Color="Color.Primary" Class="px-1 py-1" Style="cursor:pointer">
-                                        <b>@context.Item.Event.Name</b>
-                                    </MudText>
-                                    <div class="d-flex align-center gap-1 d-sm-none">
-                                        <MudIcon Icon="@Icons.Material.Outlined.Person" Style="font-size:20px" />
-                                        <MudText @onclick="() => ShowDialogs.AccountInfoCardDialogAsync(context.Item.Event.Admin!)" Typo="Typo.body2"><b>@context.Item.Event.Admin?.Name</b></MudText>
-                                    </div>
-
-                                    <div class="d-flex align-center gap-1">
-                                        <MudIcon Icon="@Icons.Material.Outlined.LocationOn" Style="font-size:20px" />
-                                        <MudText Typo="Typo.body2">@context.Item.Event.ToRegionString()</MudText>
-                                    </div>
-
-                                    <div class="d-flex gap-0 align-center">
-                                        <div class="d-flex align-center gap-0" title="Дата и время начала">
-                                            <MudIcon Icon="@Icons.Material.Outlined.CalendarToday" Class="@context.Item.ToDateClass()" Style="font-size:17px;margin-left:1px" />
-                                            <MudText Typo="Typo.body2" Class="ml-1" Style="margin-top:2px">@context.Item.StartDate.ToMyString()</MudText>
-                                        </div>
-                                        @if (context.Item.Event.Statistic?.NumOfDiscussions > 0)
-                                        {
-                                            <div class="d-flex align-center gap-0" title="@("Обсуждений: " + context.Item.Event.Statistic.NumOfDiscussions.ToString())">
-                                                <MudIcon Icon="@Icons.Material.Outlined.Chat" Color="Color.Info" Class="ml-4 mr-1" Style="font-size:18px" />
-                                                <MudText Typo="Typo.body2" Style="margin-top:1px">@context.Item.Event.Statistic.NumOfDiscussions</MudText>
-                                            </div>
-                                        }
-                                    </div>
-
-                                    <div class="d-flex gap-0">
-                                        <div class="d-flex gap-0 align-center mr-3" style="margin-left:1px" title="Кол-во пар">
-                                            <MudIcon Icon="@Icons.Material.Filled.PeopleAlt" Color="Color.Tertiary" Style="font-size:17px" Class="mr-1" />
-                                            <MudText Typo="Typo.body2">@context.Item.Statistic?.NumOfRegPairs</MudText>
-                                        </div>
-                                        <div class="d-flex gap-0 align-center mr-3" title="Кол-во мужчин">
-                                            <MudIcon Icon="@Icons.Material.Outlined.Face5" Color="Color.Primary" Style="font-size:16px" Class="mr-1" />
-                                            <MudText Typo="Typo.body2">@context.Item.Statistic?.NumOfRegMen</MudText>
-                                        </div>
-                                        <div class="d-flex gap-0 align-center mr-3" title="Кол-во женщин">
-                                            <MudIcon Icon="@Icons.Material.Outlined.Face3" Color="Color.Error" Style="font-size:15px" Class="mr-1" />
-                                            <MudText Typo="Typo.body2">@context.Item.Statistic?.NumOfRegWomen</MudText>
-                                        </div>
-                                        @if (context.Item.Statistic?.AvgAge > 0) 
-                                        {
-                                            <div class="d-flex gap-0">
-                                                <MudText Typo="Typo.body2" Class="ml-2" title="Средний возраст гостей">~@context.Item.Statistic.AvgAge</MudText>
-                                            </div>
-                                        }
-                                    </div>
-                                    @if (context.Item.Features != null)
-                                    {
-                                        <div class="d-flex flex-row flex-wrap gap-1 mt-1 mb-2">
-                                            @foreach (var feature in context.Item.Features.OrderBy(o => o.Name))
-                                            {
-                                                <span style="padding: 0 5px 0 5px; font-size:12px; font-weight:500; opacity:0.6; border-width:1px; border-style:dotted">@feature.Name</span>
-                                            }
-                                        </div>
-                                    }
-                                </div>
-
-                                <div class="d-none d-sm-flex">
-                                    <MudButton OnClick="() => ShowDialogs.AccountInfoCardDialogAsync(context.Item.Event.Admin!)" Style="width:100px">
-                                        <div>
-                                            <ImageAvatar Account="context.Item.Event.Admin" Size="EnumImageSize.s64x64" Title="Организатор" class="s45" Style="border-radius:50%" />
-                                            <ColorizedAccountName Account="@context.Item.Event.Admin" Typo="Typo.body2" Style="font-size:12px; text-align:center" />
-                                        </div>
-                                    </MudButton>
-                                </div>
-
-                            </MudStack>
+                            <div class="d-flex flex-row flex-wrap gap-1 mt-1 mb-2">
+                                @foreach (var feature in schedule.Features.OrderBy(o => o.Name))
+                                {
+                                    <span style="padding: 0 5px 0 5px; font-size:12px; font-weight:500; opacity:0.6; border-width:1px; border-style:dotted">@feature.Name</span>
+                                }
+                            </div>
                         }
-                    </CellTemplate>
-                </TemplateColumn>
-            </Columns>
+                    </div>
 
-            <PagerContent>
-                <MudDataGridPager RowsPerPageString="Показывать по:" ShowPageNumber="false" T="SchedulesForEventsViewDto" />
-            </PagerContent>
-        </MudDataGrid>
+                    <div class="d-none d-sm-flex">
+                        <MudButton OnClick="() => ShowDialogs.AccountInfoCardDialogAsync(schedule.Event.Admin!)" Style="width:100px">
+                            <div>
+                                <ImageAvatar Account="schedule.Event.Admin" Size="EnumImageSize.s64x64" Title="Организатор" class="s45" Style="border-radius:50%" />
+                                <ColorizedAccountName Account="@schedule.Event.Admin" Typo="Typo.body2" Style="font-size:12px; text-align:center" />
+                            </div>
+                        </MudButton>
+                    </div>
+
+                </MudStack>
+
+                <MudDivider Class="my-4" />
+            }
+        </div>
     }
-
 </div>

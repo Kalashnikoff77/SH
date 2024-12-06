@@ -19,13 +19,10 @@ namespace UI.Components.Pages.Events
         [Inject] IRepository<GetRegionsForEventsRequestDto, GetRegionsForEventsResponseDto> _repoGetRegions { get; set; } = null!;
         [Inject] IRepository<GetAdminsForEventsRequestDto, GetAdminsForEventsResponseDto> _repoGetAdmins { get; set; } = null!;
         [Inject] IJSProcessor _JSProcessor { get; set; } = null!;
-
         [Inject] ShowDialogs ShowDialogs { get; set; } = null!;
 
-        MudDataGrid<SchedulesForEventsViewDto> dataGrid = null!;
         GetSchedulesRequestDto request = new GetSchedulesRequestDto { IsPhotosIncluded = true };
-
-        List<SchedulesForEventsViewDto> schedulesList = new List<SchedulesForEventsViewDto>();
+        List<SchedulesForEventsViewDto> SchedulesList = new List<SchedulesForEventsViewDto>();
 
         /// <summary>
         /// Для предотвращения повторного выполнения OnParametersSet (выполняется при переходе на другую ссылку)
@@ -49,6 +46,9 @@ namespace UI.Components.Pages.Events
 
             var regionsResponse = await _repoGetRegions.HttpPostAsync(new GetRegionsForEventsRequestDto());
             RegionsList = regionsResponse.Response.RegionsForEvents;
+
+            var apiResponse = await _repoGetSchedules.HttpPostAsync(request);
+            SchedulesList = apiResponse.Response.Schedules ?? new List<SchedulesForEventsViewDto>();
         }
 
         protected override void OnParametersSet()
@@ -71,9 +71,9 @@ namespace UI.Components.Pages.Events
                 if (response.UpdatedSchedule != null)
                 {
                     // Есть ли в области видимости браузера такое расписание?
-                    var index = schedulesList.FindIndex(i => i.Id == response.UpdatedSchedule.Id);
+                    var index = SchedulesList.FindIndex(i => i.Id == response.UpdatedSchedule.Id);
                     if (index >= 0)
-                        schedulesList[index] = response.UpdatedSchedule;
+                        SchedulesList[index] = response.UpdatedSchedule;
 
                     await InvokeAsync(StateHasChanged);
                 }
@@ -90,11 +90,11 @@ namespace UI.Components.Pages.Events
             var apiResponse = await _repoGetSchedules.HttpPostAsync(request);
             if (apiResponse.Response.Schedules != null)
             {
-                schedulesList = apiResponse.Response.Schedules;
+                SchedulesList = apiResponse.Response.Schedules;
 
                 items = new GridData<SchedulesForEventsViewDto>
                 {
-                    Items = schedulesList,
+                    Items = SchedulesList,
                     TotalItems = apiResponse.Response.Count ?? 0
                 };
             }
@@ -111,10 +111,10 @@ namespace UI.Components.Pages.Events
             return items;
         }
 
-        Task OnSearch(string text)
+        void OnSearch(string text)
         {
             request.FilterFreeText = text;
-            return dataGrid.ReloadServerData();
+            //return dataGrid.ReloadServerData();
         }
 
         public void Dispose() =>

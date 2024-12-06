@@ -6,6 +6,16 @@ namespace UI.Components.Pages.Events
     {
         Filters Filters { get; set; } = new Filters();
 
+        #region Поиск текста
+        async Task OnSearch(string text)
+        {
+            request.FilterFreeText = text;
+            SchedulesList.Clear();
+            await LoadSchedulesAsync();
+        }
+        #endregion
+
+
         #region Фильтр услуг
         List<FeaturesForEventsViewDto> FeaturesList = new List<FeaturesForEventsViewDto>();
 
@@ -21,7 +31,8 @@ namespace UI.Components.Pages.Events
                 .Select(s => s.Id)
                 .Distinct();
 
-            //await dataGrid.ReloadServerData();
+            SchedulesList.Clear();
+            await LoadSchedulesAsync();
         }
 
         List<string> _filteredFeatures = new List<string>();
@@ -72,7 +83,8 @@ namespace UI.Components.Pages.Events
                 .Select(s => s.Id)
                 .Distinct();
 
-            //await dataGrid.ReloadServerData();
+            SchedulesList.Clear();
+            await LoadSchedulesAsync();
         }
 
         List<string> _filteredAdmins = new List<string>();
@@ -123,7 +135,8 @@ namespace UI.Components.Pages.Events
                 .Select(s => s.Id)
                 .Distinct();
 
-            //await dataGrid.ReloadServerData();
+            SchedulesList.Clear();
+            await LoadSchedulesAsync();
         }
 
         List<string> _filteredRegions = new List<string>();
@@ -182,7 +195,8 @@ namespace UI.Components.Pages.Events
             Filters.SelectedRegions = null;
             request.RegionsIds = null;
 
-            //await dataGrid.ReloadServerData();
+            SchedulesList.Clear();
+            await LoadSchedulesAsync();
         }
         #endregion
     }

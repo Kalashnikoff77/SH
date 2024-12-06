@@ -32,7 +32,9 @@ namespace UI.Components.Pages.Events
         // Текущая отображаемая страница с мероприятиями
         int currentPage = 0;
         // Текущее кол-во отображаемых мероприятий на странице
-        int currentPageSize = 10;
+        int currentPageSize = 2;
+
+        bool IsButtonMoreVisible = true;
 
         IDisposable? OnScheduleChangedHandler;
 
@@ -47,8 +49,7 @@ namespace UI.Components.Pages.Events
             var regionsResponse = await _repoGetRegions.HttpPostAsync(new GetRegionsForEventsRequestDto());
             RegionsList = regionsResponse.Response.RegionsForEvents;
 
-            var apiResponse = await _repoGetSchedules.HttpPostAsync(request);
-            SchedulesList = apiResponse.Response.Schedules ?? new List<SchedulesForEventsViewDto>();
+            await LoadSchedulesAsync();
         }
 
         protected override void OnParametersSet()
@@ -56,9 +57,9 @@ namespace UI.Components.Pages.Events
             // Установим фильтр региона согласно данным учётки пользователя
             if (CurrentState.Account?.Country?.Region != null && isFirstSetParameters)
             {
-                var accountRegion = RegionsList.FirstOrDefault(w => w.Id == CurrentState.Account.Country.Region.Id);
-                if (accountRegion != null)
-                    Filters.SelectedRegions = [accountRegion.Name];
+                //var accountRegion = RegionsList.FirstOrDefault(w => w.Id == CurrentState.Account.Country.Region.Id);
+                //if (accountRegion != null)
+                //    Filters.SelectedRegions = [accountRegion.Name];
 
                 isFirstSetParameters = false;
             }
@@ -78,6 +79,12 @@ namespace UI.Components.Pages.Events
                     await InvokeAsync(StateHasChanged);
                 }
             }));
+        }
+
+        async Task MoreSchedulesAsync()
+        {
+            request.Skip = ++currentPage * currentPageSize;
+            await LoadSchedulesAsync(false);
         }
 
         async Task<GridData<SchedulesForEventsViewDto>> ServerReload(GridState<SchedulesForEventsViewDto> state)
@@ -111,10 +118,18 @@ namespace UI.Components.Pages.Events
             return items;
         }
 
-        void OnSearch(string text)
+        async Task LoadSchedulesAsync(bool toResetOffset = true)
         {
-            request.FilterFreeText = text;
-            //return dataGrid.ReloadServerData();
+            if (toResetOffset)
+            {
+                currentPage = 0;
+                request.Skip = currentPage * currentPageSize;
+                request.Take = currentPageSize;
+            }
+
+            var apiResponse = await _repoGetSchedules.HttpPostAsync(request);
+            SchedulesList.AddRange(apiResponse.Response.Schedules ?? new List<SchedulesForEventsViewDto>());
+            IsButtonMoreVisible = apiResponse.Response.Count <= SchedulesList.Count ? false : true;
         }
 
         public void Dispose() =>

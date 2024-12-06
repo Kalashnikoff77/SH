@@ -139,5 +139,10 @@
                 }
             </tbody>
         </MudSimpleTable>
+
+        @if (IsButtonMoreVisible) 
+        {
+            <MudButton OnClick="MoreSchedulesAsync" Variant="Variant.Text">Далее</MudButton>
+        }
     }
 </div>

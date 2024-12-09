@@ -4,7 +4,7 @@
     {
         @if (moreDiscussionsButton)
         {
-            <MudButton EndIcon="@Icons.Material.Outlined.ArrowUpward" Class="pa-3" Color="Color.Primary" OnClick="GetDiscussionsAsync">Ещё</MudButton>
+            <MudButton Class="pa-3 mb-3" Variant="Variant.Text" StartIcon="@Icons.Material.Filled.MoreHoriz" EndIcon="@Icons.Material.Filled.MoreHoriz" Color="Color.Primary" OnClick="GetDiscussionsAsync">Ещё</MudButton>
         }
 
         @foreach (var discussion in discussions)

@@ -52,7 +52,7 @@
         </MudItem>
     </MudGrid>
 
-    @if (SchedulesList == null)
+    @if (IsNotFoundVisible)
     {
         <MudAlert ContentAlignment="HorizontalAlignment.Center" Severity="Severity.Info" Variant="Variant.Outlined" Class="mb-5">
             По Вашему запросу ничего не найдено...
@@ -142,7 +142,7 @@
 
         @if (IsButtonMoreVisible) 
         {
-            <MudButton OnClick="MoreSchedulesAsync" Variant="Variant.Text">Далее</MudButton>
+            <MudButton OnClick="MoreSchedulesAsync" Variant="Variant.Outlined" StartIcon="@Icons.Material.Filled.MoreHoriz" EndIcon="@Icons.Material.Filled.MoreHoriz" Color="Color.Primary" Class="mb-5 mt-3">Далее</MudButton>
         }
     }
 </div>

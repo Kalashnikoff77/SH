@@ -4,6 +4,8 @@
     {
         public override string Uri => "/messages/MarkAsRead";
 
-        public int MessageId { get; set; }
+        public int? MessageId { get; set; }
+
+        public int? SenderId { get; set; }
     }
 }

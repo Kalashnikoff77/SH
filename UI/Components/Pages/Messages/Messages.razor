@@ -29,8 +29,8 @@
                                     <div class="d-flex flex-column gap-0" style="width:100%">
                                         <div style="text-align:end">
                                             <MudMenu Dense Icon="@Icons.Material.Filled.MoreVert" Size="Size.Small" AnchorOrigin="Origin.TopLeft" TransformOrigin="Origin.TopRight">
-                                                <MudMenuItem Icon="@Icons.Material.Filled.Check" IconColor="Color.Primary" Disabled="@(message.UnreadMessages == 0)" OnClick="MarkAllAsReadAsync">Пометить сообщение прочитанными</MudMenuItem>
-                                                <MudMenuItem Icon="@Icons.Material.Filled.ChecklistRtl" IconColor="Color.Primary" Disabled="@(message.UnreadMessages == 0)" OnClick="MarkAllAsReadAsync">Пометить все прочитанными</MudMenuItem>
+                                                <MudMenuItem Icon="@Icons.Material.Filled.Check" IconColor="Color.Primary" Disabled="@(message.UnreadMessages == 0)" OnClick="() => MarkAsReadCallback(message.Id)">Пометить сообщение прочитанными</MudMenuItem>
+                                                <MudMenuItem Icon="@Icons.Material.Filled.ChecklistRtl" IconColor="Color.Primary" Disabled="@(message.UnreadMessages == 0)" OnClick="() => MarkAllAsReadAsync(message.Id)">Пометить все прочитанными</MudMenuItem>
                                                 <MudMenuItem Icon="@Icons.Material.Filled.Block" IconColor="Color.Error" OnClick="BlockAccountAsync">Заблокировать отправителя</MudMenuItem>
                                             </MudMenu>
                                         </div>

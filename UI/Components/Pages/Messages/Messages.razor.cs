@@ -39,8 +39,15 @@ namespace UI.Components.Pages.Messages
             }
         }
 
-        async Task MarkAllAsReadAsync()
+        async Task MarkAllAsReadAsync(int markAsReadId)
         {
+            var index = LastMessagesList.FindIndex(x => x.Id == markAsReadId);
+            if (index >= 0 && LastMessagesList[index].Sender != null)
+            {
+                var apiResponse = await _markMessageAsRead.HttpPostAsync(new MarkMessageAsReadRequestDto { MessageId = markAsReadId, SenderId = LastMessagesList[index].Sender!.Id, Token = CurrentState.Account?.Token });
+                if (apiResponse.Response.UpdatedMessage != null)
+                    LastMessagesList[index] = apiResponse.Response.UpdatedMessage;
+            }
         }
 
         async Task BlockAccountAsync()

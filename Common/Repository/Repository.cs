@@ -12,14 +12,10 @@ namespace Common.Repository
         where TResponseDto : ResponseDtoBase, new()
     {
 
-        readonly HttpClient _httpClient;
         readonly IConfiguration _config;
 
-        public Repository(HttpClient httpClient, IConfiguration config)
-        {
-            _httpClient = httpClient;
+        public Repository(IConfiguration config) =>
             _config = config;
-        }
 
 
         public async Task<ApiResponse<TResponseDto>> HttpPostAsync(TRequestDto request)
@@ -35,14 +31,16 @@ namespace Common.Repository
         {
             var apiResponse = new ApiResponse<TResponse>();
 
-            _httpClient.DefaultRequestHeaders.Authorization = null;
+            var client = new HttpClient();
+
+            client.DefaultRequestHeaders.Authorization = null;
 
             if (!string.IsNullOrWhiteSpace(request.Token))
-                _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", request.Token);
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", request.Token);
 
             var host = _config.GetRequiredSection("WebAPI:Host").Value;
 
-            var response = await _httpClient.PostAsJsonAsync($"{host}{request.Uri}", request);
+            var response = await client.PostAsJsonAsync($"{host}{request.Uri}", request);
 
             apiResponse.StatusCode = response.StatusCode;
 

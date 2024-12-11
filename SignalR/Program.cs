@@ -19,7 +19,6 @@ builder.Services.AddControllers();
 builder.Services.AddSignalR();
 builder.Services.AddResponseCompression(opt => { opt.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(new[] { "application/octet-stream" }); });
 builder.Services.AddSingleton<Accounts>();
-builder.Services.AddHttpClient();
 
 builder.Services.AddJwtToken(builder);
 

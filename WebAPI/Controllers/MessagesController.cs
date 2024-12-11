@@ -140,6 +140,7 @@ namespace WebAPI.Controllers
                 await _unitOfWork.SqlConnection.ExecuteAsync(sql, new { CurrentDate = DateTime.Now, request.MessageId, _unitOfWork.AccountId });
             }
 
+            // Вернём обновлённое сообщение
             var p = new DynamicParameters();
             p.Add("@AccountId", _unitOfWork.AccountId);
             p.Add("@MessageId", request.MessageId);

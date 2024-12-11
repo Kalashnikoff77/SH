@@ -17,7 +17,6 @@ builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents()
     .AddHubOptions(o => { o.MaximumReceiveMessageSize = 25000000; });
 
-builder.Services.AddHttpClient();
 builder.Services.AddJwtToken(builder);
 
 builder.Services.AddScoped<CurrentState>();
